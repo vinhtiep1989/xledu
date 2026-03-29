@@ -14,10 +14,10 @@
         :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; --border-grey: #e8f1ec; --header-height: 90px; --sidebar-width: 270px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
-        /* BỐ CỤC CHUẨN CHO MÁY TÍNH (DESKTOP) */
+        /* ================= BỐ CỤC CHUẨN CHO MÁY TÍNH ================= */
         html, body { background-color: var(--bg-body); color: var(--text-dark); }
         
-        /* Chế độ Desktop: Cố định màn hình, chỉ cuộn phần nội dung */
+        /* Desktop: Giữ khung cố định, chỉ cuộn phần nội dung */
         body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
         #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
@@ -83,7 +83,7 @@
         .panel-header-subtitle { font-size: 0.8rem; color: #888; margin-top: 5px;}
         .btn-view-details { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 5px 15px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; }
         
-        /* Table Responsive - Cuộn ngang mượt cho Mobile */
+        /* Table Responsive */
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; display: block; border-radius: 8px;}
         .featured-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px; } 
         .featured-table th { text-align: left; padding-bottom: 10px; color: #888; font-weight: 500; border-bottom: 1px solid var(--border-grey); white-space: nowrap;}
@@ -112,24 +112,31 @@
         .chart-bar-number { font-weight: 700; color: var(--text-dark); width: 35px; text-align: right;}
 
 
-        /* ================= TỐI ƯU CỰC ĐẠI CHO MOBILE & TABLET (Max-width: 1024px) ================= */
-        /* Bao gồm iPad, Galaxy Tab và mọi loại Smartphone */
+        /* ================= BỨC TƯỜNG THÉP TRỊ LỖI iPHONE (Max-width: 1024px) ================= */
         @media (max-width: 1024px) {
             :root { --header-height: 70px; }
             
-            /* TRẢ LẠI CUỘN TỰ NHIÊN CHO TRÌNH DUYỆT (Native Scroll) */
-            html, body {
-                height: auto !important;
-                overflow: visible !important;
-                display: block !important; 
+            /* TRẢ LẠI CUỘN TỰ NHIÊN - ĐẬP BỎ FLEXBOX CỦA BODY */
+            html {
+                overflow-y: scroll !important; /* Ép buộc mở khóa cuộn dọc */
+                -webkit-overflow-scrolling: touch !important; /* Cuộn mượt kiểu Apple */
+            }
+            
+            body {
+                display: block !important; /* Tắt Flexbox */
+                height: auto !important; 
+                min-height: 100vh !important;
+                overflow-y: visible !important;
+                overflow-x: hidden !important; 
             }
             
             /* Header dính lên đỉnh màn hình */
             .header { 
-                position: sticky; 
-                top: 0;
+                position: sticky !important; 
+                top: 0 !important;
                 padding: 0 15px; 
                 justify-content: space-between; 
+                z-index: 1000 !important;
             }
             
             .header-left { width: auto; gap: 10px; }
@@ -144,22 +151,24 @@
             .user-info { display: none; } 
             .btn-logout { padding: 5px 12px; font-size: 0.75rem; border-width: 1px; }
 
-            /* Sidebar */
+            /* Sidebar trượt từ trái ra */
             .sidebar { position: fixed; left: -100%; top: var(--header-height); height: calc(100vh - var(--header-height)); box-shadow: 2px 0 10px rgba(0,0,0,0.5); z-index: 1000;}
             .sidebar.open { left: 0; }
-            .sidebar-overlay { display: block; position: fixed; z-index: 999;}
-            .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+            .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 999;}
+            .sidebar-overlay.open { display: block; }
 
             /* Tắt giới hạn khung cho Content */
             .main-wrapper { 
-                display: block; 
-                height: auto; 
-                overflow: visible; 
+                display: block !important; /* Tắt Flexbox */
+                height: auto !important; 
+                min-height: 0 !important;
+                overflow: visible !important; 
             }
             
             .dashboard-content { 
-                overflow: visible; 
-                height: auto;
+                display: block !important; /* Tắt Flexbox */
+                overflow: visible !important; 
+                height: auto !important;
                 padding: 15px; 
                 padding-bottom: 40px; 
             }
@@ -235,7 +244,7 @@
         <main class="dashboard-content">
             <div class="info-banner">
                 <i class="fa-solid fa-circle-info"></i>
-                Hệ thống đang chạy trên nền tảng Firebase. Đã mở khóa tính năng cuộn vuốt mượt mà trên Chrome, Cốc Cốc và Safari.
+                Hệ thống đang chạy trên nền tảng Firebase. Lỗi cuộn trên iOS Chrome đã được phá vỡ hoàn toàn!
             </div>
 
             <div class="statistics-grid">
