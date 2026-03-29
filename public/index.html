@@ -1,89 +1,318 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xứ Lạng Education - Hệ Thống Quản Trị</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.11.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.11.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.11.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.11.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.11.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.11.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.11.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.11.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.11.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.11.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <style>
+        :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; --border-grey: #e8f1ec; --header-height: 100px; --sidebar-width: 270px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { display: flex; flex-direction: column; height: 100vh; background-color: var(--bg-body); color: var(--text-dark); overflow: hidden; }
+        
+        /* Hiệu ứng loading toàn trang khi kiểm tra đăng nhập */
+        #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
+        #page-loader p { font-size: 1rem; color: var(--text-light); margin-top: 15px; font-weight: 500; }
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
+        .header { position: relative; height: var(--header-height); background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .header-left { display: flex; align-items: center; width: 20%; }
+        .logo-placeholder { width: 65px; height: 65px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.5); font-size: 0.75rem; text-align: center; transition: all 0.3s; cursor: pointer; background-size: cover; background-position: center; background-repeat: no-repeat; overflow: hidden; }
+        .logo-placeholder:hover { border-color: var(--accent-gold); color: var(--accent-gold); background-color: rgba(224, 170, 62, 0.05); }
+        #logo-upload { display: none; }
+        .header-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 60%; }
+        .header-title { font-size: 2.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224, 170, 62, 0.5); line-height: 1.2; }
+        .header-subtitle { font-size: 1.1rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 500; letter-spacing: 1.5px; margin-top: -2px; }
+        .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; width: auto; min-width: 20%; }
+        .user-info { text-align: right; font-size: 0.9rem; color: var(--text-light); }
+        .user-id { color: var(--accent-gold); font-weight: bold; display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 3px; font-size: 0.85rem;}
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--primary-green); animation: pulse-live 1.5s infinite; }
+        @keyframes pulse-live { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+        .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: all 0.3s; }
+        .btn-logout:hover { background: rgba(224, 170, 62, 0.15); box-shadow: 0 0 15px rgba(224, 170, 62, 0.4); }
+
+        .toast-notification { position: fixed; top: 120px; right: -350px; background-color: var(--bg-card-white); border-left: 5px solid var(--primary-green); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 15px; z-index: 1000; transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        .toast-notification.show { right: 40px; }
+        .toast-icon { font-size: 1.5rem; color: var(--primary-green); }
+        .toast-text h4 { margin: 0; font-size: 1rem; color: var(--text-dark); }
+        .toast-text p { margin: 3px 0 0 0; font-size: 0.8rem; color: #888; }
+
+        .main-wrapper { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 15px 20px 15px; position: relative; }
+        .sidebar::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(46, 204, 113, 0.02) 0%, transparent 100%); pointer-events: none; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 2; }
+        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255, 255, 255, 0.02); border: 1px solid transparent; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; transition: transform 0.3s; }
+        .sidebar-nav-item:hover { color: var(--white); transform: translateX(8px); background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .sidebar-nav-item:hover i { color: var(--primary-green); transform: scale(1.1); }
+        .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); border: 1px solid rgba(46, 204, 113, 0.3); box-shadow: 0 4px 15px rgba(46, 204, 113, 0.1); transform: translateX(4px); }
+        .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224, 170, 62, 0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(224, 170, 62, 0.4); letter-spacing: 0.5px; }
+        .sidebar-nav-item:hover .admin-badge { background: var(--accent-gold); color: var(--bg-dark); }
+
+        .dashboard-content { flex: 1; padding: 30px 40px; overflow-y: auto; }
+        .info-banner { display: flex; align-items: center; gap: 15px; padding: 15px 25px; background-color: rgba(46, 204, 113, 0.05); border-radius: 12px; border: 1px solid rgba(46, 204, 113, 0.15); margin-bottom: 30px; font-size: 0.9rem; color: var(--primary-green); font-weight: 500; }
+        .statistics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background-color: var(--bg-card-white); border-radius: 12px; padding: 25px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); display: grid; grid-template-areas: "icon title" "icon number" "icon subtitle"; grid-template-columns: 60px 1fr; align-items: center; transition: transform 0.3s ease; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
+        .stat-card-icon { grid-area: icon; width: 50px; height: 50px; background-color: var(--grey-light); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1.4rem; color: var(--primary-green); }
+        .stat-card-title { grid-area: title; font-size: 0.85rem; color: var(--text-dark); text-transform: uppercase; font-weight: 600; margin-bottom: 5px; }
+        .stat-card-number { grid-area: number; font-size: 2.2rem; font-weight: 800; color: var(--text-dark); margin-bottom: 3px; }
+        .stat-card-subtitle { grid-area: subtitle; font-size: 0.75rem; color: #888; }
+        
+        .dashboard-bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .panel { background-color: var(--bg-card-white); border-radius: 12px; padding: 25px; border: 1px solid var(--border-grey); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .panel-header h3 { font-size: 1.2rem; color: var(--text-dark); }
+        .panel-header-subtitle { font-size: 0.8rem; color: #888; margin-top: 5px;}
+        .btn-view-details { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 6px 15px; border-radius: 15px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: all 0.3s; }
+        .btn-view-details:hover { background: rgba(224, 170, 62, 0.05); }
+        
+        .featured-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .featured-table th { text-align: left; padding-bottom: 15px; color: #888; font-weight: 500; border-bottom: 1px solid var(--border-grey); }
+        .featured-table td { padding: 15px 0; border-bottom: 1px solid var(--border-grey); }
+        .featured-table tr:last-child td { border-bottom: none; }
+        
+        .status-badge { font-size: 0.85rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+        .status-badge.active { background-color: rgba(46, 204, 113, 0.15); color: var(--primary-green); }
+        .status-badge.soon { background-color: rgba(224, 170, 62, 0.15); color: #d49c2e; }
+        
+        .quick-updates-list { display: flex; flex-direction: column; gap: 15px; }
+        .quick-update-item { background-color: var(--grey-light); border-radius: 10px; padding: 15px; display: flex; align-items: center; gap: 15px; }
+        .quick-update-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; color: var(--primary-green); background: #fff;}
+        .quick-update-info { flex: 1; }
+        .quick-update-title { font-size: 0.9rem; font-weight: 600; color: var(--text-dark); margin-bottom: 3px; }
+        .quick-update-subtitle { font-size: 0.75rem; color: #888; }
+        .quick-update-number { font-size: 1.2rem; font-weight: 800; color: var(--primary-green); }
+        
+        .mini-charts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-bottom: 30px;}
+        .mini-chart-card { background-color: var(--bg-card-white); border-radius: 12px; padding: 25px; border: 1px solid var(--border-grey); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .mini-chart-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .mini-chart-icon { font-size: 1.2rem; color: var(--primary-green); }
+        .mini-chart-card-title { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
+        .mini-chart-subtitle { font-size: 0.8rem; color: #888; margin-bottom: 25px; line-height: 1.4;}
+        
+        .chart-bar-list { display: flex; flex-direction: column; gap: 12px; }
+        .chart-bar-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; }
+        .chart-bar-label { color: #555; font-weight: 500;}
+        .chart-bar-container { width: 45%; height: 6px; background-color: var(--grey-light); border-radius: 3px; overflow: hidden; }
+        .chart-bar-fill { height: 100%; background-color: var(--accent-gold-plated); border-radius: 3px; width: 0%; transition: width 1s ease-in-out; }
+        .chart-bar-number { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); width: 35px; text-align: right;}
+        .mini-chart-card:nth-child(3) .chart-bar-item { justify-content: flex-start; gap: 15px; }
+        .mini-chart-card:nth-child(3) .chart-bar-container { width: 55%; }
+        .mini-chart-card:nth-child(3) .chart-bar-number { margin-left: auto; width: auto;}
     </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+</head>
+<body>
+
+    <div id="page-loader">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Đang xác thực hệ thống...</p>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+
+    <div class="toast-notification" id="success-toast">
+        <div class="toast-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="toast-text"><h4>Thành công!</h4><p>Logo đã được cập nhật.</p></div>
+    </div>
+
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-placeholder" id="logo-container" title="Nhấn để tải lên Logo">
+                <span id="logo-text">[Logo<br>Trống]</span>
+            </div>
+            <input type="file" id="logo-upload" accept="image/*">
+        </div>
+        
+        <div class="header-center">
+            <div class="header-title">XỨ LẠNG EDUCATION</div>
+            <div class="header-subtitle">Chắp cánh ước mơ</div>
+        </div>
+        
+        <div class="header-user">
+            <div class="user-info">
+                Chào, Quản trị viên
+                <div class="user-id">
+                    <div class="live-dot"></div>
+                    <span id="userEmailDisplay">Đang tải...</span>
+                </div>
+            </div>
+            <button class="btn-logout" id="btnLogout">ĐĂNG XUẤT</button>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="sidebar-nav-item active"><i class="fa-solid fa-house"></i> Trang chủ</a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="info-banner">
+                <i class="fa-solid fa-circle-info"></i>
+                Khối thống kê đang dùng dữ liệu mẫu. Sau này sẽ đồng bộ trực tiếp với dữ liệu học sinh và giáo viên.
+            </div>
+
+            <div class="statistics-grid">
+                <div class="stat-card"><div class="stat-card-icon"><i class="fa-solid fa-user-graduate"></i></div><div class="stat-card-title">Tổng số học sinh</div><div class="stat-card-number counter" data-target="1286">0</div><div class="stat-card-subtitle">Sẽ đồng bộ sau</div></div>
+                <div class="stat-card"><div class="stat-card-icon"><i class="fa-solid fa-chalkboard-user"></i></div><div class="stat-card-title">Tổng số giáo viên</div><div class="stat-card-number counter" data-target="86">0</div><div class="stat-card-subtitle">Sẽ đồng bộ sau</div></div>
+                <div class="stat-card"><div class="stat-card-icon"><i class="fa-solid fa-book"></i></div><div class="stat-card-title">Tổng số lớp học</div><div class="stat-card-number counter" data-target="48">0</div><div class="stat-card-subtitle">Dữ liệu mẫu hiển thị</div></div>
+                <div class="stat-card"><div class="stat-card-icon"><i class="fa-solid fa-briefcase"></i></div><div class="stat-card-title">Tổng số nhân viên</div><div class="stat-card-number counter" data-target="24">0</div><div class="stat-card-subtitle">Dữ liệu mẫu hiển thị</div></div>
+            </div>
+
+            <div class="dashboard-bottom-grid">
+                <div class="panel">
+                    <div class="panel-header"><div><h3>Các lớp đang học</h3><p class="panel-header-subtitle">Theo dõi nhanh lịch học, giáo viên và tình trạng điểm danh hiện tại.</p></div><button class="btn-view-details">Xem chi tiết</button></div>
+                    <table class="featured-table">
+                        <thead><tr><th>Mã lớp</th><th>Tên lớp</th><th>Sĩ số</th><th>Giáo viên</th><th>Điểm danh</th></tr></thead>
+                        <tbody>
+                            <tr><td>XL-01</td><td>Toán nâng cao 6A</td><td>28</td><td>Nguyễn Minh Anh</td><td><span class="status-badge active"><i class="fa-solid fa-user-check"></i> 26/28</span></td></tr>
+                            <tr><td>XL-02</td><td>Tiếng Anh giao tiếp 7B</td><td>32</td><td>Trần Phương Linh</td><td><span class="status-badge active"><i class="fa-solid fa-user-check"></i> 32/32</span></td></tr>
+                            <tr><td>XL-03</td><td>Văn chuyên đề 8C</td><td>25</td><td>Lê Thu Hà</td><td><span class="status-badge soon"><i class="fa-solid fa-user-clock"></i> 23/25</span></td></tr>
+                            <tr><td>XL-04</td><td>STEM cơ bản 5A</td><td>30</td><td>Phạm Đức Huy</td><td><span class="status-badge active"><i class="fa-solid fa-user-check"></i> 29/30</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header"><div><h3>Tình hình nhanh</h3><p class="panel-header-subtitle">Các chỉ số theo dõi tại trang chủ.</p></div></div>
+                    <div class="quick-updates-list">
+                        <div class="quick-update-item"><div class="quick-update-icon"><i class="fa-solid fa-chalkboard"></i></div><div class="quick-update-info"><div class="quick-update-title">Lớp đang học hôm nay</div><div class="quick-update-subtitle">36 lớp có lịch giảng dạy</div></div><div class="quick-update-number live-number" data-target="36">0</div></div>
+                        <div class="quick-update-item"><div class="quick-update-icon"><i class="fa-solid fa-user-check"></i></div><div class="quick-update-info"><div class="quick-update-title">Học sinh đi học</div><div class="quick-update-subtitle">1.204 hs đã điểm danh</div></div><div class="quick-update-number percentage-number" data-target="94">0%</div></div>
+                        <div class="quick-update-item"><div class="quick-update-icon"><i class="fa-solid fa-user-clock"></i></div><div class="quick-update-info"><div class="quick-update-title">Giáo viên có mặt</div><div class="quick-update-subtitle">82/86 gv đang sẵn sàng</div></div><div class="quick-update-number percentage-number" data-target="95">0%</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mini-charts-grid">
+                <div class="mini-chart-card">
+                    <div class="mini-chart-card-header"><div class="mini-chart-icon"><i class="fa-solid fa-user-graduate"></i></div><div class="mini-chart-card-title">Học sinh</div></div>
+                    <div class="chart-bar-list">
+                        <div class="chart-bar-item"><div class="chart-bar-label">Đang theo học</div><div class="chart-bar-container"><div class="chart-bar-fill" style="width: 85%;"></div></div><div class="chart-bar-number counter" data-target="1186">0</div></div>
+                        <div class="chart-bar-item"><div class="chart-bar-label">Bảo lưu</div><div class="chart-bar-container"><div class="chart-bar-fill" style="width: 15%;"></div></div><div class="chart-bar-number counter" data-target="54">0</div></div>
+                    </div>
+                </div>
+                <div class="mini-chart-card">
+                    <div class="mini-chart-card-header"><div class="mini-chart-icon"><i class="fa-solid fa-chalkboard-user"></i></div><div class="mini-chart-card-title">Giáo viên</div></div>
+                    <div class="chart-bar-list">
+                        <div class="chart-bar-item"><div class="chart-bar-label">Giáo viên cơ hữu</div><div class="chart-bar-container"><div class="chart-bar-fill" style="width: 65%;"></div></div><div class="chart-bar-number counter" data-target="58">0</div></div>
+                        <div class="chart-bar-item"><div class="chart-bar-label">Giáo viên thỉnh giảng</div><div class="chart-bar-container"><div class="chart-bar-fill" style="width: 35%;"></div></div><div class="chart-bar-number counter" data-target="28">0</div></div>
+                    </div>
+                </div>
+                <div class="mini-chart-card">
+                    <div class="mini-chart-card-header"><div class="mini-chart-icon"><i class="fa-solid fa-chart-line"></i></div><div class="mini-chart-card-title">Tổng hợp vận hành</div></div>
+                    <div class="chart-bar-list">
+                        <div class="chart-bar-item"><div class="chart-bar-label">Tỷ lệ lấp đầy lớp</div><div class="chart-bar-container"><div class="chart-bar-fill" style="width: 87%;"></div></div><div class="chart-bar-number percentage-number" data-target="87">0%</div></div>
+                        <div class="chart-bar-item"><div class="chart-bar-label">Tỷ lệ chuyên cần</div><div class="chart-bar-container"><div class="chart-bar-fill" style="width: 94%;"></div></div><div class="chart-bar-number percentage-number" data-target="94">0%</div></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // --- 1. CẤU HÌNH FIREBASE XỨ LẠNG EDUCATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
+            authDomain: "xledu-dea6a.firebaseapp.com",
+            projectId: "xledu-dea6a",
+            storageBucket: "xledu-dea6a.firebasestorage.app",
+            messagingSenderId: "56988683349",
+            appId: "1:56988683349:web:7502807eebf8862ed0d8dc",
+            measurementId: "G-BWV1GD3WS1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
+        // --- 2. BẢO VỆ TRANG CHỦ & ĐỔ DỮ LIỆU USER ---
+        const pageLoader = document.getElementById('page-loader');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Người dùng HỢP LỆ -> Tắt màn hình đen loading đi, hiển thị Email thật
+                pageLoader.style.display = 'none';
+                userEmailDisplay.textContent = user.email;
+            } else {
+                // CHƯA ĐĂNG NHẬP -> Đá văng về trang login lập tức
+                window.location.href = 'login.html';
+            }
+        });
+
+        // --- 3. XỬ LÝ NÚT ĐĂNG XUẤT ---
+        const btnLogout = document.getElementById('btnLogout');
+        btnLogout.addEventListener('click', function() {
+            if(confirm('Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?')) {
+                // Gọi hàm Đăng xuất của Firebase
+                auth.signOut().then(() => {
+                    // Tự động onAuthStateChanged sẽ phát hiện và đẩy về login
+                    window.location.href = 'login.html';
+                }).catch((error) => {
+                    alert('Lỗi đăng xuất: ' + error.message);
+                });
+            }
+        });
+
+        // --- 4. UPLOAD LOGO & HIỆU ỨNG SỐ ---
+        const logoContainer = document.getElementById('logo-container');
+        const logoUpload = document.getElementById('logo-upload');
+        const logoText = document.getElementById('logo-text');
+        const toast = document.getElementById('success-toast');
+
+        logoContainer.addEventListener('click', () => logoUpload.click());
+        logoUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoContainer.style.backgroundImage = `url(${e.target.result})`;
+                    logoContainer.style.border = 'none';
+                    if (logoText) logoText.style.display = 'none';
+                    toast.classList.add('show');
+                    setTimeout(() => { toast.classList.remove('show'); }, 3500);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        const counters = document.querySelectorAll('.counter, .live-number');
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-target');
+                const count = +counter.innerText.replace(/,/g, '');
+                const inc = target / 30;
+                if (count < target) { counter.innerText = Math.ceil(count + inc).toLocaleString('en-US'); setTimeout(updateCount, 20); } 
+                else { counter.innerText = target.toLocaleString('en-US'); }
+            }; updateCount();
+        });
+
+        const percentageNumbers = document.querySelectorAll('.percentage-number');
+        percentageNumbers.forEach(num => {
+            const updateCount = () => {
+                const target = +num.getAttribute('data-target');
+                const count = +num.innerText.replace('%', '');
+                const inc = target / 30;
+                if (count < target) { num.innerText = Math.ceil(count + inc) + '%'; setTimeout(updateCount, 20); } 
+                else { num.innerText = target + '%'; }
+            }; updateCount();
+        });
+
+        setTimeout(() => {
+            const fills = document.querySelectorAll('.chart-bar-fill');
+            fills.forEach(fill => {
+                const finalWidth = fill.getAttribute('style').replace('width:', '').replace(';', '');
+                fill.style.width = '0%';
+                setTimeout(() => { fill.style.width = finalWidth; }, 100);
+            });
+        }, 500);
     </script>
-  </body>
+</body>
 </html>

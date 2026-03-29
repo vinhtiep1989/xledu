@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Xứ Lạng Education</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <style>
+        :root { --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --input-bg: #f8faf9; --border-grey: #e8f1ec; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--bg-dark); overflow: hidden; position: relative; }
+        
+        /* Ánh sáng nền */
+        .bg-glow { position: absolute; border-radius: 50%; filter: blur(100px); z-index: 0; animation: float 10s infinite ease-in-out alternate; }
+        .glow-1 { width: 400px; height: 400px; background: rgba(46, 204, 113, 0.15); top: -100px; left: -100px; }
+        .glow-2 { width: 500px; height: 500px; background: rgba(224, 170, 62, 0.1); bottom: -150px; right: -100px; animation-delay: -5s; }
+        @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 50px); } }
+        
+        /* Card Form */
+        .login-card { background-color: var(--bg-card-white); width: 100%; max-width: 420px; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); position: relative; z-index: 10; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .card-header { text-align: center; margin-bottom: 35px; }
+        .card-header .logo-icon { font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 15px; text-shadow: 0 4px 15px rgba(224, 170, 62, 0.4); }
+        .brand-title { font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; background: linear-gradient(to bottom, #112031, var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2; margin-bottom: 5px; }
+        .brand-subtitle { font-size: 0.9rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 600; letter-spacing: 1px; }
+        
+        /* Inputs */
+        .login-form { display: flex; flex-direction: column; gap: 20px; }
+        .input-group { position: relative; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1.1rem; transition: color 0.3s; }
+        .input-group input { width: 100%; padding: 15px 15px 15px 45px; border: 2px solid var(--border-grey); border-radius: 12px; background-color: var(--input-bg); font-size: 0.95rem; color: var(--text-dark); outline: none; transition: all 0.3s ease; font-weight: 500; }
+        .input-group input::placeholder { color: #aaa; font-weight: 400; }
+        .input-group input:focus { border-color: var(--accent-gold); background-color: var(--bg-card-white); box-shadow: 0 0 0 4px rgba(224, 170, 62, 0.1); }
+        .input-group input:focus + i, .input-group input:focus ~ i { color: var(--accent-gold); }
+        .toggle-password { position: absolute; right: 15px; left: auto !important; cursor: pointer; color: #aaa !important; }
+        .toggle-password:hover { color: var(--text-dark) !important; }
+        
+        /* Options */
+        .form-options { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+        .remember-me { display: flex; align-items: center; gap: 8px; color: #555; cursor: pointer; }
+        .remember-me input[type="checkbox"] { accent-color: var(--accent-gold); width: 16px; height: 16px; cursor: pointer; }
+        .forgot-password { color: var(--accent-gold-plated); text-decoration: none; font-weight: 600; transition: color 0.3s; }
+        .forgot-password:hover { color: var(--accent-gold); text-decoration: underline; }
+        
+        /* Nút Submit */
+        .btn-login { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent-gold), #c99327); color: var(--bg-card-white); border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(224, 170, 62, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(224, 170, 62, 0.4); background: linear-gradient(135deg, #eec05c, var(--accent-gold)); }
+        
+        /* Thông báo lỗi */
+        .error-message { color: #e74c3c; font-size: 0.85rem; text-align: center; display: none; font-weight: 600; margin-top: -10px; }
+        
+        /* Loading icon */
+        .fa-spinner { display: none; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        /* Footer link */
+        .register-link { text-align: center; margin-top: 25px; font-size: 0.85rem; color: #666; }
+        .register-link a { color: var(--bg-dark); font-weight: 700; text-decoration: none; cursor: pointer; }
+        .register-link a:hover { text-decoration: underline; }
+
+        /* ================= POPUP LIÊN HỆ ================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 27, 42, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-card-white);
+            width: 90%;
+            max-width: 450px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            text-align: center;
+            border-top: 5px solid var(--accent-gold);
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .contact-info {
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+            border: 1px solid var(--border-grey);
+        }
+
+        .contact-info p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .contact-info i {
+            color: var(--primary-green);
+            width: 25px;
+            text-align: center;
+            margin-right: 5px;
+        }
+        
+        .contact-info .zalo-icon {
+            color: #0068ff; /* Màu đặc trưng của Zalo */
+        }
+
+        .btn-close-modal {
+            background: var(--bg-dark);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-close-modal:hover {
+            background: #1a365d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="login-card">
+        <div class="card-header">
+            <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h1 class="brand-title">XỨ LẠNG<br>EDUCATION</h1>
+            <p class="brand-subtitle">Chắp cánh ước mơ</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+            <div class="error-message" id="errorMessage">
+                <i class="fa-solid fa-circle-exclamation"></i> Tài khoản hoặc mật khẩu không đúng!
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Nhập địa chỉ Email do Admin cấp" required>
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Nhập mật khẩu" required>
+                <i class="fa-solid fa-lock"></i>
+                <i class="fa-solid fa-eye toggle-password" id="togglePassword" title="Hiện mật khẩu"></i>
+            </div>
+            <div class="form-options">
+                <label class="remember-me"><input type="checkbox" id="rememberMe"> Nhớ tài khoản</label>
+                <a href="#" class="forgot-password">Quên mật khẩu?</a>
+            </div>
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                <span id="btnText">Đăng nhập ngay</span>
+                <i class="fa-solid fa-spinner" id="loadingIcon"></i>
+            </button>
+        </form>
+
+        <div class="register-link">
+            Chưa có tài khoản? <a id="openContactModal">Liên hệ Quản trị viên</a>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fa-solid fa-headset"></i></div>
+            <h2 class="modal-title">Hỗ trợ cấp tài khoản</h2>
+            
+            <div class="contact-info">
+                <p><i class="fa-solid fa-user-tie"></i> <strong>Admin: Nguyễn Phượng Ngân</strong></p>
+                <p><i class="fa-solid fa-phone-volume"></i> Phone/Zalo: <strong>0931.595.3426</strong></p>
+            </div>
+            
+            <div class="contact-info">
+                <p><i class="fa-solid fa-user-tie"></i> <strong>Admin: Nguyễn Thanh Dũng</strong></p>
+                <p><i class="fa-solid fa-phone-volume"></i> Phone/Zalo: <strong>0913.299.386</strong></p>
+            </div>
+
+            <button class="btn-close-modal" id="closeContactModal">ĐÓNG</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. CẤU HÌNH FIREBASE XỨ LẠNG EDUCATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
+            authDomain: "xledu-dea6a.firebaseapp.com",
+            projectId: "xledu-dea6a",
+            storageBucket: "xledu-dea6a.firebasestorage.app",
+            messagingSenderId: "56988683349",
+            appId: "1:56988683349:web:7502807eebf8862ed0d8dc",
+            measurementId: "G-BWV1GD3WS1"
+        };
+        // Khởi tạo Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Kiểm tra xem người dùng đã đăng nhập chưa, nếu rồi thì cho vô thẳng luôn
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- 2. XỬ LÝ POPUP LIÊN HỆ ---
+        const contactBtn = document.getElementById('openContactModal');
+        const contactModal = document.getElementById('contactModal');
+        const closeContactBtn = document.getElementById('closeContactModal');
+
+        // Mở popup
+        contactBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            contactModal.classList.add('show');
+        });
+
+        // Đóng popup bằng nút ĐÓNG
+        closeContactBtn.addEventListener('click', function() {
+            contactModal.classList.remove('show');
+        });
+
+        // Đóng popup khi click ra ngoài vùng xám (overlay)
+        contactModal.addEventListener('click', function(e) {
+            if (e.target === contactModal) {
+                contactModal.classList.remove('show');
+            }
+        });
+
+
+        // --- 3. XỬ LÝ NHỚ TÀI KHOẢN (Chỉ lưu Email) ---
+        const emailInput = document.getElementById('email');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+
+        // Khi load trang, kiểm tra xem có lưu email không
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem('xl_saved_email');
+            if (savedEmail) {
+                emailInput.value = savedEmail;
+                rememberMeCheckbox.checked = true; // Tự động đánh dấu tích
+            }
+        });
+
+        // --- 4. Ẩn/Hiện mật khẩu ---
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // --- 5. Xử lý Đăng nhập với Firebase ---
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('btnText');
+        const loadingIcon = document.getElementById('loadingIcon');
+        const errorMessage = document.getElementById('errorMessage');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            // Reset UI
+            errorMessage.style.display = 'none';
+            btnText.textContent = 'Đang xác thực...';
+            loadingIcon.style.display = 'inline-block';
+            loginBtn.style.opacity = '0.8';
+            loginBtn.disabled = true;
+
+            // GỌI FIREBASE AUTH
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // LƯU HOẶC XÓA EMAIL DỰA VÀO CHECKBOX
+                    if (rememberMeCheckbox.checked) {
+                        localStorage.setItem('xl_saved_email', email);
+                    } else {
+                        localStorage.removeItem('xl_saved_email');
+                    }
+
+                    // Đăng nhập thành công -> Bay vào index.html
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    // Hiển thị khung báo lỗi
+                    errorMessage.style.display = 'block';
+                    
+                    // Xử lý thông báo lỗi thân thiện bằng tiếng Việt
+                    if (error.code === 'auth/invalid-login-credentials' || 
+                        error.code === 'auth/user-not-found' || 
+                        error.code === 'auth/wrong-password' || 
+                        error.code === 'auth/invalid-credential') {
+                        errorMessage.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Tài khoản hoặc mật khẩu không đúng!';
+                    } 
+                    else if (error.code === 'auth/too-many-requests') {
+                        errorMessage.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Bạn đã thử quá nhiều lần. Vui lòng thử lại sau!';
+                    } 
+                    else {
+                        errorMessage.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Tài khoản hoặc mật khẩu không đúng!';
+                        console.error("Firebase Auth Error: ", error);
+                    }
+                    
+                    // Khôi phục nút bấm về trạng thái ban đầu
+                    btnText.textContent = 'Đăng nhập ngay';
+                    loadingIcon.style.display = 'none';
+                    loginBtn.style.opacity = '1';
+                    loginBtn.disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>
