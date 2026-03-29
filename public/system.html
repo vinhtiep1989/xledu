@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quản lý Hệ thống - Xứ Lạng Education</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <style>
+        :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --border-grey: #e8f1ec; --danger-red: #e74c3c; --header-height: 90px; --sidebar-width: 270px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-dark); }
+        #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
+        .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; height: var(--header-height); padding: 0 40px; position: relative; z-index: 1000;}
+        .header-title { font-size: 2.2rem; font-weight: 900; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; padding: 30px 15px;}
+        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem;}
+        .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: rgba(46, 204, 113, 0.1);}
+        .admin-badge { margin-left: auto; font-size: 0.65rem; background: rgba(224, 170, 62, 0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; font-weight: 800; }
+        .panel { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid var(--border-grey); }
+        .excel-table { width: 100%; border-collapse: collapse; }
+        .excel-table th, .excel-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 9999;}
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 15px; width: 400px; }
+        .form-group { margin-bottom: 15px; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        @media (min-width: 1025px) { body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; } .main-wrapper { display: flex; flex: 1; overflow: hidden; } .sidebar { width: var(--sidebar-width); background: var(--bg-dark); } .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; } }
+    </style>
+</head>
+<body>
+    <div id="page-loader"><i class="fa-solid fa-spinner fa-spin"></i></div>
+    <header class="header">
+        <div class="header-left"></div>
+        <div class="header-center"><div class="header-title">XỨ LẠNG EDUCATION</div></div>
+        <div class="header-user"><div class="user-id"><span id="userEmailDisplay">...</span></div></div>
+    </header>
+    <div class="main-wrapper">
+        <aside class="sidebar"><nav class="sidebar-nav">
+            <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
+            <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
+            <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
+            <a href="system.html" class="sidebar-nav-item active"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+        </nav></aside>
+        <main class="dashboard-content">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;"><h2>DANH SÁCH TÀI KHOẢN</h2><button class="btn-save-att" style="background:var(--accent-gold); color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('addModal').classList.add('show')">+ Thêm Tài Khoản</button></div>
+            <div class="panel"><table class="excel-table"><thead><tr><th>TT</th><th>Họ tên</th><th>Email</th><th>Mật khẩu</th><th>Quyền</th><th>Xóa</th></tr></thead><tbody id="tableBody"></tbody></table></div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="addModal"><div class="modal-content">
+        <h3>Cấp tài khoản mới</h3><br>
+        <form id="addForm">
+            <div class="form-group"><label>Họ tên</label><input type="text" id="userName" class="form-control" required></div>
+            <div class="form-group"><label>Email</label><input type="email" id="userEmail" class="form-control" required></div>
+            <div class="form-group"><label>Mật khẩu</label><input type="text" id="userPass" class="form-control" required minlength="6"></div>
+            <div class="form-group"><label>Quyền</label><select id="userRole" class="form-control"><option value="teacher">Giáo viên</option><option value="admin">Admin</option></select></div>
+            <div style="display:flex; gap:10px;"><button type="button" class="form-control" onclick="document.getElementById('addModal').classList.remove('show')">Hủy</button><button type="submit" class="form-control" style="background:var(--primary-green); color:white;">Tạo</button></div>
+        </form>
+    </div></div>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4", authDomain: "xledu-dea6a.firebaseapp.com", projectId: "xledu-dea6a", storageBucket: "xledu-dea6a.firebasestorage.app", messagingSenderId: "56988683349", appId: "1:56988683349:web:7502807eebf8862ed0d8dc" };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth(), db = firebase.firestore();
+        const secondaryApp = firebase.initializeApp(firebaseConfig, "SecondaryApp");
+
+        auth.onAuthStateChanged(user => { if (user) { document.getElementById('page-loader').style.display='none'; document.getElementById('userEmailDisplay').textContent = user.email; loadUsers(); } else window.location.href = 'login.html'; });
+        
+        function loadUsers() {
+            db.collection("users").onSnapshot(snap => {
+                const tbody = document.getElementById('tableBody'); tbody.innerHTML = '';
+                snap.forEach((doc, index) => {
+                    const d = doc.data();
+                    tbody.innerHTML += `<tr><td>${index+1}</td><td>${d.name}</td><td>${d.email}</td><td>${d.password}</td><td>${d.role}</td><td><button onclick=\"deleteUser('${doc.id}')\">Xóa</button></td></tr>`;
+                });
+            });
+        }
+        document.getElementById('addForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('userName').value, email = document.getElementById('userEmail').value, pass = document.getElementById('userPass').value, role = document.getElementById('userRole').value;
+            secondaryApp.auth().createUserWithEmailAndPassword(email, pass).then(res => {
+                secondaryApp.auth().signOut();
+                db.collection("users").doc(res.user.uid).set({ name, email, password: pass, role, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                document.getElementById('addModal').classList.remove('show');
+            }).catch(err => alert(err.message));
+        });
+        window.deleteUser = (id) => { if(confirm('Xóa?')) db.collection("users").doc(id).delete(); };
+    </script>
+</body>
+</html>
