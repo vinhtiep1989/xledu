@@ -2,119 +2,52 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quản lý Hệ thống - Xứ Lạng Education</title>
+    <title>Hệ thống - Xứ Lạng Education</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <style>
-        :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --header-height: 90px; --sidebar-width: 270px; }
+        :root { --bg-dark: #0d1b2a; --primary-green: #2ecc71; --sidebar-width: 270px; --header-height: 90px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-body); color: var(--text-dark); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
-        .header { background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center; height: var(--header-height); position: relative; z-index: 1000;}
-        .header-title { font-size: 2.2rem; font-weight: 900; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .sidebar { width: var(--sidebar-width); background: var(--bg-dark); padding: 30px 15px; }
-        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; margin-bottom: 8px;}
-        .sidebar-nav-item.active { color: var(--primary-green); background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); }
-        .panel { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #e8f1ec; }
-        .excel-table { width: 100%; border-collapse: collapse; }
-        .excel-table th, .excel-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 400px; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; }
+        body { background: #f4fbf7; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .header { background: var(--bg-dark); height: var(--header-height); display: flex; align-items: center; justify-content: center; }
+        .sidebar { width: var(--sidebar-width); background: var(--bg-dark); padding: 20px; flex-shrink: 0; }
+        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; margin-bottom: 8px;}
+        .sidebar-nav-item.active { color: var(--primary-green); background: rgba(46, 204, 113, 0.15); }
+        .content { flex: 1; padding: 30px; overflow-y: auto; }
+        .table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; border: 1px solid #e8f1ec; }
+        .table th, .table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
     </style>
 </head>
 <body>
-    <div id="page-loader"><i class="fa-solid fa-spinner fa-spin"></i></div>
-    <header class="header"><div class="header-title">XỨ LẠNG EDUCATION</div></header>
+    <header class="header"><h1 style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">XỨ LẠNG EDUCATION</h1></header>
     <div style="display:flex; flex:1; overflow:hidden;">
         <aside class="sidebar"><nav class="sidebar-nav">
             <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
             <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
             <a href="system.html" class="sidebar-nav-item active"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ</a>
         </nav></aside>
-        <main style="flex:1; padding:30px; overflow-y:auto;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 style="font-weight:800;">DANH SÁCH TÀI KHOẢN</h2>
-                <button style="background:var(--accent-gold); color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="toggleM(true)">+ Cấp tài khoản mới</button>
-            </div>
-            <div class="panel">
-                <table class="excel-table">
-                    <thead><tr><th>Họ tên</th><th>Email</th><th>Vai trò</th><th>Thao tác</th></tr></thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
-            </div>
+        <main class="content">
+            <h2 style="margin-bottom:20px;">DANH SÁCH TÀI KHOẢN</h2>
+            <table class="table">
+                <thead><tr><th>Họ tên</th><th>Email</th><th>Vai trò</th><th>Mật khẩu</th><th>Xóa</th></tr></thead>
+                <tbody id="ut"></tbody>
+            </table>
         </main>
     </div>
-
-    <div class="modal" id="uModal"><div class="modal-content">
-        <h3>Cấp tài khoản mới</h3><br>
-        <form id="uForm">
-            <input type="text" id="u_n" class="form-control" placeholder="Họ tên" required>
-            <input type="email" id="u_e" class="form-control" placeholder="Email đăng nhập" required>
-            <input type="text" id="u_p" class="form-control" placeholder="Mật khẩu" required minlength="6">
-            <select id="u_r" class="form-control">
-                <option value="teacher">Giáo viên</option>
-                <option value="admin">Quản trị viên (Admin)</option>
-            </select>
-            <div style="display:flex; gap:10px;">
-                <button type="button" class="form-control" onclick="toggleM(false)">Hủy</button>
-                <button type="submit" class="form-control" style="background:var(--primary-green); color:white; border:none;">Xác nhận tạo</button>
-            </div>
-        </form>
-    </div></div>
-
     <script>
         const firebaseConfig = { apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4", authDomain: "xledu-dea6a.firebaseapp.com", projectId: "xledu-dea6a", storageBucket: "xledu-dea6a.firebasestorage.app", messagingSenderId: "56988683349", appId: "1:56988683349:web:7502807eebf8862ed0d8dc" };
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(), db = firebase.firestore();
-        const sec = firebase.initializeApp(firebaseConfig, "Secondary");
-
-        // Bỏ qua kiểm tra quyền Admin, chỉ cần đăng nhập là cho vào
-        auth.onAuthStateChanged(user => { 
-            if (user) { 
-                document.getElementById('page-loader').style.display='none'; 
-                loadUsers(); 
-            } else window.location.href = 'login.html'; 
+        const db = firebase.firestore();
+        // Ép nạp dữ liệu ngay lập tức mà không kiểm tra quyền
+        db.collection("users").onSnapshot(snap => {
+            const body = document.getElementById('ut'); body.innerHTML = '';
+            snap.forEach(doc => { const d = doc.data();
+                body.innerHTML += `<tr><td><b>${d.name}</b></td><td>${d.email}</td><td><b>${d.role}</b></td><td><code>${d.password}</code></td><td><button onclick="if(confirm('Xóa?')) db.collection('users').doc('${doc.id}').delete()">Xóa</button></td></tr>`;
+            });
         });
-
-        function loadUsers() { 
-            db.collection("users").orderBy("createdAt", "desc").onSnapshot(snap => { 
-                const tbody = document.getElementById('tableBody'); 
-                tbody.innerHTML = ''; 
-                snap.forEach(doc => { 
-                    const d = doc.data(); 
-                    tbody.innerHTML += `<tr>
-                        <td><b>${d.name}</b></td>
-                        <td>${d.email}</td>
-                        <td><span style="text-transform:uppercase; font-size:0.8rem; font-weight:bold; color:var(--accent-gold)">${d.role}</span></td>
-                        <td><button style="color:red; border:none; background:none; cursor:pointer;" onclick="delU('${doc.id}')"><i class="fa-solid fa-trash"></i> Xóa</button></td>
-                    </tr>`; 
-                }); 
-            }); 
-        }
-
-        function toggleM(s) { document.getElementById('uModal').style.display = s ? 'flex' : 'none'; }
-
-        document.getElementById('uForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); 
-            const n = document.getElementById('u_n').value, e_m = document.getElementById('u_e').value, p = document.getElementById('u_p').value, r = document.getElementById('u_r').value;
-            try { 
-                const res = await sec.auth().createUserWithEmailAndPassword(e_m, p); 
-                await db.collection("users").doc(res.user.uid).set({ 
-                    name: n, email: e_m, password: p, role: r, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
-                }); 
-                sec.auth().signOut(); 
-                alert("Cấp tài khoản thành công!"); 
-                toggleM(false); 
-                document.getElementById('uForm').reset();
-            } catch(err) { alert("Lỗi: " + err.message); }
-        });
-
-        function delU(id) { if(confirm('Anh có chắc chắn muốn xóa tài khoản này?')) db.collection("users").doc(id).delete(); }
     </script>
 </body>
 </html>
