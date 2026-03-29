@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quản lý Lớp học - Xứ Lạng Education</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root { 
+            --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; 
+            --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; 
+            --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; 
+            --border-grey: #e8f1ec; --header-height: 90px; --sidebar-width: 270px; 
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        
+        /* ================= CSS CHUNG CỐT LÕI ================= */
+        body { background-color: var(--bg-body); color: var(--text-dark); }
+        
+        #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
+        #page-loader p { font-size: 1rem; color: var(--text-light); margin-top: 15px; font-weight: 500; }
+
+        .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px;}
+        
+        .header-left { display: flex; align-items: center; gap: 15px; z-index: 10;}
+        .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
+        .logo-placeholder { width: 55px; height: 55px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.5); font-size: 0.7rem; text-align: center; cursor: pointer; background-size: cover; background-position: center; flex-shrink: 0; }
+        
+        .header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; z-index: 5;}
+        .header-title { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224, 170, 62, 0.5); }
+        .header-subtitle { font-size: 1rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 500; }
+        
+        .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; z-index: 10;}
+        .user-info { text-align: right; color: var(--text-light); }
+        .user-id { color: var(--accent-gold); font-weight: bold; display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-size: 0.85rem;}
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--primary-green); animation: pulse-live 1.5s infinite; }
+        @keyframes pulse-live { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
+        
+        .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; white-space: nowrap; padding: 8px 15px; font-size: 0.85rem;}
+        .btn-logout:hover { background: rgba(224, 170, 62, 0.15); }
+
+        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; z-index: 2; }
+        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255, 255, 255, 0.02); transition: all 0.3s; border: 1px solid transparent;}
+        .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+        .sidebar-nav-item:hover { color: var(--white); transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
+        .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); border: 1px solid rgba(46, 204, 113, 0.3); transform: translateX(4px); }
+        .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224, 170, 62, 0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; }
+
+        /* ================= CSS TRANG QUẢN LÝ LỚP HỌC ================= */
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .page-title { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
+        .page-title i { color: var(--accent-gold); }
+        
+        .btn-add-new { background: linear-gradient(135deg, var(--accent-gold), #c99327); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(224, 170, 62, 0.3);}
+        .btn-add-new:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(224, 170, 62, 0.4); }
+
+        .panel { background-color: var(--bg-card-white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); width: 100%; }
+        
+        /* CSS BẢNG CHUẨN EXCEL */
+        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; border: 1px solid var(--border-grey); }
+        .excel-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 800px; background: #fff;} 
+        
+        .excel-table th { background-color: #f8faf9; color: var(--text-dark); font-weight: 700; text-align: left; padding: 15px; border-bottom: 2px solid var(--border-grey); border-right: 1px solid var(--border-grey); white-space: nowrap; text-transform: uppercase; font-size: 0.8rem;}
+        .excel-table th:last-child { border-right: none; }
+        
+        .excel-table td { padding: 12px 15px; border-bottom: 1px solid var(--border-grey); border-right: 1px solid var(--border-grey); vertical-align: middle; color: #444; }
+        .excel-table td:last-child { border-right: none; }
+        
+        .excel-table tbody tr:hover { background-color: rgba(224, 170, 62, 0.03); }
+        
+        .col-center { text-align: center !important; }
+        .col-bold { font-weight: 700; color: var(--text-dark); }
+        .class-code { color: var(--accent-gold-plated); font-weight: 600; background: rgba(224, 170, 62, 0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;}
+        
+        .status-badge { font-size: 0.75rem; padding: 5px 10px; border-radius: 15px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; justify-content: center;}
+        .status-badge.active { background-color: rgba(46, 204, 113, 0.15); color: var(--primary-green); }
+        .status-badge.soon { background-color: rgba(224, 170, 62, 0.15); color: #d49c2e; }
+
+        /* ================= BỐ CỤC MÁY TÍNH (Màn hình > 1024px) ================= */
+        @media (min-width: 1025px) {
+            body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+            .main-wrapper { display: flex; flex: 1; overflow: hidden; position: relative; }
+            .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 15px; }
+            .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; }
+            .sidebar-overlay { display: none !important; }
+        }
+
+        /* ================= BỐ CỤC ĐIỆN THOẠI & TABLET (Màn hình <= 1024px) ================= */
+        @media (max-width: 1024px) {
+            :root { --header-height: 70px; }
+            html, body { height: auto; min-height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; display: block !important; }
+            .header { position: sticky; top: 0; padding: 0 15px; }
+            .mobile-menu-btn { display: block; }
+            .logo-placeholder { display: none; }
+            .header-title { font-size: 1.25rem; letter-spacing: 1px; }
+            .header-subtitle { display: none; } 
+            .user-info { display: none; }
+            .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
+
+            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto;}
+            .sidebar.open { left: 0; }
+            .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
+            .sidebar-overlay.open { display: block; }
+
+            .main-wrapper { display: block; height: auto; }
+            .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
+            .panel { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="page-loader">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Đang tải dữ liệu...</p>
+    </div>
+
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+            <div class="logo-placeholder" id="logo-container"><span id="logo-text">Logo</span></div>
+        </div>
+        
+        <div class="header-center">
+            <div class="header-title">XỨ LẠNG EDUCATION</div>
+            <div class="header-subtitle">Chắp cánh ước mơ</div>
+        </div>
+        
+        <div class="header-user">
+            <div class="user-info">
+                Chào, Admin
+                <div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div>
+            </div>
+            <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
+                <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-content">
+            
+            <div class="page-header">
+                <div class="page-title"><i class="fa-solid fa-chalkboard"></i> DANH SÁCH LỚP HỌC</div>
+                <button class="btn-add-new"><i class="fa-solid fa-plus"></i> Thêm lớp mới</button>
+            </div>
+
+            <div class="panel">
+                <div class="table-wrapper">
+                    <table class="excel-table">
+                        <thead>
+                            <tr>
+                                <th class="col-center" style="width: 50px;">TT</th>
+                                <th style="width: 120px;">Mã Lớp</th>
+                                <th>Tên Lớp Học</th>
+                                <th>Giáo Viên Giảng Dạy</th>
+                                <th class="col-center" style="width: 100px;">Sĩ Số</th>
+                                <th class="col-center" style="width: 150px;">Điểm Danh</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td class="col-center">1</td>
+                                <td><span class="class-code">XL-01</span></td>
+                                <td class="col-bold">Toán nâng cao 6A</td>
+                                <td>Nguyễn Minh Anh</td>
+                                <td class="col-center col-bold">28</td>
+                                <td class="col-center"><span class="status-badge active"><i class="fa-solid fa-user-check"></i> Đã chốt</span></td>
+                            </tr>
+                            <tr>
+                                <td class="col-center">2</td>
+                                <td><span class="class-code">XL-02</span></td>
+                                <td class="col-bold">Tiếng Anh giao tiếp 7B</td>
+                                <td>Trần Phương Linh</td>
+                                <td class="col-center col-bold">32</td>
+                                <td class="col-center"><span class="status-badge active"><i class="fa-solid fa-user-check"></i> Đã chốt</span></td>
+                            </tr>
+                            <tr>
+                                <td class="col-center">3</td>
+                                <td><span class="class-code">XL-03</span></td>
+                                <td class="col-bold">Văn chuyên đề 8C</td>
+                                <td>Lê Thu Hà</td>
+                                <td class="col-center col-bold">0</td> <td class="col-center"><span class="status-badge soon"><i class="fa-solid fa-spinner fa-spin"></i> Đang chờ...</span></td>
+                            </tr>
+                            <tr>
+                                <td class="col-center">4</td>
+                                <td><span class="class-code">XL-04</span></td>
+                                <td class="col-bold">STEM cơ bản 5A</td>
+                                <td>Phạm Đức Huy</td>
+                                <td class="col-center col-bold">30</td>
+                                <td class="col-center"><span class="status-badge active"><i class="fa-solid fa-user-check"></i> Đã chốt</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // CẤU HÌNH FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
+            authDomain: "xledu-dea6a.firebaseapp.com",
+            projectId: "xledu-dea6a",
+            storageBucket: "xledu-dea6a.firebasestorage.app",
+            messagingSenderId: "56988683349",
+            appId: "1:56988683349:web:7502807eebf8862ed0d8dc",
+            measurementId: "G-BWV1GD3WS1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Kiểm tra đăng nhập
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('page-loader').style.display = 'none';
+                document.getElementById('userEmailDisplay').textContent = user.email;
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            if(confirm('Bạn có muốn đăng xuất hệ thống?')) auth.signOut();
+        });
+
+        // Xử lý Menu trên Mobile
+        const btnMenu = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        btnMenu.addEventListener('click', () => {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            if(window.innerWidth <= 1024) document.body.style.overflow = 'hidden'; 
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            if(window.innerWidth <= 1024) document.body.style.overflow = 'auto';
+        });
+
+    </script>
+</body>
+</html>
