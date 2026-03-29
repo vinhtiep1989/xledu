@@ -16,7 +16,7 @@
             --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; 
             --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; 
             --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; 
-            --border-grey: #e8f1ec; --danger-red: #e74c3c; --header-height: 90px; --sidebar-width: 270px; 
+            --border-grey: #e8f1ec; --danger-red: #e74c3c; --edit-blue: #3498db; --header-height: 90px; --sidebar-width: 270px; 
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
@@ -25,7 +25,7 @@
         #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
         #page-loader p { font-size: 1rem; color: var(--text-light); margin-top: 15px; font-weight: 500; }
 
-        /* HEADER & SIDEBAR CỐT LÕI */
+        /* HEADER & SIDEBAR */
         .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px;}
         .header-left { display: flex; align-items: center; gap: 15px; z-index: 10;}
         .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
@@ -48,26 +48,43 @@
         .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); border: 1px solid rgba(46, 204, 113, 0.3); transform: translateX(4px); }
         .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224, 170, 62, 0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; }
 
-        /* ================= GIAO DIỆN CHÍNH ================= */
+        /* ================= KHU VỰC CHỨC NĂNG ================= */
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
         .page-title { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .page-title i { color: var(--accent-gold); }
         
-        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center;}
+        
+        .search-box { position: relative; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; }
+        .search-box input { padding: 10px 15px 10px 40px; border: 1px solid var(--border-grey); border-radius: 8px; outline: none; width: 280px; font-size: 0.9rem; transition: 0.3s; background-color: var(--bg-card-white);}
+        .search-box input:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 3px rgba(224, 170, 62, 0.1); }
+
+        /* BỘ 3 NÚT: THÊM - SỬA - XÓA */
         .btn-add-new { background: linear-gradient(135deg, var(--accent-gold), #c99327); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(224, 170, 62, 0.3);}
         .btn-add-new:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(224, 170, 62, 0.4); }
         
-        /* CSS CHO NÚT XÓA LỚP TRÊN CÙNG */
+        .btn-edit-top { background: linear-gradient(135deg, var(--edit-blue), #2980b9); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);}
+        .btn-edit-top:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4); }
+
         .btn-delete-top { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);}
         .btn-delete-top:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4); }
 
         .panel { background-color: var(--bg-card-white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); width: 100%; }
         
-        /* CSS BẢNG CHUẨN EXCEL CÓ CHECKBOX */
+        /* ================= BẢNG EXCEL MỚI ================= */
         .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; border: 1px solid var(--border-grey); }
-        .excel-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 800px; background: #fff;} 
-        .excel-table th { background-color: #f8faf9; color: var(--text-dark); font-weight: 700; text-align: left; padding: 15px; border-bottom: 2px solid var(--border-grey); border-right: 1px solid var(--border-grey); white-space: nowrap; text-transform: uppercase; font-size: 0.8rem;}
+        .excel-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 900px; background: #fff;} 
+        
+        .excel-table th { background-color: #f8faf9; padding: 10px 15px; border-bottom: 2px solid var(--border-grey); border-right: 1px solid var(--border-grey); vertical-align: top;}
         .excel-table th:last-child { border-right: none; }
+        
+        .th-title { color: var(--text-dark); font-weight: 700; white-space: nowrap; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 8px; display: block;}
+        
+        /* CSS CHUẨN CHO Ô LỌC TRONG HEADER */
+        .filter-sm { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.75rem; outline: none; background-color: #fff; transition: 0.3s; font-weight: normal; color: #555;}
+        .filter-sm:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 2px rgba(224, 170, 62, 0.1);}
+        
         .excel-table td { padding: 12px 15px; border-bottom: 1px solid var(--border-grey); border-right: 1px solid var(--border-grey); vertical-align: middle; color: #444; }
         .excel-table td:last-child { border-right: none; }
         .excel-table tbody tr:hover { background-color: rgba(224, 170, 62, 0.03); }
@@ -76,15 +93,13 @@
         .col-bold { font-weight: 700; color: var(--text-dark); }
         .class-code { color: var(--accent-gold-plated); font-weight: 600; background: rgba(224, 170, 62, 0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;}
         
-        /* CSS TRẠNG THÁI MỚI */
         .status-badge { font-size: 0.75rem; padding: 5px 10px; border-radius: 15px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; justify-content: center;}
         .status-badge.active { background-color: rgba(46, 204, 113, 0.15); color: var(--primary-green); }
         .status-badge.inactive { background-color: rgba(231, 76, 60, 0.1); color: var(--danger-red); }
         
-        /* CHECKBOX TÙY CHỈNH CHO ĐẸP */
         input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent-gold); cursor: pointer; }
 
-        /* ================= MODAL NHẬP LIỆU ================= */
+        /* ================= MODAL NHẬP LIỆU / CHỈNH SỬA ================= */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px;}
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--bg-card-white); width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: all 0.3s ease; border-top: 5px solid var(--accent-gold); }
@@ -106,7 +121,7 @@
         .toast-notification.show { right: 20px; }
         .toast-icon { font-size: 1.5rem; color: var(--primary-green); }
 
-        /* BỐ CỤC PC & MOBILE ĐÃ TỐI ƯU NHƯ CŨ */
+        /* BỐ CỤC PC & MOBILE */
         @media (min-width: 1025px) {
             body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
             .main-wrapper { display: flex; flex: 1; overflow: hidden; position: relative; }
@@ -134,8 +149,12 @@
             .main-wrapper { display: block; height: auto; }
             .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
             .panel { padding: 15px; }
-            .header-actions { width: 100%; display: flex; justify-content: space-between;}
-            .header-actions button { flex: 1; justify-content: center; }
+            
+            /* TỐI ƯU BỘ 3 NÚT TRÊN ĐIỆN THOẠI */
+            .header-actions { width: 100%; display: flex; justify-content: space-between; }
+            .search-box { width: 100%; order: -1; margin-bottom: 10px;}
+            .search-box input { width: 100%; }
+            .header-actions button { flex: 1; justify-content: center; font-size: 0.8rem; padding: 10px 5px;}
         }
     </style>
 </head>
@@ -153,12 +172,10 @@
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
             <div class="logo-placeholder" id="logo-container"><span id="logo-text">Logo</span></div>
         </div>
-        
         <div class="header-center">
             <div class="header-title">XỨ LẠNG EDUCATION</div>
             <div class="header-subtitle">Chắp cánh ước mơ</div>
         </div>
-        
         <div class="header-user">
             <div class="user-info">Chào, Admin<div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>
             <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
@@ -184,7 +201,12 @@
                 <div class="page-title"><i class="fa-solid fa-chalkboard"></i> DANH SÁCH LỚP HỌC</div>
                 
                 <div class="header-actions">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="globalSearch" placeholder="Tìm tên lớp, mã, hoặc giáo viên...">
+                    </div>
                     <button class="btn-add-new" id="btnOpenModal"><i class="fa-solid fa-plus"></i> Thêm lớp</button>
+                    <button class="btn-edit-top" id="btnEditSelected"><i class="fa-solid fa-pen"></i> Sửa lớp</button>
                     <button class="btn-delete-top" id="btnDeleteSelected"><i class="fa-solid fa-trash"></i> Xóa lớp</button>
                 </div>
             </div>
@@ -194,13 +216,35 @@
                     <table class="excel-table">
                         <thead>
                             <tr>
-                                <th class="col-center" style="width: 40px;"><input type="checkbox" id="selectAll"></th>
-                                <th class="col-center" style="width: 50px;">TT</th>
-                                <th style="width: 120px;">Mã Lớp</th>
-                                <th>Tên Lớp Học</th>
-                                <th>Giáo Viên Giảng Dạy</th>
-                                <th class="col-center" style="width: 80px;">Sĩ Số</th>
-                                <th class="col-center" style="width: 160px;">Trạng thái</th>
+                                <th class="col-center" style="width: 40px; vertical-align: middle;">
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th class="col-center" style="width: 50px; vertical-align: middle;">
+                                    <span class="th-title">TT</span>
+                                </th>
+                                <th style="width: 140px;">
+                                    <span class="th-title">Mã Lớp</span>
+                                    <input type="text" id="filterCode" class="filter-sm" placeholder="Lọc mã...">
+                                </th>
+                                <th style="width: 250px;">
+                                    <span class="th-title">Tên Lớp Học</span>
+                                    <input type="text" id="filterName" class="filter-sm" placeholder="Lọc tên...">
+                                </th>
+                                <th style="width: 200px;">
+                                    <span class="th-title">Giáo Viên Giảng Dạy</span>
+                                    <input type="text" id="filterTeacher" class="filter-sm" placeholder="Lọc giáo viên...">
+                                </th>
+                                <th class="col-center" style="width: 80px; vertical-align: middle;">
+                                    <span class="th-title">Sĩ Số</span>
+                                </th>
+                                <th class="col-center" style="width: 160px;">
+                                    <span class="th-title">Trạng thái</span>
+                                    <select id="filterStatus" class="filter-sm">
+                                        <option value="">Tất cả</option>
+                                        <option value="Đang hoạt động">Đang hoạt động</option>
+                                        <option value="Chưa hoạt động">Chưa hoạt động</option>
+                                    </select>
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -214,8 +258,10 @@
 
     <div class="modal-overlay" id="addModal">
         <div class="modal-content">
-            <h2 class="modal-title">Thêm Lớp Học Mới</h2>
+            <h2 class="modal-title" id="modalTitleText">Thêm Lớp Học Mới</h2>
             <form id="addForm">
+                <input type="hidden" id="editClassId" value="">
+
                 <div class="form-group">
                     <label>Mã Lớp Học (Viết tắt) *</label>
                     <input type="text" id="classCode" class="form-control" placeholder="VD: XL-01" required>
@@ -237,6 +283,7 @@
     </div>
 
     <script>
+        // 1. KẾT NỐI FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
             authDomain: "xledu-dea6a.firebaseapp.com",
@@ -250,7 +297,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // 1. Kiểm tra đăng nhập
         auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('page-loader').style.display = 'none';
@@ -261,7 +307,7 @@
 
         document.getElementById('btnLogout').addEventListener('click', () => { if(confirm('Đăng xuất hệ thống?')) auth.signOut(); });
         
-        // 2. Menu Mobile
+        // 2. GIAO DIỆN MENU MOBILE
         const btnMenu = document.getElementById('mobileMenuBtn'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay');
         btnMenu.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); if(window.innerWidth<=1024) document.body.style.overflow='hidden'; });
         overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); if(window.innerWidth<=1024) document.body.style.overflow='auto'; });
@@ -273,50 +319,102 @@
             toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // ================= XỬ LÝ DATABASE =================
+        // ================= XỬ LÝ DATABASE (THÊM & SỬA) =================
 
-        // 3. Modal Thêm Lớp
         const addModal = document.getElementById('addModal');
-        document.getElementById('btnOpenModal').addEventListener('click', () => addModal.classList.add('show'));
-        document.getElementById('btnCancelModal').addEventListener('click', () => { addModal.classList.remove('show'); document.getElementById('addForm').reset(); });
-
+        const modalTitleText = document.getElementById('modalTitleText');
+        const editClassIdInput = document.getElementById('editClassId');
         const addForm = document.getElementById('addForm');
-        const btnSaveData = document.getElementById('btnSaveData');
-
-        addForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            btnSaveData.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải lên...';
-            btnSaveData.disabled = true;
-
-            const newClass = {
-                classCode: document.getElementById('classCode').value,
-                className: document.getElementById('className').value,
-                teacherName: document.getElementById('classTeacher').value || "Chưa phân công",
-                studentCount: 0,
-                status: "inactive", // Mặc định là Chưa hoạt động khi mới tạo
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            db.collection("classes").add(newClass)
-            .then(() => {
-                showToast("Thành công!", "Lớp học đã được thêm vào hệ thống.");
-                addModal.classList.remove('show');
-                addForm.reset();
-            })
-            .catch((error) => alert("Lỗi: " + error))
-            .finally(() => {
-                btnSaveData.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu';
-                btnSaveData.disabled = false;
-            });
+        
+        // Bấm nút Thêm Lớp (Làm sạch form)
+        document.getElementById('btnOpenModal').addEventListener('click', () => {
+            addForm.reset();
+            editClassIdInput.value = ""; // Xóa ID sửa
+            modalTitleText.innerText = "Thêm Lớp Học Mới";
+            addModal.classList.add('show');
         });
 
-        // 4. Load dữ liệu & Render bảng
+        // Đóng Form
+        document.getElementById('btnCancelModal').addEventListener('click', () => { 
+            addModal.classList.remove('show'); 
+        });
+
+        // XỬ LÝ NÚT LƯU DỮ LIỆU (Chung cho cả Thêm và Sửa)
+        const btnSaveData = document.getElementById('btnSaveData');
+        addForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            btnSaveData.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+            btnSaveData.disabled = true;
+
+            const editId = editClassIdInput.value; // Lấy ID để biết là đang Sửa hay Thêm
+            const classData = {
+                classCode: document.getElementById('classCode').value,
+                className: document.getElementById('className').value,
+                teacherName: document.getElementById('classTeacher').value || "Chưa phân công"
+            };
+
+            if (editId) {
+                // CHẾ ĐỘ SỬA
+                db.collection("classes").doc(editId).update(classData)
+                .then(() => {
+                    showToast("Thành công!", "Đã cập nhật thông tin lớp học.");
+                    addModal.classList.remove('show');
+                })
+                .catch((error) => alert("Lỗi khi cập nhật: " + error))
+                .finally(() => { btnSaveData.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu'; btnSaveData.disabled = false; });
+            } else {
+                // CHẾ ĐỘ THÊM MỚI
+                classData.studentCount = 0;
+                classData.status = "inactive"; 
+                classData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                
+                db.collection("classes").add(classData)
+                .then(() => {
+                    showToast("Thành công!", "Lớp học mới đã được tạo.");
+                    addModal.classList.remove('show');
+                })
+                .catch((error) => alert("Lỗi: " + error))
+                .finally(() => { btnSaveData.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu'; btnSaveData.disabled = false; });
+            }
+        });
+
+        // NÚT CHỈNH SỬA (Gọi dữ liệu cũ ra Form)
+        document.getElementById('btnEditSelected').addEventListener('click', function() {
+            const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+            
+            if (selectedCheckboxes.length !== 1) {
+                alert("Vui lòng tích chọn CHÍNH XÁC 1 lớp để chỉnh sửa!");
+                return;
+            }
+
+            const docId = selectedCheckboxes[0].value;
+            
+            // Kéo dữ liệu từ Firebase
+            db.collection("classes").doc(docId).get().then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    // Điền vào form
+                    document.getElementById('classCode').value = data.classCode;
+                    document.getElementById('className').value = data.className;
+                    document.getElementById('classTeacher').value = data.teacherName !== "Chưa phân công" ? data.teacherName : "";
+                    
+                    // Kích hoạt chế độ sửa
+                    editClassIdInput.value = doc.id; 
+                    modalTitleText.innerText = "Chỉnh Sửa Lớp Học";
+                    addModal.classList.add('show');
+                } else {
+                    alert("Không tìm thấy dữ liệu lớp này trên máy chủ!");
+                }
+            }).catch(error => alert("Lỗi tải dữ liệu: " + error));
+        });
+
+        // 4. KÉO DỮ LIỆU TỪ MÁY CHỦ (Realtime)
         function loadDataFromDatabase() {
             const tableBody = document.getElementById('tableBody');
             
             db.collection("classes").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                 if(snapshot.empty) {
-                    tableBody.innerHTML = '<tr><td colspan="7" class="col-center" style="padding: 30px; color:#888;">Chưa có lớp nào. Vui lòng thêm lớp mới!</td></tr>';
+                    tableBody.innerHTML = '<tr class="data-row"><td colspan="7" class="col-center" style="padding: 30px; color:#888;">Chưa có lớp nào. Vui lòng thêm lớp mới!</td></tr>';
                     return;
                 }
 
@@ -326,14 +424,11 @@
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     const tr = document.createElement('tr');
+                    tr.className = 'data-row'; 
                     
-                    // Logic xử lý Badge Trạng Thái dựa vào trường status trong DB
-                    let statusBadge = '';
-                    if (data.status === "active") {
-                        statusBadge = '<span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Đang hoạt động</span>';
-                    } else {
-                        statusBadge = '<span class="status-badge inactive"><i class="fa-solid fa-circle-pause"></i> Chưa hoạt động</span>';
-                    }
+                    let statusBadge = data.status === "active" 
+                        ? '<span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Đang hoạt động</span>'
+                        : '<span class="status-badge inactive"><i class="fa-solid fa-circle-pause"></i> Chưa hoạt động</span>';
                     
                     tr.innerHTML = `
                         <td class="col-center"><input type="checkbox" class="row-checkbox" value="${doc.id}"></td>
@@ -346,40 +441,70 @@
                     `;
                     tableBody.appendChild(tr);
                 });
+
+                // Tự động bỏ chọn hộp "Chọn tất cả" nếu vừa xóa/load lại
+                document.getElementById('selectAll').checked = false;
+                filterTable();
             });
         }
 
-        // 5. Xử lý Nút Chọn Tất Cả (Select All)
+        // 5. XÓA HÀNG LOẠT
         document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.row-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = this.checked);
         });
 
-        // 6. Xử lý Nút XÓA LỚP (Xóa hàng loạt)
         document.getElementById('btnDeleteSelected').addEventListener('click', function() {
             const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
-            
-            if (selectedCheckboxes.length === 0) {
-                alert("Vui lòng tích chọn ít nhất 1 lớp để xóa!");
-                return;
-            }
+            if (selectedCheckboxes.length === 0) return alert("Vui lòng chọn ít nhất 1 lớp để xóa!");
 
-            if (confirm(`Anh có chắc chắn muốn xóa vĩnh viễn ${selectedCheckboxes.length} lớp đã chọn khỏi hệ thống không?`)) {
-                // Dùng kỹ thuật Batch của Firebase để xóa hàng loạt 1 lần cho nhanh
+            if (confirm(`Chắc chắn xóa vĩnh viễn ${selectedCheckboxes.length} lớp đã chọn?`)) {
                 const batch = db.batch();
                 selectedCheckboxes.forEach(cb => {
-                    const docRef = db.collection("classes").doc(cb.value);
-                    batch.delete(docRef);
+                    batch.delete(db.collection("classes").doc(cb.value));
                 });
-
                 batch.commit().then(() => {
-                    showToast("Đã xóa!", `Đã xóa thành công ${selectedCheckboxes.length} lớp.`);
-                    document.getElementById('selectAll').checked = false; // Bỏ tích nút chọn tất cả
-                }).catch(error => {
-                    alert("Lỗi khi xóa: " + error);
+                    showToast("Đã xóa!", `Đã xóa ${selectedCheckboxes.length} lớp.`);
+                    document.getElementById('selectAll').checked = false; 
                 });
             }
         });
+
+        // 6. TÍNH NĂNG TÌM KIẾM & LỌC (REALTIME)
+        function filterTable() {
+            const globalSearch = document.getElementById('globalSearch').value.toLowerCase();
+            const codeFilter = document.getElementById('filterCode').value.toLowerCase();
+            const nameFilter = document.getElementById('filterName').value.toLowerCase();
+            const teacherFilter = document.getElementById('filterTeacher').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
+
+            const rows = document.querySelectorAll('#tableBody .data-row');
+
+            rows.forEach(row => {
+                const code = row.children[2].textContent.toLowerCase();
+                const name = row.children[3].textContent.toLowerCase();
+                const teacher = row.children[4].textContent.toLowerCase();
+                const status = row.children[6].textContent.toLowerCase();
+
+                const matchGlobal = name.includes(globalSearch) || teacher.includes(globalSearch) || code.includes(globalSearch);
+                const matchCode = code.includes(codeFilter);
+                const matchName = name.includes(nameFilter);
+                const matchTeacher = teacher.includes(teacherFilter);
+                const matchStatus = statusFilter === "" || status.includes(statusFilter);
+
+                if (matchGlobal && matchCode && matchName && matchTeacher && matchStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('globalSearch').addEventListener('input', filterTable);
+        document.querySelectorAll('.filter-sm').forEach(input => {
+            input.addEventListener('input', filterTable);  
+            input.addEventListener('change', filterTable); 
+        });
+
     </script>
 </body>
 </html>
