@@ -12,79 +12,58 @@
 
     <style>
         :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; --border-grey: #e8f1ec; --header-height: 90px; --sidebar-width: 270px; }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
-        /* ================= BỐ CỤC CHUẨN CHO MÁY TÍNH ================= */
-        html, body { background-color: var(--bg-body); color: var(--text-dark); }
-        
-        /* Desktop: Giữ khung cố định, chỉ cuộn phần nội dung */
-        body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        /* ================= CSS CHUNG CHO MỌI THIẾT BỊ ================= */
+        body { background-color: var(--bg-body); color: var(--text-dark); }
         
         #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
         #page-loader p { font-size: 1rem; color: var(--text-light); margin-top: 15px; font-weight: 500; }
 
-        /* HEADER CHUNG */
-        .header { position: relative; height: var(--header-height); background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; }
-        .header-left { display: flex; align-items: center; gap: 15px; width: 20%; }
-        
+        .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; }
         .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
-
         .logo-placeholder { width: 55px; height: 55px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.5); font-size: 0.7rem; text-align: center; cursor: pointer; background-size: cover; background-position: center; flex-shrink: 0; }
         #logo-upload { display: none; }
         
-        .header-center { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 60%; }
-        .header-title { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224, 170, 62, 0.5); }
+        .header-title { font-weight: 900; letter-spacing: 2px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224, 170, 62, 0.5); }
         .header-subtitle { font-size: 1rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 500; }
         
-        .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; min-width: 20%; }
-        .user-info { text-align: right; font-size: 0.9rem; color: var(--text-light); }
+        .user-info { text-align: right; color: var(--text-light); }
         .user-id { color: var(--accent-gold); font-weight: bold; display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-size: 0.85rem;}
         .live-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--primary-green); animation: pulse-live 1.5s infinite; }
         @keyframes pulse-live { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
         
-        .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: all 0.3s; white-space: nowrap; }
+        .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; white-space: nowrap; }
         .btn-logout:hover { background: rgba(224, 170, 62, 0.15); }
 
         .toast-notification { position: fixed; top: 100px; right: -350px; background-color: var(--bg-card-white); border-left: 5px solid var(--primary-green); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 15px; z-index: 2000; transition: right 0.4s ease; }
         .toast-notification.show { right: 20px; }
         .toast-icon { font-size: 1.5rem; color: var(--primary-green); }
 
-        /* WRAPPER MÁY TÍNH */
-        .main-wrapper { display: flex; flex: 1; min-height: 0; overflow: hidden; width: 100%; position: relative; }
-        
-        .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: calc(100vh - var(--header-height)); background: rgba(0,0,0,0.5); z-index: 998; opacity: 0; transition: 0.3s; }
-        
-        /* SIDEBAR */
-        .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 15px; position: relative; transition: all 0.3s ease; z-index: 999; }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 2; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; z-index: 2; }
         .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255, 255, 255, 0.02); transition: all 0.3s; border: 1px solid transparent;}
         .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
         .sidebar-nav-item:hover { color: var(--white); transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
         .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); border: 1px solid rgba(46, 204, 113, 0.3); transform: translateX(4px); }
         .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224, 170, 62, 0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; }
 
-        /* CONTENT TỔNG */
-        .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; background-color: var(--bg-body); width: 100%; }
+        .info-banner { display: flex; align-items: center; gap: 15px; background-color: rgba(46, 204, 113, 0.05); border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.15); font-size: 0.85rem; color: var(--primary-green); font-weight: 500; }
         
-        .info-banner { display: flex; align-items: center; gap: 15px; padding: 15px; background-color: rgba(46, 204, 113, 0.05); border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.15); margin-bottom: 25px; font-size: 0.85rem; color: var(--primary-green); font-weight: 500; }
-        
-        .statistics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; width: 100%; }
         .stat-card { background-color: var(--bg-card-white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); display: flex; flex-direction: column; width: 100%;}
         .stat-card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
         .stat-card-icon { width: 45px; height: 45px; background-color: var(--grey-light); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; color: var(--primary-green); flex-shrink: 0;}
-        .stat-card-title { font-size: 0.8rem; color: var(--text-dark); text-transform: uppercase; font-weight: 700; }
-        .stat-card-number { font-size: 2rem; font-weight: 800; color: var(--text-dark); margin-bottom: 5px; }
+        .stat-card-title { font-size: 0.8rem; text-transform: uppercase; font-weight: 700; }
+        .stat-card-number { font-size: 2rem; font-weight: 800; margin-bottom: 5px; }
         .stat-card-subtitle { font-size: 0.75rem; color: #888; }
         
-        .dashboard-bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px; width: 100%; }
         .panel { background-color: var(--bg-card-white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); width: 100%; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;}
-        .panel-header h3 { font-size: 1.1rem; color: var(--text-dark); }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+        .panel-header h3 { font-size: 1.1rem; }
         .panel-header-subtitle { font-size: 0.8rem; color: #888; margin-top: 5px;}
         .btn-view-details { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 5px 15px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; }
         
-        /* Table Responsive */
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; display: block; border-radius: 8px;}
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px;}
         .featured-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px; } 
         .featured-table th { text-align: left; padding-bottom: 10px; color: #888; font-weight: 500; border-bottom: 1px solid var(--border-grey); white-space: nowrap;}
         .featured-table td { padding: 12px 0; border-bottom: 1px solid var(--border-grey); white-space: nowrap; }
@@ -96,100 +75,97 @@
         .quick-update-item { background-color: var(--grey-light); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 12px; }
         .quick-update-icon { width: 35px; height: 35px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1rem; color: var(--primary-green); background: #fff;}
         .quick-update-info { flex: 1; }
-        .quick-update-title { font-size: 0.85rem; font-weight: 700; color: var(--text-dark); }
+        .quick-update-title { font-size: 0.85rem; font-weight: 700; }
         .quick-update-subtitle { font-size: 0.7rem; color: #888; }
         .quick-update-number { font-size: 1.1rem; font-weight: 800; color: var(--primary-green); }
         
-        .mini-charts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-bottom: 20px; width: 100%; }
         .mini-chart-card { background-color: var(--bg-card-white); border-radius: 12px; padding: 20px; border: 1px solid var(--border-grey); width: 100%; }
         .mini-chart-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .mini-chart-card-title { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
+        .mini-chart-icon { font-size: 1.2rem; color: var(--primary-green); }
+        .mini-chart-card-title { font-size: 0.95rem; font-weight: 700; }
         .chart-bar-list { display: flex; flex-direction: column; gap: 12px; }
         .chart-bar-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; }
         .chart-bar-label { color: #555; font-weight: 500; width: 35%; white-space: nowrap;}
-        .chart-bar-container { width: 45%; height: 6px; background-color: var(--grey-light); border-radius: 3px; overflow: hidden; margin: 0 10px; flex: 1; }
+        .chart-bar-container { height: 6px; background-color: var(--grey-light); border-radius: 3px; overflow: hidden; margin: 0 10px; flex: 1; }
         .chart-bar-fill { height: 100%; background-color: var(--accent-gold-plated); border-radius: 3px; width: 0%; transition: 1s ease-in-out; }
-        .chart-bar-number { font-weight: 700; color: var(--text-dark); width: 35px; text-align: right;}
+        .chart-bar-number { font-weight: 700; width: 35px; text-align: right;}
 
 
-        /* ================= BỨC TƯỜNG THÉP TRỊ LỖI iPHONE (Max-width: 1024px) ================= */
+        /* ================= BỐ CỤC MÁY TÍNH (Màn hình > 1024px) ================= */
+        @media (min-width: 1025px) {
+            body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+            
+            .header { height: var(--header-height); padding: 0 40px; position: relative; }
+            .header-center { position: absolute; left: 50%; transform: translateX(-50%); width: 60%; }
+            .header-title { font-size: 2.2rem; }
+            .btn-logout { padding: 8px 15px; font-size: 0.85rem; }
+            
+            .main-wrapper { display: flex; flex: 1; overflow: hidden; position: relative; }
+            .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 15px; }
+            
+            /* Khu vực này được cuộn */
+            .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; }
+            
+            .info-banner { padding: 15px; margin-bottom: 25px; }
+            .statistics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+            .dashboard-bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 30px; }
+            .mini-charts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-bottom: 20px; }
+        }
+
+        /* ================= BỐ CỤC MOBILE & TABLET (Màn hình <= 1024px) ================= */
         @media (max-width: 1024px) {
             :root { --header-height: 70px; }
             
-            /* TRẢ LẠI CUỘN TỰ NHIÊN - ĐẬP BỎ FLEXBOX CỦA BODY */
-            html {
-                overflow-y: scroll !important; /* Ép buộc mở khóa cuộn dọc */
-                -webkit-overflow-scrolling: touch !important; /* Cuộn mượt kiểu Apple */
+            /* ĐÂY LÀ CHÌA KHÓA TRỊ LỖI CHROME TRÊN iPHONE: TRẢ LẠI CUỘN GỐC CHO BODY */
+            html, body {
+                height: auto;
+                min-height: 100%;
+                overflow: auto; /* Mở khóa cuộn dọc */
+                -webkit-overflow-scrolling: touch; /* Bật vuốt mượt của iOS */
             }
-            
-            body {
-                display: block !important; /* Tắt Flexbox */
-                height: auto !important; 
-                min-height: 100vh !important;
-                overflow-y: visible !important;
-                overflow-x: hidden !important; 
-            }
-            
-            /* Header dính lên đỉnh màn hình */
-            .header { 
-                position: sticky !important; 
-                top: 0 !important;
-                padding: 0 15px; 
-                justify-content: space-between; 
-                z-index: 1000 !important;
-            }
-            
-            .header-left { width: auto; gap: 10px; }
-            .mobile-menu-btn { display: block; } 
-            .logo-placeholder { display: none; } 
-            
-            .header-center { position: static; transform: none; width: auto; flex: 1; text-align: center; }
-            .header-title { font-size: 1.3rem; letter-spacing: 0; }
-            .header-subtitle { display: none; } 
-            
-            .header-user { min-width: auto; width: auto; }
-            .user-info { display: none; } 
-            .btn-logout { padding: 5px 12px; font-size: 0.75rem; border-width: 1px; }
 
-            /* Sidebar trượt từ trái ra */
-            .sidebar { position: fixed; left: -100%; top: var(--header-height); height: calc(100vh - var(--header-height)); box-shadow: 2px 0 10px rgba(0,0,0,0.5); z-index: 1000;}
+            /* Header dính trên cùng */
+            .header { 
+                position: sticky; 
+                top: 0; 
+                height: var(--header-height);
+                padding: 0 15px; 
+            }
+            
+            .mobile-menu-btn { display: block; }
+            .logo-placeholder { display: none; }
+            
+            .header-center { width: auto; flex: 1; text-align: center; }
+            .header-title { font-size: 1.4rem; letter-spacing: 0; }
+            .header-subtitle { display: none; }
+            
+            .user-info { display: none; }
+            .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
+
+            /* Sidebar trượt ẩn */
+            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto;}
             .sidebar.open { left: 0; }
-            .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 999;}
+            
+            .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
             .sidebar-overlay.open { display: block; }
 
-            /* Tắt giới hạn khung cho Content */
-            .main-wrapper { 
-                display: block !important; /* Tắt Flexbox */
-                height: auto !important; 
-                min-height: 0 !important;
-                overflow: visible !important; 
-            }
+            /* NỘI DUNG CUỘN THEO TRANG */
+            .main-wrapper { display: block; height: auto; }
+            .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
             
-            .dashboard-content { 
-                display: block !important; /* Tắt Flexbox */
-                overflow: visible !important; 
-                height: auto !important;
-                padding: 15px; 
-                padding-bottom: 40px; 
-            }
-            
-            /* Xếp dọc cho màn hình nhỏ hơn 768px (Điện thoại) */
-            @media (max-width: 768px) {
-                .statistics-grid, .dashboard-bottom-grid, .mini-charts-grid { 
-                    display: flex; 
-                    flex-direction: column; 
-                    gap: 15px; 
-                }
-            }
-            
-            /* iPad/Tablet (768px -> 1024px) thì chia 2 cột cho đẹp */
-            @media (min-width: 769px) {
-                .statistics-grid { grid-template-columns: repeat(2, 1fr); }
-                .dashboard-bottom-grid { grid-template-columns: 1fr; }
-            }
+            .panel-header { margin-bottom: 15px; }
 
-            .panel { padding: 15px; }
-            .info-banner { flex-direction: column; text-align: center; font-size: 0.8rem; }
+            /* Tablet (768 - 1024px) chia 2 cột */
+            .statistics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+            .dashboard-bottom-grid { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+            .mini-charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        }
+
+        /* RIÊNG CHO ĐIỆN THOẠI NHỎ (Dưới 768px) */
+        @media (max-width: 767px) {
+            .statistics-grid { grid-template-columns: 1fr; }
+            .mini-charts-grid { grid-template-columns: 1fr; }
+            .info-banner { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -227,7 +203,6 @@
     </header>
 
     <div class="main-wrapper">
-        
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <aside class="sidebar" id="sidebar">
@@ -244,8 +219,7 @@
         <main class="dashboard-content">
             <div class="info-banner">
                 <i class="fa-solid fa-circle-info"></i>
-                Hệ thống đang chạy trên nền tảng Firebase. Lỗi cuộn trên iOS Chrome đã được phá vỡ hoàn toàn!
-            </div>
+             </div>
 
             <div class="statistics-grid">
                 <div class="stat-card">
@@ -319,7 +293,6 @@
     </div>
 
     <script>
-        // --- 1. FIREBASE SETUP ---
         const firebaseConfig = {
             apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
             authDomain: "xledu-dea6a.firebaseapp.com",
@@ -342,7 +315,6 @@
             if(confirm('Bạn có muốn đăng xuất hệ thống?')) auth.signOut();
         });
 
-        // --- 2. XỬ LÝ MENU TRÊN MOBILE ---
         const btnMenu = document.getElementById('mobileMenuBtn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -350,16 +322,15 @@
         btnMenu.addEventListener('click', () => {
             sidebar.classList.add('open');
             overlay.classList.add('open');
-            document.body.style.overflow = 'hidden'; 
+            document.body.style.overflow = 'hidden'; // Khóa nền khi mở menu
         });
 
         overlay.addEventListener('click', () => {
             sidebar.classList.remove('open');
             overlay.classList.remove('open');
-            document.body.style.overflow = '';
+            document.body.style.overflow = 'auto'; // Trả lại cuộn nền
         });
 
-        // --- 3. ĐỔI LOGO ---
         const logoContainer = document.getElementById('logo-container');
         const logoUpload = document.getElementById('logo-upload');
         logoContainer.addEventListener('click', () => logoUpload.click());
@@ -377,7 +348,6 @@
             }
         });
 
-        // --- 4. HIỆU ỨNG SỐ VÀ TIẾN TRÌNH ---
         document.querySelectorAll('.counter, .live-number').forEach(c => {
             const update = () => {
                 const t = +c.getAttribute('data-target'), v = +c.innerText.replace(/,/g, ''), i = t/30;
