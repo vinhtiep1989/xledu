@@ -12,20 +12,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { 
-            --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; 
-            --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; 
-            --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; 
-            --border-grey: #e8f1ec; --danger-red: #e74c3c; --edit-blue: #3498db; --header-height: 90px; --sidebar-width: 270px; 
-        }
-        
+        :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; --border-grey: #e8f1ec; --danger-red: #e74c3c; --edit-blue: #3498db; --header-height: 90px; --sidebar-width: 270px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        
         body { background-color: var(--bg-body); color: var(--text-dark); }
         #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
         #page-loader p { font-size: 1rem; color: var(--text-light); margin-top: 15px; font-weight: 500; }
-
-        /* HEADER & SIDEBAR */
         .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px;}
         .header-left { display: flex; align-items: center; gap: 15px; z-index: 10;}
         .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
@@ -40,7 +31,6 @@
         @keyframes pulse-live { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
         .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; white-space: nowrap; padding: 8px 15px; font-size: 0.85rem;}
         .btn-logout:hover { background: rgba(224, 170, 62, 0.15); }
-        
         .sidebar-nav { display: flex; flex-direction: column; gap: 8px; z-index: 2; }
         .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255, 255, 255, 0.02); transition: all 0.3s; border: 1px solid transparent;}
         .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
@@ -48,43 +38,30 @@
         .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); border: 1px solid rgba(46, 204, 113, 0.3); transform: translateX(4px); }
         .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224, 170, 62, 0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; }
 
-        /* ================= KHU VỰC CHỨC NĂNG ================= */
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
         .page-title { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .page-title i { color: var(--accent-gold); }
-        
         .header-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center;}
-        
         .search-box { position: relative; }
         .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; }
         .search-box input { padding: 10px 15px 10px 40px; border: 1px solid var(--border-grey); border-radius: 8px; outline: none; width: 280px; font-size: 0.9rem; transition: 0.3s; background-color: var(--bg-card-white);}
         .search-box input:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 3px rgba(224, 170, 62, 0.1); }
 
-        /* BỘ 3 NÚT: THÊM - SỬA - XÓA */
         .btn-add-new { background: linear-gradient(135deg, var(--accent-gold), #c99327); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(224, 170, 62, 0.3);}
         .btn-add-new:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(224, 170, 62, 0.4); }
-        
         .btn-edit-top { background: linear-gradient(135deg, var(--edit-blue), #2980b9); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);}
         .btn-edit-top:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4); }
-
         .btn-delete-top { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);}
         .btn-delete-top:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4); }
 
         .panel { background-color: var(--bg-card-white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); width: 100%; }
-        
-        /* ================= BẢNG EXCEL MỚI ================= */
         .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; border: 1px solid var(--border-grey); }
         .excel-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 900px; background: #fff;} 
-        
         .excel-table th { background-color: #f8faf9; padding: 10px 15px; border-bottom: 2px solid var(--border-grey); border-right: 1px solid var(--border-grey); vertical-align: top;}
         .excel-table th:last-child { border-right: none; }
-        
         .th-title { color: var(--text-dark); font-weight: 700; white-space: nowrap; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 8px; display: block;}
-        
-        /* CSS CHUẨN CHO Ô LỌC TRONG HEADER */
         .filter-sm { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.75rem; outline: none; background-color: #fff; transition: 0.3s; font-weight: normal; color: #555;}
         .filter-sm:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 2px rgba(224, 170, 62, 0.1);}
-        
         .excel-table td { padding: 12px 15px; border-bottom: 1px solid var(--border-grey); border-right: 1px solid var(--border-grey); vertical-align: middle; color: #444; }
         .excel-table td:last-child { border-right: none; }
         .excel-table tbody tr:hover { background-color: rgba(224, 170, 62, 0.03); }
@@ -92,36 +69,48 @@
         .col-center { text-align: center !important; }
         .col-bold { font-weight: 700; color: var(--text-dark); }
         .class-code { color: var(--accent-gold-plated); font-weight: 600; background: rgba(224, 170, 62, 0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;}
-        
         .status-badge { font-size: 0.75rem; padding: 5px 10px; border-radius: 15px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; justify-content: center;}
         .status-badge.active { background-color: rgba(46, 204, 113, 0.15); color: var(--primary-green); }
         .status-badge.inactive { background-color: rgba(231, 76, 60, 0.1); color: var(--danger-red); }
         
+        .btn-attend { background: rgba(46, 204, 113, 0.1); color: var(--primary-green); border: 1px solid var(--primary-green); padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: bold; font-size: 0.85rem; display: inline-flex; gap: 5px; align-items: center; text-decoration: none;}
+        .btn-attend:hover { background: var(--primary-green); color: white; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(46, 204, 113, 0.3);}
+
         input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent-gold); cursor: pointer; }
 
-        /* ================= MODAL NHẬP LIỆU / CHỈNH SỬA ================= */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px;}
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--bg-card-white); width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: all 0.3s ease; border-top: 5px solid var(--accent-gold); }
+        .modal-content { background: var(--bg-card-white); width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: all 0.3s ease; border-top: 5px solid var(--accent-gold); max-height: 95vh; display: flex; flex-direction: column;}
         .modal-overlay.show .modal-content { transform: translateY(0); }
-        .modal-title { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); margin-bottom: 20px; text-transform: uppercase; text-align: center; }
+        .modal-title { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); margin-bottom: 20px; text-transform: uppercase; text-align: center; flex-shrink: 0;}
+        .modal-body-scroll { overflow-y: auto; overflow-x: hidden; flex: 1; margin-bottom: 15px; padding-right: 5px;}
         
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; position: relative; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; }
         .form-control { width: 100%; padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.95rem; outline: none; background-color: #f8faf9; transition: 0.3s; }
         .form-control:focus { border-color: var(--accent-gold); background-color: #fff; box-shadow: 0 0 0 3px rgba(224, 170, 62, 0.1); }
         
-        .modal-actions { display: flex; gap: 10px; margin-top: 25px; }
+        .suggestions-box { position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border: 1px solid var(--accent-gold); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); max-height: 200px; overflow-y: auto; z-index: 1000; display: none; margin-top: 5px;}
+        .suggestion-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid var(--border-grey); display: flex; flex-direction: column; transition: background 0.2s;}
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background-color: rgba(224, 170, 62, 0.1); }
+        .suggestion-name { font-weight: 700; color: var(--text-dark); font-size: 0.95rem; }
+        .suggestion-email { font-size: 0.8rem; color: #666; margin-top: 3px;}
+
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .teacher-tag { background: rgba(46, 204, 113, 0.1); color: var(--primary-green); padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(46, 204, 113, 0.3);}
+        .teacher-tag i { cursor: pointer; color: var(--danger-red); font-size: 1rem; transition: 0.2s;}
+        .badge-teacher { background: #f0f0f0; color: #333; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; margin-bottom: 5px; display: inline-block; border: 1px solid #ddd;}
+
+        .modal-actions { display: flex; gap: 10px; margin-top: 15px; flex-shrink: 0;}
         .btn-cancel { flex: 1; background: #eee; color: #555; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .btn-cancel:hover { background: #ddd; }
         .btn-save { flex: 1; background: linear-gradient(135deg, var(--accent-gold), #c99327); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-save:hover { box-shadow: 0 4px 15px rgba(224, 170, 62, 0.3); }
 
         .toast-notification { position: fixed; top: 100px; right: -350px; background-color: var(--bg-card-white); border-left: 5px solid var(--primary-green); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 15px; z-index: 2000; transition: right 0.4s ease; }
         .toast-notification.show { right: 20px; }
         .toast-icon { font-size: 1.5rem; color: var(--primary-green); }
 
-        /* BỐ CỤC PC & MOBILE */
         @media (min-width: 1025px) {
             body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
             .main-wrapper { display: flex; flex: 1; overflow: hidden; position: relative; }
@@ -140,17 +129,13 @@
             .header-subtitle { display: none; } 
             .user-info { display: none; }
             .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
-
             .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto;}
             .sidebar.open { left: 0; }
             .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
             .sidebar-overlay.open { display: block; }
-
             .main-wrapper { display: block; height: auto; }
             .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
-            .panel { padding: 15px; }
-            
-            /* TỐI ƯU BỘ 3 NÚT TRÊN ĐIỆN THOẠI */
+            .panel { padding: 10px; } 
             .header-actions { width: 100%; display: flex; justify-content: space-between; }
             .search-box { width: 100%; order: -1; margin-bottom: 10px;}
             .search-box input { width: 100%; }
@@ -216,28 +201,13 @@
                     <table class="excel-table">
                         <thead>
                             <tr>
-                                <th class="col-center" style="width: 40px; vertical-align: middle;">
-                                    <input type="checkbox" id="selectAll">
-                                </th>
-                                <th class="col-center" style="width: 50px; vertical-align: middle;">
-                                    <span class="th-title">TT</span>
-                                </th>
-                                <th style="width: 140px;">
-                                    <span class="th-title">Mã Lớp</span>
-                                    <input type="text" id="filterCode" class="filter-sm" placeholder="Lọc mã...">
-                                </th>
-                                <th style="width: 250px;">
-                                    <span class="th-title">Tên Lớp Học</span>
-                                    <input type="text" id="filterName" class="filter-sm" placeholder="Lọc tên...">
-                                </th>
-                                <th style="width: 200px;">
-                                    <span class="th-title">Giáo Viên Giảng Dạy</span>
-                                    <input type="text" id="filterTeacher" class="filter-sm" placeholder="Lọc giáo viên...">
-                                </th>
-                                <th class="col-center" style="width: 80px; vertical-align: middle;">
-                                    <span class="th-title">Sĩ Số</span>
-                                </th>
-                                <th class="col-center" style="width: 160px;">
+                                <th class="col-center" style="width: 40px; vertical-align: middle;"><input type="checkbox" id="selectAll"></th>
+                                <th class="col-center" style="width: 50px; vertical-align: middle;"><span class="th-title">TT</span></th>
+                                <th style="width: 120px;"><span class="th-title">Mã Lớp</span><input type="text" id="filterCode" class="filter-sm" placeholder="Lọc mã..."></th>
+                                <th style="width: 250px;"><span class="th-title">Tên Lớp Học</span><input type="text" id="filterName" class="filter-sm" placeholder="Lọc tên..."></th>
+                                <th style="width: 200px;"><span class="th-title">Giáo Viên Giảng Dạy</span><input type="text" id="filterTeacher" class="filter-sm" placeholder="Lọc giáo viên..."></th>
+                                <th class="col-center" style="width: 80px; vertical-align: middle;"><span class="th-title">Sĩ Số</span></th>
+                                <th class="col-center" style="width: 140px;">
                                     <span class="th-title">Trạng thái</span>
                                     <select id="filterStatus" class="filter-sm">
                                         <option value="">Tất cả</option>
@@ -245,10 +215,11 @@
                                         <option value="Chưa hoạt động">Chưa hoạt động</option>
                                     </select>
                                 </th>
+                                <th class="col-center" style="width: 100px; vertical-align: middle;"><span class="th-title">Điểm Danh</span></th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            <tr><td colspan="7" class="col-center" style="padding: 30px;">Đang tải dữ liệu từ máy chủ Google...</td></tr>
+                            <tr><td colspan="8" class="col-center" style="padding: 30px;">Đang tải dữ liệu từ máy chủ Google...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -259,39 +230,40 @@
     <div class="modal-overlay" id="addModal">
         <div class="modal-content">
             <h2 class="modal-title" id="modalTitleText">Thêm Lớp Học Mới</h2>
-            <form id="addForm">
-                <input type="hidden" id="editClassId" value="">
-
-                <div class="form-group">
-                    <label>Mã Lớp Học (Viết tắt) *</label>
-                    <input type="text" id="classCode" class="form-control" placeholder="VD: XL-01" required>
-                </div>
-                <div class="form-group">
-                    <label>Tên Lớp Học Đầy Đủ *</label>
-                    <input type="text" id="className" class="form-control" placeholder="VD: Toán nâng cao 6A" required>
-                </div>
-                <div class="form-group">
-                    <label>Tên Giáo Viên Giảng Dạy</label>
-                    <input type="text" id="classTeacher" class="form-control" placeholder="Nhập họ tên giáo viên (nếu có)">
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" id="btnCancelModal">Hủy bỏ</button>
-                    <button type="submit" class="btn-save" id="btnSaveData"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu</button>
-                </div>
-            </form>
+            <div class="modal-body-scroll">
+                <form id="addForm">
+                    <input type="hidden" id="editClassId" value="">
+                    <div class="form-group">
+                        <label>Mã Lớp Học (Viết tắt) *</label>
+                        <input type="text" id="classCode" class="form-control" placeholder="VD: XL-01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên Lớp Học Đầy Đủ *</label>
+                        <input type="text" id="className" class="form-control" placeholder="VD: Toán nâng cao 6A" required>
+                    </div>
+                    <div class="form-group autocomplete-container">
+                        <label>Giáo Viên Giảng Dạy (Có thể chọn nhiều)</label>
+                        <input type="text" id="classTeacherInput" class="form-control" placeholder="Nhập tên giáo viên để tìm và chọn..." autocomplete="off">
+                        <div id="teacherSuggestions" class="suggestions-box"></div>
+                        <div id="selectedTeachersContainer" class="tags-container"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('addModal').classList.remove('show')">Hủy bỏ</button>
+                <button type="submit" form="addForm" class="btn-save" id="btnSaveData"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // 1. KẾT NỐI FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
             authDomain: "xledu-dea6a.firebaseapp.com",
             projectId: "xledu-dea6a",
             storageBucket: "xledu-dea6a.firebasestorage.app",
             messagingSenderId: "56988683349",
-            appId: "1:56988683349:web:7502807eebf8862ed0d8dc",
-            measurementId: "G-BWV1GD3WS1"
+            appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -306,8 +278,6 @@
         });
 
         document.getElementById('btnLogout').addEventListener('click', () => { if(confirm('Đăng xuất hệ thống?')) auth.signOut(); });
-        
-        // 2. GIAO DIỆN MENU MOBILE
         const btnMenu = document.getElementById('mobileMenuBtn'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay');
         btnMenu.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); if(window.innerWidth<=1024) document.body.style.overflow='hidden'; });
         overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); if(window.innerWidth<=1024) document.body.style.overflow='auto'; });
@@ -319,191 +289,189 @@
             toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // ================= XỬ LÝ DATABASE (THÊM & SỬA) =================
+        let teacherList = []; 
+        let currentSelectedTeachers = []; 
+
+        function fetchTeachers() {
+            db.collection("users").where("role", "==", "teacher").get().then(snap => {
+                teacherList = [];
+                snap.forEach(doc => teacherList.push(doc.data()));
+                if(teacherList.length === 0) {
+                    teacherList = [
+                        { name: "Nguyễn Phượng Ngân", email: "ngannguyen@gmail.com" },
+                        { name: "Nguyễn Thanh Dũng", email: "thanhdung.xle@gmail.com" },
+                        { name: "Hoàng Vĩnh Tiệp", email: "vinhtiep1989@gmail.com" },
+                        { name: "Lê Thu Hà", email: "lethuha@gmail.com" }
+                    ];
+                }
+            });
+        }
+        fetchTeachers();
+
+        const teacherInput = document.getElementById('classTeacherInput');
+        const suggestionsBox = document.getElementById('teacherSuggestions');
+        const tagsContainer = document.getElementById('selectedTeachersContainer');
+
+        function renderTeacherTags() {
+            tagsContainer.innerHTML = '';
+            currentSelectedTeachers.forEach((t, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'teacher-tag';
+                tag.innerHTML = `${t.name} <i class="fa-solid fa-circle-xmark" onclick="removeTeacher(${index})"></i>`;
+                tagsContainer.appendChild(tag);
+            });
+        }
+        window.removeTeacher = function(index) { currentSelectedTeachers.splice(index, 1); renderTeacherTags(); }
+
+        teacherInput.addEventListener('input', function() {
+            const val = this.value.toLowerCase().trim();
+            suggestionsBox.innerHTML = ''; 
+            if (!val) { suggestionsBox.style.display = 'none'; return; }
+
+            const filtered = teacherList.filter(t => t.name.toLowerCase().includes(val) || t.email.toLowerCase().includes(val));
+            if (filtered.length > 0) {
+                filtered.forEach(t => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.innerHTML = `<span class="suggestion-name">${t.name}</span><span class="suggestion-email">${t.email}</span>`;
+                    div.addEventListener('click', () => {
+                        if(!currentSelectedTeachers.some(item => item.email === t.email)) {
+                            currentSelectedTeachers.push({name: t.name, email: t.email});
+                            renderTeacherTags();
+                        }
+                        teacherInput.value = ''; 
+                        suggestionsBox.style.display = 'none';
+                    });
+                    suggestionsBox.appendChild(div);
+                });
+                suggestionsBox.style.display = 'block'; 
+            } else { suggestionsBox.style.display = 'none'; }
+        });
+        document.addEventListener('click', (e) => { if(!e.target.closest('.autocomplete-container')) suggestionsBox.style.display = 'none'; });
 
         const addModal = document.getElementById('addModal');
         const modalTitleText = document.getElementById('modalTitleText');
         const editClassIdInput = document.getElementById('editClassId');
         const addForm = document.getElementById('addForm');
         
-        // Bấm nút Thêm Lớp (Làm sạch form)
         document.getElementById('btnOpenModal').addEventListener('click', () => {
-            addForm.reset();
-            editClassIdInput.value = ""; // Xóa ID sửa
-            modalTitleText.innerText = "Thêm Lớp Học Mới";
-            addModal.classList.add('show');
+            addForm.reset(); editClassIdInput.value = ""; currentSelectedTeachers = []; renderTeacherTags();
+            modalTitleText.innerText = "Thêm Lớp Học Mới"; addModal.classList.add('show');
         });
 
-        // Đóng Form
-        document.getElementById('btnCancelModal').addEventListener('click', () => { 
-            addModal.classList.remove('show'); 
-        });
-
-        // XỬ LÝ NÚT LƯU DỮ LIỆU (Chung cho cả Thêm và Sửa)
-        const btnSaveData = document.getElementById('btnSaveData');
         addForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            const btnSaveData = document.getElementById('btnSaveData');
             btnSaveData.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
             btnSaveData.disabled = true;
 
-            const editId = editClassIdInput.value; // Lấy ID để biết là đang Sửa hay Thêm
+            const teacherNamesString = currentSelectedTeachers.map(t => t.name).join(', ');
+            const editId = editClassIdInput.value; 
             const classData = {
                 classCode: document.getElementById('classCode').value,
                 className: document.getElementById('className').value,
-                teacherName: document.getElementById('classTeacher').value || "Chưa phân công"
+                teachers: currentSelectedTeachers, 
+                teacherNamesDisplay: teacherNamesString || "Chưa phân công"
             };
 
             if (editId) {
-                // CHẾ ĐỘ SỬA
                 db.collection("classes").doc(editId).update(classData)
-                .then(() => {
-                    showToast("Thành công!", "Đã cập nhật thông tin lớp học.");
-                    addModal.classList.remove('show');
-                })
-                .catch((error) => alert("Lỗi khi cập nhật: " + error))
+                .then(() => { showToast("Thành công!", "Đã cập nhật."); addModal.classList.remove('show'); })
+                .catch(error => alert("Lỗi: " + error))
                 .finally(() => { btnSaveData.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu'; btnSaveData.disabled = false; });
             } else {
-                // CHẾ ĐỘ THÊM MỚI
-                classData.studentCount = 0;
-                classData.status = "inactive"; 
-                classData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                
+                classData.studentCount = 0; classData.status = "inactive"; classData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                 db.collection("classes").add(classData)
-                .then(() => {
-                    showToast("Thành công!", "Lớp học mới đã được tạo.");
-                    addModal.classList.remove('show');
-                })
-                .catch((error) => alert("Lỗi: " + error))
+                .then(() => { showToast("Thành công!", "Đã thêm lớp mới."); addModal.classList.remove('show'); })
+                .catch(error => alert("Lỗi: " + error))
                 .finally(() => { btnSaveData.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu'; btnSaveData.disabled = false; });
             }
         });
 
-        // NÚT CHỈNH SỬA (Gọi dữ liệu cũ ra Form)
         document.getElementById('btnEditSelected').addEventListener('click', function() {
-            const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
-            
-            if (selectedCheckboxes.length !== 1) {
-                alert("Vui lòng tích chọn CHÍNH XÁC 1 lớp để chỉnh sửa!");
-                return;
-            }
-
-            const docId = selectedCheckboxes[0].value;
-            
-            // Kéo dữ liệu từ Firebase
-            db.collection("classes").doc(docId).get().then((doc) => {
+            const selected = document.querySelectorAll('.row-checkbox:checked');
+            if (selected.length !== 1) return alert("Vui lòng chọn CHÍNH XÁC 1 lớp để sửa!");
+            db.collection("classes").doc(selected[0].value).get().then((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
-                    // Điền vào form
                     document.getElementById('classCode').value = data.classCode;
                     document.getElementById('className').value = data.className;
-                    document.getElementById('classTeacher').value = data.teacherName !== "Chưa phân công" ? data.teacherName : "";
-                    
-                    // Kích hoạt chế độ sửa
+                    currentSelectedTeachers = data.teachers || [];
+                    renderTeacherTags(); 
                     editClassIdInput.value = doc.id; 
-                    modalTitleText.innerText = "Chỉnh Sửa Lớp Học";
-                    addModal.classList.add('show');
-                } else {
-                    alert("Không tìm thấy dữ liệu lớp này trên máy chủ!");
+                    modalTitleText.innerText = "Chỉnh Sửa Lớp Học"; addModal.classList.add('show');
                 }
-            }).catch(error => alert("Lỗi tải dữ liệu: " + error));
+            });
         });
 
-        // 4. KÉO DỮ LIỆU TỪ MÁY CHỦ (Realtime)
         function loadDataFromDatabase() {
             const tableBody = document.getElementById('tableBody');
-            
             db.collection("classes").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                 if(snapshot.empty) {
-                    tableBody.innerHTML = '<tr class="data-row"><td colspan="7" class="col-center" style="padding: 30px; color:#888;">Chưa có lớp nào. Vui lòng thêm lớp mới!</td></tr>';
+                    tableBody.innerHTML = '<tr class="data-row"><td colspan="8" class="col-center" style="padding: 30px; color:#888;">Chưa có lớp nào. Vui lòng thêm lớp mới!</td></tr>';
                     return;
                 }
-
-                tableBody.innerHTML = ''; 
-                let index = 1;
-                
+                tableBody.innerHTML = ''; let index = 1;
                 snapshot.forEach((doc) => {
                     const data = doc.data();
                     const tr = document.createElement('tr');
                     tr.className = 'data-row'; 
-                    
-                    let statusBadge = data.status === "active" 
-                        ? '<span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Đang hoạt động</span>'
-                        : '<span class="status-badge inactive"><i class="fa-solid fa-circle-pause"></i> Chưa hoạt động</span>';
+                    let statusBadge = data.status === "active" ? '<span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Đang hoạt động</span>' : '<span class="status-badge inactive"><i class="fa-solid fa-circle-pause"></i> Chưa hoạt động</span>';
+                    let teachersHtml = "Chưa phân công";
+                    if(data.teachers && data.teachers.length > 0) { teachersHtml = data.teachers.map(t => `<span class="badge-teacher">${t.name}</span>`).join(''); }
                     
                     tr.innerHTML = `
                         <td class="col-center"><input type="checkbox" class="row-checkbox" value="${doc.id}"></td>
                         <td class="col-center">${index++}</td>
                         <td><span class="class-code">${data.classCode}</span></td>
                         <td class="col-bold">${data.className}</td>
-                        <td>${data.teacherName}</td>
+                        <td>${teachersHtml}<span class="hidden-teacher-search" style="display:none;">${data.teacherNamesDisplay||""}</span></td>
                         <td class="col-center col-bold">${data.studentCount}</td>
                         <td class="col-center">${statusBadge}</td>
+                        <td class="col-center">
+                            <a href="attendance.html?id=${doc.id}" class="btn-attend">
+                                <i class="fa-solid fa-clipboard-user"></i> Điểm danh
+                            </a>
+                        </td>
                     `;
                     tableBody.appendChild(tr);
                 });
-
-                // Tự động bỏ chọn hộp "Chọn tất cả" nếu vừa xóa/load lại
-                document.getElementById('selectAll').checked = false;
                 filterTable();
             });
         }
 
-        // 5. XÓA HÀNG LOẠT
-        document.getElementById('selectAll').addEventListener('change', function() {
-            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = this.checked);
-        });
-
+        document.getElementById('selectAll').addEventListener('change', function() { document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = this.checked); });
         document.getElementById('btnDeleteSelected').addEventListener('click', function() {
-            const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
-            if (selectedCheckboxes.length === 0) return alert("Vui lòng chọn ít nhất 1 lớp để xóa!");
-
-            if (confirm(`Chắc chắn xóa vĩnh viễn ${selectedCheckboxes.length} lớp đã chọn?`)) {
+            const selected = document.querySelectorAll('.row-checkbox:checked');
+            if (selected.length === 0) return alert("Vui lòng chọn ít nhất 1 lớp để xóa!");
+            if (confirm(`Chắc chắn xóa vĩnh viễn ${selected.length} lớp đã chọn?`)) {
                 const batch = db.batch();
-                selectedCheckboxes.forEach(cb => {
-                    batch.delete(db.collection("classes").doc(cb.value));
-                });
-                batch.commit().then(() => {
-                    showToast("Đã xóa!", `Đã xóa ${selectedCheckboxes.length} lớp.`);
-                    document.getElementById('selectAll').checked = false; 
-                });
+                selected.forEach(cb => batch.delete(db.collection("classes").doc(cb.value)));
+                batch.commit().then(() => { showToast("Đã xóa!", "Xóa thành công."); document.getElementById('selectAll').checked = false; });
             }
         });
 
-        // 6. TÍNH NĂNG TÌM KIẾM & LỌC (REALTIME)
         function filterTable() {
-            const globalSearch = document.getElementById('globalSearch').value.toLowerCase();
-            const codeFilter = document.getElementById('filterCode').value.toLowerCase();
-            const nameFilter = document.getElementById('filterName').value.toLowerCase();
-            const teacherFilter = document.getElementById('filterTeacher').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
+            const gSearch = document.getElementById('globalSearch').value.toLowerCase();
+            const cFilter = document.getElementById('filterCode').value.toLowerCase();
+            const nFilter = document.getElementById('filterName').value.toLowerCase();
+            const tFilter = document.getElementById('filterTeacher').value.toLowerCase();
+            const sFilter = document.getElementById('filterStatus').value.toLowerCase();
 
-            const rows = document.querySelectorAll('#tableBody .data-row');
-
-            rows.forEach(row => {
+            document.querySelectorAll('#tableBody .data-row').forEach(row => {
                 const code = row.children[2].textContent.toLowerCase();
                 const name = row.children[3].textContent.toLowerCase();
-                const teacher = row.children[4].textContent.toLowerCase();
+                const teacher = row.querySelector('.hidden-teacher-search').textContent.toLowerCase();
                 const status = row.children[6].textContent.toLowerCase();
 
-                const matchGlobal = name.includes(globalSearch) || teacher.includes(globalSearch) || code.includes(globalSearch);
-                const matchCode = code.includes(codeFilter);
-                const matchName = name.includes(nameFilter);
-                const matchTeacher = teacher.includes(teacherFilter);
-                const matchStatus = statusFilter === "" || status.includes(statusFilter);
-
-                if (matchGlobal && matchCode && matchName && matchTeacher && matchStatus) {
+                const mGlobal = name.includes(gSearch) || teacher.includes(gSearch) || code.includes(gSearch);
+                if (mGlobal && code.includes(cFilter) && name.includes(nFilter) && teacher.includes(tFilter) && (sFilter === "" || status.includes(sFilter))) {
                     row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                } else { row.style.display = 'none'; }
             });
         }
-
         document.getElementById('globalSearch').addEventListener('input', filterTable);
-        document.querySelectorAll('.filter-sm').forEach(input => {
-            input.addEventListener('input', filterTable);  
-            input.addEventListener('change', filterTable); 
-        });
+        document.querySelectorAll('.filter-sm').forEach(input => { input.addEventListener('input', filterTable); input.addEventListener('change', filterTable); });
 
     </script>
 </body>
