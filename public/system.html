@@ -6,53 +6,81 @@
     <title>Quản lý hệ thống - Xứ Lạng Education</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
-    
+
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; --border-grey: #e8f1ec; --header-height: 90px; --sidebar-width: 270px; }
+        :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; --border-grey: #e8f1ec; --header-height: 90px; --sidebar-width: 270px; --manager-blue: #3498db; --danger-red: #e74c3c; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        
         body { background-color: var(--bg-body); color: var(--text-dark); }
         #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
         #page-loader p { font-size: 1rem; color: var(--text-light); margin-top: 15px; font-weight: 500; }
 
-        .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px;}
-        .header-left { display: flex; align-items: center; gap: 15px; z-index: 10;}
+        .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px; }
+        .header-left { display: flex; align-items: center; gap: 15px; z-index: 10; }
         .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
         .logo-placeholder { width: 55px; height: 55px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.5); font-size: 0.7rem; text-align: center; cursor: pointer; background-size: cover; background-position: center; flex-shrink: 0; }
-        
-        .header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; z-index: 5;}
+        .header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; z-index: 5; }
         .header-title { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224, 170, 62, 0.5); }
         .header-subtitle { font-size: 1rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 500; }
-        
-        .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; z-index: 10;}
+        .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; z-index: 10; }
         .user-info { text-align: right; color: var(--text-light); }
-        .user-id { color: var(--accent-gold); font-weight: bold; display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-size: 0.85rem;}
+        .user-id { color: var(--accent-gold); font-weight: bold; display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-size: 0.85rem; }
         .live-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--primary-green); animation: pulse-live 1.5s infinite; }
         @keyframes pulse-live { 0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); } 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); } }
-        
-        .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; white-space: nowrap; padding: 8px 15px; font-size: 0.85rem;}
+        .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; white-space: nowrap; padding: 8px 15px; font-size: 0.85rem; }
+        .btn-logout:hover { background: rgba(224, 170, 62, 0.15); }
 
         .sidebar-nav { display: flex; flex-direction: column; gap: 8px; z-index: 2; }
-        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255, 255, 255, 0.02); transition: all 0.3s; border: 1px solid transparent;}
+        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255, 255, 255, 0.02); transition: all 0.3s; border: 1px solid transparent; }
         .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
         .sidebar-nav-item:hover { color: #fff; transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
         .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); border: 1px solid rgba(46, 204, 113, 0.3); transform: translateX(4px); }
         .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224, 170, 62, 0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; }
+        .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
+        .sidebar-overlay.open { display: block; }
 
         .panel { background-color: var(--bg-card-white); border-radius: 12px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
+        .panel-subtitle { color: #6c7a89; font-size: 0.83rem; margin-top: 6px; }
         .btn-add-account { background: var(--primary-green); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-add-account:hover { background: #27ae60; }
+        .btn-add-account[disabled] { opacity: 0.55; cursor: not-allowed; }
+        .permission-note { margin-top: 10px; padding: 10px 12px; border-radius: 8px; font-size: 0.83rem; }
+        .permission-note.admin { background: rgba(224,170,62,0.12); color: #8a6a1e; }
+        .permission-note.manager { background: rgba(52,152,219,0.12); color: #216a94; }
+        .permission-note.teacher { background: rgba(231,76,60,0.12); color: #a23328; }
 
-        .system-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .system-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 980px; }
         .system-table th { text-align: left; padding: 12px; color: #888; border-bottom: 2px solid var(--grey-light); }
         .system-table td { padding: 12px; border-bottom: 1px solid var(--border-grey); vertical-align: middle; }
+        .empty-row { text-align: center; color: #888; padding: 30px !important; }
+
+        .role-badge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 10px; border-radius: 14px; font-size: 0.74rem; font-weight: 800; text-transform: uppercase; }
+        .role-admin { background: rgba(224,170,62,0.15); color: var(--accent-gold); }
+        .role-manager { background: rgba(52,152,219,0.12); color: var(--manager-blue); }
+        .role-teacher { background: rgba(46,204,113,0.12); color: var(--primary-green); }
+        .status-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 0.74rem; font-weight: 700; padding: 4px 10px; border-radius: 14px; }
+        .status-active { background: rgba(46,204,113,0.12); color: var(--primary-green); }
+        .status-closed { background: rgba(231,76,60,0.12); color: var(--danger-red); }
+        .secure-text { color: #7f8c8d; font-weight: 700; }
 
         .action-btn { border: none; background: var(--grey-light); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; color: var(--text-dark); transition: 0.2s; }
-        .btn-del { color: #e74c3c; }
+        .action-btn:hover { background: #e9efec; }
+        .btn-del { color: var(--danger-red); }
+        .action-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border-grey); border-radius: 6px; outline: none; }
+        .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .btn-cancel { border: none; background: #eee; color: #555; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        .form-help { font-size: 0.78rem; color: #7f8c8d; margin-top: 6px; line-height: 1.45; }
 
         @media (min-width: 1025px) {
             body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -61,15 +89,26 @@
             .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; }
         }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 450px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.85rem; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border-grey); border-radius: 6px; outline: none; }
+        @media (max-width: 1024px) {
+            :root { --header-height: 70px; }
+            html, body { height: auto; min-height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; display: block !important; }
+            .header { position: sticky; top: 0; padding: 0 15px; }
+            .mobile-menu-btn { display: block; }
+            .logo-placeholder { display: none; }
+            .header-title { font-size: 1.25rem; letter-spacing: 1px; }
+            .header-subtitle { display: none; }
+            .user-info { display: none; }
+            .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
+            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto; }
+            .sidebar.open { left: 0; }
+            .main-wrapper { display: block; height: auto; }
+            .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
+            .panel { padding: 15px; }
+            .modal-content { padding: 20px; }
+        }
     </style>
 </head>
 <body>
-
     <div id="page-loader"><i class="fa-solid fa-spinner fa-spin"></i><p>Đang tải cấu hình...</p></div>
 
     <header class="header">
@@ -82,12 +121,13 @@
             <div class="header-subtitle">Chắp cánh ước mơ</div>
         </div>
         <div class="header-user">
-            <div class="user-info">Chào, Admin <div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>
+            <div class="user-info">Chào, <span id="currentRoleLabel">...</span><div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>
             <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
         </div>
     </header>
 
     <div class="main-wrapper">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <aside class="sidebar" id="sidebar">
             <nav class="sidebar-nav">
                 <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
@@ -102,9 +142,15 @@
         <main class="dashboard-content">
             <div class="panel">
                 <div class="panel-header">
-                    <h3>Quản trị tài khoản hệ thống</h3>
-                    <button class="btn-add-account" onclick="openModal()"><i class="fa-solid fa-user-plus"></i> Thêm tài khoản</button>
+                    <div>
+                        <h3>Quản trị tài khoản hệ thống</h3>
+                        <div class="panel-subtitle">Tạo tài khoản trên app sẽ tự đồng bộ lên Firebase Authentication và Firestore.</div>
+                    </div>
+                    <button class="btn-add-account" id="btnOpenModal"><i class="fa-solid fa-user-plus"></i> Thêm tài khoản</button>
                 </div>
+
+                <div class="permission-note admin" id="permissionNote">Đang kiểm tra phân quyền...</div>
+
                 <div class="table-responsive">
                     <table class="system-table">
                         <thead>
@@ -115,10 +161,13 @@
                                 <th>Mật khẩu</th>
                                 <th>Số điện thoại</th>
                                 <th>Phân quyền</th>
+                                <th>Trạng thái</th>
                                 <th style="text-align: right;">Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody id="user-list"></tbody>
+                        <tbody id="user-list">
+                            <tr><td colspan="8" class="empty-row">Đang tải dữ liệu...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -131,92 +180,231 @@
             <form id="userForm">
                 <div class="form-group"><label>Họ tên</label><input type="text" id="u_name" required></div>
                 <div class="form-group"><label>Email</label><input type="email" id="u_email" required></div>
-                <div class="form-group"><label>Mật khẩu</label><input type="text" id="u_pass" required></div>
+                <div class="form-group"><label>Mật khẩu khởi tạo</label><input type="text" id="u_pass" required minlength="6"></div>
                 <div class="form-group"><label>SĐT</label><input type="tel" id="u_phone"></div>
-                <div class="form-group"><label>Quyền</label><select id="u_role"><option value="teacher">Giáo viên</option><option value="admin">Quản trị viên</option></select></div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                    <button type="button" onclick="closeModal()">Hủy</button>
-                    <button type="submit" class="btn-add-account">Lưu</button>
+                <div class="form-group">
+                    <label>Phân quyền</label>
+                    <select id="u_role">
+                        <option value="teacher">Giáo viên</option>
+                        <option value="manager">Quản lý</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-help">Mật khẩu chỉ dùng để tạo tài khoản Firebase Auth. Hệ thống không lưu lại mật khẩu thô trong Firestore.</div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="btnCancelModal">Hủy</button>
+                    <button type="submit" class="btn-add-account" id="btnSubmitUser"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4", authDomain: "xledu-dea6a.firebaseapp.com", projectId: "xledu-dea6a", storageBucket: "xledu-dea6a.firebasestorage.app", messagingSenderId: "56988683349", appId: "1:56988683349:web:7502807eebf8862ed0d8dc" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
+            authDomain: "xledu-dea6a.firebaseapp.com",
+            projectId: "xledu-dea6a",
+            storageBucket: "xledu-dea6a.firebasestorage.app",
+            messagingSenderId: "56988683349",
+            appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
+        };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+
         let currentAuthUser = null;
+        let currentUserProfile = null;
+
+        const btnMenu = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const userModal = document.getElementById('userModal');
+        const btnOpenModal = document.getElementById('btnOpenModal');
+        const btnCancelModal = document.getElementById('btnCancelModal');
+        const userList = document.getElementById('user-list');
 
         function normalizeEmail(email) {
             return String(email || '').trim().toLowerCase();
         }
 
-        function translateFirebaseError(error) {
-            if (!error || !error.code) return (error && error.message) ? error.message : 'Đã xảy ra lỗi không xác định.';
-            if (error.code === 'auth/email-already-in-use') return 'Email này đã tồn tại trong Firebase Auth. Nếu đây là tài khoản cũ, hãy dùng đúng mật khẩu cũ hoặc kiểm tra lại danh sách tài khoản.';
-            if (error.code === 'auth/invalid-email') return 'Email không hợp lệ.';
-            if (error.code === 'auth/weak-password') return 'Mật khẩu phải có ít nhất 6 ký tự.';
-            if (error.code === 'auth/network-request-failed') return 'Lỗi kết nối mạng tới Firebase.';
-            return error.message || 'Đã xảy ra lỗi khi xử lý tài khoản.';
+        function getRoleLabel(role) {
+            if (role === 'admin') return 'Admin';
+            if (role === 'manager') return 'Quản lý';
+            return 'Giáo viên';
         }
 
-        function getSecondaryAuth() {
-            let secondaryApp = firebase.apps.find(app => app.name === 'SecondaryAccountCreator');
-            if (!secondaryApp) secondaryApp = firebase.initializeApp(firebaseConfig, 'SecondaryAccountCreator');
-            return secondaryApp.auth();
+        function getRoleBadge(role) {
+            if (role === 'admin') return '<span class="role-badge role-admin">ADMIN</span>';
+            if (role === 'manager') return '<span class="role-badge role-manager">QUẢN LÝ</span>';
+            return '<span class="role-badge role-teacher">GIÁO VIÊN</span>';
         }
 
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                currentAuthUser = user;
-                document.getElementById('page-loader').style.display = 'none';
-                document.getElementById('userEmailDisplay').textContent = user.email;
-                loadUsers();
-            } else {
-                window.location.href = 'login.html';
+        function getStatusBadge(status) {
+            if ((status || 'active') === 'closed') return '<span class="status-pill status-closed"><i class="fa-solid fa-lock"></i> Đã khóa</span>';
+            return '<span class="status-pill status-active"><i class="fa-solid fa-circle-check"></i> Hoạt động</span>';
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showAlert(message) {
+            alert(message);
+        }
+
+        function updatePermissionUI() {
+            const role = currentUserProfile && currentUserProfile.role ? currentUserProfile.role : 'teacher';
+            const roleLabel = getRoleLabel(role);
+            document.getElementById('currentRoleLabel').textContent = roleLabel;
+
+            const note = document.getElementById('permissionNote');
+            note.className = 'permission-note ' + role;
+
+            if (role === 'admin') {
+                note.innerHTML = '<strong>Admin:</strong> Toàn quyền tạo tài khoản, khóa/mở khóa và xóa hồ sơ người dùng trên app.';
+                btnOpenModal.disabled = false;
+                return;
             }
-        });
+
+            if (role === 'manager') {
+                note.innerHTML = '<strong>Quản lý:</strong> Chỉ xem danh sách tài khoản. Các thao tác hệ thống chỉ dành cho Admin.';
+                btnOpenModal.disabled = true;
+                return;
+            }
+
+            note.innerHTML = '<strong>Giáo viên:</strong> Không có quyền chỉnh sửa tài khoản hệ thống. Hệ thống sẽ chuyển bạn về trang chủ.';
+            btnOpenModal.disabled = true;
+            setTimeout(() => {
+                showAlert('Tài khoản giáo viên không có quyền vào mục Quản lý hệ thống.');
+                window.location.href = 'index.html';
+            }, 300);
+        }
+
+        async function fetchCurrentUserProfile(user) {
+            const email = normalizeEmail(user && user.email);
+            const byEmailDoc = await db.collection('users').doc(email).get().catch(() => null);
+            if (byEmailDoc && byEmailDoc.exists) return { id: byEmailDoc.id, ...(byEmailDoc.data() || {}) };
+
+            const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+            if (!snap.empty) return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
+
+            return { id: user.uid, uid: user.uid, email: email, name: user.email, role: 'admin', status: 'active', accountStatus: 'active' };
+        }
+
+        async function createAuthUserDirect(email, password) {
+            const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + encodeURIComponent(firebaseConfig.apiKey), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, password: password, returnSecureToken: true })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                const code = data && data.error && data.error.message ? data.error.message : 'UNKNOWN_ERROR';
+                const err = new Error(code);
+                err.code = code;
+                throw err;
+            }
+            return data;
+        }
+
+        function translateAuthCreateError(error) {
+            const code = (error && error.code) || (error && error.message) || 'UNKNOWN_ERROR';
+            if (code.includes('EMAIL_EXISTS')) return 'Email này đã tồn tại trong Firebase Authentication. Hệ thống sẽ chỉ đồng bộ hồ sơ Firestore nếu cần.';
+            if (code.includes('INVALID_EMAIL')) return 'Email không hợp lệ.';
+            if (code.includes('WEAK_PASSWORD')) return 'Mật khẩu phải có ít nhất 6 ký tự.';
+            if (code.includes('OPERATION_NOT_ALLOWED')) return 'Firebase Email/Password chưa được bật trong Authentication.';
+            if (code.includes('TOO_MANY_ATTEMPTS_TRY_LATER')) return 'Firebase đang chặn tạm thời vì thao tác quá nhiều. Vui lòng thử lại sau.';
+            return 'Không thể tạo tài khoản trên Firebase Auth: ' + code;
+        }
+
+        function openModal() {
+            if (!currentUserProfile || currentUserProfile.role !== 'admin') {
+                showAlert('Chỉ Admin mới được tạo tài khoản hệ thống.');
+                return;
+            }
+            userModal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            userModal.style.display = 'none';
+        }
+
+        function canManageAccounts() {
+            return currentUserProfile && currentUserProfile.role === 'admin';
+        }
+
+        function isCurrentUserDoc(docData, docId) {
+            if (!currentAuthUser) return false;
+            const currentEmail = normalizeEmail(currentAuthUser.email);
+            const docEmail = normalizeEmail(docData && docData.email);
+            return docId === currentAuthUser.uid || docId === currentEmail || docEmail === currentEmail;
+        }
 
         function loadUsers() {
-            db.collection("users").onSnapshot(snap => {
-                const list = document.getElementById('user-list');
-                list.innerHTML = '';
-                let index = 1;
+            db.collection('users').onSnapshot((snap) => {
+                if (snap.empty) {
+                    userList.innerHTML = '<tr><td colspan="8" class="empty-row">Chưa có tài khoản nào trên hệ thống.</td></tr>';
+                    return;
+                }
 
-                snap.forEach(doc => {
-                    const d = doc.data() || {};
-                    const status = d.status || d.accountStatus || 'active';
-                    const isClosed = status === 'closed';
-                    list.innerHTML += `<tr style="${isClosed ? 'opacity:0.5' : ''}">
-                        <td>${index++}</td>
-                        <td><strong>${d.name || ''}</strong></td>
-                        <td>${d.email || ''}</td>
-                        <td><span id="p-${doc.id}">********</span> <button class="action-btn" onclick="togglePass('${doc.id}','${(d.password || '').replace(/'/g, "\'")}')"><i class="fa-solid fa-eye"></i></button></td>
-                        <td>${d.phone || '---'}</td>
-                        <td><span class="admin-badge" style="background:${d.role==='admin'?'':'rgba(46,204,113,0.1)'}; color:${d.role==='admin'?'':'#2ecc71'}">${d.role || 'teacher'}</span></td>
-                        <td style="text-align: right;">
-                            <button class="action-btn" onclick="toggleStatus('${doc.id}','${status}')"><i class="fa-solid ${isClosed?'fa-unlock':'fa-lock'}"></i></button>
-                            <button class="action-btn btn-del" onclick="deleteAcc('${doc.id}')"><i class="fa-solid fa-trash"></i></button>
-                        </td></tr>`;
+                const rows = [];
+                snap.forEach((doc) => {
+                    rows.push({ id: doc.id, ...(doc.data() || {}) });
                 });
+
+                rows.sort((a, b) => {
+                    const roleOrder = { admin: 0, manager: 1, teacher: 2 };
+                    const roleDiff = (roleOrder[a.role] ?? 9) - (roleOrder[b.role] ?? 9);
+                    if (roleDiff !== 0) return roleDiff;
+                    return String(a.name || '').localeCompare(String(b.name || ''), 'vi');
+                });
+
+                userList.innerHTML = '';
+                rows.forEach((d, index) => {
+                    const status = d.status || d.accountStatus || 'active';
+                    const disableActions = !canManageAccounts();
+                    const selfDoc = isCurrentUserDoc(d, d.id);
+                    const safeId = JSON.stringify(d.id);
+                    const lockTitle = status === 'closed' ? 'Mở khóa' : 'Khóa tài khoản';
+                    const deleteDisabled = disableActions || selfDoc ? 'disabled' : '';
+                    const lockDisabled = disableActions ? 'disabled' : '';
+
+                    userList.innerHTML += `
+                        <tr style="${status === 'closed' ? 'opacity:0.55;' : ''}">
+                            <td>${index + 1}</td>
+                            <td><strong>${escapeHtml(d.name || '')}</strong></td>
+                            <td>${escapeHtml(d.email || '')}</td>
+                            <td><span class="secure-text">Đã bảo mật</span></td>
+                            <td>${escapeHtml(d.phone || '---')}</td>
+                            <td>${getRoleBadge(d.role || 'teacher')}</td>
+                            <td>${getStatusBadge(status)}</td>
+                            <td style="text-align: right; white-space: nowrap;">
+                                <button class="action-btn" title="${lockTitle}" onclick="toggleStatus(${safeId}, '${status}')" ${lockDisabled}><i class="fa-solid ${status === 'closed' ? 'fa-unlock' : 'fa-lock'}"></i></button>
+                                <button class="action-btn btn-del" title="Xóa hồ sơ" onclick="deleteAcc(${safeId})" ${deleteDisabled}><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                });
+            }, (error) => {
+                userList.innerHTML = '<tr><td colspan="8" class="empty-row">Không tải được danh sách tài khoản.</td></tr>';
+                console.error(error);
             });
         }
-
-        function togglePass(id, p) {
-            const el = document.getElementById('p-' + id);
-            el.innerText = el.innerText === '********' ? p : '********';
-        }
-
-        function openModal() { document.getElementById('userModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('userModal').style.display = 'none'; }
 
         document.getElementById('userForm').onsubmit = async (e) => {
             e.preventDefault();
 
-            const form = e.target;
-            const submitBtn = form.querySelector('button[type="submit"]');
+            if (!canManageAccounts()) {
+                showAlert('Chỉ Admin mới được tạo tài khoản.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('btnSubmitUser');
             const originalLabel = submitBtn.innerHTML;
             const name = document.getElementById('u_name').value.trim();
             const email = normalizeEmail(document.getElementById('u_email').value);
@@ -225,25 +413,42 @@
             const role = document.getElementById('u_role').value;
 
             if (!name || !email || !password) {
-                alert('Vui lòng nhập đầy đủ họ tên, email và mật khẩu.');
+                showAlert('Vui lòng nhập đầy đủ họ tên, email và mật khẩu.');
+                return;
+            }
+            if (password.length < 6) {
+                showAlert('Mật khẩu phải có ít nhất 6 ký tự.');
                 return;
             }
 
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...';
 
-            const secondaryAuth = getSecondaryAuth();
+            let authUid = '';
+            let authCreated = false;
 
             try {
-                const cred = await secondaryAuth.createUserWithEmailAndPassword(email, password);
-                const uid = cred.user.uid;
-                const existingSnap = await db.collection('users').where('email', '==', email).get();
+                try {
+                    const authData = await createAuthUserDirect(email, password);
+                    authUid = authData.localId || '';
+                    authCreated = true;
+                } catch (authError) {
+                    if (String(authError.code || authError.message || '').includes('EMAIL_EXISTS')) {
+                        authCreated = false;
+                    } else {
+                        throw authError;
+                    }
+                }
+
+                const docRef = db.collection('users').doc(email);
+                const existingDoc = await docRef.get();
+                const existingData = existingDoc.exists ? (existingDoc.data() || {}) : {};
 
                 const payload = {
-                    uid: uid,
+                    uid: existingData.uid || authUid || existingData.authUid || '',
+                    authUid: authUid || existingData.authUid || existingData.uid || '',
                     name: name,
                     email: email,
-                    password: password,
                     phone: phone,
                     role: role,
                     status: 'active',
@@ -251,46 +456,99 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                if (existingSnap.empty) {
-                    payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                    await db.collection('users').doc(uid).set(payload, { merge: true });
-                } else {
-                    await existingSnap.docs[0].ref.set(payload, { merge: true });
-                }
+                if (!existingDoc.exists) payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
 
-                await secondaryAuth.signOut();
+                await docRef.set(payload, { merge: true });
                 closeModal();
-                form.reset();
-                alert('Đã tạo tài khoản đăng nhập thành công. Tài khoản mới đã được đẩy lên Firebase Auth và Firestore.');
+                e.target.reset();
+
+                if (authCreated) {
+                    showAlert('Đã tạo tài khoản thành công. User đã được đẩy lên Firebase Authentication và Firestore.');
+                } else {
+                    showAlert('Email này đã tồn tại trong Firebase Authentication. Em đã đồng bộ/cập nhật hồ sơ người dùng trong Firestore và phân quyền mới.');
+                }
             } catch (error) {
-                try { await secondaryAuth.signOut(); } catch (_) {}
-                alert('Lỗi tạo tài khoản: ' + translateFirebaseError(error));
+                console.error(error);
+                showAlert(translateAuthCreateError(error));
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalLabel;
             }
         };
 
-        function deleteAcc(id) {
-            if (currentAuthUser && currentAuthUser.uid === id) {
-                alert('Không thể xóa chính tài khoản đang đăng nhập.');
+        window.deleteAcc = async function(id) {
+            if (!canManageAccounts()) {
+                showAlert('Chỉ Admin mới được xóa hồ sơ tài khoản.');
                 return;
             }
-            if (confirm('Xác nhận xóa?')) db.collection('users').doc(id).delete();
+
+            const docSnap = await db.collection('users').doc(id).get();
+            const docData = docSnap.exists ? (docSnap.data() || {}) : {};
+            if (isCurrentUserDoc(docData, id)) {
+                showAlert('Không thể xóa chính tài khoản đang đăng nhập.');
+                return;
+            }
+
+            if (!confirm('Xác nhận xóa hồ sơ tài khoản trên app?\nLưu ý: thao tác này không xóa user trong Firebase Authentication.')) return;
+            await db.collection('users').doc(id).delete();
         }
 
-        function toggleStatus(id, s) {
-            const n = s === 'closed' ? 'active' : 'closed';
-            if (confirm('Xác nhận thao tác?')) {
-                db.collection('users').doc(id).update({
-                    status: n,
-                    accountStatus: n,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+        window.toggleStatus = async function(id, status) {
+            if (!canManageAccounts()) {
+                showAlert('Chỉ Admin mới được khóa/mở khóa tài khoản.');
+                return;
             }
+
+            const nextStatus = status === 'closed' ? 'active' : 'closed';
+            if (!confirm('Xác nhận ' + (nextStatus === 'closed' ? 'khóa' : 'mở khóa') + ' tài khoản này?')) return;
+
+            await db.collection('users').doc(id).set({
+                status: nextStatus,
+                accountStatus: nextStatus,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
         }
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentAuthUser = user;
+            document.getElementById('userEmailDisplay').textContent = user.email;
+
+            try {
+                currentUserProfile = await fetchCurrentUserProfile(user);
+                updatePermissionUI();
+                loadUsers();
+            } catch (error) {
+                console.error(error);
+                showAlert('Không đọc được hồ sơ người dùng hiện tại.');
+            } finally {
+                document.getElementById('page-loader').style.display = 'none';
+            }
+        });
 
         document.getElementById('btnLogout').onclick = () => auth.signOut();
+        btnOpenModal.addEventListener('click', openModal);
+        btnCancelModal.addEventListener('click', closeModal);
+        userModal.addEventListener('click', (e) => { if (e.target === userModal) closeModal(); });
+
+        if (btnMenu) {
+            btnMenu.addEventListener('click', () => {
+                sidebar.classList.add('open');
+                overlay.classList.add('open');
+                if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
+            });
+        }
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+                if (window.innerWidth <= 1024) document.body.style.overflow = 'auto';
+            });
+        }
     </script>
 </body>
 </html>
