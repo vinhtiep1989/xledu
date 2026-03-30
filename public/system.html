@@ -71,6 +71,7 @@
         .action-btn { border: none; background: var(--grey-light); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; color: var(--text-dark); transition: 0.2s; }
         .action-btn:hover { background: #e9efec; }
         .btn-del { color: var(--danger-red); }
+        .btn-edit { color: var(--manager-blue); }
         .action-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
@@ -176,11 +177,13 @@
 
     <div class="modal" id="userModal">
         <div class="modal-content">
-            <h3 style="margin-bottom: 20px;">Tạo tài khoản</h3>
+            <h3 style="margin-bottom: 20px;" id="userModalTitle">Tạo tài khoản</h3>
             <form id="userForm">
+                <input type="hidden" id="u_mode" value="create">
+                <input type="hidden" id="u_edit_id" value="">
                 <div class="form-group"><label>Họ tên</label><input type="text" id="u_name" required></div>
-                <div class="form-group"><label>Email</label><input type="email" id="u_email" required></div>
-                <div class="form-group"><label>Mật khẩu khởi tạo</label><input type="text" id="u_pass" required minlength="6"></div>
+                <div class="form-group"><label>Email đăng nhập</label><input type="email" id="u_email" required></div>
+                <div class="form-group" id="passwordGroup"><label>Mật khẩu khởi tạo</label><input type="text" id="u_pass" required minlength="6"></div>
                 <div class="form-group"><label>SĐT</label><input type="tel" id="u_phone"></div>
                 <div class="form-group">
                     <label>Phân quyền</label>
@@ -190,7 +193,14 @@
                         <option value="admin">Admin</option>
                     </select>
                 </div>
-                <div class="form-help">Mật khẩu chỉ dùng để tạo tài khoản Firebase Auth. Hệ thống không lưu lại mật khẩu thô trong Firestore.</div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select id="u_status">
+                        <option value="active">Hoạt động</option>
+                        <option value="closed">Đã khóa</option>
+                    </select>
+                </div>
+                <div class="form-help" id="userFormHelp">Mật khẩu chỉ dùng để tạo tài khoản Firebase Auth. Hệ thống không lưu lại mật khẩu thô trong Firestore.</div>
                 <div class="form-actions">
                     <button type="button" class="btn-cancel" id="btnCancelModal">Hủy</button>
                     <button type="submit" class="btn-add-account" id="btnSubmitUser"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu</button>
@@ -222,6 +232,18 @@
         const btnOpenModal = document.getElementById('btnOpenModal');
         const btnCancelModal = document.getElementById('btnCancelModal');
         const userList = document.getElementById('user-list');
+        const userForm = document.getElementById('userForm');
+        const userModalTitle = document.getElementById('userModalTitle');
+        const inputMode = document.getElementById('u_mode');
+        const inputEditId = document.getElementById('u_edit_id');
+        const inputName = document.getElementById('u_name');
+        const inputEmail = document.getElementById('u_email');
+        const inputPassword = document.getElementById('u_pass');
+        const inputPhone = document.getElementById('u_phone');
+        const inputRole = document.getElementById('u_role');
+        const inputStatus = document.getElementById('u_status');
+        const passwordGroup = document.getElementById('passwordGroup');
+        const userFormHelp = document.getElementById('userFormHelp');
 
         function normalizeEmail(email) {
             return String(email || '').trim().toLowerCase();
@@ -323,16 +345,74 @@
             return 'Không thể tạo tài khoản trên Firebase Auth: ' + code;
         }
 
+
+        function setUserFormMode(mode, data = {}, docId = '') {
+            inputMode.value = mode;
+            inputEditId.value = docId;
+            inputName.value = data.name || '';
+            inputEmail.value = data.email || '';
+            inputPhone.value = data.phone || '';
+            inputRole.value = data.role || 'teacher';
+            inputStatus.value = data.status || data.accountStatus || 'active';
+            inputPassword.value = '';
+
+            if (mode === 'edit') {
+                userModalTitle.textContent = 'Chỉnh sửa tài khoản';
+                inputEmail.disabled = true;
+                inputPassword.required = false;
+                passwordGroup.style.display = 'none';
+                userFormHelp.textContent = 'Chế độ chỉnh sửa chỉ cập nhật hồ sơ Firestore: họ tên, SĐT, phân quyền và trạng thái. Email đăng nhập và mật khẩu Firebase Auth chưa đổi trực tiếp ở màn hình này.';
+                return;
+            }
+
+            userModalTitle.textContent = 'Tạo tài khoản';
+            inputEditId.value = '';
+            inputEmail.disabled = false;
+            inputPassword.required = true;
+            passwordGroup.style.display = '';
+            inputStatus.value = 'active';
+            userFormHelp.textContent = 'Mật khẩu chỉ dùng để tạo tài khoản Firebase Auth. Hệ thống không lưu lại mật khẩu thô trong Firestore.';
+        }
+
+        function resetUserForm() {
+            userForm.reset();
+            setUserFormMode('create');
+        }
+
+        async function openEditModal(id) {
+            if (!canManageAccounts()) {
+                showAlert('Chỉ Admin mới được chỉnh sửa tài khoản hệ thống.');
+                return;
+            }
+
+            try {
+                const docSnap = await db.collection('users').doc(id).get();
+                if (!docSnap.exists) {
+                    showAlert('Không tìm thấy hồ sơ tài khoản cần chỉnh sửa.');
+                    return;
+                }
+
+                const data = docSnap.data() || {};
+                setUserFormMode('edit', data, docSnap.id);
+                userModal.style.display = 'flex';
+            } catch (error) {
+                console.error(error);
+                showAlert('Không mở được dữ liệu tài khoản để chỉnh sửa.');
+            }
+        }
+
         function openModal() {
             if (!currentUserProfile || currentUserProfile.role !== 'admin') {
                 showAlert('Chỉ Admin mới được tạo tài khoản hệ thống.');
                 return;
             }
+            resetUserForm();
             userModal.style.display = 'flex';
         }
 
         function closeModal() {
             userModal.style.display = 'none';
+            resetUserForm();
         }
 
         function canManageAccounts() {
@@ -370,10 +450,10 @@
                     const status = d.status || d.accountStatus || 'active';
                     const disableActions = !canManageAccounts();
                     const selfDoc = isCurrentUserDoc(d, d.id);
-                    const safeId = JSON.stringify(d.id);
                     const lockTitle = status === 'closed' ? 'Mở khóa' : 'Khóa tài khoản';
+                    const editDisabled = disableActions ? 'disabled' : '';
                     const deleteDisabled = disableActions || selfDoc ? 'disabled' : '';
-                    const lockDisabled = disableActions ? 'disabled' : '';
+                    const lockDisabled = disableActions || selfDoc ? 'disabled' : '';
 
                     userList.innerHTML += `
                         <tr style="${status === 'closed' ? 'opacity:0.55;' : ''}">
@@ -385,8 +465,9 @@
                             <td>${getRoleBadge(d.role || 'teacher')}</td>
                             <td>${getStatusBadge(status)}</td>
                             <td style="text-align: right; white-space: nowrap;">
-                                <button class="action-btn" title="${lockTitle}" onclick="toggleStatus(${safeId}, '${status}')" ${lockDisabled}><i class="fa-solid ${status === 'closed' ? 'fa-unlock' : 'fa-lock'}"></i></button>
-                                <button class="action-btn btn-del" title="Xóa hồ sơ" onclick="deleteAcc(${safeId})" ${deleteDisabled}><i class="fa-solid fa-trash"></i></button>
+                                <button type="button" class="action-btn btn-edit js-user-action" data-action="edit" data-user-id="${escapeHtml(String(d.id || ''))}" title="Chỉnh sửa" ${editDisabled}><i class="fa-solid fa-pen"></i></button>
+                                <button type="button" class="action-btn js-user-action" data-action="toggle" data-user-id="${escapeHtml(String(d.id || ''))}" data-status="${escapeHtml(String(status || 'active'))}" title="${lockTitle}" ${lockDisabled}><i class="fa-solid ${status === 'closed' ? 'fa-unlock' : 'fa-lock'}"></i></button>
+                                <button type="button" class="action-btn btn-del js-user-action" data-action="delete" data-user-id="${escapeHtml(String(d.id || ''))}" title="Xóa hồ sơ" ${deleteDisabled}><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>`;
                 });
@@ -396,38 +477,81 @@
             });
         }
 
-        document.getElementById('userForm').onsubmit = async (e) => {
+        userForm.onsubmit = async (e) => {
             e.preventDefault();
 
             if (!canManageAccounts()) {
-                showAlert('Chỉ Admin mới được tạo tài khoản.');
+                showAlert('Chỉ Admin mới được thao tác tài khoản.');
                 return;
             }
 
             const submitBtn = document.getElementById('btnSubmitUser');
             const originalLabel = submitBtn.innerHTML;
-            const name = document.getElementById('u_name').value.trim();
-            const email = normalizeEmail(document.getElementById('u_email').value);
-            const password = document.getElementById('u_pass').value.trim();
-            const phone = document.getElementById('u_phone').value.trim();
-            const role = document.getElementById('u_role').value;
+            const mode = inputMode.value || 'create';
+            const editId = inputEditId.value.trim();
+            const name = inputName.value.trim();
+            const email = normalizeEmail(inputEmail.value);
+            const password = inputPassword.value.trim();
+            const phone = inputPhone.value.trim();
+            const role = inputRole.value;
+            const status = inputStatus.value || 'active';
 
-            if (!name || !email || !password) {
-                showAlert('Vui lòng nhập đầy đủ họ tên, email và mật khẩu.');
+            if (!name || !email) {
+                showAlert('Vui lòng nhập đầy đủ họ tên và email.');
                 return;
             }
-            if (password.length < 6) {
-                showAlert('Mật khẩu phải có ít nhất 6 ký tự.');
-                return;
+
+            if (mode === 'create') {
+                if (!password) {
+                    showAlert('Vui lòng nhập mật khẩu khởi tạo.');
+                    return;
+                }
+                if (password.length < 6) {
+                    showAlert('Mật khẩu phải có ít nhất 6 ký tự.');
+                    return;
+                }
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...';
-
-            let authUid = '';
-            let authCreated = false;
+            submitBtn.innerHTML = mode === 'edit'
+                ? '<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật...'
+                : '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...';
 
             try {
+                if (mode === 'edit') {
+                    const docRef = db.collection('users').doc(editId || email);
+                    const existingDoc = await docRef.get();
+                    if (!existingDoc.exists) {
+                        showAlert('Không tìm thấy hồ sơ tài khoản cần chỉnh sửa.');
+                        return;
+                    }
+
+                    const existingData = existingDoc.data() || {};
+                    if (isCurrentUserDoc(existingData, docRef.id) && (role !== 'admin' || status === 'closed')) {
+                        showAlert('Không thể tự hạ quyền hoặc tự khóa chính tài khoản đang đăng nhập.');
+                        return;
+                    }
+
+                    await docRef.set({
+                        uid: existingData.uid || existingData.authUid || '',
+                        authUid: existingData.authUid || existingData.uid || '',
+                        name: name,
+                        email: existingData.email || email,
+                        phone: phone,
+                        role: role,
+                        status: status,
+                        accountStatus: status,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+
+                    closeModal();
+                    showAlert('Đã cập nhật tài khoản thành công.');
+                    return;
+                }
+
+                let authUid = '';
+                let authCreated = false;
+
                 try {
                     const authData = await createAuthUserDirect(email, password);
                     authUid = authData.localId || '';
@@ -451,8 +575,8 @@
                     email: email,
                     phone: phone,
                     role: role,
-                    status: 'active',
-                    accountStatus: 'active',
+                    status: status,
+                    accountStatus: status,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
@@ -460,7 +584,7 @@
 
                 await docRef.set(payload, { merge: true });
                 closeModal();
-                e.target.reset();
+                userForm.reset();
 
                 if (authCreated) {
                     showAlert('Đã tạo tài khoản thành công. User đã được đẩy lên Firebase Authentication và Firestore.');
@@ -469,7 +593,11 @@
                 }
             } catch (error) {
                 console.error(error);
-                showAlert(translateAuthCreateError(error));
+                if (mode === 'edit') {
+                    showAlert('Lỗi cập nhật tài khoản: ' + (error && error.message ? error.message : 'Không xác định.'));
+                } else {
+                    showAlert(translateAuthCreateError(error));
+                }
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalLabel;
@@ -496,6 +624,13 @@
         window.toggleStatus = async function(id, status) {
             if (!canManageAccounts()) {
                 showAlert('Chỉ Admin mới được khóa/mở khóa tài khoản.');
+                return;
+            }
+
+            const docSnap = await db.collection('users').doc(id).get();
+            const docData = docSnap.exists ? (docSnap.data() || {}) : {};
+            if (isCurrentUserDoc(docData, id)) {
+                showAlert('Không thể tự khóa hoặc mở khóa chính tài khoản đang đăng nhập.');
                 return;
             }
 
@@ -531,9 +666,36 @@
         });
 
         document.getElementById('btnLogout').onclick = () => auth.signOut();
+        window.openEditModal = openEditModal;
         btnOpenModal.addEventListener('click', openModal);
         btnCancelModal.addEventListener('click', closeModal);
         userModal.addEventListener('click', (e) => { if (e.target === userModal) closeModal(); });
+
+        userList.addEventListener('click', async (e) => {
+            const button = e.target.closest('.js-user-action');
+            if (!button || button.disabled) return;
+
+            const action = button.dataset.action;
+            const id = button.dataset.userId;
+            if (!action || !id) return;
+
+            try {
+                if (action === 'edit') {
+                    await openEditModal(id);
+                    return;
+                }
+                if (action === 'toggle') {
+                    await window.toggleStatus(id, button.dataset.status || 'active');
+                    return;
+                }
+                if (action === 'delete') {
+                    await window.deleteAcc(id);
+                }
+            } catch (error) {
+                console.error(error);
+                showAlert('Không thực hiện được thao tác tài khoản.');
+            }
+        });
 
         if (btnMenu) {
             btnMenu.addEventListener('click', () => {
