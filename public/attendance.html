@@ -38,6 +38,7 @@
         .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
         .sidebar-nav-item:hover { color: #fff; transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
         .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); border: 1px solid rgba(46, 204, 113, 0.3); transform: translateX(4px); }
+        .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224, 170, 62, 0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; }
 
         /* GIAO DIỆN TRANG ĐIỂM DANH */
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
@@ -117,6 +118,24 @@
         .btn-save-att { background: var(--primary-green); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.85rem;}
         .btn-save-att:hover { background: #27ae60; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);}
 
+        .attendance-stats-panel-title { font-size: 1rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; margin-bottom: 12px; text-transform: uppercase; }
+        .attendance-stats-panel-title span { color: var(--primary-green); }
+        .attendance-teacher-stats { display: flex; flex-direction: column; gap: 12px; }
+        .attendance-summary-strip { display: flex; flex-wrap: wrap; gap: 10px; }
+        .attendance-summary-pill { min-width: 180px; flex: 1; padding: 10px 12px; border-radius: 10px; background: #f8faf9; border: 1px solid var(--border-grey); }
+        .attendance-summary-value { display: block; font-size: 1.2rem; font-weight: 800; color: var(--primary-green); line-height: 1.2; }
+        .attendance-summary-label { display: block; font-size: 0.78rem; color: #666; margin-top: 2px; }
+        .attendance-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+        .attendance-summary-card { background: #fff; border: 1px solid var(--border-grey); border-radius: 10px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .attendance-summary-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+        .attendance-summary-name { font-size: 0.95rem; font-weight: 800; color: var(--text-dark); line-height: 1.35; }
+        .attendance-summary-email { font-size: 0.76rem; color: #7f8c8d; margin-top: 3px; word-break: break-word; }
+        .attendance-summary-badge { flex-shrink: 0; padding: 6px 10px; border-radius: 999px; background: rgba(46, 204, 113, 0.12); color: #1f8f50; font-size: 0.78rem; font-weight: 800; white-space: nowrap; }
+        .attendance-summary-days-label { font-size: 0.74rem; font-weight: 700; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.4px; }
+        .attendance-summary-days { font-size: 0.83rem; color: var(--text-dark); line-height: 1.5; margin-top: 4px; }
+        .attendance-summary-updated { font-size: 0.75rem; color: #7f8c8d; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-grey); }
+        .attendance-teacher-empty { padding: 12px 15px; background: #f8faf9; border-radius: 8px; border: 1px dashed var(--border-grey); font-size: 0.85rem; color: #666; }
+
         /* MODAL THÊM HỌC SINH */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px;}
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
@@ -149,23 +168,58 @@
             .mobile-menu-btn { display: block; }
             .logo-placeholder { display: none; }
             .header-title { font-size: 1.25rem; letter-spacing: 1px; }
+            .header-subtitle { display: none; }
             .user-info { display: none; }
-            .btn-logout { padding: 5px 10px; font-size: 0.75rem; }
+            .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
 
-            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto;}
+            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto; box-shadow: 8px 0 24px rgba(0,0,0,0.25);}
             .sidebar.open { left: 0; }
             .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
             .sidebar-overlay.open { display: block; }
 
             .main-wrapper { display: block; height: auto; }
-            .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
-            .panel { padding: 10px; margin-bottom: 10px;} 
-            
-            .header-actions { width: 100%; display: flex; justify-content: space-between; margin-top: 5px;}
-            .header-actions button { flex: 1; justify-content: center; font-size: 0.75rem;}
-            .att-info-box { flex-direction: column; align-items: flex-start; gap: 10px;}
-            .att-legend { justify-content: space-between; }
-            .btn-save-att { width: 100%; }
+            .dashboard-content { display: block; padding: 12px; padding-bottom: 28px; height: auto; overflow: visible; }
+            .page-header { align-items: stretch; gap: 12px; }
+            .page-header > div:first-child { width: 100%; }
+            .page-title { font-size: 1rem; line-height: 1.4; flex-wrap: wrap; }
+            .panel { padding: 10px; margin-bottom: 12px; border-radius: 10px; }
+            .table-wrapper { max-height: none; overflow-y: visible; }
+            .att-table { min-width: 980px; font-size: 0.74rem; }
+            .att-table th, .att-table td { padding: 3px; }
+
+            .sticky-col-left-1 { width: 32px; min-width: 32px; max-width: 32px; }
+            .sticky-col-left-2 { left: 32px; width: 120px; min-width: 120px; max-width: 120px; }
+            .sticky-col-right-3 { right: 172px; width: 82px; min-width: 82px; max-width: 82px; }
+            .sticky-col-right-2 { right: 98px; width: 74px; min-width: 74px; max-width: 74px; }
+            .sticky-col-right-1 { width: 98px; min-width: 98px; max-width: 98px; }
+
+            .att-select { min-height: 32px; font-size: 0.76rem; padding: 3px 0; }
+            .tuition-input { min-height: 32px; font-size: 0.76rem; padding: 5px 3px; }
+
+            .header-actions { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 0; }
+            .header-actions button { width: 100%; min-height: 38px; justify-content: center; font-size: 0.74rem; line-height: 1.2; padding: 8px 6px; }
+
+            .attendance-stats-panel-title { font-size: 0.92rem; margin-bottom: 10px; }
+            .attendance-summary-strip { flex-direction: column; }
+            .attendance-summary-pill { min-width: 100%; }
+            .attendance-summary-grid { grid-template-columns: 1fr; gap: 8px; }
+            .attendance-summary-card { padding: 10px; }
+            .attendance-summary-card-top { flex-direction: column; align-items: flex-start; }
+            .attendance-summary-badge { white-space: normal; }
+
+            .att-footer-wrapper { gap: 12px; }
+            .att-legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 10px 12px; }
+            .att-legend strong { grid-column: 1 / -1; }
+            .att-info-box { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; }
+            .btn-save-att { width: 100%; min-height: 42px; }
+        }
+
+        @media (max-width: 768px) {
+            .header-title { font-size: 1.15rem; }
+            .page-title { font-size: 0.95rem; }
+            .btn-back { width: fit-content; }
+            .header-actions { grid-template-columns: 1fr; }
+            .att-legend { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -200,7 +254,8 @@
                 <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
                 <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
             </nav>
         </aside>
 
@@ -227,6 +282,13 @@
                         </tbody>
                         <tfoot id="attTfoot"></tfoot>
                     </table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="attendance-stats-panel-title"><i class="fa-solid fa-clipboard-user"></i> THỐNG KÊ <span>GIÁO VIÊN ĐIỂM DANH</span></div>
+                <div id="attendanceTeacherStats" class="attendance-teacher-stats">
+                    <div class="attendance-teacher-empty">Chưa có dữ liệu điểm danh trong tháng này.</div>
                 </div>
             </div>
 
@@ -317,6 +379,216 @@
         }
         window.showToast = showToast;
         let currentMonthDays = 0;
+        let currentMonthKey = '';
+        let currentMonthNumber = 0;
+        let currentYearNumber = 0;
+        let currentUserInfo = { email: '', displayName: '', role: 'teacher' };
+        let originalAttendanceSnapshot = {};
+        let attendanceTeacherLog = {};
+        let classRealtimeUnsubscribe = null;
+        let teacherDirectoryByEmail = {};
+
+        function normalizeEmail(email) {
+            return String(email || '').trim().toLowerCase();
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getTeacherDisplayName(userDocData, user) {
+            if (userDocData) {
+                return userDocData.fullName || userDocData.displayName || userDocData.name || user.email;
+            }
+            return user.email;
+        }
+
+        function formatFirestoreDateTime(value) {
+            if (!value) return 'Chưa rõ thời gian';
+            if (typeof value.toDate === 'function') return value.toDate().toLocaleString('vi-VN');
+            if (value.seconds) return new Date(value.seconds * 1000).toLocaleString('vi-VN');
+            return String(value);
+        }
+
+        function resolveTeacherName(record) {
+            const emailKey = normalizeEmail(record && record.teacherEmail);
+            return teacherDirectoryByEmail[emailKey] || (record && (record.teacherName || record.teacherEmail)) || 'Chưa rõ';
+        }
+
+        async function ensureTeacherDirectoryLoaded() {
+            const emailList = Array.from(new Set(
+                Object.values(attendanceTeacherLog || {})
+                    .map(record => normalizeEmail(record && record.teacherEmail))
+                    .filter(Boolean)
+            ));
+
+            const missingEmails = emailList.filter(email => !(email in teacherDirectoryByEmail));
+            if (missingEmails.length === 0) return;
+
+            const chunkSize = 10;
+            const tasks = [];
+            for (let i = 0; i < missingEmails.length; i += chunkSize) {
+                const chunk = missingEmails.slice(i, i + chunkSize);
+                tasks.push(
+                    db.collection("users").where("email", "in", chunk).get().then((snapshot) => {
+                        const foundEmails = new Set();
+                        snapshot.forEach((doc) => {
+                            const userData = doc.data() || {};
+                            const email = normalizeEmail(userData.email);
+                            if (!email) return;
+                            teacherDirectoryByEmail[email] = userData.fullName || userData.displayName || userData.name || userData.email || email;
+                            foundEmails.add(email);
+                        });
+                        chunk.forEach((email) => {
+                            if (!foundEmails.has(email) && !(email in teacherDirectoryByEmail)) {
+                                teacherDirectoryByEmail[email] = email;
+                            }
+                        });
+                    }).catch(() => {
+                        chunk.forEach((email) => {
+                            if (!(email in teacherDirectoryByEmail)) teacherDirectoryByEmail[email] = email;
+                        });
+                    })
+                );
+            }
+            await Promise.all(tasks);
+        }
+
+        function buildAttendanceTeacherSummary() {
+            const summaryMap = {};
+            const sortedDays = Object.keys(attendanceTeacherLog || {})
+                .filter(day => attendanceTeacherLog[day])
+                .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+            sortedDays.forEach(day => {
+                const record = attendanceTeacherLog[day] || {};
+                const teacherEmail = normalizeEmail(record.teacherEmail);
+                const teacherName = resolveTeacherName(record);
+                const key = teacherEmail || teacherName;
+                if (!summaryMap[key]) {
+                    summaryMap[key] = {
+                        teacherName,
+                        teacherEmail: record.teacherEmail || '',
+                        days: [],
+                        updatedAt: record.updatedAt || null
+                    };
+                }
+                summaryMap[key].teacherName = teacherName;
+                if (!summaryMap[key].teacherEmail && record.teacherEmail) summaryMap[key].teacherEmail = record.teacherEmail;
+                summaryMap[key].days.push(parseInt(day, 10));
+                if (record.updatedAt) summaryMap[key].updatedAt = record.updatedAt;
+            });
+
+            return Object.values(summaryMap)
+                .map(item => ({ ...item, sessionCount: item.days.length }))
+                .sort((a, b) => {
+                    if (b.sessionCount !== a.sessionCount) return b.sessionCount - a.sessionCount;
+                    return a.teacherName.localeCompare(b.teacherName, 'vi');
+                });
+        }
+
+        function renderAttendanceTeacherStats() {
+            const statsContainer = document.getElementById('attendanceTeacherStats');
+            if (!statsContainer) return;
+
+            const summaryItems = buildAttendanceTeacherSummary();
+            const totalSessions = Object.keys(attendanceTeacherLog || {}).filter(day => attendanceTeacherLog[day]).length;
+
+            if (summaryItems.length === 0) {
+                statsContainer.innerHTML = '<div class="attendance-teacher-empty">Chưa có dữ liệu điểm danh trong tháng này.</div>';
+                return;
+            }
+
+            const cardsHtml = summaryItems.map(item => {
+                const safeName = escapeHtml(item.teacherName || 'Chưa rõ');
+                const safeEmail = escapeHtml(item.teacherEmail || '');
+                const emailHtml = safeEmail && safeEmail.toLowerCase() !== safeName.toLowerCase()
+                    ? `<div class="attendance-summary-email">${safeEmail}</div>`
+                    : '';
+                const daysText = item.days.map(day => String(day).padStart(2, '0')).join(', ');
+                const sessionText = item.sessionCount === 1 ? '1 buổi' : `${item.sessionCount} buổi`;
+                return `
+                    <div class="attendance-summary-card">
+                        <div class="attendance-summary-card-top">
+                            <div>
+                                <div class="attendance-summary-name">${safeName}</div>
+                                ${emailHtml}
+                            </div>
+                            <div class="attendance-summary-badge">${sessionText}/tháng</div>
+                        </div>
+                        <div class="attendance-summary-days-label">Ngày dạy</div>
+                        <div class="attendance-summary-days">${daysText}</div>
+                        <div class="attendance-summary-updated">Cập nhật gần nhất: ${escapeHtml(formatFirestoreDateTime(item.updatedAt))}</div>
+                    </div>
+                `;
+            }).join('');
+
+            statsContainer.innerHTML = `
+                <div class="attendance-summary-strip">
+                    <div class="attendance-summary-pill">
+                        <span class="attendance-summary-value">${totalSessions}</span>
+                        <span class="attendance-summary-label">Buổi đã điểm danh trong tháng</span>
+                    </div>
+                    <div class="attendance-summary-pill">
+                        <span class="attendance-summary-value">${summaryItems.length}</span>
+                        <span class="attendance-summary-label">Giáo viên tham gia giảng dạy</span>
+                    </div>
+                </div>
+                <div class="attendance-summary-grid">${cardsHtml}</div>
+            `;
+        }
+
+        function subscribeClassRealtime() {
+            if (classRealtimeUnsubscribe) classRealtimeUnsubscribe();
+
+            classRealtimeUnsubscribe = db.collection("classes").doc(classId).onSnapshot(async (doc) => {
+                if (!doc.exists) return;
+                const data = doc.data() || {};
+                attendanceTeacherLog = (data.attendanceTeacherLog && data.attendanceTeacherLog[currentMonthKey]) || {};
+                await ensureTeacherDirectoryLoaded();
+                renderAttendanceTeacherStats();
+            });
+        }
+
+        function captureOriginalAttendanceSnapshot(snapshot) {
+            originalAttendanceSnapshot = {};
+            snapshot.forEach((doc) => {
+                const st = doc.data() || {};
+                const attendanceRecord = st.attendance || {};
+                originalAttendanceSnapshot[doc.id] = { attendance: {}, tuition: st.tuition || 0 };
+
+                for (let i = 1; i <= currentMonthDays; i++) {
+                    originalAttendanceSnapshot[doc.id].attendance[i] = attendanceRecord[i] || "";
+                }
+            });
+        }
+
+        function getChangedAttendanceDays() {
+            const changedDays = new Set();
+
+            studentsData.forEach(st => {
+                for (let i = 1; i <= currentMonthDays; i++) {
+                    const currentSelect = document.querySelector(`.day-select-${st.id}[data-day="${i}"]`);
+                    const currentValue = currentSelect ? currentSelect.value : "";
+                    const originalValue = (originalAttendanceSnapshot[st.id] && originalAttendanceSnapshot[st.id].attendance[i]) || "";
+                    if (currentValue !== originalValue) changedDays.add(String(i));
+                }
+            });
+
+            return Array.from(changedDays);
+        }
+
+        function dayHasAnyAttendance(day) {
+            return studentsData.some(st => {
+                const select = document.querySelector(`.day-select-${st.id}[data-day="${day}"]`);
+                return select && select.value !== "";
+            });
+        }
 
         if(!classId) {
             alert("Lỗi: Không tìm thấy ID Lớp học!");
@@ -328,12 +600,25 @@
             if (user) {
                 document.getElementById('userEmailDisplay').textContent = user.email;
                 document.getElementById('attTeacherName').textContent = user.email;
-                
+
                 db.collection("users").where("email", "==", user.email).get().then(snap => {
-                    let role = "teacher"; 
-                    if(!snap.empty) { role = snap.docs[0].data().role; }
+                    let role = "teacher";
+                    let teacherDisplayName = user.email;
+                    if(!snap.empty) {
+                        const userData = snap.docs[0].data() || {};
+                        role = userData.role || "teacher";
+                        teacherDisplayName = getTeacherDisplayName(userData, user);
+                        const normalizedEmail = normalizeEmail(user.email);
+                        if (normalizedEmail) teacherDirectoryByEmail[normalizedEmail] = teacherDisplayName;
+                    }
+                    currentUserInfo = {
+                        email: user.email || '',
+                        displayName: teacherDisplayName,
+                        role: role
+                    };
+                    document.getElementById('attTeacherName').textContent = teacherDisplayName;
                     document.getElementById('userRoleDisplay').textContent = (role === 'admin') ? "Admin" : "Giáo viên";
-                    loadClassInfo(); 
+                    loadClassInfo();
                 });
             } else window.location.href = 'login.html';
         });
@@ -345,6 +630,7 @@
                     document.getElementById('displayClassName').innerText = data.className;
                     document.getElementById('displayClassTeacher').innerText = data.teacherNamesDisplay || data.teacherName || "Chưa có";
                     generateTableHeader();
+                    subscribeClassRealtime();
                     loadStudents();
                 } else {
                     alert("Lớp học này không còn tồn tại!");
@@ -355,8 +641,11 @@
 
         function generateTableHeader() {
             const now = new Date();
-            currentMonthDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-            document.getElementById('displayMonth').innerText = `${now.getMonth() + 1}/${now.getFullYear()}`;
+            currentYearNumber = now.getFullYear();
+            currentMonthNumber = now.getMonth() + 1;
+            currentMonthKey = `${currentYearNumber}_${String(currentMonthNumber).padStart(2, '0')}`;
+            currentMonthDays = new Date(currentYearNumber, currentMonthNumber, 0).getDate();
+            document.getElementById('displayMonth').innerText = `${currentMonthNumber}/${currentYearNumber}`;
             document.getElementById('attTime').innerText = now.toLocaleString('vi-VN');
 
             const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
@@ -693,15 +982,16 @@
         window.saveAttendance = function() {
             const btn = document.querySelector('.btn-save-att');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
-            
+
             const batch = db.batch();
-            
+            const changedDays = getChangedAttendanceDays();
+
             studentsData.forEach(st => {
                 const ref = db.collection("classes").doc(classId).collection("students").doc(st.id);
-                
+
                 let updateData = {};
                 let attRecord = {};
-                
+
                 document.querySelectorAll(`.day-select-${st.id}`).forEach(sel => {
                     if(sel.value !== "") attRecord[sel.dataset.day] = sel.value;
                 });
@@ -714,7 +1004,22 @@
             });
 
             const classRef = db.collection("classes").doc(classId);
-            batch.update(classRef, { status: "active" });
+            const classUpdateData = { status: "active" };
+
+            changedDays.forEach(day => {
+                const fieldPath = `attendanceTeacherLog.${currentMonthKey}.${day}`;
+                if (dayHasAnyAttendance(day)) {
+                    classUpdateData[fieldPath] = {
+                        teacherName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                        teacherEmail: currentUserInfo.email || '',
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                } else {
+                    classUpdateData[fieldPath] = firebase.firestore.FieldValue.delete();
+                }
+            });
+
+            batch.update(classRef, classUpdateData);
 
             batch.commit().then(() => {
                 showToast("Thành công!", "Dữ liệu điểm danh đã được lưu.");
@@ -725,8 +1030,32 @@
             });
         }
 
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('open'); });
-        document.getElementById('sidebarOverlay').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); });
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('open');
+            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        mobileMenuBtn.addEventListener('click', openSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+        document.querySelectorAll('.sidebar-nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) closeSidebar();
+            });
+        });
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) document.body.style.overflow = 'auto';
+        });
         document.getElementById('btnLogout').addEventListener('click', () => { if(confirm('Đăng xuất?')) auth.signOut(); });
     </script>
 </body>

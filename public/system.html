@@ -147,47 +147,149 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        let currentAuthUser = null;
+
+        function normalizeEmail(email) {
+            return String(email || '').trim().toLowerCase();
+        }
+
+        function translateFirebaseError(error) {
+            if (!error || !error.code) return (error && error.message) ? error.message : 'Đã xảy ra lỗi không xác định.';
+            if (error.code === 'auth/email-already-in-use') return 'Email này đã tồn tại trong Firebase Auth. Nếu đây là tài khoản cũ, hãy dùng đúng mật khẩu cũ hoặc kiểm tra lại danh sách tài khoản.';
+            if (error.code === 'auth/invalid-email') return 'Email không hợp lệ.';
+            if (error.code === 'auth/weak-password') return 'Mật khẩu phải có ít nhất 6 ký tự.';
+            if (error.code === 'auth/network-request-failed') return 'Lỗi kết nối mạng tới Firebase.';
+            return error.message || 'Đã xảy ra lỗi khi xử lý tài khoản.';
+        }
+
+        function getSecondaryAuth() {
+            let secondaryApp = firebase.apps.find(app => app.name === 'SecondaryAccountCreator');
+            if (!secondaryApp) secondaryApp = firebase.initializeApp(firebaseConfig, 'SecondaryAccountCreator');
+            return secondaryApp.auth();
+        }
 
         auth.onAuthStateChanged(user => {
             if (user) {
+                currentAuthUser = user;
                 document.getElementById('page-loader').style.display = 'none';
                 document.getElementById('userEmailDisplay').textContent = user.email;
                 loadUsers();
-            } else window.location.href = 'login.html';
+            } else {
+                window.location.href = 'login.html';
+            }
         });
 
         function loadUsers() {
             db.collection("users").onSnapshot(snap => {
-                const list = document.getElementById('user-list'); list.innerHTML = '';
+                const list = document.getElementById('user-list');
+                list.innerHTML = '';
                 let index = 1;
+
                 snap.forEach(doc => {
-                    const d = doc.data();
-                    const isClosed = d.status === 'closed';
+                    const d = doc.data() || {};
+                    const status = d.status || d.accountStatus || 'active';
+                    const isClosed = status === 'closed';
                     list.innerHTML += `<tr style="${isClosed ? 'opacity:0.5' : ''}">
                         <td>${index++}</td>
-                        <td><strong>${d.name}</strong></td>
-                        <td>${d.email}</td>
-                        <td><span id="p-${doc.id}">********</span> <button class="action-btn" onclick="togglePass('${doc.id}','${d.password}')"><i class="fa-solid fa-eye"></i></button></td>
+                        <td><strong>${d.name || ''}</strong></td>
+                        <td>${d.email || ''}</td>
+                        <td><span id="p-${doc.id}">********</span> <button class="action-btn" onclick="togglePass('${doc.id}','${(d.password || '').replace(/'/g, "\'")}')"><i class="fa-solid fa-eye"></i></button></td>
                         <td>${d.phone || '---'}</td>
-                        <td><span class="admin-badge" style="background:${d.role==='admin'?'':'rgba(46,204,113,0.1)'}; color:${d.role==='admin'?'':'#2ecc71'}">${d.role}</span></td>
+                        <td><span class="admin-badge" style="background:${d.role==='admin'?'':'rgba(46,204,113,0.1)'}; color:${d.role==='admin'?'':'#2ecc71'}">${d.role || 'teacher'}</span></td>
                         <td style="text-align: right;">
-                            <button class="action-btn" onclick="toggleStatus('${doc.id}','${d.status}')"><i class="fa-solid ${isClosed?'fa-unlock':'fa-lock'}"></i></button>
+                            <button class="action-btn" onclick="toggleStatus('${doc.id}','${status}')"><i class="fa-solid ${isClosed?'fa-unlock':'fa-lock'}"></i></button>
                             <button class="action-btn btn-del" onclick="deleteAcc('${doc.id}')"><i class="fa-solid fa-trash"></i></button>
                         </td></tr>`;
                 });
             });
         }
 
-        function togglePass(id, p) { const el = document.getElementById('p-'+id); el.innerText = el.innerText === '********' ? p : '********'; }
+        function togglePass(id, p) {
+            const el = document.getElementById('p-' + id);
+            el.innerText = el.innerText === '********' ? p : '********';
+        }
+
         function openModal() { document.getElementById('userModal').style.display = 'flex'; }
         function closeModal() { document.getElementById('userModal').style.display = 'none'; }
-        document.getElementById('userForm').onsubmit = (e) => {
+
+        document.getElementById('userForm').onsubmit = async (e) => {
             e.preventDefault();
-            db.collection("users").add({ name: document.getElementById('u_name').value, email: document.getElementById('u_email').value, password: document.getElementById('u_pass').value, phone: document.getElementById('u_phone').value, role: document.getElementById('u_role').value, status: 'active' })
-            .then(() => { closeModal(); e.target.reset(); });
+
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalLabel = submitBtn.innerHTML;
+            const name = document.getElementById('u_name').value.trim();
+            const email = normalizeEmail(document.getElementById('u_email').value);
+            const password = document.getElementById('u_pass').value.trim();
+            const phone = document.getElementById('u_phone').value.trim();
+            const role = document.getElementById('u_role').value;
+
+            if (!name || !email || !password) {
+                alert('Vui lòng nhập đầy đủ họ tên, email và mật khẩu.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo...';
+
+            const secondaryAuth = getSecondaryAuth();
+
+            try {
+                const cred = await secondaryAuth.createUserWithEmailAndPassword(email, password);
+                const uid = cred.user.uid;
+                const existingSnap = await db.collection('users').where('email', '==', email).get();
+
+                const payload = {
+                    uid: uid,
+                    name: name,
+                    email: email,
+                    password: password,
+                    phone: phone,
+                    role: role,
+                    status: 'active',
+                    accountStatus: 'active',
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (existingSnap.empty) {
+                    payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('users').doc(uid).set(payload, { merge: true });
+                } else {
+                    await existingSnap.docs[0].ref.set(payload, { merge: true });
+                }
+
+                await secondaryAuth.signOut();
+                closeModal();
+                form.reset();
+                alert('Đã tạo tài khoản đăng nhập thành công. Tài khoản mới đã được đẩy lên Firebase Auth và Firestore.');
+            } catch (error) {
+                try { await secondaryAuth.signOut(); } catch (_) {}
+                alert('Lỗi tạo tài khoản: ' + translateFirebaseError(error));
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalLabel;
+            }
         };
-        function deleteAcc(id) { if(confirm('Xác nhận xóa?')) db.collection("users").doc(id).delete(); }
-        function toggleStatus(id, s) { const n = s === 'closed' ? 'active' : 'closed'; if(confirm('Xác nhận thao tác?')) db.collection("users").doc(id).update({ status: n }); }
+
+        function deleteAcc(id) {
+            if (currentAuthUser && currentAuthUser.uid === id) {
+                alert('Không thể xóa chính tài khoản đang đăng nhập.');
+                return;
+            }
+            if (confirm('Xác nhận xóa?')) db.collection('users').doc(id).delete();
+        }
+
+        function toggleStatus(id, s) {
+            const n = s === 'closed' ? 'active' : 'closed';
+            if (confirm('Xác nhận thao tác?')) {
+                db.collection('users').doc(id).update({
+                    status: n,
+                    accountStatus: n,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        }
+
         document.getElementById('btnLogout').onclick = () => auth.signOut();
     </script>
 </body>
