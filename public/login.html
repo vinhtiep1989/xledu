@@ -9,6 +9,7 @@
     
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <style>
         :root { --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --input-bg: #f8faf9; --border-grey: #e8f1ec; }
@@ -146,40 +147,119 @@
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-
-        auth.onAuthStateChanged((user) => { if (user) window.location.href = 'index.html'; });
+        const db = firebase.firestore();
 
         // --- XỬ LÝ POPUP LIÊN HỆ & QUÊN MẬT KHẨU ---
         const contactBtn = document.getElementById('openContactModal');
-        const forgotBtn = document.getElementById('openForgotModal'); // Bắt sự kiện nút Quên mật khẩu
+        const forgotBtn = document.getElementById('openForgotModal');
         const contactModal = document.getElementById('contactModal');
         const closeContactBtn = document.getElementById('closeContactModal');
+        const emailInput = document.getElementById('email');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('btnText');
+        const loadingIcon = document.getElementById('loadingIcon');
+        const errorMessage = document.getElementById('errorMessage');
+        let authCheckInProgress = false;
 
-        // Hàm mở Popup
-        const showModal = (e) => { 
-            e.preventDefault(); 
-            contactModal.classList.add('show'); 
-        };
+        function normalizeEmail(email) {
+            return String(email || '').trim().toLowerCase();
+        }
 
-        // Gắn sự kiện click cho cả 2 nút
+        function showModal(e) {
+            e.preventDefault();
+            contactModal.classList.add('show');
+        }
+
+        function setLoadingState(isLoading) {
+            btnText.textContent = isLoading ? 'Đang xác thực...' : 'Đăng nhập ngay';
+            loadingIcon.style.display = isLoading ? 'inline-block' : 'none';
+            loginBtn.style.opacity = isLoading ? '0.8' : '1';
+            loginBtn.disabled = isLoading;
+        }
+
+        function showError(message) {
+            errorMessage.style.display = 'block';
+            errorMessage.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> ' + message;
+            setLoadingState(false);
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        async function getUserProfileByEmail(email) {
+            const normalizedEmail = normalizeEmail(email);
+            if (!normalizedEmail) return null;
+
+            const directDoc = await db.collection('users').doc(normalizedEmail).get().catch(() => null);
+            if (directDoc && directDoc.exists) {
+                return { id: directDoc.id, ...(directDoc.data() || {}) };
+            }
+
+            const snap = await db.collection('users').where('email', '==', normalizedEmail).limit(1).get();
+            if (!snap.empty) {
+                return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
+            }
+
+            return null;
+        }
+
+        function isAccountClosed(profile) {
+            if (!profile) return false;
+            const status = String(profile.status || profile.accountStatus || 'active').toLowerCase();
+            return status === 'closed' || status === 'inactive' || status === 'disabled' || status === 'locked';
+        }
+
+        async function validateSignedInUser(user) {
+            if (!user || authCheckInProgress) return;
+            authCheckInProgress = true;
+
+            try {
+                const profile = await getUserProfileByEmail(user.email);
+
+                if (!profile) {
+                    await auth.signOut();
+                    showError('Tài khoản chưa được cấp quyền trên hệ thống. Vui lòng liên hệ Admin.');
+                    return;
+                }
+
+                if (isAccountClosed(profile)) {
+                    await auth.signOut();
+                    showError('Tài khoản đang bị khóa. Vui lòng liên hệ Admin để được cấp lại quyền truy cập.');
+                    return;
+                }
+
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error(error);
+                try { await auth.signOut(); } catch (_) {}
+                showError('Không kiểm tra được trạng thái tài khoản. Vui lòng thử lại sau.');
+            } finally {
+                authCheckInProgress = false;
+            }
+        }
+
+        auth.onAuthStateChanged((user) => {
+            if (user) validateSignedInUser(user);
+        });
+
         contactBtn.addEventListener('click', showModal);
         forgotBtn.addEventListener('click', showModal);
-
-        // Đóng Popup
         closeContactBtn.addEventListener('click', () => contactModal.classList.remove('show'));
         contactModal.addEventListener('click', (e) => { if (e.target === contactModal) contactModal.classList.remove('show'); });
 
-        // --- Nhớ tài khoản ---
-        const emailInput = document.getElementById('email');
-        const rememberMeCheckbox = document.getElementById('rememberMe');
         document.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem('xl_saved_email');
-            if (savedEmail) { emailInput.value = savedEmail; rememberMeCheckbox.checked = true; }
+            if (savedEmail) {
+                emailInput.value = savedEmail;
+                rememberMeCheckbox.checked = true;
+            }
         });
 
-        // --- Ẩn/Hiện pass ---
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
         togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
@@ -187,45 +267,28 @@
             this.classList.toggle('fa-eye-slash');
         });
 
-        // --- Đăng nhập ---
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const btnText = document.getElementById('btnText');
-        const loadingIcon = document.getElementById('loadingIcon');
-        const errorMessage = document.getElementById('errorMessage');
-
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            const email = emailInput.value;
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = normalizeEmail(emailInput.value);
             const password = passwordInput.value;
 
-            errorMessage.style.display = 'none';
-            btnText.textContent = 'Đang xác thực...';
-            loadingIcon.style.display = 'inline-block';
-            loginBtn.style.opacity = '0.8';
-            loginBtn.disabled = true;
+            hideError();
+            setLoadingState(true);
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    if (rememberMeCheckbox.checked) localStorage.setItem('xl_saved_email', email);
-                    else localStorage.removeItem('xl_saved_email');
-                    window.location.href = 'index.html';
-                })
-                .catch((error) => {
-                    errorMessage.style.display = 'block';
-                    if (['auth/invalid-login-credentials', 'auth/user-not-found', 'auth/wrong-password', 'auth/invalid-credential'].includes(error.code)) {
-                        errorMessage.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Tài khoản hoặc mật khẩu không đúng!';
-                    } else if (error.code === 'auth/too-many-requests') {
-                        errorMessage.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Bạn đã thử quá nhiều lần. Vui lòng thử lại sau!';
-                    } else {
-                        errorMessage.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Lỗi hệ thống, vui lòng thử lại!';
-                        console.error(error);
-                    }
-                    btnText.textContent = 'Đăng nhập ngay';
-                    loadingIcon.style.display = 'none';
-                    loginBtn.style.opacity = '1';
-                    loginBtn.disabled = false;
-                });
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                if (rememberMeCheckbox.checked) localStorage.setItem('xl_saved_email', email);
+                else localStorage.removeItem('xl_saved_email');
+            } catch (error) {
+                if (['auth/invalid-login-credentials', 'auth/user-not-found', 'auth/wrong-password', 'auth/invalid-credential'].includes(error.code)) {
+                    showError('Tài khoản hoặc mật khẩu không đúng!');
+                } else if (error.code === 'auth/too-many-requests') {
+                    showError('Bạn đã thử quá nhiều lần. Vui lòng thử lại sau!');
+                } else {
+                    console.error(error);
+                    showError('Lỗi hệ thống, vui lòng thử lại!');
+                }
+            }
         });
     </script>
 </body>
