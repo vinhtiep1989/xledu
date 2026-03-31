@@ -156,7 +156,7 @@
         
         <div class="header-user">
             <div class="user-info">
-                Chào, Admin
+                Chào, <span id="currentUserName">...</span>
                 <div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div>
             </div>
             <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
@@ -170,7 +170,7 @@
             <nav class="sidebar-nav">
                 <a href="index.html" class="sidebar-nav-item active"><i class="fa-solid fa-house"></i> Trang chủ</a>
                 <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
+                <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
@@ -182,26 +182,26 @@
             <div class="statistics-grid">
                 <div class="stat-card">
                     <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-user-graduate"></i></div><div class="stat-card-title">Tổng học sinh</div></div>
-                    <div class="stat-card-number" id="stat-students">0</div><div class="stat-card-subtitle">Cập nhật tự động</div>
+                    <div class="stat-card-number" id="stat-students">0</div><div class="stat-card-subtitle">Đồng bộ từ Quản lý học sinh</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-chalkboard-user"></i></div><div class="stat-card-title">Tổng giáo viên</div></div>
-                    <div class="stat-card-number" id="stat-teachers">0</div><div class="stat-card-subtitle">Cập nhật tự động</div>
+                    <div class="stat-card-number" id="stat-teachers">0</div><div class="stat-card-subtitle">Đồng bộ hồ sơ giáo viên</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-book"></i></div><div class="stat-card-title">Lớp học đang mở</div></div>
-                    <div class="stat-card-number" id="stat-classes">0</div><div class="stat-card-subtitle">Cập nhật tự động</div>
+                    <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-book-open-reader"></i></div><div class="stat-card-title">Lớp học đang mở</div></div>
+                    <div class="stat-card-number" id="stat-classes">0</div><div class="stat-card-subtitle">Tính theo điểm danh thời gian thật</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-briefcase"></i></div><div class="stat-card-title">Nhân sự nội bộ</div></div>
-                    <div class="stat-card-number" id="stat-admins">0</div><div class="stat-card-subtitle">Cập nhật tự động</div>
+                    <div class="stat-card-number" id="stat-admins">0</div><div class="stat-card-subtitle">Lấy từ cột chức danh, trừ giáo viên</div>
                 </div>
             </div>
 
             <div class="dashboard-bottom-grid">
                 <div class="panel">
                     <div class="panel-header">
-                        <div><h3>Các lớp đang hoạt động</h3><p class="panel-header-subtitle">Danh sách các lớp có phát sinh điểm danh gần đây.</p></div>
+                        <div><h3>Các lớp đang hoạt động</h3><p class="panel-header-subtitle">Lớp được tính là đang học khi có điểm danh hôm nay trong 130 phút gần nhất. Sĩ số = đi học + muộn / tổng sĩ số lớp.</p></div>
                         <a href="classes.html" class="btn-view-details">Xem tất cả</a>
                     </div>
                     <div class="table-responsive">
@@ -219,13 +219,18 @@
                     <div class="quick-updates-list">
                         <div class="quick-update-item">
                             <div class="quick-update-icon"><i class="fa-solid fa-chalkboard"></i></div>
-                            <div class="quick-update-info"><div class="quick-update-title">Tổng số lớp</div><div class="quick-update-subtitle">Tất cả cơ sở</div></div>
+                            <div class="quick-update-info"><div class="quick-update-title">Tổng số lớp</div><div class="quick-update-subtitle">Đồng bộ từ quản lý lớp học</div></div>
                             <div class="quick-update-number" id="quick-total-classes">0</div>
                         </div>
                         <div class="quick-update-item">
-                            <div class="quick-update-icon"><i class="fa-solid fa-user-check"></i></div>
-                            <div class="quick-update-info"><div class="quick-update-title">Lớp đang học</div><div class="quick-update-subtitle">Đã điểm danh</div></div>
-                            <div class="quick-update-number" id="quick-active-classes">0</div>
+                            <div class="quick-update-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                            <div class="quick-update-info"><div class="quick-update-title">Lớp đã điểm danh / có ca học</div><div class="quick-update-subtitle">Tính theo dữ liệu điểm danh trong ngày</div></div>
+                            <div class="quick-update-number" id="quick-attendance-classes">0/0</div>
+                        </div>
+                        <div class="quick-update-item">
+                            <div class="quick-update-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="quick-update-info"><div class="quick-update-title">Học sinh đang học / toàn công ty</div><div class="quick-update-subtitle">Đi học + muộn / tổng học sinh</div></div>
+                            <div class="quick-update-number" id="quick-learning-students">0/0</div>
                         </div>
                     </div>
                 </div>
@@ -247,116 +252,460 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('page-loader').style.display = 'none';
-                document.getElementById('userEmailDisplay').textContent = user.email;
-                loadDashboardData(); // Kéo dữ liệu khi đăng nhập thành công
-            } else window.location.href = 'login.html';
-        });
+        const DASHBOARD_CONFIG = {
+            teacherProfileCollection: 'teacherProfiles',
+            realtimeSessionMinutes: 120,
+            sessionGraceMinutes: 10,
+            maxFeaturedClasses: 5
+        };
 
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            if(confirm('Bạn có muốn đăng xuất hệ thống?')) auth.signOut();
-        });
+        const dashboardState = {
+            classes: [],
+            classStudents: {},
+            teacherProfiles: [],
+            users: []
+        };
 
-        // ------------------ HÀM KÉO DỮ LIỆU TỔNG QUAN ------------------
-        function loadDashboardData() {
-            // 1. Lắng nghe Dữ liệu Lớp học & Học sinh
-            db.collection("classes").onSnapshot((snapshot) => {
-                let totalStudents = 0;
-                let activeClasses = 0;
-                let totalClasses = 0;
-                let displayClasses = [];
+        const classStudentUnsubs = {};
+        let classesUnsub = null;
+        let teacherProfilesUnsub = null;
+        let usersUnsub = null;
 
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    totalClasses++;
-                    
-                    // Cộng dồn học sinh từ thuộc tính studentCount
-                    totalStudents += (data.studentCount || 0);
-                    
-                    if (data.status === 'active') {
-                        activeClasses++;
-                    }
+        function normalizeEmail(email) {
+            return String(email || '').trim().toLowerCase();
+        }
 
-                    displayClasses.push(data);
-                });
+        function normalizeText(value) {
+            return String(value || '').trim();
+        }
 
-                // Cập nhật số lên các thẻ thống kê
-                animateValue('stat-students', totalStudents);
-                animateValue('stat-classes', activeClasses);
-                animateValue('quick-active-classes', activeClasses);
-                animateValue('quick-total-classes', totalClasses);
+        function normalizeLoose(value) {
+            return normalizeText(value)
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[̀-ͯ]/g, '');
+        }
 
-                // Cập nhật Bảng danh sách lớp
-                const tbody = document.getElementById('dashboard-class-table');
-                tbody.innerHTML = '';
-                
-                // Ưu tiên hiển thị lớp "Đang hoạt động" lên đầu, giới hạn 5 lớp
-                displayClasses.sort((a, b) => (b.status === 'active' ? 1 : -1));
-                
-                let listToDisplay = displayClasses.slice(0, 5);
-                if (listToDisplay.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888; padding: 20px;">Chưa có lớp học nào trên hệ thống</td></tr>';
-                } else {
-                    listToDisplay.forEach(data => {
-                        let badge = data.status === 'active'
-                            ? '<span class="status-badge active"><i class="fa-solid fa-user-check"></i> Đang học</span>'
-                            : '<span class="status-badge soon"><i class="fa-solid fa-clock"></i> Chờ ĐD</span>';
-                        
-                        let teacherName = data.teacherNamesDisplay || data.teacherName || "Chưa phân công";
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
-                        tbody.innerHTML += `
-                            <tr>
-                                <td><strong>${data.classCode}</strong></td>
-                                <td style="font-weight:600;">${data.className}</td>
-                                <td style="text-align:center; font-weight:700;">${data.studentCount || 0}</td>
-                                <td>${teacherName}</td>
-                                <td>${badge}</td>
-                            </tr>
-                        `;
-                    });
-                }
-            });
+        function getRoleLabel(role) {
+            if (role === 'admin') return 'Admin';
+            if (role === 'manager') return 'Quản lý';
+            return 'Giáo viên';
+        }
 
-            // 2. Lắng nghe Dữ liệu Nhân sự (Giáo viên / Admin)
-            db.collection("users").onSnapshot((snapshot) => {
-                let totalTeachers = 0;
-                let totalAdmins = 0;
+        function getUserDisplayName(profile, user) {
+            const fullName = String(
+                (profile && (profile.name || profile.fullName || profile.displayName || profile.teacherName)) || ''
+            ).trim();
+            if (fullName) return fullName;
+            return getRoleLabel((profile && profile.role) || 'teacher');
+        }
 
-                snapshot.forEach(doc => {
-                    const role = doc.data().role;
-                    if (role === 'teacher') totalTeachers++;
-                    if (role === 'admin') totalAdmins++;
-                });
+        async function fetchCurrentUserProfile(user) {
+            const email = normalizeEmail(user && user.email);
 
-                // Nếu DB users chưa có người nào (do chưa làm module Users), tạo số giả lập cho đẹp
-                if (snapshot.empty) {
-                    totalTeachers = 5; 
-                    totalAdmins = 2;
-                }
+            const byEmailDoc = await db.collection('users').doc(email).get().catch(() => null);
+            if (byEmailDoc && byEmailDoc.exists) {
+                return { id: byEmailDoc.id, ...(byEmailDoc.data() || {}) };
+            }
 
-                animateValue('stat-teachers', totalTeachers);
-                animateValue('stat-admins', totalAdmins);
+            const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+            if (!snap.empty) {
+                return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
+            }
+
+            return {
+                id: user.uid,
+                uid: user.uid,
+                email: email,
+                name: user.email || '',
+                role: 'teacher',
+                status: 'active',
+                accountStatus: 'active'
+            };
+        }
+
+        function renderCurrentUserHeader(user, profile) {
+            const email = user && user.email ? user.email : '';
+            const displayName = getUserDisplayName(profile, user);
+
+            document.getElementById('userEmailDisplay').textContent = email;
+            document.getElementById('currentUserName').textContent = displayName;
+        }
+
+        function buildMonthKey(date = new Date()) {
+            return `${date.getFullYear()}_${String(date.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function getDateFromAny(value) {
+            if (!value) return null;
+            if (typeof value.toDate === 'function') return value.toDate();
+            if (typeof value.seconds === 'number') return new Date(value.seconds * 1000);
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        function getStudentSyncKey(student) {
+            const explicit = normalizeLoose(student && (student.syncStudentKey || student.syncKey));
+            if (explicit) return explicit;
+            const cccd = normalizeLoose(student && student.studentCccd);
+            if (cccd) return `cccd:${cccd}`;
+            const name = normalizeLoose(student && student.name);
+            const dob = normalizeLoose(student && student.dob);
+            const phone = normalizeLoose(student && student.parentPhone);
+            return `hs:${name}|${dob}|${phone}`;
+        }
+
+        function getTodayAttendanceStatus(student, now = new Date()) {
+            const attendance = (student && student.attendance) || {};
+            return normalizeText(attendance[String(now.getDate())] || '');
+        }
+
+        function countPresentStudents(students, now = new Date()) {
+            return (students || []).filter((student) => {
+                const status = getTodayAttendanceStatus(student, now);
+                return status === 'V' || status === 'M';
+            }).length;
+        }
+
+        function getTodayAttendanceRecord(classData, now = new Date()) {
+            const monthKey = buildMonthKey(now);
+            const dayKey = String(now.getDate());
+            return (((classData || {}).attendanceTeacherLog || {})[monthKey] || {})[dayKey] || null;
+        }
+
+        function isRealtimeActiveClass(classData, now = new Date()) {
+            const todayRecord = getTodayAttendanceRecord(classData, now);
+            const updatedAt = getDateFromAny(todayRecord && todayRecord.updatedAt);
+            if (!updatedAt) return false;
+            const diffMinutes = (now.getTime() - updatedAt.getTime()) / 60000;
+            const activeWindow = DASHBOARD_CONFIG.realtimeSessionMinutes + DASHBOARD_CONFIG.sessionGraceMinutes;
+            return diffMinutes >= 0 && diffMinutes <= activeWindow;
+        }
+
+        function hasAttendanceToday(classData, now = new Date()) {
+            const todayRecord = getTodayAttendanceRecord(classData, now);
+            return !!getDateFromAny(todayRecord && todayRecord.updatedAt);
+        }
+
+        function classHasScheduledSessionToday(classData, now = new Date()) {
+            const explicitCandidates = [
+                classData && classData.hasSessionToday,
+                classData && classData.sessionToday,
+                classData && classData.todayHasClass,
+                classData && classData.hasClassToday
+            ];
+            if (explicitCandidates.some((value) => value === true)) return true;
+
+            const weekdays = [
+                classData && classData.studyDays,
+                classData && classData.learningDays,
+                classData && classData.weekdays,
+                classData && classData.scheduleDays,
+                classData && classData.daysOfWeek
+            ].find((value) => Array.isArray(value));
+
+            if (Array.isArray(weekdays) && weekdays.length > 0) {
+                const today = now.getDay();
+                const normalizedDays = weekdays.map((item) => normalizeLoose(item));
+                const dayMap = {
+                    0: ['cn', 'chu nhat', 'sunday'],
+                    1: ['t2', 'thu 2', 'monday'],
+                    2: ['t3', 'thu 3', 'tuesday'],
+                    3: ['t4', 'thu 4', 'wednesday'],
+                    4: ['t5', 'thu 5', 'thursday'],
+                    5: ['t6', 'thu 6', 'friday'],
+                    6: ['t7', 'thu 7', 'saturday']
+                };
+                return dayMap[today].some((token) => normalizedDays.includes(token));
+            }
+
+            return normalizeLoose(classData && classData.status) === 'active';
+        }
+
+        function getTeacherLabel(classData) {
+            return normalizeText((classData && (classData.teacherNamesDisplay || classData.teacherName)) || 'Chưa phân công');
+        }
+
+        function getTeacherProfileTitle(profile) {
+            return normalizeLoose(
+                (profile && (
+                    profile.chucDanh ||
+                    profile.position ||
+                    profile.jobTitle ||
+                    profile.title ||
+                    profile.roleName ||
+                    profile.role ||
+                    profile.type
+                )) || ''
+            );
+        }
+
+        function isTeacherProfile(profile) {
+            const title = getTeacherProfileTitle(profile);
+            if (!title) return false;
+            return title === 'teacher' || title.includes('giao vien');
+        }
+
+        function isInternalStaffProfile(profile) {
+            const title = getTeacherProfileTitle(profile);
+            if (!title) return false;
+            return !isTeacherProfile(profile);
+        }
+
+        function setTextValue(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        }
+
+        function renderFeaturedClasses(classSummaries) {
+            const tbody = document.getElementById('dashboard-class-table');
+            if (!tbody) return;
+
+            const activeClasses = classSummaries
+                .filter((item) => item.isRealtimeActive)
+                .sort((a, b) => {
+                    const dateA = a.lastAttendanceAt ? a.lastAttendanceAt.getTime() : 0;
+                    const dateB = b.lastAttendanceAt ? b.lastAttendanceAt.getTime() : 0;
+                    if (dateB !== dateA) return dateB - dateA;
+                    return b.presentCount - a.presentCount;
+                })
+                .slice(0, DASHBOARD_CONFIG.maxFeaturedClasses);
+
+            if (activeClasses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888; padding:20px;">Hiện chưa có lớp nào đang học theo dữ liệu điểm danh thời gian thật.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = activeClasses.map((item) => `
+                <tr>
+                    <td><strong>${escapeHtml(item.classCode || '')}</strong></td>
+                    <td style="font-weight:600;">${escapeHtml(item.className || '')}</td>
+                    <td style="text-align:center; font-weight:700;">${item.presentCount} / ${item.totalCount}</td>
+                    <td>${escapeHtml(item.teacherLabel || 'Chưa phân công')}</td>
+                    <td><span class="status-badge active"><i class="fa-solid fa-user-check"></i> Đang học</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function buildClassSummaries(now = new Date()) {
+            return dashboardState.classes.map((classData) => {
+                const students = dashboardState.classStudents[classData.id] || [];
+                const presentCount = countPresentStudents(students, now);
+                const totalCount = students.length || Number(classData.studentCount || 0);
+                const todayRecord = getTodayAttendanceRecord(classData, now);
+                const lastAttendanceAt = getDateFromAny(todayRecord && todayRecord.updatedAt);
+
+                return {
+                    id: classData.id,
+                    classCode: classData.classCode || '',
+                    className: classData.className || '',
+                    teacherLabel: getTeacherLabel(classData),
+                    presentCount,
+                    totalCount,
+                    todayRecord,
+                    lastAttendanceAt,
+                    hasAttendanceToday: hasAttendanceToday(classData, now),
+                    isRealtimeActive: isRealtimeActiveClass(classData, now),
+                    hasScheduledSessionToday: classHasScheduledSessionToday(classData, now)
+                };
             });
         }
 
-        // Hiệu ứng nhảy số đẹp mắt
+        function getUniqueCompanyStudents() {
+            const uniqueStudents = new Map();
+            Object.values(dashboardState.classStudents).forEach((students) => {
+                (students || []).forEach((student) => {
+                    const key = getStudentSyncKey(student);
+                    if (!key) return;
+                    if (!uniqueStudents.has(key)) uniqueStudents.set(key, student);
+                });
+            });
+            return uniqueStudents;
+        }
+
+        function getActiveLearningStudentCount(classSummaries, now = new Date()) {
+            const activeStudents = new Set();
+            classSummaries
+                .filter((item) => item.isRealtimeActive)
+                .forEach((item) => {
+                    const students = dashboardState.classStudents[item.id] || [];
+                    students.forEach((student) => {
+                        const status = getTodayAttendanceStatus(student, now);
+                        if (status === 'V' || status === 'M') {
+                            activeStudents.add(getStudentSyncKey(student));
+                        }
+                    });
+                });
+            return activeStudents.size;
+        }
+
+        function renderTeacherAndInternalStats() {
+            const teacherProfiles = dashboardState.teacherProfiles || [];
+            if (teacherProfiles.length > 0) {
+                const teacherCount = teacherProfiles.filter(isTeacherProfile).length;
+                const internalCount = teacherProfiles.filter(isInternalStaffProfile).length;
+                animateValue('stat-teachers', teacherCount);
+                animateValue('stat-admins', internalCount);
+                return;
+            }
+
+            const users = dashboardState.users || [];
+            const teacherCount = users.filter((item) => normalizeLoose(item.role) === 'teacher').length;
+            const internalCount = users.filter((item) => {
+                const role = normalizeLoose(item.role);
+                return role && role !== 'teacher';
+            }).length;
+            animateValue('stat-teachers', teacherCount);
+            animateValue('stat-admins', internalCount);
+        }
+
+        function recomputeDashboard() {
+            const now = new Date();
+            const classSummaries = buildClassSummaries(now);
+            const uniqueStudents = getUniqueCompanyStudents();
+            const totalStudents = uniqueStudents.size;
+            const totalClasses = dashboardState.classes.length;
+            const realtimeActiveClasses = classSummaries.filter((item) => item.isRealtimeActive).length;
+            const checkedInTodayClasses = classSummaries.filter((item) => item.hasAttendanceToday).length;
+            const scheduledTodayClasses = classSummaries.filter((item) => item.hasScheduledSessionToday).length;
+            const activeLearningStudents = getActiveLearningStudentCount(classSummaries, now);
+
+            animateValue('stat-students', totalStudents);
+            animateValue('stat-classes', realtimeActiveClasses);
+            animateValue('quick-total-classes', totalClasses);
+            setTextValue('quick-attendance-classes', `${checkedInTodayClasses}/${scheduledTodayClasses}`);
+            setTextValue('quick-learning-students', `${activeLearningStudents}/${totalStudents}`);
+
+            renderTeacherAndInternalStats();
+            renderFeaturedClasses(classSummaries);
+        }
+
+        function subscribeStudentsForClass(classData) {
+            if (!classData || !classData.id) return;
+            if (classStudentUnsubs[classData.id]) classStudentUnsubs[classData.id]();
+
+            classStudentUnsubs[classData.id] = db.collection('classes').doc(classData.id).collection('students').onSnapshot((snapshot) => {
+                const students = [];
+                snapshot.forEach((doc) => students.push({ id: doc.id, ...(doc.data() || {}) }));
+                dashboardState.classStudents[classData.id] = students;
+                recomputeDashboard();
+            }, (error) => {
+                console.error('Lỗi tải học sinh của lớp:', classData.id, error);
+                dashboardState.classStudents[classData.id] = [];
+                recomputeDashboard();
+            });
+        }
+
+        function subscribeClasses() {
+            if (classesUnsub) classesUnsub();
+            classesUnsub = db.collection('classes').onSnapshot((snapshot) => {
+                const nextClasses = [];
+                const nextIds = new Set();
+
+                snapshot.forEach((doc) => {
+                    const data = { id: doc.id, ...(doc.data() || {}) };
+                    nextClasses.push(data);
+                    nextIds.add(doc.id);
+                    subscribeStudentsForClass(data);
+                });
+
+                Object.keys(classStudentUnsubs).forEach((classId) => {
+                    if (!nextIds.has(classId)) {
+                        classStudentUnsubs[classId]();
+                        delete classStudentUnsubs[classId];
+                        delete dashboardState.classStudents[classId];
+                    }
+                });
+
+                dashboardState.classes = nextClasses;
+                recomputeDashboard();
+            }, (error) => {
+                console.error('Lỗi tải danh sách lớp:', error);
+            });
+        }
+
+        function subscribeTeacherProfiles() {
+            if (teacherProfilesUnsub) teacherProfilesUnsub();
+            teacherProfilesUnsub = db.collection(DASHBOARD_CONFIG.teacherProfileCollection).onSnapshot((snapshot) => {
+                dashboardState.teacherProfiles = snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() || {}) }));
+                recomputeDashboard();
+            }, (error) => {
+                console.error('Không đọc được hồ sơ giáo viên:', error);
+                dashboardState.teacherProfiles = [];
+                recomputeDashboard();
+            });
+        }
+
+        function subscribeUsersFallback() {
+            if (usersUnsub) usersUnsub();
+            usersUnsub = db.collection('users').onSnapshot((snapshot) => {
+                dashboardState.users = snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() || {}) }));
+                recomputeDashboard();
+            }, (error) => {
+                console.error('Không đọc được users fallback:', error);
+                dashboardState.users = [];
+                recomputeDashboard();
+            });
+        }
+
+        function loadDashboardData() {
+            subscribeClasses();
+            subscribeTeacherProfiles();
+            subscribeUsersFallback();
+        }
+
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const profile = await fetchCurrentUserProfile(user);
+                    renderCurrentUserHeader(user, profile);
+                } catch (error) {
+                    console.error('Không đọc được hồ sơ người dùng:', error);
+                    renderCurrentUserHeader(user, {
+                        email: normalizeEmail(user.email || ''),
+                        name: user.email || '',
+                        role: 'teacher'
+                    });
+                }
+
+                document.getElementById('page-loader').style.display = 'none';
+                loadDashboardData();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            if (confirm('Bạn có muốn đăng xuất hệ thống?')) auth.signOut();
+        });
+
         function animateValue(id, endVal) {
             const obj = document.getElementById(id);
-            if(!obj) return;
-            
-            // Lấy giá trị hiện tại trên màn hình để làm điểm bắt đầu nhảy
-            let startVal = parseInt(obj.innerText.replace(/,/g, '')) || 0;
-            if(startVal === endVal) return; // Không đổi thì không nhảy
-            
+            if (!obj) return;
+
+            const numericEnd = Number(endVal) || 0;
+            const startVal = parseInt(String(obj.innerText || '0').replace(/,/g, ''), 10) || 0;
+            if (startVal === numericEnd) {
+                obj.textContent = numericEnd.toLocaleString('en-US');
+                return;
+            }
+
             const duration = 800;
             let startTimestamp = null;
-            
+
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = Math.floor(progress * (endVal - startVal) + startVal).toLocaleString('en-US');
+                obj.innerHTML = Math.floor(progress * (numericEnd - startVal) + startVal).toLocaleString('en-US');
                 if (progress < 1) {
                     window.requestAnimationFrame(step);
                 }
@@ -364,7 +713,6 @@
             window.requestAnimationFrame(step);
         }
 
-        // Xử lý Menu Mobile
         const btnMenu = document.getElementById('mobileMenuBtn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -372,32 +720,48 @@
         btnMenu.addEventListener('click', () => {
             sidebar.classList.add('open');
             overlay.classList.add('open');
-            if(window.innerWidth <= 1024) document.body.style.overflow = 'hidden'; 
+            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
         });
 
         overlay.addEventListener('click', () => {
             sidebar.classList.remove('open');
             overlay.classList.remove('open');
-            if(window.innerWidth <= 1024) document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
         });
 
-        // Đổi Logo (như cũ)
+        document.querySelectorAll('.sidebar-nav-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
         const logoContainer = document.getElementById('logo-container');
         const logoUpload = document.getElementById('logo-upload');
-        logoContainer.addEventListener('click', () => logoUpload.click());
-        logoUpload.addEventListener('change', function(e) {
-            if (e.target.files[0]) {
+        const successToast = document.getElementById('success-toast');
+
+        if (logoContainer && logoUpload) {
+            logoContainer.addEventListener('click', () => logoUpload.click());
+            logoUpload.addEventListener('change', (event) => {
+                const file = event.target.files && event.target.files[0];
+                if (!file) return;
+
                 const reader = new FileReader();
-                reader.onload = function(ev) {
-                    logoContainer.style.backgroundImage = `url(${ev.target.result})`;
-                    logoContainer.style.border = 'none';
-                    document.getElementById('logo-text').style.display = 'none';
-                    const toast = document.getElementById('success-toast');
-                    toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000);
-                }
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
+                reader.onload = function (e) {
+                    logoContainer.style.backgroundImage = `url('${e.target.result}')`;
+                    const logoText = document.getElementById('logo-text');
+                    if (logoText) logoText.style.display = 'none';
+                    if (successToast) {
+                        successToast.classList.add('show');
+                        setTimeout(() => successToast.classList.remove('show'), 2500);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
     </script>
 </body>
 </html>

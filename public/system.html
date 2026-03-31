@@ -72,6 +72,9 @@
         .action-btn:hover { background: #e9efec; }
         .btn-del { color: var(--danger-red); }
         .btn-edit { color: var(--manager-blue); }
+
+        .form-help { margin-top: -4px; margin-bottom: 12px; color: #6b7c93; font-size: 0.78rem; line-height: 1.5; }
+        .readonly-input { background: #eef3f7 !important; color: #5d6d7e; cursor: not-allowed; }
         .action-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
@@ -133,7 +136,7 @@
             <nav class="sidebar-nav">
                 <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
                 <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
+                <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
                 <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item active"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
@@ -183,7 +186,14 @@
                 <input type="hidden" id="u_edit_id" value="">
                 <div class="form-group"><label>Họ tên</label><input type="text" id="u_name" required></div>
                 <div class="form-group"><label>Email đăng nhập</label><input type="email" id="u_email" required></div>
-                <div class="form-group" id="passwordGroup"><label>Mật khẩu khởi tạo</label><input type="text" id="u_pass" required minlength="6"></div>
+                <div class="form-group" id="currentPasswordGroup" style="display:none;">
+                    <label>Mật khẩu hiện tại của tài khoản</label>
+                    <input type="text" id="u_current_pass" autocomplete="off">
+                </div>
+                <div class="form-group" id="passwordGroup">
+                    <label id="passwordLabel">Mật khẩu khởi tạo</label>
+                    <input type="text" id="u_pass" required minlength="6" autocomplete="off">
+                </div>
                 <div class="form-group"><label>SĐT</label><input type="tel" id="u_phone"></div>
                 <div class="form-group">
                     <label>Phân quyền</label>
@@ -200,7 +210,7 @@
                         <option value="closed">Đã khóa</option>
                     </select>
                 </div>
-                <div class="form-help" id="userFormHelp">Mật khẩu chỉ dùng để tạo tài khoản Firebase Auth. Hệ thống không lưu lại mật khẩu thô trong Firestore.</div>
+                <div class="form-help" id="userFormHelp">Mật khẩu khởi tạo sẽ được dùng để tạo Firebase Auth và lưu đồng bộ trong hồ sơ người dùng để Admin có thể cấp lại mật khẩu sau này.</div>
                 <div class="form-actions">
                     <button type="button" class="btn-cancel" id="btnCancelModal">Hủy</button>
                     <button type="submit" class="btn-add-account" id="btnSubmitUser"><i class="fa-solid fa-cloud-arrow-up"></i> Lưu</button>
@@ -238,11 +248,14 @@
         const inputEditId = document.getElementById('u_edit_id');
         const inputName = document.getElementById('u_name');
         const inputEmail = document.getElementById('u_email');
+        const inputCurrentPassword = document.getElementById('u_current_pass');
         const inputPassword = document.getElementById('u_pass');
         const inputPhone = document.getElementById('u_phone');
         const inputRole = document.getElementById('u_role');
         const inputStatus = document.getElementById('u_status');
+        const currentPasswordGroup = document.getElementById('currentPasswordGroup');
         const passwordGroup = document.getElementById('passwordGroup');
+        const passwordLabel = document.getElementById('passwordLabel');
         const userFormHelp = document.getElementById('userFormHelp');
 
         function normalizeEmail(email) {
@@ -335,14 +348,50 @@
             return data;
         }
 
+        async function signInWithPasswordDirect(email, password) {
+            const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + encodeURIComponent(firebaseConfig.apiKey), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, password: password, returnSecureToken: true })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                const code = data && data.error && data.error.message ? data.error.message : 'UNKNOWN_ERROR';
+                const err = new Error(code);
+                err.code = code;
+                throw err;
+            }
+            return data;
+        }
+
+        async function updateAuthPasswordDirect(idToken, newPassword) {
+            const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=' + encodeURIComponent(firebaseConfig.apiKey), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken: idToken, password: newPassword, returnSecureToken: false })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                const code = data && data.error && data.error.message ? data.error.message : 'UNKNOWN_ERROR';
+                const err = new Error(code);
+                err.code = code;
+                throw err;
+            }
+            return data;
+        }
+
         function translateAuthCreateError(error) {
             const code = (error && error.code) || (error && error.message) || 'UNKNOWN_ERROR';
             if (code.includes('EMAIL_EXISTS')) return 'Email này đã tồn tại trong Firebase Authentication. Hệ thống sẽ chỉ đồng bộ hồ sơ Firestore nếu cần.';
             if (code.includes('INVALID_EMAIL')) return 'Email không hợp lệ.';
             if (code.includes('WEAK_PASSWORD')) return 'Mật khẩu phải có ít nhất 6 ký tự.';
+            if (code.includes('INVALID_LOGIN_CREDENTIALS') || code.includes('INVALID_PASSWORD')) return 'Mật khẩu hiện tại không khớp với Firebase Authentication.';
+            if (code.includes('USER_DISABLED')) return 'Tài khoản này đang bị vô hiệu hóa trong Firebase Authentication.';
             if (code.includes('OPERATION_NOT_ALLOWED')) return 'Firebase Email/Password chưa được bật trong Authentication.';
             if (code.includes('TOO_MANY_ATTEMPTS_TRY_LATER')) return 'Firebase đang chặn tạm thời vì thao tác quá nhiều. Vui lòng thử lại sau.';
-            return 'Không thể tạo tài khoản trên Firebase Auth: ' + code;
+            return 'Không thể xử lý Firebase Auth: ' + code;
         }
 
 
@@ -354,24 +403,34 @@
             inputPhone.value = data.phone || '';
             inputRole.value = data.role || 'teacher';
             inputStatus.value = data.status || data.accountStatus || 'active';
+            inputCurrentPassword.value = '';
             inputPassword.value = '';
 
             if (mode === 'edit') {
                 userModalTitle.textContent = 'Chỉnh sửa tài khoản';
-                inputEmail.disabled = true;
+                inputEmail.readOnly = true;
+                inputEmail.classList.add('readonly-input');
+                currentPasswordGroup.style.display = '';
+                passwordGroup.style.display = '';
+                passwordLabel.textContent = 'Cấp lại mật khẩu mới';
                 inputPassword.required = false;
-                passwordGroup.style.display = 'none';
-                userFormHelp.textContent = 'Chế độ chỉnh sửa chỉ cập nhật hồ sơ Firestore: họ tên, SĐT, phân quyền và trạng thái. Email đăng nhập và mật khẩu Firebase Auth chưa đổi trực tiếp ở màn hình này.';
+                inputPassword.placeholder = 'Để trống nếu chưa đổi mật khẩu';
+                inputCurrentPassword.placeholder = 'Chỉ nhập khi hồ sơ cũ chưa lưu đúng mật khẩu hiện tại';
+                userFormHelp.textContent = 'Admin được sửa họ tên, SĐT, phân quyền, trạng thái và cấp lại mật khẩu. Email đăng nhập được giữ nguyên, kể cả Admin cũng không được sửa. Khi cấp lại mật khẩu, hệ thống sẽ đồng bộ luôn lên Firebase Authentication.';
                 return;
             }
 
             userModalTitle.textContent = 'Tạo tài khoản';
             inputEditId.value = '';
-            inputEmail.disabled = false;
-            inputPassword.required = true;
+            inputEmail.readOnly = false;
+            inputEmail.classList.remove('readonly-input');
+            currentPasswordGroup.style.display = 'none';
             passwordGroup.style.display = '';
+            passwordLabel.textContent = 'Mật khẩu khởi tạo';
+            inputPassword.required = true;
+            inputPassword.placeholder = '';
             inputStatus.value = 'active';
-            userFormHelp.textContent = 'Mật khẩu chỉ dùng để tạo tài khoản Firebase Auth. Hệ thống không lưu lại mật khẩu thô trong Firestore.';
+            userFormHelp.textContent = 'Mật khẩu khởi tạo sẽ được dùng để tạo Firebase Auth và lưu đồng bộ trong hồ sơ người dùng để Admin có thể cấp lại mật khẩu sau này.';
         }
 
         function resetUserForm() {
@@ -527,25 +586,54 @@
                     }
 
                     const existingData = existingDoc.data() || {};
+                    const fixedEmail = normalizeEmail(existingData.email || email);
+                    const newPassword = inputPassword.value.trim();
+                    let nextStoredPassword = existingData.password || '';
+                    let passwordChanged = false;
+
                     if (isCurrentUserDoc(existingData, docRef.id) && (role !== 'admin' || status === 'closed')) {
                         showAlert('Không thể tự hạ quyền hoặc tự khóa chính tài khoản đang đăng nhập.');
                         return;
+                    }
+
+                    if (newPassword) {
+                        if (newPassword.length < 6) {
+                            showAlert('Mật khẩu mới phải có ít nhất 6 ký tự.');
+                            return;
+                        }
+
+                        const currentKnownPassword = String(existingData.password || '').trim() || inputCurrentPassword.value.trim();
+                        if (!currentKnownPassword) {
+                            showAlert('Hồ sơ này chưa có mật khẩu hiện tại để đồng bộ đổi mật khẩu. Vui lòng nhập mật khẩu hiện tại của tài khoản rồi mới cấp lại mật khẩu mới.');
+                            return;
+                        }
+
+                        try {
+                            const signInData = await signInWithPasswordDirect(fixedEmail, currentKnownPassword);
+                            await updateAuthPasswordDirect(signInData.idToken, newPassword);
+                            nextStoredPassword = newPassword;
+                            passwordChanged = true;
+                        } catch (authError) {
+                            throw new Error(translateAuthCreateError(authError));
+                        }
                     }
 
                     await docRef.set({
                         uid: existingData.uid || existingData.authUid || '',
                         authUid: existingData.authUid || existingData.uid || '',
                         name: name,
-                        email: existingData.email || email,
+                        email: fixedEmail,
                         phone: phone,
                         role: role,
                         status: status,
                         accountStatus: status,
+                        password: nextStoredPassword,
+                        passwordUpdatedAt: passwordChanged ? firebase.firestore.FieldValue.serverTimestamp() : (existingData.passwordUpdatedAt || null),
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     }, { merge: true });
 
                     closeModal();
-                    showAlert('Đã cập nhật tài khoản thành công.');
+                    showAlert(passwordChanged ? 'Đã cập nhật tài khoản và cấp lại mật khẩu thành công. Firebase Authentication đã được đồng bộ.' : 'Đã cập nhật tài khoản thành công.');
                     return;
                 }
 
@@ -577,6 +665,8 @@
                     role: role,
                     status: status,
                     accountStatus: status,
+                    password: authCreated ? password : (existingData.password || password),
+                    passwordUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
@@ -589,7 +679,7 @@
                 if (authCreated) {
                     showAlert('Đã tạo tài khoản thành công. User đã được đẩy lên Firebase Authentication và Firestore.');
                 } else {
-                    showAlert('Email này đã tồn tại trong Firebase Authentication. Em đã đồng bộ/cập nhật hồ sơ người dùng trong Firestore và phân quyền mới.');
+                    showAlert('Email này đã tồn tại trong Firebase Authentication. Em đã đồng bộ/cập nhật hồ sơ người dùng trong Firestore. Mật khẩu nhập vào được lưu làm mật khẩu hiện tại để Admin có thể cấp lại mật khẩu sau này nếu cần.');
                 }
             } catch (error) {
                 console.error(error);

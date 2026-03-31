@@ -87,25 +87,31 @@
         .col-bold { font-weight: 700; color: var(--text-dark); }
         .class-code { color: var(--accent-gold-plated); font-weight: 600; background: rgba(224, 170, 62, 0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;}
         
-        .status-badge { font-size: 0.75rem; padding: 5px 10px; border-radius: 15px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; justify-content: center;}
+        .status-badge { font-size: 0.72rem; padding: 4px 9px; border-radius: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; justify-content: center; white-space: nowrap; }
         .status-badge.active { background-color: rgba(46, 204, 113, 0.15); color: var(--primary-green); }
         .status-badge.inactive { background-color: rgba(231, 76, 60, 0.1); color: var(--danger-red); }
+        .status-badge.pending { background-color: rgba(52, 152, 219, 0.12); color: var(--edit-blue); }
+        .schedule-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 14px; font-size: 0.74rem; font-weight: 700; background: rgba(224, 170, 62, 0.12); color: #9a6c0a; white-space: normal; line-height: 1.35; }
+        .schedule-empty { display: inline-flex; align-items: center; padding: 5px 9px; border-radius: 14px; font-size: 0.74rem; font-weight: 700; background: #f1f4f3; color: #7f8c8d; }
+        .manager-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 14px; font-size: 0.74rem; font-weight: 700; background: rgba(52, 152, 219, 0.12); color: #216a94; }
+        .manager-badge.empty { background: #f1f4f3; color: #7f8c8d; }
         
         /* Cột Sĩ số nổi bật */
-        .siso-box { display: inline-block; padding: 5px 10px; background: #f8faf9; border: 1px solid #e0e0e0; border-radius: 6px; min-width: 65px; text-align: center; }
-        .siso-present { color: var(--primary-green); font-size: 1.1rem; font-weight: 800;}
-        .siso-total { color: #888; font-size: 0.8rem; font-weight: 600;}
+        .siso-box { display: inline-block; padding: 4px 9px; background: #f8faf9; border: 1px solid #e0e0e0; border-radius: 999px; min-width: 62px; text-align: center; }
+        .siso-present { color: var(--primary-green); font-size: 0.98rem; font-weight: 800; }
+        .siso-total { color: #888; font-size: 0.74rem; font-weight: 600; }
 
         /* Nút chuyển trang điểm danh */
-        .btn-attend { background: rgba(46, 204, 113, 0.1); color: var(--primary-green); border: 1px solid var(--primary-green); padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: bold; font-size: 0.85rem; display: inline-flex; gap: 5px; align-items: center; text-decoration: none;}
-        .btn-attend:hover { background: var(--primary-green); color: white; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(46, 204, 113, 0.3);}
+        .btn-attend { background: rgba(46, 204, 113, 0.1); color: var(--primary-green); border: 1px solid var(--primary-green); padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: bold; font-size: 0.8rem; display: inline-flex; gap: 5px; align-items: center; text-decoration: none; justify-content: center; min-width: 96px; }
+        .btn-attend:hover { background: var(--primary-green); color: white; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(46, 204, 113, 0.3); }
+        .btn-attend.disabled { background: #f3f5f4; color: #9aa5a1; border-color: #d9e2dd; cursor: not-allowed; box-shadow: none; transform: none; }
 
         input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent-gold); cursor: pointer; }
 
         /* ================= MODAL & AUTOCOMPLETE (GỢI Ý & ĐA CHỌN GIÁO VIÊN) ================= */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px;}
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--bg-card-white); width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: all 0.3s ease; border-top: 5px solid var(--accent-gold); }
+        .modal-content { background: var(--bg-card-white); width: 100%; max-width: 640px; padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: all 0.3s ease; border-top: 5px solid var(--accent-gold); }
         .modal-overlay.show .modal-content { transform: translateY(0); }
         .modal-title { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); margin-bottom: 20px; text-transform: uppercase; text-align: center; }
         
@@ -131,6 +137,22 @@
         .btn-cancel:hover { background: #ddd; }
         .btn-save { flex: 1; background: linear-gradient(135deg, var(--accent-gold), #c99327); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
 
+
+        .inline-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .schedule-picker { padding: 12px; background: #f8faf9; border: 1px solid var(--border-grey); border-radius: 10px; }
+        .schedule-picker-title { font-size: 0.82rem; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; }
+        .day-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .day-check { position: relative; }
+        .day-check input { position: absolute; opacity: 0; pointer-events: none; }
+        .day-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 72px; padding: 8px 10px; border-radius: 999px; border: 1px solid #d9e4dd; background: #fff; color: #55606f; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .day-check input:checked + .day-pill { background: rgba(46, 204, 113, 0.12); border-color: rgba(46, 204, 113, 0.45); color: #1e8e52; }
+        .schedule-note { font-size: 0.76rem; color: #6c7a89; line-height: 1.5; margin-top: 8px; }
+        .schedule-preview { margin-top: 10px; padding: 10px 12px; border-radius: 8px; background: #fff; border: 1px dashed #d6dfda; font-size: 0.82rem; font-weight: 700; color: #47627a; }
+        .selected-single-tag { margin-top: 10px; }
+        .selected-single-tag .teacher-tag, .selected-single-tag .manager-badge { margin-right: 8px; margin-bottom: 6px; }
+        .compact-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .compact-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border-grey); background: #f8faf9; color: #5d6d7e; font-size: 0.78rem; font-weight: 700; }
+        .compact-pill strong { color: var(--text-dark); }
         .toast-notification { position: fixed; top: 100px; right: -350px; background-color: var(--bg-card-white); border-left: 5px solid var(--primary-green); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 15px; z-index: 2000; transition: right 0.4s ease; }
         .toast-notification.show { right: 20px; }
 
@@ -166,6 +188,9 @@
             .search-box { width: 100%; order: -1; margin-bottom: 10px;}
             .search-box input { width: 100%; }
             .header-actions button { flex: 1; justify-content: center; font-size: 0.8rem; padding: 10px 5px;}
+
+            .inline-two { grid-template-columns: 1fr; }
+            .day-pill { min-width: 64px; padding: 7px 8px; font-size: 0.78rem; }
         }
     </style>
 </head>
@@ -187,7 +212,7 @@
             <div class="header-subtitle">Chắp cánh ước mơ</div>
         </div>
         <div class="header-user">
-            <div class="user-info">Chào, Admin<div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>
+            <div class="user-info">Chào, <span id="currentUserName">...</span><div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>
             <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
         </div>
     </header>
@@ -198,7 +223,7 @@
             <nav class="sidebar-nav">
                 <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
                 <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
+                <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
@@ -208,16 +233,22 @@
         <main class="dashboard-content">
             <div class="page-header">
                 <div class="page-title"><i class="fa-solid fa-chalkboard"></i> DANH SÁCH LỚP HỌC</div>
-                
+
                 <div class="header-actions">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="globalSearch" placeholder="Tìm tên lớp, mã, hoặc giáo viên...">
+                        <input type="text" id="globalSearch" placeholder="Tìm tên lớp, mã, quản lý hoặc giáo viên...">
                     </div>
                     <button class="btn-add-new" id="btnOpenModal"><i class="fa-solid fa-plus"></i> Thêm lớp</button>
                     <button class="btn-edit-top" id="btnEditSelected"><i class="fa-solid fa-pen"></i> Sửa lớp</button>
                     <button class="btn-delete-top" id="btnDeleteSelected"><i class="fa-solid fa-trash"></i> Xóa lớp</button>
                 </div>
+            </div>
+
+            <div class="compact-strip">
+                <div class="compact-pill"><i class="fa-solid fa-layer-group"></i> Tổng lớp <strong id="classCountBadge">0</strong></div>
+                <div class="compact-pill"><i class="fa-solid fa-signal"></i> Đang online <strong id="classOnlineBadge">0</strong></div>
+                <div class="compact-pill"><i class="fa-solid fa-calendar-day"></i> Có lịch hôm nay <strong id="classTodayBadge">0</strong></div>
             </div>
 
             <div class="panel">
@@ -231,27 +262,35 @@
                                 <th class="col-center" style="width: 50px; vertical-align: middle;">
                                     <span class="th-title">TT</span>
                                 </th>
-                                <th style="width: 140px;">
+                                <th style="width: 130px;">
                                     <span class="th-title">Mã Lớp</span>
                                     <input type="text" id="filterCode" class="filter-sm" placeholder="Lọc mã...">
                                 </th>
-                                <th style="width: 250px;">
+                                <th style="width: 220px;">
                                     <span class="th-title">Tên Lớp Học</span>
                                     <input type="text" id="filterName" class="filter-sm" placeholder="Lọc tên...">
                                 </th>
-                                <th style="width: 250px;">
+                                <th style="width: 220px;">
+                                    <span class="th-title">Thời Gian Học</span>
+                                    <input type="text" id="filterSchedule" class="filter-sm" placeholder="Thứ, giờ học...">
+                                </th>
+                                <th style="width: 180px;">
+                                    <span class="th-title">Quản Lý</span>
+                                    <input type="text" id="filterManager" class="filter-sm" placeholder="Lọc quản lý...">
+                                </th>
+                                <th style="width: 220px;">
                                     <span class="th-title">Giáo Viên Giảng Dạy</span>
                                     <input type="text" id="filterTeacher" class="filter-sm" placeholder="Lọc giáo viên...">
                                 </th>
-                                <th class="col-center" style="width: 120px; vertical-align: middle;">
-                                    <span class="th-title">Sĩ Số<br><span style="font-size:0.7rem; font-weight:normal; text-transform:none; color:#888;">(Có mặt hôm nay)</span></span>
+                                <th class="col-center" style="width: 110px; vertical-align: middle;">
+                                    <span class="th-title">Sĩ Số<br><span style="font-size:0.68rem; font-weight:normal; text-transform:none; color:#888;">(Có mặt hôm nay)</span></span>
                                 </th>
-                                <th class="col-center" style="width: 140px;">
+                                <th class="col-center" style="width: 120px;">
                                     <span class="th-title">Trạng thái</span>
                                     <select id="filterStatus" class="filter-sm">
                                         <option value="">Tất cả</option>
-                                        <option value="Đang hoạt động">Đang hoạt động</option>
-                                        <option value="Chưa hoạt động">Chưa hoạt động</option>
+                                        <option value="online">Online</option>
+                                        <option value="offline">Offline</option>
                                     </select>
                                 </th>
                                 <th class="col-center" style="width: 120px; vertical-align: middle;">
@@ -260,7 +299,7 @@
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            <tr><td colspan="8" class="col-center" style="padding: 30px;">Đang tải dữ liệu từ máy chủ Google...</td></tr>
+                            <tr><td colspan="10" class="col-center" style="padding: 30px;">Đang tải dữ liệu từ máy chủ Google...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -274,19 +313,56 @@
             <form id="addForm">
                 <input type="hidden" id="editClassId" value="">
 
-                <div class="form-group">
-                    <label>Mã Lớp Học (Viết tắt) *</label>
-                    <input type="text" id="classCode" class="form-control" placeholder="VD: XL-01" required>
+                <div class="inline-two">
+                    <div class="form-group">
+                        <label>Mã Lớp Học (Viết tắt) *</label>
+                        <input type="text" id="classCode" class="form-control" placeholder="VD: XL-01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên Lớp Học Đầy Đủ *</label>
+                        <input type="text" id="className" class="form-control" placeholder="VD: Toán nâng cao 6A" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Tên Lớp Học Đầy Đủ *</label>
-                    <input type="text" id="className" class="form-control" placeholder="VD: Toán nâng cao 6A" required>
+
+                <div class="form-group autocomplete-container">
+                    <label>Quản Lý Lớp</label>
+                    <input type="text" id="classManagerInput" class="form-control" placeholder="Nhập tên quản lý để tìm và chọn..." autocomplete="off">
+                    <div id="managerSuggestions" class="suggestions-box"></div>
+                    <div id="selectedManagerContainer" class="selected-single-tag"></div>
                 </div>
+
                 <div class="form-group autocomplete-container">
                     <label>Giáo Viên Giảng Dạy (Có thể chọn nhiều)</label>
                     <input type="text" id="classTeacherInput" class="form-control" placeholder="Nhập tên giáo viên để tìm và chọn..." autocomplete="off">
                     <div id="teacherSuggestions" class="suggestions-box"></div>
                     <div id="selectedTeachersContainer" class="tags-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Thời Gian Học *</label>
+                    <div class="schedule-picker">
+                        <div class="schedule-picker-title">Chọn thứ học và giờ bắt đầu. Hệ thống mặc định 1 ca học = 2 tiếng.</div>
+                        <div class="day-picker" id="scheduleDayPicker">
+                            <label class="day-check"><input type="checkbox" class="schedule-day" value="1"><span class="day-pill">Thứ 2</span></label>
+                            <label class="day-check"><input type="checkbox" class="schedule-day" value="2"><span class="day-pill">Thứ 3</span></label>
+                            <label class="day-check"><input type="checkbox" class="schedule-day" value="3"><span class="day-pill">Thứ 4</span></label>
+                            <label class="day-check"><input type="checkbox" class="schedule-day" value="4"><span class="day-pill">Thứ 5</span></label>
+                            <label class="day-check"><input type="checkbox" class="schedule-day" value="5"><span class="day-pill">Thứ 6</span></label>
+                            <label class="day-check"><input type="checkbox" class="schedule-day" value="6"><span class="day-pill">Thứ 7</span></label>
+                            <label class="day-check"><input type="checkbox" class="schedule-day" value="0"><span class="day-pill">Chủ nhật</span></label>
+                        </div>
+                        <div class="inline-two">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Giờ bắt đầu ca học</label>
+                                <input type="time" id="classStartTime" class="form-control">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label>Khung giờ hiển thị</label>
+                                <input type="text" id="classSchedulePreview" class="form-control" placeholder="Chưa chọn lịch học" readonly>
+                            </div>
+                        </div>
+                        <div class="schedule-note">Lớp sẽ tự chuyển Online trước giờ học 1 tiếng, và tự chuyển Offline sau khi kết thúc ca học 10 phút.</div>
+                    </div>
                 </div>
 
                 <div class="modal-actions">
@@ -297,6 +373,7 @@
         </div>
     </div>
 
+    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
@@ -310,300 +387,712 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('page-loader').style.display = 'none';
-                document.getElementById('userEmailDisplay').textContent = user.email;
-                loadDataFromDatabase(); 
-            } else window.location.href = 'login.html';
-        });
+        const CLASS_DURATION_MINUTES = 120;
+        const OPEN_BEFORE_MINUTES = 60;
+        const CLOSE_AFTER_MINUTES = 10;
+        const DAY_OPTIONS = [
+            { value: '1', label: 'Thứ 2' },
+            { value: '2', label: 'Thứ 3' },
+            { value: '3', label: 'Thứ 4' },
+            { value: '4', label: 'Thứ 5' },
+            { value: '5', label: 'Thứ 6' },
+            { value: '6', label: 'Thứ 7' },
+            { value: '0', label: 'Chủ nhật' }
+        ];
 
-        document.getElementById('btnLogout').addEventListener('click', () => { if(confirm('Đăng xuất hệ thống?')) auth.signOut(); });
-        
-        const btnMenu = document.getElementById('mobileMenuBtn'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay');
-        btnMenu.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); if(window.innerWidth<=1024) document.body.style.overflow='hidden'; });
-        overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); if(window.innerWidth<=1024) document.body.style.overflow='auto'; });
+        let teacherList = [];
+        let managerList = [];
+        let currentSelectedTeachers = [];
+        let currentSelectedManager = null;
+        let currentAuthUser = null;
+        let currentUserProfile = null;
+        let classesCache = [];
+        let classAttendanceStats = {};
+        let studentListeners = {};
+        let classStatusTimer = null;
 
-        function showToast(title, message) {
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastMessage').innerText = message;
-            const toast = document.getElementById('success-toast');
-            toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        // ================= XỬ LÝ GỢI Ý GIÁO VIÊN =================
-        let teacherList = []; 
-        let currentSelectedTeachers = []; 
-
-        function fetchTeachers() {
-            db.collection("users").where("role", "==", "teacher").get().then(snap => {
-                teacherList = [];
-                snap.forEach(doc => teacherList.push(doc.data()));
-                if(teacherList.length === 0) {
-                    teacherList = [
-                        { name: "Nguyễn Phượng Ngân", email: "ngannguyen@gmail.com" },
-                        { name: "Nguyễn Thanh Dũng", email: "thanhdung.xle@gmail.com" },
-                        { name: "Hoàng Vĩnh Tiệp", email: "vinhtiep1989@gmail.com" },
-                        { name: "Lê Thu Hà", email: "lethuha@gmail.com" }
-                    ];
-                }
-            });
-        }
-        fetchTeachers();
+        const btnMenu = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const addModal = document.getElementById('addModal');
+        const modalTitleText = document.getElementById('modalTitleText');
+        const editClassIdInput = document.getElementById('editClassId');
+        const addForm = document.getElementById('addForm');
+        const btnSaveData = document.getElementById('btnSaveData');
 
         const teacherInput = document.getElementById('classTeacherInput');
         const suggestionsBox = document.getElementById('teacherSuggestions');
         const tagsContainer = document.getElementById('selectedTeachersContainer');
 
+        const managerInput = document.getElementById('classManagerInput');
+        const managerSuggestionsBox = document.getElementById('managerSuggestions');
+        const selectedManagerContainer = document.getElementById('selectedManagerContainer');
+
+        function normalizeEmail(email) {
+            return String(email || '').trim().toLowerCase();
+        }
+
+        function getRoleLabel(role) {
+            if (role === 'admin') return 'Admin';
+            if (role === 'manager') return 'Quản lý';
+            return 'Giáo viên';
+        }
+
+        function getDisplayName(data, fallbackEmail) {
+            return String(
+                (data && (data.fullName || data.displayName || data.name || data.teacherName)) ||
+                fallbackEmail ||
+                ''
+            ).trim();
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        async function fetchCurrentUserProfile(user) {
+            const email = normalizeEmail(user && user.email);
+            const byEmailDoc = await db.collection('users').doc(email).get().catch(() => null);
+            if (byEmailDoc && byEmailDoc.exists) return { id: byEmailDoc.id, ...(byEmailDoc.data() || {}) };
+
+            const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+            if (!snap.empty) return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
+
+            return { id: user.uid, email, name: user.email || '', role: 'teacher', status: 'active' };
+        }
+
+        function renderCurrentUserHeader(user, profile) {
+            document.getElementById('userEmailDisplay').textContent = user.email || '';
+            document.getElementById('currentUserName').textContent = getDisplayName(profile, user.email) || getRoleLabel(profile && profile.role);
+        }
+
+        function showToast(title, message) {
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            const toast = document.getElementById('success-toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function minutesToTime(totalMinutes) {
+            const normalized = ((totalMinutes % (24 * 60)) + (24 * 60)) % (24 * 60);
+            const hours = String(Math.floor(normalized / 60)).padStart(2, '0');
+            const minutes = String(normalized % 60).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        function parseTimeToMinutes(value) {
+            const parts = String(value || '').split(':');
+            if (parts.length !== 2) return NaN;
+            const hour = Number(parts[0]);
+            const minute = Number(parts[1]);
+            if (Number.isNaN(hour) || Number.isNaN(minute)) return NaN;
+            return hour * 60 + minute;
+        }
+
+        function getSortedScheduleDays(values) {
+            const unique = Array.from(new Set((values || []).map(String)));
+            return DAY_OPTIONS.filter(day => unique.includes(day.value)).map(day => day.value);
+        }
+
+        function getDayLabel(dayValue) {
+            const found = DAY_OPTIONS.find(item => item.value === String(dayValue));
+            return found ? found.label : String(dayValue || '');
+        }
+
+        function buildScheduleLabel(days, startTime) {
+            const orderedDays = getSortedScheduleDays(days);
+            const startMinutes = parseTimeToMinutes(startTime);
+            if (!orderedDays.length || Number.isNaN(startMinutes)) return 'Chưa cài lịch học';
+            const dayText = orderedDays.map(getDayLabel).join(', ');
+            const endTime = minutesToTime(startMinutes + CLASS_DURATION_MINUTES);
+            return `${dayText} • ${startTime} - ${endTime}`;
+        }
+
+        function updateSchedulePreview() {
+            const checkedDays = Array.from(document.querySelectorAll('.schedule-day:checked')).map(input => input.value);
+            const startTime = document.getElementById('classStartTime').value;
+            document.getElementById('classSchedulePreview').value = buildScheduleLabel(checkedDays, startTime);
+        }
+
+        function resetScheduleForm() {
+            document.querySelectorAll('.schedule-day').forEach(input => {
+                input.checked = false;
+            });
+            document.getElementById('classStartTime').value = '';
+            updateSchedulePreview();
+        }
+
+        function setScheduleForm(data) {
+            const scheduleDays = getSortedScheduleDays(data && (data.scheduleDays || data.studyDays || []));
+            const startTime = (data && (data.startTime || data.studyStartTime)) || '';
+            document.querySelectorAll('.schedule-day').forEach(input => {
+                input.checked = scheduleDays.includes(String(input.value));
+            });
+            document.getElementById('classStartTime').value = startTime;
+            updateSchedulePreview();
+        }
+
+        function getSchedulePayloadFromForm() {
+            const scheduleDays = getSortedScheduleDays(Array.from(document.querySelectorAll('.schedule-day:checked')).map(input => input.value));
+            const startTime = document.getElementById('classStartTime').value;
+            const startMinutes = parseTimeToMinutes(startTime);
+
+            if (!scheduleDays.length) throw new Error('Vui lòng chọn ít nhất 1 thứ học cho lớp.');
+            if (Number.isNaN(startMinutes)) throw new Error('Vui lòng chọn giờ bắt đầu hợp lệ cho lớp.');
+
+            return {
+                scheduleDays,
+                startTime,
+                endTime: minutesToTime(startMinutes + CLASS_DURATION_MINUTES),
+                scheduleLabel: buildScheduleLabel(scheduleDays, startTime),
+                classDurationMinutes: CLASS_DURATION_MINUTES
+            };
+        }
+
+        function sanitizePersonData(data) {
+            const email = normalizeEmail(data && data.email);
+            const name = getDisplayName(data, email);
+            return { name: name || email || 'Chưa rõ', email };
+        }
+
+        async function fetchTeachers() {
+            const snap = await db.collection('users').where('role', '==', 'teacher').get().catch(() => null);
+            teacherList = [];
+            if (snap) {
+                snap.forEach(doc => {
+                    const person = sanitizePersonData(doc.data() || {});
+                    if (person.name || person.email) teacherList.push(person);
+                });
+            }
+            if (teacherList.length === 0) {
+                teacherList = [
+                    { name: 'Nguyễn Phượng Ngân', email: 'ngannguyen@gmail.com' },
+                    { name: 'Nguyễn Thanh Dũng', email: 'thanhdung.xle@gmail.com' },
+                    { name: 'Hoàng Vĩnh Tiệp', email: 'vinhtiep1989@gmail.com' },
+                    { name: 'Lê Thu Hà', email: 'lethuha@gmail.com' }
+                ];
+            }
+        }
+
+        async function fetchManagers() {
+            managerList = [];
+            const snap = await db.collection('users').where('role', 'in', ['manager', 'admin']).get().catch(() => null);
+            if (snap) {
+                snap.forEach(doc => {
+                    const person = sanitizePersonData(doc.data() || {});
+                    if (person.name || person.email) managerList.push(person);
+                });
+            }
+            if (managerList.length === 0 && currentUserProfile) {
+                managerList.push({ name: getDisplayName(currentUserProfile, currentAuthUser && currentAuthUser.email), email: normalizeEmail(currentAuthUser && currentAuthUser.email) });
+            }
+        }
+
         function renderTeacherTags() {
             tagsContainer.innerHTML = '';
-            currentSelectedTeachers.forEach((t, index) => {
+            currentSelectedTeachers.forEach((teacher, index) => {
                 const tag = document.createElement('span');
                 tag.className = 'teacher-tag';
-                tag.innerHTML = `${t.name} <i class="fa-solid fa-circle-xmark" onclick="removeTeacher(${index})"></i>`;
+                tag.innerHTML = `${escapeHtml(teacher.name)} <i class="fa-solid fa-circle-xmark" onclick="removeTeacher(${index})"></i>`;
                 tagsContainer.appendChild(tag);
             });
         }
 
-        window.removeTeacher = function(index) { currentSelectedTeachers.splice(index, 1); renderTeacherTags(); }
+        function renderManagerTag() {
+            selectedManagerContainer.innerHTML = '';
+            if (!currentSelectedManager) return;
+            const badge = document.createElement('span');
+            badge.className = 'manager-badge';
+            badge.innerHTML = `<i class="fa-solid fa-user-tie"></i> ${escapeHtml(currentSelectedManager.name)} <i class="fa-solid fa-circle-xmark" style="cursor:pointer;" onclick="removeManager()"></i>`;
+            selectedManagerContainer.appendChild(badge);
+        }
+
+        window.removeTeacher = function(index) {
+            currentSelectedTeachers.splice(index, 1);
+            renderTeacherTags();
+        };
+
+        window.removeManager = function() {
+            currentSelectedManager = null;
+            renderManagerTag();
+        };
+
+        function renderSuggestions(targetBox, items, onSelect) {
+            targetBox.innerHTML = '';
+            if (!items.length) {
+                targetBox.style.display = 'none';
+                return;
+            }
+
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerHTML = `<span class="suggestion-name">${escapeHtml(item.name)}</span><span class="suggestion-email">${escapeHtml(item.email)}</span>`;
+                div.addEventListener('click', () => onSelect(item));
+                targetBox.appendChild(div);
+            });
+            targetBox.style.display = 'block';
+        }
 
         teacherInput.addEventListener('input', function() {
-            const val = this.value.toLowerCase().trim();
-            suggestionsBox.innerHTML = ''; 
-            if (!val) { suggestionsBox.style.display = 'none'; return; }
+            const keyword = this.value.toLowerCase().trim();
+            if (!keyword) {
+                suggestionsBox.style.display = 'none';
+                suggestionsBox.innerHTML = '';
+                return;
+            }
 
-            const filtered = teacherList.filter(t => t.name.toLowerCase().includes(val) || t.email.toLowerCase().includes(val));
-            if (filtered.length > 0) {
-                filtered.forEach(t => {
-                    const div = document.createElement('div');
-                    div.className = 'suggestion-item';
-                    div.innerHTML = `<span class="suggestion-name">${t.name}</span><span class="suggestion-email">${t.email}</span>`;
-                    div.addEventListener('click', () => {
-                        if(!currentSelectedTeachers.some(item => item.email === t.email)) {
-                            currentSelectedTeachers.push({name: t.name, email: t.email});
-                            renderTeacherTags();
-                        }
-                        teacherInput.value = ''; 
-                        suggestionsBox.style.display = 'none';
-                    });
-                    suggestionsBox.appendChild(div);
+            const filtered = teacherList.filter(item => item.name.toLowerCase().includes(keyword) || item.email.toLowerCase().includes(keyword));
+            renderSuggestions(suggestionsBox, filtered, (item) => {
+                if (!currentSelectedTeachers.some(teacher => teacher.email === item.email)) {
+                    currentSelectedTeachers.push({ name: item.name, email: item.email });
+                    renderTeacherTags();
+                }
+                teacherInput.value = '';
+                suggestionsBox.style.display = 'none';
+            });
+        });
+
+        managerInput.addEventListener('input', function() {
+            const keyword = this.value.toLowerCase().trim();
+            if (!keyword) {
+                managerSuggestionsBox.style.display = 'none';
+                managerSuggestionsBox.innerHTML = '';
+                return;
+            }
+
+            const filtered = managerList.filter(item => item.name.toLowerCase().includes(keyword) || item.email.toLowerCase().includes(keyword));
+            renderSuggestions(managerSuggestionsBox, filtered, (item) => {
+                currentSelectedManager = { name: item.name, email: item.email };
+                renderManagerTag();
+                managerInput.value = '';
+                managerSuggestionsBox.style.display = 'none';
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.autocomplete-container')) {
+                suggestionsBox.style.display = 'none';
+                managerSuggestionsBox.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.schedule-day').forEach(input => input.addEventListener('change', updateSchedulePreview));
+        document.getElementById('classStartTime').addEventListener('input', updateSchedulePreview);
+
+        function openCreateModal() {
+            addForm.reset();
+            editClassIdInput.value = '';
+            currentSelectedTeachers = [];
+            currentSelectedManager = null;
+            renderTeacherTags();
+            renderManagerTag();
+            resetScheduleForm();
+            modalTitleText.innerText = 'Thêm Lớp Học Mới';
+            addModal.classList.add('show');
+        }
+
+        function getTodaySessionWindow(classData, now = new Date()) {
+            const scheduleDays = getSortedScheduleDays(classData && classData.scheduleDays);
+            const startTime = classData && classData.startTime;
+            const startMinutes = parseTimeToMinutes(startTime);
+
+            if (!scheduleDays.length || Number.isNaN(startMinutes)) return null;
+            if (!scheduleDays.includes(String(now.getDay()))) return null;
+
+            const start = new Date(now);
+            start.setHours(Math.floor(startMinutes / 60), startMinutes % 60, 0, 0);
+            const end = new Date(start.getTime() + CLASS_DURATION_MINUTES * 60 * 1000);
+            const onlineAt = new Date(start.getTime() - OPEN_BEFORE_MINUTES * 60 * 1000);
+            const offlineAt = new Date(end.getTime() + CLOSE_AFTER_MINUTES * 60 * 1000);
+
+            return { start, end, onlineAt, offlineAt };
+        }
+
+        function getClassRealtimeState(classData, now = new Date()) {
+            const windowInfo = getTodaySessionWindow(classData, now);
+            if (windowInfo) {
+                if (now >= windowInfo.onlineAt && now <= windowInfo.offlineAt) {
+                    return {
+                        statusKey: 'online',
+                        label: 'Online',
+                        canAttend: true
+                    };
+                }
+                return {
+                    statusKey: 'offline',
+                    label: 'Offline',
+                    canAttend: false
+                };
+            }
+
+            if (!classData || !classData.scheduleDays || !classData.scheduleDays.length || !classData.startTime) {
+                const fallbackActive = classData && classData.status === 'active';
+                return {
+                    statusKey: fallbackActive ? 'online' : 'offline',
+                    label: fallbackActive ? 'Online' : 'Offline',
+                    canAttend: fallbackActive
+                };
+            }
+
+            return {
+                statusKey: 'offline',
+                label: 'Offline',
+                canAttend: false
+            };
+        }
+
+        function buildStatusBadge(state) {
+            if (state.statusKey === 'online') {
+                return '<span class="status-badge active"><i class="fa-solid fa-signal"></i> Online</span>';
+            }
+            return '<span class="status-badge inactive"><i class="fa-solid fa-power-off"></i> Offline</span>';
+        }
+
+        function buildAttendAction(classData, state) {
+            if (state.canAttend) {
+                return `<a href="attendance.html?id=${classData.id}" class="btn-attend"><i class="fa-solid fa-clipboard-user"></i> Điểm danh</a>`;
+            }
+            return '<span class="btn-attend disabled"><i class="fa-solid fa-lock"></i> Ngoài ca</span>';
+        }
+
+        function updateCompactStats() {
+            const total = classesCache.length;
+            let online = 0;
+            let today = 0;
+            const now = new Date();
+
+            classesCache.forEach(item => {
+                const hasToday = getSortedScheduleDays(item.scheduleDays).includes(String(now.getDay())) && item.startTime;
+                if (hasToday) today += 1;
+                if (getClassRealtimeState(item, now).statusKey === 'online') online += 1;
+            });
+
+            document.getElementById('classCountBadge').textContent = String(total);
+            document.getElementById('classOnlineBadge').textContent = String(online);
+            document.getElementById('classTodayBadge').textContent = String(today);
+        }
+
+        function renderClassTable() {
+            const tableBody = document.getElementById('tableBody');
+            if (!classesCache.length) {
+                tableBody.innerHTML = '<tr class="data-row"><td colspan="10" class="col-center" style="padding: 30px; color:#888;">Chưa có dữ liệu. Vui lòng thêm lớp mới!</td></tr>';
+                updateCompactStats();
+                return;
+            }
+
+            tableBody.innerHTML = '';
+            let index = 1;
+            const now = new Date();
+
+            classesCache.forEach((classData) => {
+                const stats = classAttendanceStats[classData.id] || { present: 0, total: classData.studentCount || 0 };
+                const realtimeState = getClassRealtimeState(classData, now);
+                const scheduleLabel = classData.scheduleLabel || buildScheduleLabel(classData.scheduleDays, classData.startTime);
+                const managerName = (classData.manager && classData.manager.name) || classData.managerNameDisplay || 'Chưa gán';
+                const managerEmail = (classData.manager && classData.manager.email) || classData.managerEmail || '';
+                const teacherSearchText = (classData.teacherNamesDisplay || classData.teacherName || '').toLowerCase();
+
+                let teachersHtml = 'Chưa phân công';
+                if (classData.teachers && classData.teachers.length > 0) {
+                    teachersHtml = classData.teachers.map(item => `<span class="badge-teacher">${escapeHtml(item.name || item.email || '')}</span>`).join('');
+                } else if (classData.teacherName) {
+                    teachersHtml = `<span class="badge-teacher">${escapeHtml(classData.teacherName)}</span>`;
+                }
+
+                const scheduleHtml = (classData.scheduleDays && classData.scheduleDays.length && classData.startTime)
+                    ? `<span class="schedule-badge"><i class="fa-regular fa-clock"></i> ${escapeHtml(scheduleLabel)}</span>`
+                    : '<span class="schedule-empty">Chưa cài lịch</span>';
+
+                const managerHtml = managerName !== 'Chưa gán'
+                    ? `<span class="manager-badge"><i class="fa-solid fa-user-tie"></i> ${escapeHtml(managerName)}</span>`
+                    : '<span class="manager-badge empty"><i class="fa-solid fa-user-slash"></i> Chưa gán</span>';
+
+                const row = document.createElement('tr');
+                row.className = 'data-row';
+                row.dataset.code = String(classData.classCode || '').toLowerCase();
+                row.dataset.name = String(classData.className || '').toLowerCase();
+                row.dataset.schedule = String(scheduleLabel || '').toLowerCase();
+                row.dataset.manager = `${String(managerName || '').toLowerCase()} ${String(managerEmail || '').toLowerCase()}`;
+                row.dataset.teacher = teacherSearchText;
+                row.dataset.status = realtimeState.statusKey;
+
+                row.innerHTML = `
+                    <td class="col-center"><input type="checkbox" class="row-checkbox" value="${classData.id}"></td>
+                    <td class="col-center">${index++}</td>
+                    <td><span class="class-code">${escapeHtml(classData.classCode || '')}</span></td>
+                    <td class="col-bold">${escapeHtml(classData.className || '')}</td>
+                    <td>${scheduleHtml}</td>
+                    <td>${managerHtml}</td>
+                    <td>${teachersHtml}<span class="hidden-teacher-search" style="display:none;">${escapeHtml(classData.teacherNamesDisplay || classData.teacherName || '')}</span></td>
+                    <td class="col-center" id="siso-${classData.id}">
+                        <div class="siso-box"><span class="siso-present">${stats.present}</span> <span class="siso-total">/ ${stats.total}</span></div>
+                    </td>
+                    <td class="col-center">${buildStatusBadge(realtimeState)}</td>
+                    <td class="col-center">${buildAttendAction(classData, realtimeState)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('selectAll').checked = false;
+            filterTable();
+            updateCompactStats();
+        }
+
+        function ensureStudentListenerForClass(classDoc) {
+            if (studentListeners[classDoc.id]) return;
+
+            classAttendanceStats[classDoc.id] = { present: 0, total: classDoc.studentCount || 0 };
+            studentListeners[classDoc.id] = db.collection('classes').doc(classDoc.id).collection('students').onSnapshot((stuSnap) => {
+                let total = stuSnap.size;
+                let present = 0;
+                const today = String(new Date().getDate());
+
+                stuSnap.forEach((studentDoc) => {
+                    const attendance = (studentDoc.data() || {}).attendance || {};
+                    const todayValue = attendance[today];
+                    if (todayValue === 'V' || todayValue === 'M') present += 1;
                 });
-                suggestionsBox.style.display = 'block'; 
-            } else { suggestionsBox.style.display = 'none'; }
-        });
 
-        document.addEventListener('click', (e) => { if(!e.target.closest('.autocomplete-container')) suggestionsBox.style.display = 'none'; });
+                classAttendanceStats[classDoc.id] = { present, total };
+                const sisoCell = document.getElementById(`siso-${classDoc.id}`);
+                if (sisoCell) {
+                    sisoCell.innerHTML = `<div class="siso-box"><span class="siso-present">${present}</span> <span class="siso-total">/ ${total}</span></div>`;
+                }
+            });
+        }
 
-        // ================= XỬ LÝ LỚP HỌC & ĐIỂM DANH REALTIME =================
-        const addModal = document.getElementById('addModal');
-        const modalTitleText = document.getElementById('modalTitleText');
-        const editClassIdInput = document.getElementById('editClassId');
-        const addForm = document.getElementById('addForm');
-        
-        document.getElementById('btnOpenModal').addEventListener('click', () => {
-            addForm.reset(); editClassIdInput.value = ""; currentSelectedTeachers = []; renderTeacherTags();
-            modalTitleText.innerText = "Thêm Lớp Học Mới"; addModal.classList.add('show');
-        });
+        function cleanupRemovedClassListeners(nextIds) {
+            Object.keys(studentListeners).forEach((classId) => {
+                if (!nextIds.has(classId)) {
+                    studentListeners[classId]();
+                    delete studentListeners[classId];
+                    delete classAttendanceStats[classId];
+                }
+            });
+        }
 
-        document.getElementById('btnCancelModal').addEventListener('click', () => { addModal.classList.remove('show'); });
+        function loadDataFromDatabase() {
+            db.collection('classes').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+                classesCache = [];
+                const nextIds = new Set();
 
-        const btnSaveData = document.getElementById('btnSaveData');
-        addForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+                snapshot.forEach((doc) => {
+                    const data = { id: doc.id, ...(doc.data() || {}) };
+                    classesCache.push(data);
+                    nextIds.add(doc.id);
+                    ensureStudentListenerForClass(data);
+                });
+
+                cleanupRemovedClassListeners(nextIds);
+                renderClassTable();
+            }, (error) => {
+                alert('Lỗi tải dữ liệu lớp học: ' + error.message);
+            });
+        }
+
+        function filterTable() {
+            const globalSearch = document.getElementById('globalSearch').value.toLowerCase().trim();
+            const codeFilter = document.getElementById('filterCode').value.toLowerCase().trim();
+            const nameFilter = document.getElementById('filterName').value.toLowerCase().trim();
+            const scheduleFilter = document.getElementById('filterSchedule').value.toLowerCase().trim();
+            const managerFilter = document.getElementById('filterManager').value.toLowerCase().trim();
+            const teacherFilter = document.getElementById('filterTeacher').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('filterStatus').value.toLowerCase().trim();
+
+            document.querySelectorAll('#tableBody .data-row').forEach((row) => {
+                const code = row.dataset.code || '';
+                const name = row.dataset.name || '';
+                const schedule = row.dataset.schedule || '';
+                const manager = row.dataset.manager || '';
+                const teacher = row.dataset.teacher || '';
+                const status = row.dataset.status || '';
+
+                const matchGlobal = !globalSearch || [code, name, schedule, manager, teacher].some(value => value.includes(globalSearch));
+                const matched = matchGlobal
+                    && code.includes(codeFilter)
+                    && name.includes(nameFilter)
+                    && schedule.includes(scheduleFilter)
+                    && manager.includes(managerFilter)
+                    && teacher.includes(teacherFilter)
+                    && (!statusFilter || status.includes(statusFilter));
+
+                row.style.display = matched ? '' : 'none';
+            });
+        }
+
+        document.getElementById('btnOpenModal').addEventListener('click', openCreateModal);
+        document.getElementById('btnCancelModal').addEventListener('click', () => addModal.classList.remove('show'));
+
+        addForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const originalLabel = btnSaveData.innerHTML;
             btnSaveData.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
             btnSaveData.disabled = true;
 
-            const teacherNamesString = currentSelectedTeachers.map(t => t.name).join(', ');
-            const editId = editClassIdInput.value; 
-            const classData = {
-                classCode: document.getElementById('classCode').value,
-                className: document.getElementById('className').value,
-                teachers: currentSelectedTeachers, 
-                teacherNamesDisplay: teacherNamesString || "Chưa phân công"
-            };
+            try {
+                const schedulePayload = getSchedulePayloadFromForm();
+                const teacherNamesString = currentSelectedTeachers.map(item => item.name).join(', ');
+                const editId = editClassIdInput.value.trim();
 
-            if (editId) {
-                db.collection("classes").doc(editId).update(classData)
-                .then(() => { showToast("Thành công!", "Đã cập nhật thông tin lớp học."); addModal.classList.remove('show'); })
-                .catch((error) => alert("Lỗi khi cập nhật: " + error))
-                .finally(() => { btnSaveData.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu'; btnSaveData.disabled = false; });
-            } else {
-                classData.studentCount = 0; classData.status = "inactive"; classData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-                db.collection("classes").add(classData)
-                .then(() => { showToast("Thành công!", "Lớp học mới đã được tạo."); addModal.classList.remove('show'); })
-                .catch((error) => alert("Lỗi: " + error))
-                .finally(() => { btnSaveData.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu Dữ Liệu'; btnSaveData.disabled = false; });
+                const classData = {
+                    classCode: document.getElementById('classCode').value.trim(),
+                    className: document.getElementById('className').value.trim(),
+                    manager: currentSelectedManager ? { name: currentSelectedManager.name, email: currentSelectedManager.email } : null,
+                    managerNameDisplay: currentSelectedManager ? currentSelectedManager.name : 'Chưa gán',
+                    managerEmail: currentSelectedManager ? currentSelectedManager.email : '',
+                    teachers: currentSelectedTeachers,
+                    teacherNamesDisplay: teacherNamesString || 'Chưa phân công',
+                    scheduleDays: schedulePayload.scheduleDays,
+                    startTime: schedulePayload.startTime,
+                    endTime: schedulePayload.endTime,
+                    scheduleLabel: schedulePayload.scheduleLabel,
+                    classDurationMinutes: CLASS_DURATION_MINUTES,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (!classData.classCode || !classData.className) {
+                    throw new Error('Vui lòng nhập đầy đủ mã lớp và tên lớp.');
+                }
+
+                if (editId) {
+                    await db.collection('classes').doc(editId).update(classData);
+                    showToast('Thành công!', 'Đã cập nhật thông tin lớp học.');
+                } else {
+                    classData.studentCount = 0;
+                    classData.status = 'inactive';
+                    classData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('classes').add(classData);
+                    showToast('Thành công!', 'Lớp học mới đã được tạo.');
+                }
+
+                addModal.classList.remove('show');
+            } catch (error) {
+                alert(error && error.message ? error.message : ('Lỗi khi lưu dữ liệu: ' + error));
+            } finally {
+                btnSaveData.innerHTML = originalLabel;
+                btnSaveData.disabled = false;
             }
         });
 
-        document.getElementById('btnEditSelected').addEventListener('click', function() {
+        document.getElementById('btnEditSelected').addEventListener('click', async function() {
             const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
-            if (selectedCheckboxes.length !== 1) return alert("Vui lòng tích chọn CHÍNH XÁC 1 lớp để chỉnh sửa!");
+            if (selectedCheckboxes.length !== 1) {
+                alert('Vui lòng tích chọn CHÍNH XÁC 1 lớp để chỉnh sửa!');
+                return;
+            }
 
             const docId = selectedCheckboxes[0].value;
-            db.collection("classes").doc(docId).get().then((doc) => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('classCode').value = data.classCode;
-                    document.getElementById('className').value = data.className;
-                    
-                    currentSelectedTeachers = data.teachers || [];
-                    if(currentSelectedTeachers.length === 0 && data.teacherName && data.teacherName !== "Chưa phân công") {
-                        currentSelectedTeachers.push({name: data.teacherName, email: ""});
-                    }
-                    renderTeacherTags(); 
-                    
-                    editClassIdInput.value = doc.id; 
-                    modalTitleText.innerText = "Chỉnh Sửa Lớp Học"; addModal.classList.add('show');
-                } else alert("Không tìm thấy dữ liệu lớp này!");
-            }).catch(error => alert("Lỗi tải dữ liệu: " + error));
+            const doc = await db.collection('classes').doc(docId).get().catch(() => null);
+            if (!doc || !doc.exists) {
+                alert('Không tìm thấy dữ liệu lớp này!');
+                return;
+            }
+
+            const data = doc.data() || {};
+            document.getElementById('classCode').value = data.classCode || '';
+            document.getElementById('className').value = data.className || '';
+
+            currentSelectedTeachers = Array.isArray(data.teachers) ? data.teachers : [];
+            if (currentSelectedTeachers.length === 0 && data.teacherName && data.teacherName !== 'Chưa phân công') {
+                currentSelectedTeachers.push({ name: data.teacherName, email: '' });
+            }
+            renderTeacherTags();
+
+            currentSelectedManager = data.manager
+                ? { name: data.manager.name || data.managerNameDisplay || 'Chưa gán', email: data.manager.email || data.managerEmail || '' }
+                : (data.managerNameDisplay && data.managerNameDisplay !== 'Chưa gán'
+                    ? { name: data.managerNameDisplay, email: data.managerEmail || '' }
+                    : null);
+            renderManagerTag();
+
+            setScheduleForm(data);
+
+            editClassIdInput.value = doc.id;
+            modalTitleText.innerText = 'Chỉnh Sửa Lớp Học';
+            addModal.classList.add('show');
         });
-
-
-        // BIẾN LƯU TRỮ LƯỢT QUÉT ĐIỂM DANH (Tránh lỗi bộ nhớ)
-        let classAttendanceStats = {};
-        let studentListeners = {};
-
-        function loadDataFromDatabase() {
-            const tableBody = document.getElementById('tableBody');
-            
-            db.collection("classes").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
-                if(snapshot.empty) {
-                    tableBody.innerHTML = '<tr class="data-row"><td colspan="8" class="col-center" style="padding: 30px; color:#888;">Chưa có dữ liệu. Vui lòng thêm lớp mới!</td></tr>';
-                    return;
-                }
-
-                tableBody.innerHTML = ''; 
-                let index = 1;
-                
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const tr = document.createElement('tr');
-                    tr.className = 'data-row'; 
-                    
-                    let statusBadge = data.status === "active" 
-                        ? '<span class="status-badge active"><i class="fa-solid fa-circle-check"></i> Đang hoạt động</span>'
-                        : '<span class="status-badge inactive"><i class="fa-solid fa-circle-pause"></i> Chưa hoạt động</span>';
-                    
-                    let teachersHtml = "Chưa phân công";
-                    if(data.teachers && data.teachers.length > 0) {
-                        teachersHtml = data.teachers.map(t => `<span class="badge-teacher">${t.name}</span>`).join('');
-                    } else if(data.teacherName) {
-                        teachersHtml = `<span class="badge-teacher">${data.teacherName}</span>`;
-                    }
-                    let hiddenSearchText = data.teacherNamesDisplay || data.teacherName || "";
-                    
-                    // XỬ LÝ LẤY SĨ SỐ (CÓ MẶT / TỔNG) THEO THỜI GIAN THỰC
-                    if (!studentListeners[doc.id]) {
-                        classAttendanceStats[doc.id] = { present: 0, total: data.studentCount || 0 };
-                        
-                        studentListeners[doc.id] = db.collection("classes").doc(doc.id).collection("students").onSnapshot(stuSnap => {
-                            let total = stuSnap.size;
-                            let present = 0;
-                            const today = new Date().getDate(); // Ngày hôm nay
-
-                            stuSnap.forEach(sDoc => {
-                                const att = sDoc.data().attendance || {};
-                                const val = att[today];
-                                // Tính "Đi học" (V) và "Muộn" (M) là Có mặt
-                                if (val === 'V' || val === 'M') {
-                                    present++;
-                                }
-                            });
-
-                            classAttendanceStats[doc.id] = { present, total };
-                            
-                            // Bắn thẳng dữ liệu cập nhật vào ô Sĩ số của bảng
-                            const sisoCell = document.getElementById(`siso-${doc.id}`);
-                            if (sisoCell) {
-                                sisoCell.innerHTML = `<div class="siso-box"><span class="siso-present">${present}</span> <span class="siso-total">/ ${total}</span></div>`;
-                            }
-                        });
-                    }
-
-                    const stats = classAttendanceStats[doc.id] || { present: 0, total: data.studentCount || 0 };
-                    
-                    tr.innerHTML = `
-                        <td class="col-center"><input type="checkbox" class="row-checkbox" value="${doc.id}"></td>
-                        <td class="col-center">${index++}</td>
-                        <td><span class="class-code">${data.classCode}</span></td>
-                        <td class="col-bold">${data.className}</td>
-                        <td>${teachersHtml}<span class="hidden-teacher-search" style="display:none;">${hiddenSearchText}</span></td>
-                        
-                        <td class="col-center" id="siso-${doc.id}">
-                            <div class="siso-box"><span class="siso-present">${stats.present}</span> <span class="siso-total">/ ${stats.total}</span></div>
-                        </td>
-                        
-                        <td class="col-center">${statusBadge}</td>
-                        <td class="col-center">
-                            <a href="attendance.html?id=${doc.id}" class="btn-attend">
-                                <i class="fa-solid fa-clipboard-user"></i> Điểm danh
-                            </a>
-                        </td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
-
-                document.getElementById('selectAll').checked = false;
-                filterTable();
-            });
-        }
 
         document.getElementById('selectAll').addEventListener('change', function() {
-            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = this.checked);
+            document.querySelectorAll('.row-checkbox').forEach(checkbox => {
+                if (checkbox.closest('tr') && checkbox.closest('tr').style.display !== 'none') checkbox.checked = this.checked;
+            });
         });
 
-        document.getElementById('btnDeleteSelected').addEventListener('click', function() {
+        document.getElementById('btnDeleteSelected').addEventListener('click', async function() {
             const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
-            if (selectedCheckboxes.length === 0) return alert("Vui lòng chọn ít nhất 1 lớp để xóa!");
-
-            if (confirm(`Chắc chắn xóa vĩnh viễn ${selectedCheckboxes.length} lớp đã chọn?`)) {
-                const batch = db.batch();
-                selectedCheckboxes.forEach(cb => {
-                    batch.delete(db.collection("classes").doc(cb.value));
-                    // Dọn dẹp bộ nhớ luồng quét dữ liệu
-                    if(studentListeners[cb.value]) {
-                        studentListeners[cb.value](); // Tắt snapshot
-                        delete studentListeners[cb.value];
-                        delete classAttendanceStats[cb.value];
-                    }
-                });
-                batch.commit().then(() => {
-                    showToast("Đã xóa!", `Đã xóa thành công ${selectedCheckboxes.length} lớp.`);
-                    document.getElementById('selectAll').checked = false; 
-                });
+            if (!selectedCheckboxes.length) {
+                alert('Vui lòng chọn ít nhất 1 lớp để xóa!');
+                return;
             }
-        });
 
-        // BỘ LỌC TÌM KIẾM
-        function filterTable() {
-            const globalSearch = document.getElementById('globalSearch').value.toLowerCase();
-            const codeFilter = document.getElementById('filterCode').value.toLowerCase();
-            const nameFilter = document.getElementById('filterName').value.toLowerCase();
-            const teacherFilter = document.getElementById('filterTeacher').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatus').value.toLowerCase();
+            if (!confirm(`Chắc chắn xóa vĩnh viễn ${selectedCheckboxes.length} lớp đã chọn?`)) return;
 
-            document.querySelectorAll('#tableBody .data-row').forEach(row => {
-                const code = row.children[2].textContent.toLowerCase();
-                const name = row.children[3].textContent.toLowerCase();
-                const teacher = row.querySelector('.hidden-teacher-search').textContent.toLowerCase();
-                const status = row.children[6].textContent.toLowerCase();
-
-                const matchGlobal = name.includes(globalSearch) || teacher.includes(globalSearch) || code.includes(globalSearch);
-                if (matchGlobal && code.includes(codeFilter) && name.includes(nFilter) && teacher.includes(tFilter) && (statusFilter === "" || status.includes(statusFilter))) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+            const batch = db.batch();
+            selectedCheckboxes.forEach(checkbox => {
+                batch.delete(db.collection('classes').doc(checkbox.value));
+                if (studentListeners[checkbox.value]) {
+                    studentListeners[checkbox.value]();
+                    delete studentListeners[checkbox.value];
+                    delete classAttendanceStats[checkbox.value];
                 }
             });
-        }
+
+            await batch.commit();
+            showToast('Đã xóa!', `Đã xóa thành công ${selectedCheckboxes.length} lớp.`);
+            document.getElementById('selectAll').checked = false;
+        });
+
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            if (confirm('Đăng xuất hệ thống?')) auth.signOut();
+        });
+
+        btnMenu.addEventListener('click', () => {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            if (window.innerWidth <= 1024) document.body.style.overflow = 'auto';
+        });
 
         document.getElementById('globalSearch').addEventListener('input', filterTable);
         document.querySelectorAll('.filter-sm').forEach(input => {
-            input.addEventListener('input', filterTable);  
-            input.addEventListener('change', filterTable); 
+            input.addEventListener('input', filterTable);
+            input.addEventListener('change', filterTable);
         });
 
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentAuthUser = user;
+
+            try {
+                currentUserProfile = await fetchCurrentUserProfile(user);
+                renderCurrentUserHeader(user, currentUserProfile);
+            } catch (error) {
+                currentUserProfile = { email: normalizeEmail(user.email || ''), name: user.email || '', role: 'teacher' };
+                renderCurrentUserHeader(user, currentUserProfile);
+            } finally {
+                await Promise.all([fetchTeachers(), fetchManagers()]);
+                document.getElementById('page-loader').style.display = 'none';
+                loadDataFromDatabase();
+                if (!classStatusTimer) classStatusTimer = setInterval(renderClassTable, 30000);
+            }
+        });
     </script>
+
 </body>
 </html>
