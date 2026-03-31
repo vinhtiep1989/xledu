@@ -309,7 +309,11 @@
                     </div>
                     <div class="form-group">
                         <label>Ngày bắt đầu làm việc</label>
-                        <input type="date" id="f_startDate" class="form-control" title="Dùng để tính số năm kinh nghiệm tự động">
+                        <input type="date" id="f_startDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Kinh nghiệm (số năm)</label>
+                        <input type="number" id="f_experienceYears" class="form-control" min="0" step="0.5" placeholder="VD: 3 hoặc 5.5">
                     </div>
                     <div class="form-group">
                         <label>Số điện thoại</label>
@@ -386,6 +390,10 @@
         function escapeHtml(value) {
             return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
+
+        function normalizeEmail(email) {
+            return String(email || '').trim().toLowerCase();
+        }
         
         function formatMoney(value) {
             if(!value) return '';
@@ -399,11 +407,12 @@
             return `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
 
-        function calculateExperience(startDateStr) {
-            if(!startDateStr) return 0;
-            const startYear = new Date(startDateStr).getFullYear();
-            const currentYear = new Date().getFullYear();
-            return Math.max(0, currentYear - startYear);
+        function formatExperienceYears(value) {
+            if(value === undefined || value === null || value === '') return '';
+            const num = Number(value);
+            if(Number.isNaN(num) || num < 0) return '';
+            const normalized = Number.isInteger(num) ? String(num) : String(num).replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
+            return `${normalized} năm`;
         }
 
         function formatMultiline(text) {
@@ -435,31 +444,33 @@
                 window.location.href = 'login.html';
                 return;
             }
-            document.getElementById('userEmailDisplay').textContent = user.email;
-            
-            try {
-                const snap = await db.collection('users').where('email', '==', user.email).limit(1).get();
-                let role = 'teacher';
-                // LẤY TÊN THẬT
-                let displayName = user.email.split('@')[0]; // Lấy đuôi email dự phòng nếu user chưa có tên
 
-                if (!snap.empty) {
-                    const userData = snap.docs[0].data();
-                    role = userData.role || 'teacher';
-                    // Ưu tiên hiển thị Name
-                    if (userData.name || userData.fullName || userData.displayName) {
-                        displayName = userData.name || userData.fullName || userData.displayName;
-                    }
+            const currentEmail = normalizeEmail(user.email || '');
+            document.getElementById('userEmailDisplay').textContent = currentEmail;
+
+            try {
+                let userData = null;
+                const directDoc = await db.collection('users').doc(currentEmail).get().catch(() => null);
+                if (directDoc && directDoc.exists) {
+                    userData = directDoc.data() || {};
+                } else {
+                    const snap = await db.collection('users').where('email', '==', currentEmail).limit(1).get();
+                    if (!snap.empty) userData = snap.docs[0].data() || {};
                 }
-                
+
+                const role = (userData && userData.role) || 'teacher';
+                const displayName = (userData && (userData.name || userData.fullName || userData.displayName)) || (currentEmail.split('@')[0] || currentEmail);
                 isAdmin = (role === 'admin');
                 document.getElementById('currentUserName').textContent = displayName;
-                
+
                 updatePermissionUI();
                 loadStaffData();
-                
             } catch (error) {
                 console.error("Lỗi xác thực quyền:", error);
+                isAdmin = false;
+                document.getElementById('currentUserName').textContent = currentEmail.split('@')[0] || currentEmail;
+                updatePermissionUI();
+                loadStaffData();
             } finally {
                 document.getElementById('page-loader').style.display = 'none';
             }
@@ -503,7 +514,7 @@
             
             let filteredData = staffDataList.filter(staff => {
                 if(!keyword) return true;
-                const searchStr = `${staff.name} ${staff.cccd} ${staff.phone} ${staff.qualification} ${staff.department} ${staff.position} ${staff.email} ${staff.address}`.toLowerCase();
+                const searchStr = `${staff.name} ${staff.cccd} ${staff.phone} ${staff.qualification} ${staff.department} ${staff.position} ${staff.email} ${staff.address} ${staff.experienceYears || ''}`.toLowerCase();
                 return searchStr.includes(keyword);
             });
 
@@ -514,7 +525,7 @@
 
             tableBody.innerHTML = filteredData.map((staff, index) => {
                 const isChecked = selectedIds.has(staff.id);
-                const expYears = calculateExperience(staff.startDate);
+                const experienceLabel = formatExperienceYears(staff.experienceYears);
                 
                 return `
                 <tr class="${isChecked ? 'checked' : ''}" data-id="${staff.id}">
@@ -530,7 +541,7 @@
                     <td class="col-center">${formatDateDisplay(staff.cccdDate)}</td>
                     <td>${escapeHtml(staff.qualification)}</td>
                     <td>${escapeHtml(staff.department)}</td>
-                    <td class="col-center"><span class="badge-experience">${expYears} năm</span></td>
+                    <td class="col-center">${experienceLabel ? `<span class="badge-experience">${experienceLabel}</span>` : ''}</td>
                     <td>${formatMultiline(staff.phone)}</td>
                     <td>${formatMultiline(staff.bank)}</td>
                     <td class="col-center">${escapeHtml(staff.contractNo)}</td>
@@ -635,6 +646,7 @@
                 document.getElementById('f_qualification').value = staff.qualification || '';
                 document.getElementById('f_department').value = staff.department || '';
                 document.getElementById('f_startDate').value = staff.startDate || '';
+                document.getElementById('f_experienceYears').value = staff.experienceYears ?? '';
                 document.getElementById('f_phone').value = staff.phone || '';
                 document.getElementById('f_email').value = staff.email || '';
                 document.getElementById('f_bank').value = staff.bank || '';
@@ -691,6 +703,12 @@
                 qualification: document.getElementById('f_qualification').value.trim(),
                 department: document.getElementById('f_department').value.trim(),
                 startDate: document.getElementById('f_startDate').value,
+                experienceYears: (() => {
+                    const raw = document.getElementById('f_experienceYears').value;
+                    if(raw === '') return '';
+                    const num = Number(raw);
+                    return Number.isFinite(num) && num >= 0 ? num : '';
+                })(),
                 phone: document.getElementById('f_phone').value.trim(),
                 email: document.getElementById('f_email').value.trim(),
                 bank: document.getElementById('f_bank').value.trim(),
@@ -722,16 +740,38 @@
         });
 
         // Mobile Menu
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
-        });
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 
-        document.getElementById('sidebarOverlay').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = '';
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('open');
+            if (window.innerWidth <= 1024) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.touchAction = 'none';
+            }
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+            document.body.style.touchAction = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+        document.querySelectorAll('.sidebar-nav-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) closeSidebar();
+            });
+        });
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) closeSidebar();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
         });
 
         document.getElementById('btnLogout').addEventListener('click', () => {

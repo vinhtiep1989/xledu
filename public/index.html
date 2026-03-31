@@ -300,7 +300,9 @@
                 (profile && (profile.name || profile.fullName || profile.displayName || profile.teacherName)) || ''
             ).trim();
             if (fullName) return fullName;
-            return getRoleLabel((profile && profile.role) || 'teacher');
+            const fallbackEmail = normalizeEmail((user && user.email) || (profile && profile.email) || '');
+            if (fallbackEmail) return fallbackEmail.split('@')[0] || fallbackEmail;
+            return 'Người dùng';
         }
 
         async function fetchCurrentUserProfile(user) {
@@ -711,26 +713,37 @@
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
 
-        btnMenu.addEventListener('click', () => {
+        function openSidebar() {
             sidebar.classList.add('open');
             overlay.classList.add('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
-        });
+            if (window.innerWidth <= 1024) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.touchAction = 'none';
+            }
+        }
 
-        overlay.addEventListener('click', () => {
+        function closeSidebar() {
             sidebar.classList.remove('open');
             overlay.classList.remove('open');
             document.body.style.overflow = '';
-        });
+            document.body.style.touchAction = '';
+        }
+
+        btnMenu.addEventListener('click', openSidebar);
+        overlay.addEventListener('click', closeSidebar);
 
         document.querySelectorAll('.sidebar-nav-item').forEach((item) => {
             item.addEventListener('click', () => {
-                if (window.innerWidth <= 1024) {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('open');
-                    document.body.style.overflow = '';
-                }
+                if (window.innerWidth <= 1024) closeSidebar();
             });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) closeSidebar();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
         });
     </script>
 </body>

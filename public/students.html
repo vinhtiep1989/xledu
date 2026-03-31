@@ -1556,7 +1556,8 @@ function renderSummaryDashboard() {
 
 function getUserDisplayName(userDocData, user) {
             if (userDocData) return userDocData.fullName || userDocData.displayName || userDocData.name || user.email;
-            return user.email;
+            const fallbackEmail = normalizeEmail((user && user.email) || '');
+            return fallbackEmail ? (fallbackEmail.split('@')[0] || fallbackEmail) : '';
         }
         function parseLinkedClassCodes(rawValue, currentClassCode) {
             const parts = String(rawValue || '').split(/[\n,;]+/).map(item => normalizeCode(item)).filter(Boolean);
@@ -2047,26 +2048,36 @@ function loadClasses() {
                 document.getElementById('page-loader').style.display = 'none';
             });
         }
-        auth.onAuthStateChanged((user) => {
+        auth.onAuthStateChanged(async (user) => {
             if (!user) return window.location.href = 'login.html';
-            document.getElementById('userEmailDisplay').textContent = user.email || '';
-            db.collection('users').where('email', '==', user.email).get().then(snapshot => {
-                let role = 'teacher'; let displayName = user.email || '';
-                if (!snapshot.empty) { const userData = snapshot.docs[0].data() || {}; role = userData.role || 'teacher'; displayName = getUserDisplayName(userData, user); }
-                currentUserInfo = { email: user.email || '', displayName, role };
-                document.getElementById('userRoleDisplay').textContent = translateRole(role);
-                updatePermissionUI();
-                renderSummaryDashboard();
-                loadManagerUsers();
-                loadClasses();
-            }).catch(() => {
-                currentUserInfo = { email: user.email || '', displayName: user.email || '', role: 'teacher' };
-                document.getElementById('userRoleDisplay').textContent = 'Giáo viên';
-                updatePermissionUI();
-                renderSummaryDashboard();
-                loadManagerUsers();
-                loadClasses();
-            });
+
+            const currentEmail = normalizeEmail(user.email || '');
+            document.getElementById('userEmailDisplay').textContent = currentEmail;
+
+            try {
+                let userData = null;
+                const directDoc = await db.collection('users').doc(currentEmail).get().catch(() => null);
+                if (directDoc && directDoc.exists) {
+                    userData = directDoc.data() || {};
+                } else {
+                    const snapshot = await db.collection('users').where('email', '==', currentEmail).limit(1).get();
+                    if (!snapshot.empty) userData = snapshot.docs[0].data() || {};
+                }
+
+                const role = (userData && userData.role) || 'teacher';
+                const displayName = getUserDisplayName(userData, { email: currentEmail }) || currentEmail;
+                currentUserInfo = { email: currentEmail, displayName, role };
+                document.getElementById('userRoleDisplay').textContent = displayName;
+            } catch (_) {
+                const fallbackName = currentEmail ? (currentEmail.split('@')[0] || currentEmail) : '';
+                currentUserInfo = { email: currentEmail, displayName: fallbackName, role: 'teacher' };
+                document.getElementById('userRoleDisplay').textContent = fallbackName;
+            }
+
+            updatePermissionUI();
+            renderSummaryDashboard();
+            loadManagerUsers();
+            loadClasses();
         });
         studentSearch.addEventListener('input', () => {
             selectedStudentSyncKey = '';
@@ -2132,15 +2143,38 @@ function loadClasses() {
                 btnSaveStudent.innerHTML = originalLabel;
             }
         });
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('open');
+            if (window.innerWidth <= 1024) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.touchAction = 'none';
+            }
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+            document.body.style.touchAction = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+        document.querySelectorAll('.sidebar-nav-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) closeSidebar();
+            });
         });
-        document.getElementById('sidebarOverlay').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = 'auto';
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) closeSidebar();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
         });
         document.getElementById('btnLogout').addEventListener('click', () => {
             if (confirm('Đăng xuất hệ thống?')) auth.signOut();

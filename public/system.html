@@ -135,7 +135,7 @@
                 <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
                 <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item active"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
             </nav>
         </aside>
@@ -265,6 +265,14 @@
             return 'Giáo viên';
         }
 
+        function getDisplayName(data, fallbackEmail) {
+            const fullName = String((data && (data.fullName || data.displayName || data.name)) || '').trim();
+            if (fullName) return fullName;
+            const safeEmail = normalizeEmail((fallbackEmail || (data && data.email) || ''));
+            if (safeEmail) return safeEmail.split('@')[0] || safeEmail;
+            return 'Người dùng';
+        }
+
         function getRoleBadge(role) {
             if (role === 'admin') return '<span class="role-badge role-admin">ADMIN</span>';
             if (role === 'manager') return '<span class="role-badge role-manager">QUẢN LÝ</span>';
@@ -292,7 +300,7 @@
         function updatePermissionUI() {
             const role = currentUserProfile && currentUserProfile.role ? currentUserProfile.role : 'teacher';
             const roleLabel = getRoleLabel(role);
-            document.getElementById('currentRoleLabel').textContent = roleLabel;
+            document.getElementById('currentRoleLabel').textContent = getDisplayName(currentUserProfile, currentAuthUser && currentAuthUser.email);
 
             const note = document.getElementById('permissionNote');
             note.className = 'permission-note ' + role;
@@ -619,6 +627,8 @@
                         uid: existingData.uid || existingData.authUid || '',
                         authUid: existingData.authUid || existingData.uid || '',
                         name: name,
+                        fullName: name,
+                        displayName: name,
                         email: fixedEmail,
                         phone: phone,
                         role: role,
@@ -657,6 +667,8 @@
                     uid: existingData.uid || authUid || existingData.authUid || '',
                     authUid: authUid || existingData.authUid || existingData.uid || '',
                     name: name,
+                    fullName: name,
+                    displayName: name,
                     email: email,
                     phone: phone,
                     role: role,
@@ -738,7 +750,7 @@
             }
 
             currentAuthUser = user;
-            document.getElementById('userEmailDisplay').textContent = user.email;
+            document.getElementById('userEmailDisplay').textContent = normalizeEmail(user.email || '');
 
             try {
                 currentUserProfile = await fetchCurrentUserProfile(user);
@@ -784,20 +796,37 @@
             }
         });
 
-        if (btnMenu) {
-            btnMenu.addEventListener('click', () => {
-                sidebar.classList.add('open');
-                overlay.classList.add('open');
-                if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
-            });
+        function openSidebar() {
+            if (!sidebar || !overlay) return;
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            if (window.innerWidth <= 1024) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.touchAction = 'none';
+            }
         }
-        if (overlay) {
-            overlay.addEventListener('click', () => {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('open');
-                if (window.innerWidth <= 1024) document.body.style.overflow = 'auto';
-            });
+
+        function closeSidebar() {
+            if (!sidebar || !overlay) return;
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+            document.body.style.touchAction = '';
         }
+
+        if (btnMenu) btnMenu.addEventListener('click', openSidebar);
+        if (overlay) overlay.addEventListener('click', closeSidebar);
+        document.querySelectorAll('.sidebar-nav-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) closeSidebar();
+            });
+        });
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) closeSidebar();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
+        });
     </script>
 </body>
 </html>
