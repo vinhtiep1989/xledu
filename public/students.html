@@ -27,8 +27,7 @@
         .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px; }
         .header-left { display: flex; align-items: center; gap: 15px; z-index: 10; }
         .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
-        .logo-placeholder { width: 55px; height: 55px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.5); font-size: 0.7rem; text-align: center; cursor: pointer; background-size: cover; background-position: center; flex-shrink: 0; }
-        .header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; z-index: 5; }
+.header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; z-index: 5; }
         .header-title { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224,170,62,0.5); }
         .header-subtitle { font-size: 1rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 500; }
         .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; z-index: 10; }
@@ -77,27 +76,75 @@
         .table-stats { display: flex; flex-wrap: wrap; gap: 8px; }
         .table-stat-badge { padding: 8px 12px; background: #f8faf9; border: 1px solid var(--border-grey); border-radius: 999px; font-size: 0.82rem; font-weight: 700; color: #47627a; }
 
-        .table-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; border: 1px solid var(--border-grey); }
-        .excel-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 1700px; background: #fff; }
-        .excel-table th { background-color: #f8faf9; padding: 10px 12px; border-bottom: 2px solid var(--border-grey); border-right: 1px solid var(--border-grey); vertical-align: top; text-align: left; }
+        .table-wrapper { width: 100%; overflow: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; border: 1px solid #dfe9e3; background: #fbfdfc; box-shadow: inset 0 1px 0 rgba(255,255,255,0.85); }
+        .table-wrapper::-webkit-scrollbar { height: 8px; }
+        .table-wrapper::-webkit-scrollbar-thumb { background: rgba(161,140,102,0.35); border-radius: 999px; }
+        .table-wrapper::-webkit-scrollbar-track { background: rgba(244,247,246,0.85); }
+        .excel-table { width: 100%; min-width: 1320px; border-collapse: separate; border-spacing: 0; font-size: 0.74rem; background: #fff; color: #334155; }
+        .excel-table th, .excel-table td { border-right: 1px solid #ebf1ed; }
         .excel-table th:last-child, .excel-table td:last-child { border-right: none; }
-        .excel-table td { padding: 12px; border-bottom: 1px solid var(--border-grey); border-right: 1px solid var(--border-grey); vertical-align: middle; color: #444; }
-        .excel-table tbody tr { cursor: pointer; transition: 0.2s; }
-        .excel-table tbody tr:hover td { background-color: rgba(224,170,62,0.04); }
-        .excel-table tbody tr.active td { background-color: rgba(46,204,113,0.08); }
-        .th-title { color: var(--text-dark); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; line-height: 1.3; margin-bottom: 8px; display: block; }
-        .filter-sm { width: 100%; padding: 7px 8px; border: 1px solid #d9e4dd; border-radius: 6px; font-size: 0.76rem; outline: none; background-color: #fff; color: #555; transition: 0.3s; }
+        .excel-table thead th { position: sticky; top: 0; z-index: 5; background: linear-gradient(180deg, #fcfefc 0%, #f2f7f4 100%); padding: 6px 6px 5px; border-bottom: 1px solid #dbe6df; vertical-align: top; text-align: center; box-shadow: inset 0 -1px 0 rgba(219,230,223,0.9); }
+        .excel-table td { padding: 5px 6px; border-bottom: 1px solid #edf3ef; vertical-align: middle; color: #435160; line-height: 1.25; background: #fff; }
+        .excel-table tbody tr { cursor: pointer; transition: background-color 0.16s ease; }
+        .excel-table tbody tr:nth-child(even) td { background: #fcfdfc; }
+        .excel-table tbody tr:hover td { background-color: rgba(224,170,62,0.05); }
+        .excel-table tbody tr.active td, .excel-table tbody tr.checked td { background-color: rgba(46,204,113,0.08); }
+        .excel-table thead th:nth-child(1), .excel-table tbody td:nth-child(1) { position: sticky; left: 0; z-index: 7; }
+        .excel-table thead th:nth-child(2), .excel-table tbody td:nth-child(2) { position: sticky; left: 38px; z-index: 7; }
+        .excel-table thead th:nth-child(3), .excel-table tbody td:nth-child(3) { position: sticky; left: 86px; z-index: 7; }
+        .excel-table thead th:nth-child(1), .excel-table thead th:nth-child(2), .excel-table thead th:nth-child(3) { z-index: 9; }
+        .excel-table thead th:nth-child(1), .excel-table tbody td:nth-child(1), .excel-table thead th:nth-child(2), .excel-table tbody td:nth-child(2), .excel-table thead th:nth-child(3), .excel-table tbody td:nth-child(3) { box-shadow: 1px 0 0 #ebf1ed; }
+        .excel-table thead th:nth-child(1), .excel-table thead th:nth-child(2), .excel-table thead th:nth-child(3) { background: linear-gradient(180deg, #fbfdfc 0%, #eef5f1 100%); }
+        .excel-table tbody td:nth-child(1), .excel-table tbody td:nth-child(2), .excel-table tbody td:nth-child(3) { background: inherit; }
+        .th-title { color: var(--text-dark); font-weight: 800; text-transform: uppercase; font-size: 0.63rem; letter-spacing: 0.03em; line-height: 1.2; margin-bottom: 4px; display: block; text-align: center; }
+        .filter-sm { width: 100%; min-height: 25px; padding: 3px 5px; border: 1px solid #dce8e0; border-radius: 5px; font-size: 0.66rem; outline: none; background-color: rgba(255,255,255,0.96); color: #556371; transition: 0.2s; text-align: center; }
+        .filter-sm::placeholder { color: #97a5b0; }
         .filter-sm:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 2px rgba(224,170,62,0.08); }
+        .header-check-cell { text-align: center; }
+        .table-check { width: 14px; height: 14px; accent-color: var(--primary-green); cursor: pointer; }
         .col-center { text-align: center !important; }
         .col-bold { font-weight: 700; color: var(--text-dark); }
-        .empty-state { padding: 36px 24px; text-align: center; color: #7f8c8d; }
-        .empty-state i { font-size: 2rem; color: #d0d9d4; margin-bottom: 12px; display: block; }
-        .class-count-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 42px; padding: 6px 10px; border-radius: 999px; background: rgba(46,204,113,0.14); color: #1e8e52; font-weight: 800; }
-        .mode-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; }
+        .empty-state { padding: 30px 18px; text-align: center; color: #7f8c8d; background: linear-gradient(180deg, #fcfefd 0%, #f7fbf9 100%); font-size: 0.86rem; }
+        .empty-state i { font-size: 1.5rem; color: #d0d9d4; margin-bottom: 8px; display: block; }
+        .table-row-index { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 20px; padding: 0 4px; border-radius: 6px; background: #f3f8f5; border: 1px solid #e1ebe5; color: #607080; font-size: 0.65rem; font-weight: 800; }
+        .cell-stack { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .student-name-cell { font-weight: 700; color: var(--text-dark); line-height: 1.2; font-size: 0.74rem; }
+        .student-meta-inline, .student-meta-inline-secondary { display: none; }
+        .parent-name-cell { font-weight: 600; color: #314253; line-height: 1.2; }
+        .table-chip { display: inline-flex; align-items: center; justify-content: center; max-width: 100%; min-height: 18px; padding: 1px 6px; border-radius: 999px; border: 1px solid #e1ebe5; background: #f4f8f6; color: #4e6578; font-size: 0.64rem; font-weight: 800; white-space: nowrap; }
+        .table-chip-accent { background: rgba(224,170,62,0.12); border-color: rgba(224,170,62,0.18); color: #8b6508; }
+        .mono-text { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.67rem; font-variant-numeric: tabular-nums; color: #415261; white-space: nowrap; }
+        .cell-truncate { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .class-summary-cell { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .class-count-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; min-height: 18px; padding: 1px 6px; border-radius: 999px; background: rgba(46,204,113,0.14); color: #1e8e52; font-weight: 800; font-size: 0.64rem; }
+        .mode-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 999px; font-size: 0.64rem; font-weight: 700; white-space: nowrap; }
         .mode-onsite { background: rgba(46,204,113,0.14); color: #1e8e52; }
         .mode-online { background: rgba(52,152,219,0.14); color: #2c6fa6; }
-        .cell-note { max-width: 240px; white-space: normal; line-height: 1.45; }
-        .linked-codes-text { font-size: 0.76rem; color: #6c7a89; margin-top: 6px; white-space: normal; line-height: 1.4; }
+        .cell-note { max-width: 180px; white-space: normal; line-height: 1.3; color: #5f6f7d; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.69rem; }
+        .linked-codes-text { max-width: 120px; font-size: 0.63rem; color: #6c7a89; white-space: normal; word-break: break-word; line-height: 1.2; }
+        .mobile-table-hint { display: none; }
+
+        @media (max-width: 1024px) {
+            .table-wrapper { border-radius: 10px; }
+            .excel-table { min-width: 1180px; font-size: 0.7rem; }
+            .excel-table thead th { padding: 5px 4px; }
+            .excel-table td { padding: 4px 5px; }
+            .th-title { font-size: 0.59rem; }
+            .filter-sm { min-height: 22px; font-size: 0.62rem; padding: 2px 4px; }
+            .table-chip, .class-count-badge, .mode-badge { font-size: 0.6rem; }
+            .linked-codes-text { max-width: 96px; font-size: 0.58rem; }
+            .cell-note { max-width: 130px; font-size: 0.63rem; }
+            .student-meta-inline, .student-meta-inline-secondary { display: flex; gap: 4px; flex-wrap: wrap; font-size: 0.58rem; color: #718191; line-height: 1.15; }
+            .student-meta-inline-secondary { color: #8492a0; }
+            .student-name-cell { font-size: 0.71rem; }
+            .mobile-table-hint { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #6f7f8d; background: #f7faf8; border: 1px solid #e5eeea; border-radius: 999px; padding: 6px 10px; margin-bottom: 10px; }
+        }
+
+        @media (max-width: 640px) {
+            .excel-table { min-width: 1080px; }
+            .excel-table thead th:nth-child(3), .excel-table tbody td:nth-child(3) { min-width: 145px; }
+            .linked-codes-text { max-width: 82px; }
+        }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13,27,42,0.82); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 3000; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px; }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
@@ -139,8 +186,7 @@
             html, body { height: auto; min-height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; display: block !important; }
             .header { position: sticky; top: 0; padding: 0 15px; }
             .mobile-menu-btn { display: block; }
-            .logo-placeholder { display: none; }
-            .header-title { font-size: 1.25rem; letter-spacing: 1px; }
+.header-title { font-size: 1.25rem; letter-spacing: 1px; }
             .header-subtitle { display: none; }
             .user-info { display: none; }
             .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
@@ -166,6 +212,568 @@
             .modal-tools { width: 100%; }
             .btn-modal-tool { flex: 1; justify-content: center; }
         }
+    
+        /* ===== Compact permissions + summary dashboard ===== */
+        .page-header { margin-bottom: 12px; align-items: flex-start; }
+        .page-subtitle { max-width: 980px; }
+        .page-meta-line { margin-top: 10px; }
+        .page-permission-chip {
+            display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; border-radius: 999px;
+            background: #f8faf9; border: 1px solid var(--border-grey); color: #486177; font-size: 0.77rem; font-weight: 700;
+        }
+        .page-permission-chip.is-readonly { background: rgba(52,152,219,0.08); color: #2c6fa6; border-color: rgba(52,152,219,0.18); }
+        .page-permission-chip.is-manage { background: rgba(46,204,113,0.10); color: #1f8f55; border-color: rgba(46,204,113,0.18); }
+
+        .header-actions { gap: 8px; }
+        .search-box input { width: 300px; min-height: 36px; padding: 8px 12px 8px 36px; font-size: 0.82rem; border-radius: 9px; }
+        .search-box i { left: 12px; font-size: 0.9rem; }
+        .btn-add-new, .btn-edit-top, .btn-delete-top {
+            padding: 7px 11px; border-radius: 8px; font-size: 0.78rem; gap: 6px;
+            min-height: 36px; line-height: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .btn-add-new i, .btn-edit-top i, .btn-delete-top i { font-size: 0.85rem; }
+        .btn-add-new:hover, .btn-edit-top:hover, .btn-delete-top:hover { transform: translateY(-1px); }
+        .btn-compact-hidden { display: none !important; }
+
+        .stats-dashboard { display: grid; gap: 12px; margin-bottom: 12px; }
+        
+.summary-stats-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 10px; }
+.summary-card,
+.manager-stats-panel,
+.class-stats-panel {
+    background: #fff; border: 1px solid var(--border-grey); border-radius: 12px; padding: 14px 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+}
+.summary-card-primary { background: linear-gradient(180deg, #fbfdfc 0%, #f5fbf7 100%); }
+.summary-card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; font-weight: 800; color: #607182; }
+.summary-card-value { margin-top: 6px; font-size: 1.55rem; font-weight: 900; color: var(--text-dark); line-height: 1; }
+.summary-card-note { margin-top: 7px; font-size: 0.76rem; line-height: 1.45; color: #728395; }
+
+.manager-stats-panel,
+.class-stats-panel { margin-top: 10px; }
+.manager-stats-head,
+.class-stats-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; margin-bottom: 10px; }
+.manager-stats-title,
+.class-stats-title { font-size: 0.98rem; font-weight: 800; color: var(--text-dark); }
+.manager-stats-subtitle,
+.class-stats-subtitle { margin-top: 4px; font-size: 0.78rem; color: #76889a; line-height: 1.45; }
+
+.manager-stats-list { display: grid; gap: 8px; }
+.manager-stats-list-head,
+.manager-stat-row {
+    display: grid; grid-template-columns: minmax(200px, 1.6fr) 130px 150px; gap: 8px; align-items: center;
+}
+.manager-stats-list-head {
+    padding: 0 12px; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.03em;
+    color: #7b8d9f; font-weight: 800;
+}
+.manager-stat-row {
+    border: 1px solid #e7f0eb; border-radius: 11px; background: #fbfdfc; padding: 9px 12px;
+}
+.manager-stat-row.is-current {
+    border-color: rgba(46,204,113,0.35);
+    background: linear-gradient(180deg, rgba(46,204,113,0.08) 0%, rgba(46,204,113,0.03) 100%);
+}
+.manager-stat-name {
+    display: grid; gap: 3px; font-size: 0.82rem; font-weight: 800; color: #314356; line-height: 1.35;
+}
+.manager-stat-meta {
+    display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    font-size: 0.68rem; color: #7c8c99; font-weight: 600;
+}
+.manager-stat-role,
+.manager-stat-current {
+    display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 999px;
+    background: rgba(224,170,62,0.12); color: #9a6c0a; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
+}
+.manager-stat-current { background: rgba(46,204,113,0.14); color: #1e8e52; }
+.manager-stat-metric {
+    border: 1px solid #e8f1ec; border-radius: 9px; background: #fff; padding: 8px 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-size: 0.72rem; font-weight: 700; color: #738391;
+}
+.manager-stat-metric strong { font-size: 0.96rem; color: var(--text-dark); line-height: 1; }
+
+.class-stats-table-wrap {
+    width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    border: 1px solid #e7f0eb; border-radius: 10px; background: #fbfdfc;
+}
+.class-stats-list { min-width: 760px; }
+.class-stats-head-row,
+.class-stat-row {
+    display: grid; grid-template-columns: 88px minmax(190px, 1.8fr) minmax(165px, 1.2fr) 90px 90px 90px;
+    gap: 8px; align-items: center;
+}
+.class-stats-head-row {
+    padding: 8px 10px; background: #f7faf8; border-bottom: 1px solid #e7f0eb;
+    font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.03em; color: #7b8d9f; font-weight: 800;
+}
+.class-stat-row {
+    padding: 8px 10px; background: #fff; border-bottom: 1px solid #edf3ef; font-size: 0.74rem;
+}
+.class-stat-row:last-child { border-bottom: none; }
+.class-stat-code { font-weight: 800; color: #9a6c0a; }
+.class-stat-name { font-weight: 800; color: #314356; }
+.class-stat-manager {
+    font-size: 0.72rem; color: #6f8090; line-height: 1.35;
+    display: flex; align-items: center; gap: 6px;
+}
+.class-stat-count {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 44px;
+    padding: 4px 8px; border-radius: 999px; border: 1px solid #e8f1ec; background: #fbfdfc;
+    font-size: 0.76rem; font-weight: 800; color: var(--text-dark);
+}
+.class-stat-count.total { background: rgba(224,170,62,0.10); color: #9a6c0a; border-color: rgba(224,170,62,0.22); }
+
+.manager-stat-empty,
+.class-stat-empty {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 76px; border: 1px dashed #dbe6df; border-radius: 10px; background: #fbfdfc; color: #7e8d9a; font-size: 0.82rem;
+}
+
+.panel { padding: 14px; }
+.table-topbar { margin-bottom: 10px; justify-content: center; }
+.table-topbar-inner { width: 100%; text-align: center; }
+.table-title { font-size: 1rem; }
+.table-title-centered { text-align: center; width: 100%; letter-spacing: 0.03em; }
+.table-subtitle { font-size: 0.78rem; line-height: 1.45; text-align: center; }
+.mobile-table-hint { margin-bottom: 8px; font-size: 0.73rem; color: #748495; display: inline-flex; align-items: center; gap: 6px; }
+
+.table-wrapper { border-radius: 10px; }
+.excel-table { min-width: 1280px; font-size: 0.72rem; }
+.excel-table thead th { padding: 5px 5px 4px; }
+.excel-table td { padding: 4px 5px; line-height: 1.18; }
+.th-title { font-size: 0.66rem; margin-bottom: 5px; line-height: 1.22; text-align: center; }
+.filter-sm { padding: 4px 6px; min-height: 26px; border-radius: 7px; font-size: 0.70rem; text-align: center; }
+.table-check { width: 14px; height: 14px; }
+.table-row-index { min-width: 28px; padding: 5px 0; font-size: 0.78rem; }
+.class-count-badge { min-width: 30px; padding: 3px 7px; font-size: 0.69rem; }
+.mode-badge { padding: 4px 7px; font-size: 0.66rem; }
+.linked-codes-text { margin-top: 3px; font-size: 0.63rem; line-height: 1.25; }
+.cell-note { max-width: 180px; line-height: 1.3; }
+.table-row-meta { margin-top: 3px; font-size: 0.62rem; line-height: 1.2; color: #7b8d9f; }
+
+@media (max-width: 900px) {
+    .summary-stats-grid { grid-template-columns: 1fr; }
+    .manager-stats-list-head,
+    .manager-stat-row { grid-template-columns: 1fr; }
+    .manager-stats-list-head { display: none; }
+    .class-stats-list { min-width: 680px; }
+}
+
+        .panel { padding: 14px; }
+        .table-topbar { margin-bottom: 10px; }
+        .table-title { font-size: 1rem; }
+        .table-subtitle { font-size: 0.78rem; line-height: 1.45; }
+        .mobile-table-hint { margin-bottom: 8px; font-size: 0.73rem; color: #748495; display: inline-flex; align-items: center; gap: 6px; }
+
+        .table-wrapper { border-radius: 10px; }
+        .excel-table { min-width: 1280px; font-size: 0.72rem; }
+        .excel-table thead th { padding: 5px 5px 4px; }
+        .excel-table td { padding: 4px 5px; line-height: 1.18; }
+        .th-title { font-size: 0.66rem; margin-bottom: 5px; line-height: 1.22; text-align: center; }
+        .filter-sm { padding: 4px 6px; min-height: 26px; border-radius: 7px; font-size: 0.70rem; text-align: center; }
+        .table-check { width: 14px; height: 14px; }
+        .table-row-index { min-width: 28px; padding: 5px 0; font-size: 0.73rem; }
+        .student-name-cell { font-size: 0.77rem; line-height: 1.18; }
+        .student-meta-inline, .student-meta-inline-secondary { gap: 4px; font-size: 0.64rem; line-height: 1.25; }
+        .table-chip, .mode-badge, .class-count-badge { font-size: 0.65rem; padding: 4px 7px; }
+        .linked-codes-text { font-size: 0.62rem; margin-top: 4px; }
+        .cell-note, .cell-truncate, .mono-text, .parent-name-cell { font-size: 0.70rem; line-height: 1.22; }
+        .excel-table thead th:nth-child(1), .excel-table tbody td:nth-child(1) { left: 0; }
+        .excel-table thead th:nth-child(2), .excel-table tbody td:nth-child(2) { left: 38px; }
+        .excel-table thead th:nth-child(3), .excel-table tbody td:nth-child(3) { left: 86px; }
+        .excel-table tbody tr.active td { background-color: rgba(46,204,113,0.07); }
+        .excel-table tbody tr.checked td { background-color: rgba(52,152,219,0.06); }
+
+        @media (max-width: 1024px) {
+            .page-header { gap: 10px; }
+            .header-actions { width: 100%; gap: 7px; }
+            .search-box { width: 100%; order: -1; margin-bottom: 0; }
+            .search-box input { width: 100%; }
+            .header-actions button { flex: initial; min-width: unset; }
+            .summary-stats-grid { grid-template-columns: 1fr; }
+            .class-stats-grid { grid-template-columns: 1fr; }
+            .class-stat-card { min-height: unset; }
+            .panel { padding: 12px; }
+        }
+
+        @media (max-width: 640px) {
+            .page-title { font-size: 1.16rem; }
+            .page-subtitle { font-size: 0.78rem; }
+            .page-permission-chip { font-size: 0.72rem; padding: 6px 10px; }
+            .header-actions { display: grid; grid-template-columns: 1fr repeat(3, auto); align-items: center; }
+            .search-box { grid-column: 1 / -1; }
+            .btn-add-new, .btn-edit-top, .btn-delete-top { padding: 7px 9px; font-size: 0.72rem; min-height: 34px; }
+            .btn-add-new span, .btn-edit-top span, .btn-delete-top span { display: none; }
+            .summary-card { padding: 12px; }
+            .summary-card-value { font-size: 1.35rem; }
+            .summary-card-note { font-size: 0.73rem; }
+            .class-stats-panel { padding: 12px; }
+            .class-stats-title { font-size: 0.92rem; }
+            .class-stats-subtitle { font-size: 0.74rem; }
+            .class-stat-name { font-size: 0.78rem; }
+            .mobile-table-hint { display: flex; }
+            .excel-table { min-width: 1180px; font-size: 0.69rem; }
+            .excel-table thead th { padding: 4px 4px 3px; }
+            .excel-table td { padding: 3px 4px; }
+            .filter-sm { min-height: 24px; font-size: 0.67rem; padding: 3px 5px; }
+            .table-row-index { min-width: 24px; padding: 4px 0; font-size: 0.68rem; }
+            .student-name-cell { font-size: 0.74rem; }
+            .student-meta-inline, .student-meta-inline-secondary { font-size: 0.61rem; }
+            .table-chip, .mode-badge, .class-count-badge { font-size: 0.62rem; padding: 3px 6px; }
+            .linked-codes-text { font-size: 0.60rem; }
+            .excel-table thead th:nth-child(2), .excel-table tbody td:nth-child(2) { left: 34px; }
+            .excel-table thead th:nth-child(3), .excel-table tbody td:nth-child(3) { left: 78px; }
+        }
+
+    
+        /* v5: filters in class statistics headers + mobile browser optimization */
+        .class-stats-subtitle { max-width: 860px; }
+        .class-stats-mobile-hint {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #f7faf8;
+            border: 1px solid #e5eeea;
+            color: #6f8090;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .class-stats-table-wrap {
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+            touch-action: pan-x pan-y;
+            scrollbar-gutter: stable;
+            scrollbar-width: thin;
+            scrollbar-color: #d6e1db transparent;
+        }
+        .class-stats-table-wrap::-webkit-scrollbar { height: 8px; }
+        .class-stats-table-wrap::-webkit-scrollbar-thumb {
+            background: #d6e1db;
+            border-radius: 999px;
+        }
+        .class-stats-list { min-width: 860px; }
+        .class-stats-head-row,
+        .class-stat-row {
+            display: grid;
+            grid-template-columns: 104px minmax(210px, 1.8fr) minmax(170px, 1.25fr) 88px 88px 88px;
+            gap: 0;
+            align-items: stretch;
+        }
+        .class-stats-head-row {
+            position: sticky;
+            top: 0;
+            z-index: 7;
+            background: #f7faf8;
+            border-bottom: 1px solid #e7f0eb;
+        }
+        .class-stats-head-row > div,
+        .class-stat-row > div {
+            min-width: 0;
+            padding: 8px 10px;
+            border-right: 1px solid #edf3ef;
+            display: flex;
+            align-items: center;
+        }
+        .class-stats-head-row > div:last-child,
+        .class-stat-row > div:last-child { border-right: none; }
+        .class-head-cell {
+            display: grid !important;
+            align-items: center;
+            gap: 5px;
+            text-align: center;
+        }
+        .class-head-label {
+            font-size: 0.66rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #7b8d9f;
+            text-align: center;
+            line-height: 1.2;
+        }
+        .class-filter-input,
+        .class-filter-select {
+            width: 100%;
+            min-height: 28px;
+            padding: 4px 6px;
+            border: 1px solid #dbe7e0;
+            border-radius: 7px;
+            background: #fff;
+            color: #516271;
+            font-size: 0.69rem;
+            text-align: center;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            box-shadow: none;
+        }
+        .class-filter-input::placeholder { color: #9aa8b4; }
+        .class-filter-input:focus,
+        .class-filter-select:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 2px rgba(224,170,62,0.10);
+        }
+        .class-filter-select {
+            padding-right: 20px;
+            background-image:
+                linear-gradient(45deg, transparent 50%, #8ea0ad 50%),
+                linear-gradient(135deg, #8ea0ad 50%, transparent 50%);
+            background-position:
+                calc(100% - 12px) calc(50% - 2px),
+                calc(100% - 8px) calc(50% - 2px);
+            background-size: 4px 4px, 4px 4px;
+            background-repeat: no-repeat;
+        }
+        .class-stat-row {
+            font-size: 0.74rem;
+            background: #fff;
+            border-bottom: 1px solid #edf3ef;
+        }
+        .class-stat-row:nth-child(odd) { background: #fcfefd; }
+        .class-stat-row:last-child { border-bottom: none; }
+        .class-stat-row:hover > div { background: rgba(224,170,62,0.04); }
+        .class-stat-code,
+        .class-stat-name {
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .class-stat-manager {
+            font-size: 0.72rem;
+            color: #6f8090;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .class-stat-row > div:nth-child(4),
+        .class-stat-row > div:nth-child(5),
+        .class-stat-row > div:nth-child(6) {
+            justify-content: center;
+            text-align: center;
+        }
+        @media (max-width: 900px) {
+            .class-stats-mobile-hint { display: inline-flex; }
+            .class-stats-list { min-width: 780px; }
+            .class-stats-head-row > :nth-child(1),
+            .class-stat-row > :nth-child(1) {
+                position: sticky;
+                left: 0;
+                z-index: 6;
+                background: inherit;
+                box-shadow: 1px 0 0 #edf3ef;
+            }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) {
+                position: sticky;
+                left: 104px;
+                z-index: 5;
+                background: inherit;
+                box-shadow: 1px 0 0 #edf3ef;
+            }
+            .class-stats-head-row > :nth-child(1),
+            .class-stats-head-row > :nth-child(2) {
+                z-index: 8;
+                background: #f7faf8;
+            }
+        }
+        @media (max-width: 640px) {
+            .class-stats-panel { padding: 12px; }
+            .class-stats-title { font-size: 0.92rem; }
+            .class-stats-subtitle { font-size: 0.74rem; }
+            .class-stats-list { min-width: 760px; }
+            .class-stats-head-row > div,
+            .class-stat-row > div { padding: 7px 8px; }
+            .class-head-label { font-size: 0.63rem; }
+            .class-filter-input,
+            .class-filter-select {
+                min-height: 26px;
+                padding: 3px 5px;
+                border-radius: 6px;
+                font-size: 0.67rem;
+            }
+            .class-stat-row { font-size: 0.72rem; }
+        }
+        @supports (-webkit-touch-callout: none) {
+            .class-stats-table-wrap,
+            .table-wrapper {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+
+        /* mobile overflow hardening */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            position: relative;
+            overscroll-behavior-x: none;
+        }
+        img, input, select, button { max-width: 100%; }
+        .main-wrapper,
+        .dashboard-content,
+        .page-header,
+        .page-header > div,
+        .header-actions,
+        .search-box,
+        .stats-dashboard,
+        .summary-stats-grid,
+        .summary-card,
+        .manager-stats-panel,
+        .class-stats-panel,
+        .panel,
+        .table-topbar,
+        .table-topbar-inner {
+            min-width: 0;
+            max-width: 100%;
+        }
+        .class-stats-table-wrap,
+        .table-wrapper {
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            overscroll-behavior-x: contain;
+            touch-action: pan-x pan-y;
+        }
+        @media (max-width: 1024px) {
+            html, body {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden !important;
+                -webkit-text-size-adjust: 100%;
+            }
+            body {
+                position: relative;
+                display: block !important;
+            }
+            .header {
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+                padding-left: max(15px, env(safe-area-inset-left));
+                padding-right: max(15px, env(safe-area-inset-right));
+            }
+            .header-center {
+                position: static;
+                left: auto;
+                top: auto;
+                transform: none;
+                flex: 1 1 auto;
+                min-width: 0;
+                max-width: calc(100vw - 126px);
+                padding: 0 10px;
+                white-space: normal;
+                overflow: hidden;
+            }
+            .header-title {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .header-left,
+            .header-user { flex: 0 0 auto; }
+            .main-wrapper,
+            .dashboard-content {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden !important;
+            }
+            .dashboard-content {
+                padding-left: max(15px, env(safe-area-inset-left));
+                padding-right: max(15px, env(safe-area-inset-right));
+            }
+            .page-header,
+            .stats-dashboard,
+            .summary-stats-grid,
+            .summary-card,
+            .manager-stats-panel,
+            .class-stats-panel,
+            .panel {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                overflow-x: hidden;
+            }
+            .page-title,
+            .page-subtitle,
+            .manager-stats-subtitle,
+            .class-stats-subtitle,
+            .summary-card-note,
+            .table-subtitle {
+                overflow-wrap: anywhere;
+            }
+            .header-actions {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto auto auto;
+                align-items: center;
+            }
+            .search-box,
+            .search-box input {
+                min-width: 0;
+                max-width: 100%;
+            }
+            .search-box { grid-column: 1 / -1; }
+            .manager-stats-list,
+            .manager-stat-row,
+            .manager-stats-list-head,
+            .manager-stat-name,
+            .manager-stat-metric {
+                min-width: 0;
+            }
+            .manager-stat-metric {
+                width: 100%;
+            }
+            .class-stats-table-wrap,
+            .table-wrapper {
+                width: 100%;
+                max-width: 100%;
+                margin-inline: 0;
+            }
+            .class-stats-table-wrap { overflow-x: auto !important; }
+        }
+        @media (max-width: 640px) {
+            .header { gap: 8px; }
+            .header-center { max-width: calc(100vw - 112px); padding: 0 6px; }
+            .header-title { font-size: 1rem; }
+            .page-title { font-size: 1.06rem; }
+            .page-subtitle { font-size: 0.76rem; }
+            .header-actions {
+                grid-template-columns: minmax(0, 1fr) auto auto auto;
+                gap: 6px;
+            }
+            .btn-add-new, .btn-edit-top, .btn-delete-top {
+                min-width: 34px;
+                padding: 7px 8px;
+            }
+            .summary-card,
+            .manager-stats-panel,
+            .class-stats-panel,
+            .panel { padding: 12px; }
+            .manager-stat-row { grid-template-columns: 1fr; gap: 6px; }
+            .manager-stats-list-head { display: none; }
+            .manager-stat-metric { justify-content: space-between; }
+        }
+        @supports (padding: max(0px)) {
+            .dashboard-content {
+                padding-left: max(15px, env(safe-area-inset-left));
+                padding-right: max(15px, env(safe-area-inset-right));
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -179,8 +787,7 @@
     <header class="header">
         <div class="header-left">
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
-            <div class="logo-placeholder"><span id="logo-text">Logo</span></div>
-        </div>
+</div>
         <div class="header-center">
             <div class="header-title">XỨ LẠNG EDUCATION</div>
             <div class="header-subtitle">Chắp cánh ước mơ</div>
@@ -205,61 +812,101 @@
         </aside>
 
         <main class="dashboard-content">
+            
             <div class="page-header">
                 <div>
-                    <div class="page-title"><i class="fa-solid fa-user-graduate"></i> QUẢN LÝ HỌC SINH</div>
+                    <div class="page-title"><i class="fa-solid fa-user-graduate"></i> DANH SÁCH HỌC SINH</div>
                     <div class="page-subtitle">Danh sách học sinh toàn trung tâm đồng bộ từ các lớp học. Nhập mã lớp để hệ thống tự gắn học sinh vào nhiều lớp và tự thống kê số lớp đang theo học.</div>
+                    <div class="page-meta-line">
+                        <span class="page-permission-chip" id="studentPermissionChip"><i class="fa-solid fa-shield-halved"></i> Đang kiểm tra quyền truy cập...</span>
+                    </div>
                 </div>
                 <div class="header-actions">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" id="studentSearch" placeholder="Tìm học sinh, phụ huynh, CCCD, SĐT, mã lớp...">
                     </div>
-                    <button class="btn-add-new" type="button" id="btnAddStudent"><i class="fa-solid fa-user-plus"></i> Thêm học sinh</button>
-                    <button class="btn-edit-top" type="button" id="btnEditStudent"><i class="fa-solid fa-pen"></i> Sửa hồ sơ</button>
-                    <button class="btn-delete-top" type="button" id="btnDeleteStudent"><i class="fa-solid fa-trash"></i> Xóa học sinh</button>
+                    <button class="btn-add-new" type="button" id="btnAddStudent"><i class="fa-solid fa-user-plus"></i> Thêm</button>
+                    <button class="btn-edit-top" type="button" id="btnEditStudent"><i class="fa-solid fa-pen"></i> Sửa</button>
+                    <button class="btn-delete-top" type="button" id="btnDeleteStudent"><i class="fa-solid fa-trash"></i> Xóa</button>
                 </div>
             </div>
 
-            <div class="compact-strip">
-                <div class="compact-pill"><i class="fa-solid fa-table-list"></i> Hiển thị <strong id="filteredStudentBadgeInline">0</strong> học sinh</div>
-                <div class="compact-pill"><i class="fa-solid fa-users-viewfinder"></i> Đang chọn <strong id="selectedStudentBadgeInline">Chưa có</strong></div>
-            </div>
+            <section class="stats-dashboard">
+                <div class="summary-stats-grid">
+                    <div class="summary-card summary-card-primary">
+                        <div class="summary-card-label">Tổng số học sinh của công ty</div>
+                        <div class="summary-card-value" id="summaryTotalStudents">0</div>
+                        <div class="summary-card-note">Tính theo hồ sơ học sinh duy nhất trên toàn hệ thống.</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-label">Tổng số lớp trên hệ thống</div>
+                        <div class="summary-card-value" id="summaryTotalClasses">0</div>
+                        <div class="summary-card-note">Khi thêm lớp mới, thống kê theo lớp sẽ tự xuất hiện ngay bên dưới.</div>
+                    </div>
+                </div>
+
+                <div class="manager-stats-panel">
+                    <div class="manager-stats-head">
+                        <div>
+                            <div class="manager-stats-title">Số lớp theo quản lý</div>
+                            <div class="manager-stats-subtitle">Mỗi tài khoản quản lý hiển thị tổng số lớp đang phụ trách và tổng số học sinh của các lớp đó.</div>
+                        </div>
+                    </div>
+                    <div class="manager-stats-list" id="managerStatsList">
+                        <div class="manager-stat-empty"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải thống kê quản lý...</div>
+                    </div>
+                </div>
+
+                <div class="class-stats-panel">
+                    <div class="class-stats-head">
+                        <div>
+                            <div class="class-stats-title">Thống kê theo lớp</div>
+                            <div class="class-stats-subtitle">Mỗi lớp hiển thị theo từng hàng, có bộ lọc ngay trong tiêu đề cột để xem nhanh quản lý, trực tiếp, online và tổng số học sinh.</div>
+                        </div>
+                    </div>
+                    <div class="class-stats-mobile-hint"><i class="fa-solid fa-arrows-left-right"></i> Vuốt ngang để xem đủ cột và lọc nhanh trên iPhone, iPad, Android.</div>
+                    <div class="class-stats-table-wrap">
+                        <div class="class-stats-list" id="classStatsGrid">
+                            <div class="class-stat-empty"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải thống kê lớp...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <div class="panel">
                 <div class="table-topbar">
-                    <div>
-                        <div class="table-title">Danh sách học sinh toàn trung tâm</div>
-                        <div class="table-subtitle">Lọc trực tiếp tại từng cột. Cột số lớp có thể lọc theo số lượng hoặc mã lớp đang liên kết.</div>
-                    </div>
-                    <div class="table-stats">
-                        <div class="table-stat-badge" id="filteredStudentBadge">0 học sinh hiển thị</div>
-                        <div class="table-stat-badge" id="selectedStudentBadge">Chưa chọn học sinh</div>
+                    <div class="table-topbar-inner">
+                        <div class="table-title table-title-centered">DANH SÁCH HỌC SINH</div>
+                        <div class="table-subtitle" id="studentTablePermissionNote">Lọc trực tiếp tại từng cột. Admin và quản lý có quyền thêm, sửa, xóa; giáo viên chỉ được phép xem.</div>
                     </div>
                 </div>
+                <div class="mobile-table-hint"><i class="fa-solid fa-arrows-left-right"></i> Vuốt ngang để xem đủ cột, 3 cột đầu luôn được giữ cố định.</div>
                 <div class="table-wrapper">
                     <table class="excel-table">
                         <thead>
                             <tr>
-                                <th style="width:60px;"><span class="th-title">TT</span></th>
-                                <th style="width:220px;"><span class="th-title">Họ và tên</span><input type="text" class="filter-sm column-filter" data-key="name" placeholder="Lọc tên"></th>
-                                <th style="width:140px;"><span class="th-title">Ngày tháng năm sinh</span><input type="text" class="filter-sm column-filter" data-key="dob" placeholder="dd/mm/yyyy"></th>
-                                <th style="width:220px;"><span class="th-title">Địa chỉ</span><input type="text" class="filter-sm column-filter" data-key="address" placeholder="Lọc địa chỉ"></th>
-                                <th style="width:150px;"><span class="th-title">Số CCCD</span><input type="text" class="filter-sm column-filter" data-key="studentCccd" placeholder="Lọc CCCD"></th>
-                                <th style="width:120px;"><span class="th-title">Lớp</span><input type="text" class="filter-sm column-filter" data-key="gradeClass" placeholder="VD: 8A"></th>
-                                <th style="width:180px;"><span class="th-title">Trường</span><input type="text" class="filter-sm column-filter" data-key="school" placeholder="Lọc trường"></th>
-                                <th style="width:210px;"><span class="th-title">Họ và tên phụ huynh</span><input type="text" class="filter-sm column-filter" data-key="parentName" placeholder="Lọc phụ huynh"></th>
-                                <th style="width:150px;"><span class="th-title">CCCD phụ huynh</span><input type="text" class="filter-sm column-filter" data-key="parentCccd" placeholder="Lọc CCCD PH"></th>
-                                <th style="width:170px;"><span class="th-title">Số điện thoại phụ huynh</span><input type="text" class="filter-sm column-filter" data-key="parentPhone" placeholder="Lọc SĐT PH"></th>
-                                <th style="width:190px;"><span class="th-title">Số lớp đang theo học tại trung tâm</span><input type="text" class="filter-sm column-filter" data-key="centerClassInfo" placeholder="Số lớp hoặc mã lớp"></th>
-                                <th style="width:130px;"><span class="th-title">Hình thức học</span><select class="filter-sm column-filter" data-key="mode"><option value="">Tất cả</option><option value="Trực tiếp">Trực tiếp</option><option value="Trực tuyến">Trực tuyến</option></select></th>
-                                <th style="width:240px;"><span class="th-title">Ghi chú</span><input type="text" class="filter-sm column-filter" data-key="note" placeholder="Lọc ghi chú"></th>
+                                <th class="header-check-cell" style="width:38px;"><span class="th-title"><input type="checkbox" id="selectAllStudents" class="table-check" title="Chọn tất cả học sinh đang hiển thị"></span></th>
+                                <th style="width:48px;"><span class="th-title">TT</span></th>
+                                <th style="width:170px;"><span class="th-title">Họ và tên</span><input type="text" class="filter-sm column-filter" data-key="name" placeholder="Lọc tên"></th>
+                                <th style="width:104px;"><span class="th-title">Ngày sinh</span><input type="text" class="filter-sm column-filter" data-key="dob" placeholder="dd/mm/yyyy"></th>
+                                <th style="width:170px;"><span class="th-title">Địa chỉ</span><input type="text" class="filter-sm column-filter" data-key="address" placeholder="Lọc địa chỉ"></th>
+                                <th style="width:120px;"><span class="th-title">CCCD HS</span><input type="text" class="filter-sm column-filter" data-key="studentCccd" placeholder="Lọc CCCD"></th>
+                                <th style="width:82px;"><span class="th-title">Lớp</span><input type="text" class="filter-sm column-filter" data-key="gradeClass" placeholder="VD: 8A"></th>
+                                <th style="width:135px;"><span class="th-title">Trường</span><input type="text" class="filter-sm column-filter" data-key="school" placeholder="Lọc trường"></th>
+                                <th style="width:150px;"><span class="th-title">Phụ huynh</span><input type="text" class="filter-sm column-filter" data-key="parentName" placeholder="Lọc phụ huynh"></th>
+                                <th style="width:120px;"><span class="th-title">CCCD PH</span><input type="text" class="filter-sm column-filter" data-key="parentCccd" placeholder="Lọc CCCD PH"></th>
+                                <th style="width:122px;"><span class="th-title">SĐT PH</span><input type="text" class="filter-sm column-filter" data-key="parentPhone" placeholder="Lọc SĐT PH"></th>
+                                <th style="width:150px;"><span class="th-title">Số lớp / mã lớp</span><input type="text" class="filter-sm column-filter" data-key="centerClassInfo" placeholder="Số lớp hoặc mã lớp"></th>
+                                <th style="width:96px;"><span class="th-title">Hình thức</span><select class="filter-sm column-filter" data-key="mode"><option value="">Tất cả</option><option value="Trực tiếp">Trực tiếp</option><option value="Trực tuyến">Trực tuyến</option></select></th>
+                                <th style="width:170px;"><span class="th-title">Ghi chú</span><input type="text" class="filter-sm column-filter" data-key="note" placeholder="Lọc ghi chú"></th>
                             </tr>
                         </thead>
-                        <tbody id="studentTableBody"><tr><td colspan="13" class="empty-state"><i class="fa-solid fa-table-list"></i>Đang tải dữ liệu học sinh...</td></tr></tbody>
+                        <tbody id="studentTableBody"><tr><td colspan="14" class="empty-state"><i class="fa-solid fa-table-list"></i>Đang tải dữ liệu học sinh...</td></tr></tbody>
                     </table>
                 </div>
             </div>
+
         </main>
     </div>
 
@@ -323,6 +970,7 @@
 
         const studentSearch = document.getElementById('studentSearch');
         const studentTableBody = document.getElementById('studentTableBody');
+        const selectAllStudents = document.getElementById('selectAllStudents');
         const studentModal = document.getElementById('studentModal');
         const studentForm = document.getElementById('studentForm');
         const studentModalTitle = document.getElementById('studentModalTitle');
@@ -332,6 +980,7 @@
 
         let currentUserInfo = { email: '', displayName: '', role: 'teacher' };
         let selectedStudentSyncKey = '';
+        let selectedStudentSyncKeys = new Set();
         let editingMode = 'create';
         let classesCache = [];
         let classesById = {};
@@ -339,6 +988,11 @@
         let classStudentUnsubs = {};
         let classStudentsCache = {};
         let allStudentEnrollmentMap = {};
+        let managerUsersCache = [];
+        let usersUnsub = null;
+        let classStatsFilterState = { classCode: '', className: '', manager: '', onsite: '', online: '', total: '' };
+        updatePermissionUI();
+
 
         function normalizeText(value) { return String(value || '').trim(); }
         function normalizeTextLower(value) { return normalizeText(value).toLowerCase(); }
@@ -373,7 +1027,292 @@
             if (role === 'manager') return 'Quản lý';
             return 'Giáo viên';
         }
-        function getUserDisplayName(userDocData, user) {
+
+        function canManageStudents() {
+            return ['admin', 'manager'].includes(normalizeTextLower(currentUserInfo.role));
+        }
+        function requireManageStudentsPermission() {
+            if (canManageStudents()) return true;
+            alert('Tài khoản giáo viên chỉ được phép xem danh sách học sinh.');
+            return false;
+        }
+        function setTextIfExists(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = value;
+        }
+        function getClassManagerInfo(classData = {}) {
+            const manager = classData.manager || {};
+            const email = normalizeEmail(manager.email || classData.managerEmail || classData.manager_mail || '');
+            const name = normalizeText(manager.name || classData.managerNameDisplay || classData.managerName || classData.managerFullName || '');
+            return { email, name: name || (email || 'Chưa gán') };
+        }
+        function getManagedClassesCountForCurrentUser() {
+            const currentEmail = normalizeEmail(currentUserInfo.email);
+            if (!currentEmail) return 0;
+            return classesCache.filter(cls => getClassManagerInfo(cls).email === currentEmail).length;
+        }
+        function updatePermissionUI() {
+            const manageMode = canManageStudents();
+            const permissionChip = document.getElementById('studentPermissionChip');
+            const permissionNote = document.getElementById('studentTablePermissionNote');
+            const addBtn = document.getElementById('btnAddStudent');
+            const editBtn = document.getElementById('btnEditStudent');
+            const deleteBtn = document.getElementById('btnDeleteStudent');
+
+            [addBtn, editBtn, deleteBtn].forEach(btn => {
+                if (!btn) return;
+                btn.style.display = manageMode ? 'inline-flex' : 'none';
+                btn.disabled = !manageMode;
+                btn.title = manageMode ? '' : 'Giáo viên chỉ được phép xem';
+            });
+
+            if (permissionChip) {
+                permissionChip.classList.toggle('is-readonly', !manageMode);
+                permissionChip.classList.toggle('is-manage', manageMode);
+                permissionChip.innerHTML = manageMode
+                    ? '<i class="fa-solid fa-shield-halved"></i> Quyền hiện tại: thêm, sửa, xóa học sinh'
+                    : '<i class="fa-solid fa-eye"></i> Quyền hiện tại: chỉ xem danh sách học sinh';
+            }
+
+            if (permissionNote) {
+                permissionNote.innerText = manageMode
+                    ? 'Lọc trực tiếp tại từng cột. Tài khoản hiện tại có quyền thêm, sửa, xóa học sinh.'
+                    : 'Lọc trực tiếp tại từng cột. Tài khoản giáo viên chỉ được phép xem dữ liệu học sinh.';
+            }
+
+            const summaryLabel = document.getElementById('summaryManagedClassesLabel');
+            const summaryNote = document.getElementById('summaryManagedClassesNote');
+            if (summaryLabel) {
+                summaryLabel.innerText = currentUserInfo.role === 'manager'
+                    ? 'Số lớp tài khoản này quản lý'
+                    : (currentUserInfo.role === 'admin'
+                        ? 'Số lớp tài khoản này đang được gán quản lý'
+                        : 'Số lớp tài khoản này đang phụ trách');
+            }
+            if (summaryNote) {
+                summaryNote.innerText = manageMode
+                    ? 'Đối chiếu theo quản lý đã gán trong từng lớp để hiển thị đúng phạm vi phụ trách.'
+                    : 'Nếu tài khoản không được gán quản lý lớp nào thì chỉ số này sẽ là 0.';
+            }
+        }
+        
+function buildManagerOverviewData() {
+    const statsMap = {};
+
+    managerUsersCache.forEach(user => {
+        const email = normalizeEmail(user.email);
+        if (!email) return;
+        statsMap[email] = {
+            email,
+            name: normalizeText(user.displayName || user.name || user.email) || email,
+            role: normalizeTextLower(user.role || 'manager'),
+            classCount: 0,
+            studentKeys: new Set()
+        };
+    });
+
+    classesCache.forEach(cls => {
+        const managerInfo = getClassManagerInfo(cls);
+        if (!managerInfo.email) return;
+
+        if (!statsMap[managerInfo.email]) {
+            statsMap[managerInfo.email] = {
+                email: managerInfo.email,
+                name: managerInfo.name || managerInfo.email,
+                role: 'manager',
+                classCount: 0,
+                studentKeys: new Set()
+            };
+        }
+
+        const item = statsMap[managerInfo.email];
+        item.name = item.name || managerInfo.name || item.email;
+        item.classCount += 1;
+
+        const students = (classStudentsCache[cls.id] && Array.isArray(classStudentsCache[cls.id].students)) ? classStudentsCache[cls.id].students : [];
+        students.forEach(student => item.studentKeys.add(getStudentSyncKey(student)));
+    });
+
+    return Object.values(statsMap)
+        .map(item => ({ ...item, studentCount: item.studentKeys.size }))
+        .sort((a, b) => {
+            const aCurrent = a.email === normalizeEmail(currentUserInfo.email) ? 1 : 0;
+            const bCurrent = b.email === normalizeEmail(currentUserInfo.email) ? 1 : 0;
+            if (aCurrent !== bCurrent) return bCurrent - aCurrent;
+            if (a.classCount !== b.classCount) return b.classCount - a.classCount;
+            if (a.studentCount !== b.studentCount) return b.studentCount - a.studentCount;
+            return normalizeText(a.name).localeCompare(normalizeText(b.name), 'vi');
+        });
+}
+
+
+function getClassStatsFilterSnapshot() {
+    return {
+        classCode: normalizeTextLower(classStatsFilterState.classCode),
+        className: normalizeTextLower(classStatsFilterState.className),
+        manager: normalizeTextLower(classStatsFilterState.manager),
+        onsite: normalizeText(classStatsFilterState.onsite),
+        online: normalizeText(classStatsFilterState.online),
+        total: normalizeText(classStatsFilterState.total)
+    };
+}
+
+function buildClassStatsData() {
+    return classesCache
+        .slice()
+        .map(cls => {
+            const students = (classStudentsCache[cls.id] && Array.isArray(classStudentsCache[cls.id].students)) ? classStudentsCache[cls.id].students : [];
+            let onsite = 0;
+            let online = 0;
+
+            students.forEach(student => {
+                if (normalizeText(student.mode) === 'Trực tuyến') online += 1;
+                else onsite += 1;
+            });
+
+            const managerInfo = getClassManagerInfo(cls);
+            const managerName = managerInfo.name && managerInfo.name !== 'Chưa gán' ? managerInfo.name : 'Chưa gán quản lý';
+
+            return {
+                classCode: normalizeText(cls.classCode || '---'),
+                className: normalizeText(cls.className || 'Chưa đặt tên lớp'),
+                managerName,
+                onsite,
+                online,
+                total: students.length
+            };
+        })
+        .sort((a, b) => {
+            const codeCompare = a.classCode.localeCompare(b.classCode, 'vi');
+            if (codeCompare !== 0) return codeCompare;
+            return a.className.localeCompare(b.className, 'vi');
+        });
+}
+
+function classStatsRowMatchesFilters(row, filters) {
+    if (filters.classCode && !normalizeTextLower(row.classCode).includes(filters.classCode)) return false;
+    if (filters.className && !normalizeTextLower(row.className).includes(filters.className)) return false;
+    if (filters.manager && normalizeTextLower(row.managerName) !== filters.manager) return false;
+    if (filters.onsite && !String(row.onsite).includes(filters.onsite)) return false;
+    if (filters.online && !String(row.online).includes(filters.online)) return false;
+    if (filters.total && !String(row.total).includes(filters.total)) return false;
+    return true;
+}
+
+function attachClassStatsFilterEvents() {
+    document.querySelectorAll('.class-stats-filter').forEach(input => {
+        const updateFilters = () => {
+            classStatsFilterState[input.dataset.key] = input.value || '';
+            renderSummaryDashboard();
+        };
+        input.addEventListener('input', updateFilters);
+        input.addEventListener('change', updateFilters);
+    });
+}
+
+function renderSummaryDashboard() {
+    setTextIfExists('summaryTotalStudents', String(Object.keys(allStudentEnrollmentMap).length));
+    setTextIfExists('summaryTotalClasses', String(classesCache.length));
+
+    const managerStatsList = document.getElementById('managerStatsList');
+    if (managerStatsList) {
+        const managerRows = buildManagerOverviewData();
+
+        if (!managerRows.length) {
+            managerStatsList.innerHTML = '<div class="manager-stat-empty"><i class="fa-solid fa-user-tie"></i> Chưa có tài khoản quản lý hoặc chưa gán lớp cho quản lý.</div>';
+        } else {
+            managerStatsList.innerHTML = `
+                <div class="manager-stats-list-head">
+                    <div>Quản lý</div>
+                    <div>Tổng lớp</div>
+                    <div>Tổng học sinh</div>
+                </div>
+                ${managerRows.map(item => {
+                    const isCurrent = normalizeEmail(item.email) === normalizeEmail(currentUserInfo.email);
+                    const roleLabel = item.role === 'admin' ? 'Admin' : 'Quản lý';
+                    return `
+                        <div class="manager-stat-row ${isCurrent ? 'is-current' : ''}">
+                            <div class="manager-stat-name">
+                                <span>${escapeHtml(item.name || item.email || 'Chưa gán')}</span>
+                                <span class="manager-stat-meta">
+                                    <span class="manager-stat-role">${escapeHtml(roleLabel)}</span>
+                                    ${isCurrent ? '<span class="manager-stat-current">Tài khoản hiện tại</span>' : ''}
+                                    <span>${escapeHtml(item.email || '')}</span>
+                                </span>
+                            </div>
+                            <div class="manager-stat-metric"><span>Lớp</span><strong>${item.classCount}</strong></div>
+                            <div class="manager-stat-metric"><span>Học sinh</span><strong>${item.studentCount}</strong></div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+    }
+
+    const classStatsGrid = document.getElementById('classStatsGrid');
+    if (!classStatsGrid) return;
+
+    if (!classesCache.length) {
+        classStatsGrid.innerHTML = '<div class="class-stat-empty"><i class="fa-solid fa-layer-group"></i> Chưa có lớp học nào trên hệ thống.</div>';
+        return;
+    }
+
+    const classRows = buildClassStatsData();
+    const filters = getClassStatsFilterSnapshot();
+    const filteredRows = classRows.filter(row => classStatsRowMatchesFilters(row, filters));
+    const hasActiveFilters = Object.values(classStatsFilterState).some(value => normalizeText(value));
+    const managerOptions = Array.from(new Set(classRows.map(item => item.managerName).filter(Boolean)))
+        .sort((a, b) => a.localeCompare(b, 'vi'));
+
+    const rowsHtml = filteredRows
+        .map(row => `
+            <div class="class-stat-row">
+                <div class="class-stat-code" title="${escapeHtml(row.classCode)}">${escapeHtml(row.classCode)}</div>
+                <div class="class-stat-name" title="${escapeHtml(row.className)}">${escapeHtml(row.className)}</div>
+                <div class="class-stat-manager" title="${escapeHtml(row.managerName)}"><i class="fa-solid fa-user-tie"></i> ${escapeHtml(row.managerName)}</div>
+                <div><span class="class-stat-count">${row.onsite}</span></div>
+                <div><span class="class-stat-count">${row.online}</span></div>
+                <div><span class="class-stat-count total">${row.total}</span></div>
+            </div>
+        `)
+        .join('');
+
+    classStatsGrid.innerHTML = `
+        <div class="class-stats-head-row">
+            <div class="class-head-cell">
+                <div class="class-head-label">Mã lớp</div>
+                <input type="text" class="class-filter-input class-stats-filter" data-key="classCode" value="${escapeHtml(classStatsFilterState.classCode || '')}" placeholder="Lọc mã" autocapitalize="characters">
+            </div>
+            <div class="class-head-cell">
+                <div class="class-head-label">Tên lớp</div>
+                <input type="text" class="class-filter-input class-stats-filter" data-key="className" value="${escapeHtml(classStatsFilterState.className || '')}" placeholder="Lọc tên lớp">
+            </div>
+            <div class="class-head-cell">
+                <div class="class-head-label">Quản lý</div>
+                <select class="class-filter-select class-stats-filter" data-key="manager">
+                    <option value="">Tất cả</option>
+                    ${managerOptions.map(name => `<option value="${escapeHtml(name)}" ${classStatsFilterState.manager === name ? 'selected' : ''}>${escapeHtml(name)}</option>`).join('')}
+                </select>
+            </div>
+            <div class="class-head-cell">
+                <div class="class-head-label">Trực tiếp</div>
+                <input type="text" inputmode="numeric" class="class-filter-input class-stats-filter" data-key="onsite" value="${escapeHtml(classStatsFilterState.onsite || '')}" placeholder="Số">
+            </div>
+            <div class="class-head-cell">
+                <div class="class-head-label">Online</div>
+                <input type="text" inputmode="numeric" class="class-filter-input class-stats-filter" data-key="online" value="${escapeHtml(classStatsFilterState.online || '')}" placeholder="Số">
+            </div>
+            <div class="class-head-cell">
+                <div class="class-head-label">Tổng</div>
+                <input type="text" inputmode="numeric" class="class-filter-input class-stats-filter" data-key="total" value="${escapeHtml(classStatsFilterState.total || '')}" placeholder="Số">
+            </div>
+        </div>
+        ${rowsHtml || `<div class="class-stat-empty"><i class="fa-solid fa-filter-circle-xmark"></i> ${hasActiveFilters ? 'Không có lớp nào khớp bộ lọc hiện tại.' : 'Chưa có dữ liệu thống kê lớp.'}</div>`}
+    `;
+    attachClassStatsFilterEvents();
+}
+
+function getUserDisplayName(userDocData, user) {
             if (userDocData) return userDocData.fullName || userDocData.displayName || userDocData.name || user.email;
             return user.email;
         }
@@ -447,6 +1386,27 @@
                 parentPhone: profile.parentPhone || '', mode: profile.mode || 'Trực tiếp', note: profile.note || '', _searchText: buildStudentRowSearchText(profile, classCodes)
             };
         }
+        function getSelectedStudentsAggregates() {
+            return Array.from(selectedStudentSyncKeys).map(syncKey => {
+                const entry = allStudentEnrollmentMap[syncKey];
+                return buildAggregateStudent(syncKey, entry);
+            }).filter(Boolean);
+        }
+        function syncSelectionStateWithData() {
+            selectedStudentSyncKeys = new Set(Array.from(selectedStudentSyncKeys).filter(syncKey => allStudentEnrollmentMap[syncKey]));
+            if (selectedStudentSyncKey && !allStudentEnrollmentMap[selectedStudentSyncKey]) selectedStudentSyncKey = '';
+        }
+        function updateSelectAllCheckbox(students) {
+            if (!selectAllStudents) return;
+            if (!students.length) {
+                selectAllStudents.checked = false;
+                selectAllStudents.indeterminate = false;
+                return;
+            }
+            const selectedVisibleCount = students.filter(student => selectedStudentSyncKeys.has(student._syncKey)).length;
+            selectAllStudents.checked = selectedVisibleCount === students.length;
+            selectAllStudents.indeterminate = selectedVisibleCount > 0 && selectedVisibleCount < students.length;
+        }
         function getActiveColumnFilters() {
             const filters = {};
             document.querySelectorAll('.column-filter').forEach(input => { filters[input.dataset.key] = normalizeTextLower(input.value); });
@@ -485,28 +1445,79 @@
             return buildAggregateStudent(selectedStudentSyncKey, entry);
         }
         function renderStudentTable() {
+            syncSelectionStateWithData();
             const students = getAllStudents();
-            const selectedStudent = getSelectedStudentAggregate();
-            document.getElementById('filteredStudentBadge').innerText = `${students.length} học sinh hiển thị`;
-            document.getElementById('selectedStudentBadge').innerText = selectedStudent ? `Đang chọn: ${selectedStudent.name || 'Học sinh'}` : 'Chưa chọn học sinh';
-            document.getElementById('filteredStudentBadgeInline').innerText = students.length;
-            document.getElementById('selectedStudentBadgeInline').innerText = selectedStudent ? (selectedStudent.name || 'Học sinh') : 'Chưa có';
+            updateSelectAllCheckbox(students);
+
             if (students.length === 0) {
-                studentTableBody.innerHTML = '<tr><td colspan="13" class="empty-state"><i class="fa-solid fa-user-slash"></i>Chưa có dữ liệu học sinh hoặc không khớp bộ lọc tìm kiếm.</td></tr>';
+                studentTableBody.innerHTML = '<tr><td colspan="14" class="empty-state"><i class="fa-solid fa-user-slash"></i>Chưa có dữ liệu học sinh hoặc không khớp bộ lọc tìm kiếm.</td></tr>';
                 return;
             }
+
             studentTableBody.innerHTML = students.map((student, index) => {
                 const isActive = selectedStudentSyncKey === student._syncKey;
+                const isChecked = selectedStudentSyncKeys.has(student._syncKey);
                 const mode = normalizeText(student.mode || 'Trực tiếp');
                 const modeClass = mode === 'Trực tuyến' ? 'mode-online' : 'mode-onsite';
                 const classCodesText = student._centerClassCodes.join(', ');
-                return `<tr class="${isActive ? 'active' : ''}" data-student-sync-key="${escapeHtml(student._syncKey)}"><td class="col-center">${index + 1}</td><td class="col-bold">${escapeHtml(student.name || '')}</td><td>${escapeHtml(formatDateDisplay(student.dob) || '')}</td><td>${escapeHtml(student.address || '')}</td><td>${escapeHtml(student.studentCccd || '')}</td><td>${escapeHtml(student.gradeClass || '')}</td><td>${escapeHtml(student.school || '')}</td><td>${escapeHtml(student.parentName || '')}</td><td>${escapeHtml(student.parentCccd || '')}</td><td>${escapeHtml(student.parentPhone || '')}</td><td class="col-center" title="${escapeHtml(classCodesText || '')}"><span class="class-count-badge">${student._centerClassCount}</span><div class="linked-codes-text">${escapeHtml(classCodesText || '')}</div></td><td><span class="mode-badge ${modeClass}"><i class="fa-solid ${mode === 'Trực tuyến' ? 'fa-wifi' : 'fa-school'}"></i>${escapeHtml(mode)}</span></td><td class="cell-note">${escapeHtml(student.note || '')}</td></tr>`;
+                const displayDob = formatDateDisplay(student.dob) || 'Chưa cập nhật';
+                const displayAddress = student.address || '—';
+                const displayStudentCccd = student.studentCccd || '—';
+                const displayGradeClass = student.gradeClass || '—';
+                const displaySchool = student.school || '—';
+                const displayParentName = student.parentName || '—';
+                const displayParentCccd = student.parentCccd || '—';
+                const displayParentPhone = student.parentPhone || '—';
+                const displayNote = student.note || '—';
+                const displayCodes = classCodesText || 'Chưa gắn mã lớp';
+                return `<tr class="${isActive ? 'active' : ''} ${isChecked ? 'checked' : ''}" data-student-sync-key="${escapeHtml(student._syncKey)}">
+                    <td class="col-center"><input type="checkbox" class="table-check row-selector" data-student-sync-key="${escapeHtml(student._syncKey)}" ${isChecked ? 'checked' : ''} aria-label="Chọn ${escapeHtml(student.name || 'học sinh')}"></td>
+                    <td class="col-center"><span class="table-row-index">${index + 1}</span></td>
+                    <td>
+                        <div class="cell-stack">
+                            <div class="student-name-cell">${escapeHtml(student.name || '')}</div>
+                            <div class="student-meta-inline"><span>${escapeHtml(displayGradeClass)}</span><span>•</span><span>${escapeHtml(displaySchool)}</span></div>
+                            <div class="student-meta-inline-secondary"><span>${escapeHtml(displayParentName)}</span><span>•</span><span>${escapeHtml(displayParentPhone)}</span></div>
+                        </div>
+                    </td>
+                    <td class="col-center"><span class="table-chip">${escapeHtml(displayDob)}</span></td>
+                    <td><div class="cell-truncate" title="${escapeHtml(displayAddress)}">${escapeHtml(displayAddress)}</div></td>
+                    <td class="col-center"><div class="mono-text">${escapeHtml(displayStudentCccd)}</div></td>
+                    <td class="col-center"><span class="table-chip table-chip-accent">${escapeHtml(displayGradeClass)}</span></td>
+                    <td><div class="cell-truncate" title="${escapeHtml(displaySchool)}">${escapeHtml(displaySchool)}</div></td>
+                    <td><div class="parent-name-cell cell-truncate" title="${escapeHtml(displayParentName)}">${escapeHtml(displayParentName)}</div></td>
+                    <td class="col-center"><div class="mono-text">${escapeHtml(displayParentCccd)}</div></td>
+                    <td class="col-center"><div class="mono-text">${escapeHtml(displayParentPhone)}</div></td>
+                    <td class="col-center" title="${escapeHtml(displayCodes)}"><div class="class-summary-cell"><span class="class-count-badge">${student._centerClassCount}</span><div class="linked-codes-text">${escapeHtml(displayCodes)}</div></div></td>
+                    <td class="col-center"><span class="mode-badge ${modeClass}"><i class="fa-solid ${mode === 'Trực tuyến' ? 'fa-wifi' : 'fa-school'}"></i>${escapeHtml(mode)}</span></td>
+                    <td><div class="cell-note" title="${escapeHtml(displayNote)}">${escapeHtml(displayNote)}</div></td>
+                </tr>`;
             }).join('');
         }
         function attachStudentRowEvents() {
             studentTableBody.querySelectorAll('tr[data-student-sync-key]').forEach(row => {
-                row.addEventListener('click', () => { selectedStudentSyncKey = row.dataset.studentSyncKey; refreshWholePageView(); });
-                row.addEventListener('dblclick', () => { selectedStudentSyncKey = row.dataset.studentSyncKey; openEditStudentModal(); });
+                const syncKey = row.dataset.studentSyncKey;
+                const rowCheckbox = row.querySelector('.row-selector');
+                if (rowCheckbox) {
+                    rowCheckbox.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        if (rowCheckbox.checked) selectedStudentSyncKeys.add(syncKey);
+                        else selectedStudentSyncKeys.delete(syncKey);
+                        updateSelectAllCheckbox(getAllStudents());
+                        refreshWholePageView();
+                    });
+                }
+                row.addEventListener('click', (event) => {
+                    if (event.target.closest('.row-selector')) return;
+                    selectedStudentSyncKey = syncKey;
+                    refreshWholePageView();
+                });
+                row.addEventListener('dblclick', (event) => {
+                    if (event.target.closest('.row-selector')) return;
+                    if (!canManageStudents()) return;
+                    selectedStudentSyncKey = syncKey;
+                    openEditStudentModal();
+                });
             });
         }
         function createBulkRow(student = {}, options = {}) {
@@ -526,9 +1537,11 @@
         function ensureAtLeastOneBulkRow() { if (!bulkStudentRows.querySelector('tr')) createBulkRow(); }
         function clearBulkRows() { bulkStudentRows.innerHTML = ''; }
         function openCreateStudentModal() {
+            if (!requireManageStudentsPermission()) return;
             if (classesCache.length === 0) return alert('Chưa có lớp học nào trên hệ thống để gắn học sinh. Vui lòng tạo lớp trước.');
             editingMode = 'create';
             selectedStudentSyncKey = '';
+            selectedStudentSyncKeys.clear();
             studentModalTitle.innerText = 'Thêm học sinh mới';
             studentModalSubtitle.innerText = 'Bảng nhập chiều ngang, có thể thêm nhiều học sinh một lần.';
             btnSaveStudent.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu danh sách học sinh';
@@ -539,6 +1552,7 @@
             studentModal.classList.add('show');
         }
         function openEditStudentModal() {
+            if (!requireManageStudentsPermission()) return;
             const student = getSelectedStudentAggregate();
             if (!student) return alert('Vui lòng chọn một học sinh để chỉnh sửa.');
             editingMode = 'edit';
@@ -616,18 +1630,32 @@
             selectedStudentSyncKey = newSyncKey;
         }
         async function removeSelectedStudentEverywhere() {
-            const student = getSelectedStudentAggregate();
-            if (!student) return alert('Vui lòng chọn học sinh cần xóa.');
-            if (!confirm(`Xóa học sinh ${student.name || ''} khỏi toàn bộ các lớp đang liên kết?`)) return;
+            if (!requireManageStudentsPermission()) return;
+            const checkedStudents = getSelectedStudentsAggregates();
+            const targets = checkedStudents.length > 0 ? checkedStudents : [getSelectedStudentAggregate()].filter(Boolean);
+            if (!targets.length) return alert('Vui lòng chọn học sinh cần xóa.');
+            const label = targets.length === 1 ? `${targets[0].name || ''} khỏi toàn bộ các lớp đang liên kết` : `${targets.length} học sinh đã tích khỏi toàn bộ các lớp đang liên kết`;
+            if (!confirm(`Xóa ${label}?`)) return;
             const batch = db.batch();
             const touchedClassIds = new Set();
-            student._docs.forEach(docEntry => { batch.delete(db.collection('classes').doc(docEntry.classId).collection('students').doc(docEntry.docId)); touchedClassIds.add(docEntry.classId); });
+            targets.forEach(student => {
+                student._docs.forEach(docEntry => {
+                    batch.delete(db.collection('classes').doc(docEntry.classId).collection('students').doc(docEntry.docId));
+                    touchedClassIds.add(docEntry.classId);
+                });
+            });
             await batch.commit();
             for (const classId of touchedClassIds) await syncClassStudentCount(classId);
             selectedStudentSyncKey = '';
-            showToast('Thành công!', 'Đã xóa học sinh khỏi toàn bộ các lớp liên kết.');
+            selectedStudentSyncKeys.clear();
+            showToast('Thành công!', targets.length === 1 ? 'Đã xóa học sinh khỏi toàn bộ các lớp liên kết.' : `Đã xóa ${targets.length} học sinh khỏi toàn bộ các lớp liên kết.`);
         }
-        function refreshWholePageView() { renderStudentTable(); attachStudentRowEvents(); }
+        function refreshWholePageView() {
+            updatePermissionUI();
+            renderSummaryDashboard();
+            renderStudentTable();
+            attachStudentRowEvents();
+        }
         function subscribeStudentsForClass(classDoc) {
             if (classStudentUnsubs[classDoc.id]) classStudentUnsubs[classDoc.id]();
             classStudentUnsubs[classDoc.id] = db.collection('classes').doc(classDoc.id).collection('students').onSnapshot((snapshot) => {
@@ -638,7 +1666,32 @@
                 refreshWholePageView();
             });
         }
-        function loadClasses() {
+        
+function loadManagerUsers() {
+    if (usersUnsub) usersUnsub();
+    usersUnsub = db.collection('users').onSnapshot((snapshot) => {
+        managerUsersCache = [];
+        snapshot.forEach(doc => {
+            const data = doc.data() || {};
+            const role = normalizeTextLower(data.role || '');
+            if (!['manager', 'admin'].includes(role)) return;
+            const email = normalizeEmail(data.email || '');
+            managerUsersCache.push({
+                id: doc.id,
+                email,
+                displayName: getUserDisplayName(data, { email }),
+                role
+            });
+        });
+        refreshWholePageView();
+    }, () => {
+        managerUsersCache = [];
+        refreshWholePageView();
+    });
+}
+
+function loadClasses() {
+
             db.collection('classes').orderBy('className').onSnapshot((snapshot) => {
                 classesCache = []; classesById = {}; classesByCode = {};
                 const nextIds = new Set();
@@ -667,10 +1720,16 @@
                 if (!snapshot.empty) { const userData = snapshot.docs[0].data() || {}; role = userData.role || 'teacher'; displayName = getUserDisplayName(userData, user); }
                 currentUserInfo = { email: user.email || '', displayName, role };
                 document.getElementById('userRoleDisplay').textContent = translateRole(role);
+                updatePermissionUI();
+                renderSummaryDashboard();
+                loadManagerUsers();
                 loadClasses();
             }).catch(() => {
                 currentUserInfo = { email: user.email || '', displayName: user.email || '', role: 'teacher' };
                 document.getElementById('userRoleDisplay').textContent = 'Giáo viên';
+                updatePermissionUI();
+                renderSummaryDashboard();
+                loadManagerUsers();
                 loadClasses();
             });
         });
@@ -679,7 +1738,15 @@
             input.addEventListener('input', () => { selectedStudentSyncKey = ''; refreshWholePageView(); });
             input.addEventListener('change', () => { selectedStudentSyncKey = ''; refreshWholePageView(); });
         });
-        document.getElementById('btnAddStudent').addEventListener('click', openCreateStudentModal);
+        if (selectAllStudents) {
+            selectAllStudents.addEventListener('change', () => {
+                const visibleStudents = getAllStudents();
+                if (selectAllStudents.checked) visibleStudents.forEach(student => selectedStudentSyncKeys.add(student._syncKey));
+                else visibleStudents.forEach(student => selectedStudentSyncKeys.delete(student._syncKey));
+                refreshWholePageView();
+            });
+        }
+                document.getElementById('btnAddStudent').addEventListener('click', openCreateStudentModal);
         document.getElementById('btnEditStudent').addEventListener('click', openEditStudentModal);
         document.getElementById('btnDeleteStudent').addEventListener('click', async () => {
             try { await removeSelectedStudentEverywhere(); } catch (error) { alert(error.message || 'Không thể xóa học sinh.'); }
@@ -697,6 +1764,7 @@
         studentModal.addEventListener('click', (e) => { if (e.target === studentModal) closeStudentModal(); });
         studentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!requireManageStudentsPermission()) return;
             const originalLabel = btnSaveStudent.innerHTML;
             btnSaveStudent.disabled = true;
             btnSaveStudent.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang đồng bộ...';

@@ -14,6 +14,7 @@
     <style>
         :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --border-grey: #e8f1ec; --danger-red: #e74c3c; --edit-blue: #3498db; --excel-green: #27ae60; --header-height: 90px; --sidebar-width: 270px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        html { -webkit-text-size-adjust: 100%; }
         body { background-color: var(--bg-body); color: var(--text-dark); }
         
         #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
@@ -23,8 +24,7 @@
         .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px;}
         .header-left { display: flex; align-items: center; gap: 15px;}
         .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
-        .logo-placeholder { width: 55px; height: 55px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.5); font-size: 0.7rem; text-align: center; background-size: cover; background-position: center; flex-shrink: 0; }
-        .header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap;}
+.header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap;}
         .header-title { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224, 170, 62, 0.5); }
         .header-subtitle { font-size: 1rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 500; }
         .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; }
@@ -53,6 +53,9 @@
         
         .btn-export-excel { background: linear-gradient(135deg, var(--excel-green), #2ecc71); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;}
         .btn-export-excel:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3); }
+        .btn-main-days { background: linear-gradient(135deg, #1f8f50, #2ecc71); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(31, 143, 80, 0.2); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;}
+        .btn-main-days:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(31, 143, 80, 0.3); }
+        .btn-main-days.active { background: linear-gradient(135deg, #0d1b2a, #1a365d); box-shadow: 0 4px 10px rgba(13, 27, 42, 0.25); }
 
         .btn-add-hs { background: linear-gradient(135deg, var(--accent-gold), #c99327); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(224, 170, 62, 0.2); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;}
         .btn-add-hs:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(224, 170, 62, 0.3); }
@@ -91,6 +94,8 @@
         /* BOX CHỌN TRẠNG THÁI ĐIỂM DANH */
         .att-select { width: 100%; padding: 4px 0px; font-size: 0.8rem; font-weight: bold; text-align: center; border: 1px solid #ccc; border-radius: 4px; outline: none; cursor: pointer; transition: 0.2s; appearance: none; -webkit-appearance: none; background-color: transparent;}
         .att-select:focus { border-color: var(--primary-green); box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2);}
+        .att-select:disabled { cursor: not-allowed; opacity: 1; }
+        .att-select.att-locked { background-color: #eef3f7 !important; color: #6c7a89 !important; border-color: #d9e2ea; font-weight: 700; }
         
         /* Ô nhập tiền MỞ KHÓA CHO TẤT CẢ */
         .tuition-input { width: 100%; padding: 6px 4px; border: 1px solid #ccc; border-radius: 4px; text-align: right; outline: none; font-family: 'Inter'; font-size: 0.8rem; font-weight: 600; background-color: #fff; color: #333;}
@@ -118,23 +123,24 @@
         .btn-save-att { background: var(--primary-green); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.85rem;}
         .btn-save-att:hover { background: #27ae60; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);}
 
-        .attendance-stats-panel-title { font-size: 1rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; margin-bottom: 12px; text-transform: uppercase; }
+        .attendance-stats-panel-title { font-size: 0.92rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 8px; margin-bottom: 10px; text-transform: uppercase; }
         .attendance-stats-panel-title span { color: var(--primary-green); }
-        .attendance-teacher-stats { display: flex; flex-direction: column; gap: 12px; }
-        .attendance-summary-strip { display: flex; flex-wrap: wrap; gap: 10px; }
-        .attendance-summary-pill { min-width: 180px; flex: 1; padding: 10px 12px; border-radius: 10px; background: #f8faf9; border: 1px solid var(--border-grey); }
-        .attendance-summary-value { display: block; font-size: 1.2rem; font-weight: 800; color: var(--primary-green); line-height: 1.2; }
-        .attendance-summary-label { display: block; font-size: 0.78rem; color: #666; margin-top: 2px; }
-        .attendance-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
-        .attendance-summary-card { background: #fff; border: 1px solid var(--border-grey); border-radius: 10px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .attendance-summary-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-        .attendance-summary-name { font-size: 0.95rem; font-weight: 800; color: var(--text-dark); line-height: 1.35; }
-        .attendance-summary-email { font-size: 0.76rem; color: #7f8c8d; margin-top: 3px; word-break: break-word; }
-        .attendance-summary-badge { flex-shrink: 0; padding: 6px 10px; border-radius: 999px; background: rgba(46, 204, 113, 0.12); color: #1f8f50; font-size: 0.78rem; font-weight: 800; white-space: nowrap; }
-        .attendance-summary-days-label { font-size: 0.74rem; font-weight: 700; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.4px; }
-        .attendance-summary-days { font-size: 0.83rem; color: var(--text-dark); line-height: 1.5; margin-top: 4px; }
-        .attendance-summary-updated { font-size: 0.75rem; color: #7f8c8d; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-grey); }
-        .attendance-teacher-empty { padding: 12px 15px; background: #f8faf9; border-radius: 8px; border: 1px dashed var(--border-grey); font-size: 0.85rem; color: #666; }
+        .attendance-teacher-stats { display: flex; flex-direction: column; gap: 8px; }
+        .attendance-summary-strip { display: flex; flex-wrap: wrap; gap: 8px; }
+        .attendance-summary-pill { min-width: 145px; flex: 0 0 auto; padding: 8px 10px; border-radius: 8px; background: #f8faf9; border: 1px solid var(--border-grey); }
+        .attendance-summary-value { display: block; font-size: 1rem; font-weight: 800; color: var(--primary-green); line-height: 1.15; }
+        .attendance-summary-label { display: block; font-size: 0.72rem; color: #666; margin-top: 2px; }
+        .attendance-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+        .attendance-summary-card { background: #fff; border: 1px solid var(--border-grey); border-radius: 8px; padding: 9px 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
+        .attendance-summary-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+        .attendance-summary-name { font-size: 0.86rem; font-weight: 800; color: var(--text-dark); line-height: 1.28; }
+        .attendance-summary-email { font-size: 0.7rem; color: #7f8c8d; margin-top: 2px; word-break: break-word; }
+        .attendance-summary-badge { flex-shrink: 0; padding: 4px 8px; border-radius: 999px; background: rgba(46, 204, 113, 0.12); color: #1f8f50; font-size: 0.7rem; font-weight: 800; white-space: nowrap; }
+        .attendance-summary-days-label { font-size: 0.66rem; font-weight: 700; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.35px; }
+        .attendance-summary-days { font-size: 0.74rem; color: var(--text-dark); line-height: 1.4; margin-top: 3px; display: flex; flex-direction: column; gap: 3px; }
+        .attendance-summary-day-item { padding: 3px 6px; border-radius: 6px; background: #f8faf9; border: 1px solid #edf3ef; }
+        .attendance-summary-updated { font-size: 0.68rem; color: #7f8c8d; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-grey); }
+        .attendance-teacher-empty { padding: 10px 12px; background: #f8faf9; border-radius: 8px; border: 1px dashed var(--border-grey); font-size: 0.8rem; color: #666; }
 
         /* MODAL THÊM HỌC SINH */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px;}
@@ -163,63 +169,85 @@
 
         @media (max-width: 1024px) {
             :root { --header-height: 70px; }
-            html, body { height: auto; min-height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; display: block !important; }
-            .header { position: sticky; top: 0; padding: 0 15px; }
+            html, body { height: auto; min-height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; display: block !important; background: var(--bg-body); }
+            body { padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+            .header { position: sticky; top: 0; z-index: 1100; padding: 0 calc(15px + env(safe-area-inset-right)) 0 calc(15px + env(safe-area-inset-left)); backdrop-filter: blur(8px); }
             .mobile-menu-btn { display: block; }
-            .logo-placeholder { display: none; }
-            .header-title { font-size: 1.25rem; letter-spacing: 1px; }
+.header-title { font-size: 1.18rem; letter-spacing: 0.8px; }
             .header-subtitle { display: none; }
             .user-info { display: none; }
-            .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
+            .btn-logout { padding: 6px 12px; font-size: 0.75rem; min-height: 38px; }
 
-            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto; box-shadow: 8px 0 24px rgba(0,0,0,0.25);}
+            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100dvh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto; box-shadow: 8px 0 24px rgba(0,0,0,0.25); }
             .sidebar.open { left: 0; }
-            .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
+            .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100dvh; background: rgba(0,0,0,0.6); z-index: 999; }
             .sidebar-overlay.open { display: block; }
 
             .main-wrapper { display: block; height: auto; }
-            .dashboard-content { display: block; padding: 12px; padding-bottom: 28px; height: auto; overflow: visible; }
-            .page-header { align-items: stretch; gap: 12px; }
+            .dashboard-content { display: block; padding: 12px calc(12px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left)); height: auto; overflow: visible; }
+            .page-header { align-items: stretch; gap: 10px; }
             .page-header > div:first-child { width: 100%; }
-            .page-title { font-size: 1rem; line-height: 1.4; flex-wrap: wrap; }
-            .panel { padding: 10px; margin-bottom: 12px; border-radius: 10px; }
-            .table-wrapper { max-height: none; overflow-y: visible; }
-            .att-table { min-width: 980px; font-size: 0.74rem; }
+            .page-title { font-size: 0.98rem; line-height: 1.35; flex-wrap: wrap; }
+            .panel { padding: 10px; margin-bottom: 10px; border-radius: 10px; }
+            .table-wrapper { max-height: calc(100dvh - 285px); overflow-x: auto; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-x pan-y; border-radius: 10px; }
+            .att-table { min-width: 930px; font-size: 0.72rem; }
             .att-table th, .att-table td { padding: 3px; }
 
             .sticky-col-left-1 { width: 32px; min-width: 32px; max-width: 32px; }
-            .sticky-col-left-2 { left: 32px; width: 120px; min-width: 120px; max-width: 120px; }
-            .sticky-col-right-3 { right: 172px; width: 82px; min-width: 82px; max-width: 82px; }
-            .sticky-col-right-2 { right: 98px; width: 74px; min-width: 74px; max-width: 74px; }
-            .sticky-col-right-1 { width: 98px; min-width: 98px; max-width: 98px; }
+            .sticky-col-left-2 { left: 32px; width: 116px; min-width: 116px; max-width: 116px; }
+            .sticky-col-right-3 { right: 168px; width: 80px; min-width: 80px; max-width: 80px; }
+            .sticky-col-right-2 { right: 96px; width: 72px; min-width: 72px; max-width: 72px; }
+            .sticky-col-right-1 { width: 96px; min-width: 96px; max-width: 96px; }
 
-            .att-select { min-height: 32px; font-size: 0.76rem; padding: 3px 0; }
-            .tuition-input { min-height: 32px; font-size: 0.76rem; padding: 5px 3px; }
+            .att-select { min-height: 34px; font-size: 0.75rem; padding: 3px 0; }
+            .tuition-input { min-height: 34px; font-size: 0.75rem; padding: 5px 3px; }
 
-            .header-actions { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 0; }
-            .header-actions button { width: 100%; min-height: 38px; justify-content: center; font-size: 0.74rem; line-height: 1.2; padding: 8px 6px; }
+            .header-actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 0; }
+            .header-actions button { width: 100%; min-height: 44px; justify-content: center; font-size: 0.75rem; line-height: 1.15; padding: 10px 8px; border-radius: 10px; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
-            .attendance-stats-panel-title { font-size: 0.92rem; margin-bottom: 10px; }
-            .attendance-summary-strip { flex-direction: column; }
-            .attendance-summary-pill { min-width: 100%; }
-            .attendance-summary-grid { grid-template-columns: 1fr; gap: 8px; }
-            .attendance-summary-card { padding: 10px; }
-            .attendance-summary-card-top { flex-direction: column; align-items: flex-start; }
-            .attendance-summary-badge { white-space: normal; }
+            .attendance-stats-panel-title { font-size: 0.8rem; margin-bottom: 8px; }
+            .attendance-summary-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+            .attendance-summary-pill { min-width: 0; flex: initial; padding: 6px 7px; border-radius: 7px; }
+            .attendance-summary-value { font-size: 0.92rem; }
+            .attendance-summary-label { font-size: 0.66rem; line-height: 1.25; }
+            .attendance-summary-grid { grid-template-columns: 1fr; gap: 6px; }
+            .attendance-summary-card { padding: 7px 8px; border-radius: 7px; }
+            .attendance-summary-card-top { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .attendance-summary-name { font-size: 0.78rem; }
+            .attendance-summary-email { font-size: 0.66rem; }
+            .attendance-summary-badge { white-space: normal; font-size: 0.66rem; padding: 4px 7px; }
+            .attendance-summary-days-label { font-size: 0.62rem; }
+            .attendance-summary-days { font-size: 0.68rem; gap: 2px; }
+            .attendance-summary-day-item { padding: 2px 5px; border-radius: 5px; }
+            .attendance-summary-updated { font-size: 0.64rem; margin-top: 5px; padding-top: 5px; }
 
-            .att-footer-wrapper { gap: 12px; }
-            .att-legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 10px 12px; }
+            .att-footer-wrapper { gap: 10px; }
+            .att-legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 9px 10px; }
             .att-legend strong { grid-column: 1 / -1; }
-            .att-info-box { flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; }
-            .btn-save-att { width: 100%; min-height: 42px; }
+            .att-info-box { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; font-size: 0.8rem; }
+            .btn-save-att { width: 100%; min-height: 44px; border-radius: 10px; }
+            .toast-notification { top: 82px; right: -360px; max-width: calc(100vw - 24px); }
+            .toast-notification.show { right: 12px; }
         }
 
         @media (max-width: 768px) {
-            .header-title { font-size: 1.15rem; }
-            .page-title { font-size: 0.95rem; }
-            .btn-back { width: fit-content; }
-            .header-actions { grid-template-columns: 1fr; }
+            .header-title { font-size: 1.08rem; }
+            .page-title { font-size: 0.92rem; }
+            .btn-back { width: fit-content; min-height: 38px; }
+            .header-actions button i { font-size: 0.95rem; }
             .att-legend { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 390px) {
+            .header-actions { grid-template-columns: 1fr; }
+            .table-wrapper { max-height: calc(100dvh - 300px); }
+            .attendance-summary-strip { grid-template-columns: 1fr; }
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            @media (max-width: 1024px) {
+                .dashboard-content { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+            }
         }
     </style>
 </head>
@@ -234,8 +262,7 @@
     <header class="header">
         <div class="header-left">
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
-            <div class="logo-placeholder"><span id="logo-text">Logo</span></div>
-        </div>
+</div>
         <div class="header-center">
             <div class="header-title">XỨ LẠNG EDUCATION</div>
             <div class="header-subtitle">Chắp cánh ước mơ</div>
@@ -252,7 +279,7 @@
             <nav class="sidebar-nav">
                 <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
                 <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
+                <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
@@ -268,6 +295,7 @@
                 
                 <div class="header-actions">
                     <button class="btn-export-excel" onclick="exportToExcel()"><i class="fa-solid fa-file-excel"></i> Xuất Excel</button>
+                    <button class="btn-main-days" id="btnToggleMainDays" type="button"><i class="fa-regular fa-calendar-days"></i> Hiển thị ngày học chính</button>
                     <button class="btn-add-hs" onclick="document.getElementById('addStudentModal').classList.add('show')"><i class="fa-solid fa-user-plus"></i> Thêm HS</button>
                     <button class="btn-delete-hs" onclick="deleteSelectedStudents()"><i class="fa-solid fa-user-minus"></i> Xóa HS</button>
                 </div>
@@ -387,9 +415,64 @@
         let attendanceTeacherLog = {};
         let classRealtimeUnsubscribe = null;
         let teacherDirectoryByEmail = {};
+        let activeAttendanceLocks = {};
+        let currentClassInfo = null;
+        let currentScheduleDays = [];
+        let showMainStudyDaysOnly = false;
 
         function normalizeEmail(email) {
             return String(email || '').trim().toLowerCase();
+        }
+
+        function getSortedScheduleDays(days) {
+            return (Array.isArray(days) ? days : [])
+                .map(day => String(day))
+                .filter(day => ['0', '1', '2', '3', '4', '5', '6'].includes(day))
+                .sort((a, b) => {
+                    const order = ['1', '2', '3', '4', '5', '6', '0'];
+                    return order.indexOf(a) - order.indexOf(b);
+                });
+        }
+
+        function getMainStudyDaysForCurrentClass() {
+            return getSortedScheduleDays((currentClassInfo && (currentClassInfo.scheduleDays || currentClassInfo.studyDays)) || []);
+        }
+
+        function updateMainDaysButtonState() {
+            const btn = document.getElementById('btnToggleMainDays');
+            if (!btn) return;
+
+            const compactLabel = window.innerWidth <= 480;
+            btn.classList.toggle('active', showMainStudyDaysOnly);
+            btn.innerHTML = showMainStudyDaysOnly
+                ? `<i class="fa-solid fa-table-columns"></i> ${compactLabel ? 'Hiện đủ ngày' : 'Hiện tất cả ngày'}`
+                : `<i class="fa-regular fa-calendar-days"></i> ${compactLabel ? 'Ngày học chính' : 'Hiển thị ngày học chính'}`;
+        }
+
+        function applyMainStudyDaysVisibility() {
+            const scheduleDays = getMainStudyDaysForCurrentClass();
+            currentScheduleDays = scheduleDays;
+
+            const shouldFilter = showMainStudyDaysOnly && scheduleDays.length > 0;
+            const allDayCells = document.querySelectorAll('.day-column');
+
+            allDayCells.forEach(cell => {
+                const weekday = String(cell.dataset.weekday || '');
+                const visible = !shouldFilter || scheduleDays.includes(weekday);
+                cell.style.display = visible ? '' : 'none';
+            });
+
+            updateMainDaysButtonState();
+        }
+
+        function toggleMainStudyDays() {
+            const scheduleDays = getMainStudyDaysForCurrentClass();
+            if (!scheduleDays.length) {
+                showToast('Chưa có lịch học', 'Lớp này chưa cài thứ học nên chưa thể lọc ngày học chính.');
+                return;
+            }
+            showMainStudyDaysOnly = !showMainStudyDaysOnly;
+            applyMainStudyDaysVisibility();
         }
 
         function escapeHtml(value) {
@@ -418,6 +501,75 @@
         function resolveTeacherName(record) {
             const emailKey = normalizeEmail(record && record.teacherEmail);
             return teacherDirectoryByEmail[emailKey] || (record && (record.teacherName || record.teacherEmail)) || 'Chưa rõ';
+        }
+
+        function formatAttendanceDay(day) {
+            return `${String(day).padStart(2, '0')}/${String(currentMonthNumber).padStart(2, '0')}`;
+        }
+
+        function getAttendanceLockRecord(day) {
+            return (attendanceTeacherLog && attendanceTeacherLog[String(day)]) || null;
+        }
+
+        function isCurrentUserAttendanceOwner(day, logSource = attendanceTeacherLog) {
+            const record = (logSource && logSource[String(day)]) || null;
+            const ownerEmail = normalizeEmail(record && record.teacherEmail);
+            const myEmail = normalizeEmail(currentUserInfo && currentUserInfo.email);
+            if (!record || !ownerEmail || !myEmail) return true;
+            return ownerEmail === myEmail;
+        }
+
+        function buildLockReason(day, record) {
+            const ownerName = resolveTeacherName(record);
+            return `Ngày ${formatAttendanceDay(day)} đã được ${ownerName} điểm danh. Chỉ người này mới được sửa.`;
+        }
+
+        function refreshAttendanceLockState() {
+            activeAttendanceLocks = {};
+            document.querySelectorAll('.att-select').forEach((select) => {
+                const day = String(select.dataset.day || '');
+                const record = getAttendanceLockRecord(day);
+                const shouldLock = !!record && !isCurrentUserAttendanceOwner(day);
+                activeAttendanceLocks[day] = shouldLock;
+                select.disabled = shouldLock;
+                select.classList.toggle('att-locked', shouldLock);
+                select.title = shouldLock ? buildLockReason(day, record) : '';
+            });
+
+            const saveButton = document.querySelector('.btn-save-att');
+            if (saveButton) {
+                const hasForeignLocks = Object.values(activeAttendanceLocks).some(Boolean);
+                saveButton.title = hasForeignLocks ? 'Các ngày đã được giáo viên khác chốt sẽ bị khóa chỉnh sửa.' : '';
+            }
+        }
+
+        function captureCurrentDomSnapshot() {
+            originalAttendanceSnapshot = {};
+            studentsData.forEach((st) => {
+                originalAttendanceSnapshot[st.id] = { attendance: {}, tuition: 0 };
+                for (let i = 1; i <= currentMonthDays; i++) {
+                    const select = document.querySelector(`.day-select-${st.id}[data-day="${i}"]`);
+                    originalAttendanceSnapshot[st.id].attendance[i] = select ? select.value : '';
+                }
+                const tuitionInput = document.querySelector(`.tuition-${st.id}`);
+                originalAttendanceSnapshot[st.id].tuition = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
+            });
+        }
+
+        function buildPendingStudentPayloads() {
+            return studentsData.map((st) => {
+                const ref = db.collection('classes').doc(classId).collection('students').doc(st.id);
+                const updateData = { attendance: {}, tuition: 0 };
+
+                document.querySelectorAll(`.day-select-${st.id}`).forEach((sel) => {
+                    if (sel.value !== '') updateData.attendance[sel.dataset.day] = sel.value;
+                });
+
+                const tuitionInput = document.querySelector(`.tuition-${st.id}`);
+                updateData.tuition = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
+
+                return { ref, updateData };
+            });
         }
 
         async function ensureTeacherDirectoryLoaded() {
@@ -474,18 +626,25 @@
                     summaryMap[key] = {
                         teacherName,
                         teacherEmail: record.teacherEmail || '',
-                        days: [],
+                        records: [],
                         updatedAt: record.updatedAt || null
                     };
                 }
                 summaryMap[key].teacherName = teacherName;
                 if (!summaryMap[key].teacherEmail && record.teacherEmail) summaryMap[key].teacherEmail = record.teacherEmail;
-                summaryMap[key].days.push(parseInt(day, 10));
+                summaryMap[key].records.push({
+                    day: parseInt(day, 10),
+                    updatedAt: record.updatedAt || null
+                });
                 if (record.updatedAt) summaryMap[key].updatedAt = record.updatedAt;
             });
 
             return Object.values(summaryMap)
-                .map(item => ({ ...item, sessionCount: item.days.length }))
+                .map(item => ({
+                    ...item,
+                    records: item.records.sort((a, b) => a.day - b.day),
+                    sessionCount: item.records.length
+                }))
                 .sort((a, b) => {
                     if (b.sessionCount !== a.sessionCount) return b.sessionCount - a.sessionCount;
                     return a.teacherName.localeCompare(b.teacherName, 'vi');
@@ -510,7 +669,9 @@
                 const emailHtml = safeEmail && safeEmail.toLowerCase() !== safeName.toLowerCase()
                     ? `<div class="attendance-summary-email">${safeEmail}</div>`
                     : '';
-                const daysText = item.days.map(day => String(day).padStart(2, '0')).join(', ');
+                const detailHtml = item.records.map(record => `
+                    <div class="attendance-summary-day-item">Ngày ${formatAttendanceDay(record.day)} · ${escapeHtml(formatFirestoreDateTime(record.updatedAt))}</div>
+                `).join('');
                 const sessionText = item.sessionCount === 1 ? '1 buổi' : `${item.sessionCount} buổi`;
                 return `
                     <div class="attendance-summary-card">
@@ -521,8 +682,8 @@
                             </div>
                             <div class="attendance-summary-badge">${sessionText}/tháng</div>
                         </div>
-                        <div class="attendance-summary-days-label">Ngày dạy</div>
-                        <div class="attendance-summary-days">${daysText}</div>
+                        <div class="attendance-summary-days-label">Ngày đã điểm danh</div>
+                        <div class="attendance-summary-days">${detailHtml}</div>
                         <div class="attendance-summary-updated">Cập nhật gần nhất: ${escapeHtml(formatFirestoreDateTime(item.updatedAt))}</div>
                     </div>
                 `;
@@ -536,7 +697,7 @@
                     </div>
                     <div class="attendance-summary-pill">
                         <span class="attendance-summary-value">${summaryItems.length}</span>
-                        <span class="attendance-summary-label">Giáo viên tham gia giảng dạy</span>
+                        <span class="attendance-summary-label">Người đã chốt điểm danh</span>
                     </div>
                 </div>
                 <div class="attendance-summary-grid">${cardsHtml}</div>
@@ -552,6 +713,7 @@
                 attendanceTeacherLog = (data.attendanceTeacherLog && data.attendanceTeacherLog[currentMonthKey]) || {};
                 await ensureTeacherDirectoryLoaded();
                 renderAttendanceTeacherStats();
+                refreshAttendanceLockState();
             });
         }
 
@@ -626,10 +788,13 @@
         function loadClassInfo() {
             db.collection("classes").doc(classId).get().then((doc) => {
                 if(doc.exists) {
-                    const data = doc.data();
+                    const data = doc.data() || {};
+                    currentClassInfo = data;
+                    currentScheduleDays = getMainStudyDaysForCurrentClass();
                     document.getElementById('displayClassName').innerText = data.className;
                     document.getElementById('displayClassTeacher').innerText = data.teacherNamesDisplay || data.teacherName || "Chưa có";
                     generateTableHeader();
+                    applyMainStudyDaysVisibility();
                     subscribeClassRealtime();
                     loadStudents();
                 } else {
@@ -658,8 +823,9 @@
                 
             for(let i = 1; i <= currentMonthDays; i++) {
                 const d = new Date(now.getFullYear(), now.getMonth(), i);
-                const isWeekend = (d.getDay() === 0) ? 'day-weekend' : ''; 
-                theadHtml += `<th style="min-width: 45px; font-size: 0.7rem;">${i}/${now.getMonth()+1}<br><span style="${isWeekend ? 'color:#f39c12; font-weight:normal;' : 'font-weight:normal;'}">${daysOfWeek[d.getDay()]}</span></th>`;
+                const weekday = d.getDay();
+                const isWeekend = (weekday === 0) ? 'day-weekend' : ''; 
+                theadHtml += `<th class="day-column day-col-${i}" data-day="${i}" data-weekday="${weekday}" style="min-width: 45px; font-size: 0.7rem;">${i}/${now.getMonth()+1}<br><span style="${isWeekend ? 'color:#f39c12; font-weight:normal;' : 'font-weight:normal;'}">${daysOfWeek[weekday]}</span></th>`;
             }
             
             theadHtml += `
@@ -668,6 +834,7 @@
                 <th class="sticky-col-right-1">Tổng thu</th>
             </tr>`;
             document.getElementById('attThead').innerHTML = theadHtml;
+            applyMainStudyDaysVisibility();
 
             setTimeout(() => {
                 document.getElementById('selectAllStudents').addEventListener('change', function() {
@@ -719,7 +886,9 @@
                     
                     for(let i = 1; i <= currentMonthDays; i++) {
                         const val = attendanceRecord[i] || "";
-                        rowHtml += `<td class="col-center" style="padding: 2px;">
+                        const cellDate = new Date(currentYearNumber, currentMonthNumber - 1, i);
+                        const weekday = cellDate.getDay();
+                        rowHtml += `<td class="col-center day-column day-col-${i}" data-day="${i}" data-weekday="${weekday}" style="padding: 2px;">
                             <select class="att-select day-select-${doc.id}" data-day="${i}" onchange="updateSelectColor(this); calculateTotals()">
                                 <option value="" ${val===""?"selected":""}></option>
                                 <option value="V" ${val==="V"?"selected":""}>✔</option>
@@ -744,8 +913,10 @@
                 });
 
                 document.querySelectorAll('.att-select').forEach(sel => updateSelectColor(sel));
+                captureOriginalAttendanceSnapshot(snapshot);
                 generateTableFooter();
-                calculateTotals(); 
+                calculateTotals();
+                refreshAttendanceLockState(); 
             });
         }
 
@@ -755,7 +926,7 @@
                 <th class="sticky-col-left-2" style="text-align: right;">TỔNG CỘNG:</th>
                 <th colspan="2" style="background-color:#d1e8dc;"></th>`;
                 
-            for(let i = 1; i <= currentMonthDays; i++) { tfootHtml += `<th class="col-center col-sum-day" style="color:var(--primary-green);">0</th>`; }
+            for(let i = 1; i <= currentMonthDays; i++) { const footerDate = new Date(currentYearNumber, currentMonthNumber - 1, i); const weekday = footerDate.getDay(); tfootHtml += `<th class="col-center col-sum-day day-column day-col-${i}" data-day="${i}" data-weekday="${weekday}" style="color:var(--primary-green);">0</th>`; }
             
             tfootHtml += `
                 <th class="sticky-col-right-3"></th>
@@ -764,6 +935,7 @@
             </tr>`;
             
             document.getElementById('attTfoot').innerHTML = tfootHtml;
+            applyMainStudyDaysVisibility();
         }
 
         window.calculateTotals = function() {
@@ -979,56 +1151,72 @@
             }
         }
 
-        window.saveAttendance = function() {
+        window.saveAttendance = async function() {
             const btn = document.querySelector('.btn-save-att');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+            btn.disabled = true;
 
-            const batch = db.batch();
-            const changedDays = getChangedAttendanceDays();
+            try {
+                const changedDays = getChangedAttendanceDays();
+                const studentPayloads = buildPendingStudentPayloads();
+                const classRef = db.collection("classes").doc(classId);
+                const myEmail = normalizeEmail(currentUserInfo.email);
 
-            studentsData.forEach(st => {
-                const ref = db.collection("classes").doc(classId).collection("students").doc(st.id);
+                await db.runTransaction(async (transaction) => {
+                    const classSnapshot = await transaction.get(classRef);
+                    if (!classSnapshot.exists) throw new Error('Lớp học không còn tồn tại.');
 
-                let updateData = {};
-                let attRecord = {};
+                    const liveData = classSnapshot.data() || {};
+                    const liveMonthLog = (liveData.attendanceTeacherLog && liveData.attendanceTeacherLog[currentMonthKey]) || {};
 
-                document.querySelectorAll(`.day-select-${st.id}`).forEach(sel => {
-                    if(sel.value !== "") attRecord[sel.dataset.day] = sel.value;
+                    changedDays.forEach((day) => {
+                        const existingRecord = liveMonthLog[String(day)];
+                        const ownerEmail = normalizeEmail(existingRecord && existingRecord.teacherEmail);
+                        if (existingRecord && ownerEmail && ownerEmail !== myEmail) {
+                            throw new Error(buildLockReason(day, existingRecord));
+                        }
+                    });
+
+                    studentPayloads.forEach((item) => {
+                        transaction.update(item.ref, item.updateData);
+                    });
+
+                    const classUpdateData = { status: 'active' };
+                    changedDays.forEach((day) => {
+                        const fieldPath = `attendanceTeacherLog.${currentMonthKey}.${day}`;
+                        const existingRecord = liveMonthLog[String(day)] || null;
+                        if (dayHasAnyAttendance(day)) {
+                            classUpdateData[fieldPath] = {
+                                teacherName: (existingRecord && existingRecord.teacherName) || currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                                teacherEmail: (existingRecord && existingRecord.teacherEmail) || currentUserInfo.email || '',
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            };
+                        } else {
+                            if (existingRecord) {
+                                const ownerEmail = normalizeEmail(existingRecord.teacherEmail);
+                                if (ownerEmail && ownerEmail !== myEmail) {
+                                    throw new Error(buildLockReason(day, existingRecord));
+                                }
+                            }
+                            classUpdateData[fieldPath] = firebase.firestore.FieldValue.delete();
+                        }
+                    });
+
+                    transaction.update(classRef, classUpdateData);
                 });
-                updateData.attendance = attRecord;
 
-                const tuitionVal = parseInt(document.querySelector(`.tuition-${st.id}`).value) || 0;
-                updateData.tuition = tuitionVal;
-
-                batch.update(ref, updateData);
-            });
-
-            const classRef = db.collection("classes").doc(classId);
-            const classUpdateData = { status: "active" };
-
-            changedDays.forEach(day => {
-                const fieldPath = `attendanceTeacherLog.${currentMonthKey}.${day}`;
-                if (dayHasAnyAttendance(day)) {
-                    classUpdateData[fieldPath] = {
-                        teacherName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
-                        teacherEmail: currentUserInfo.email || '',
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                } else {
-                    classUpdateData[fieldPath] = firebase.firestore.FieldValue.delete();
-                }
-            });
-
-            batch.update(classRef, classUpdateData);
-
-            batch.commit().then(() => {
-                showToast("Thành công!", "Dữ liệu điểm danh đã được lưu.");
-            }).catch(err => alert("Lỗi: " + err))
-            .finally(() => {
-                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Chốt & Lưu Điểm Danh';
+                captureCurrentDomSnapshot();
                 document.getElementById('attTime').innerText = new Date().toLocaleString('vi-VN');
-            });
+                showToast('Thành công!', 'Dữ liệu điểm danh đã được lưu. Các ngày bạn vừa chốt sẽ được khóa với giáo viên khác.');
+            } catch (err) {
+                showToast('Không thể lưu', err && err.message ? err.message : 'Đã xảy ra lỗi khi lưu điểm danh.');
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Chốt & Lưu Điểm Danh';
+                btn.disabled = false;
+            }
         }
+
+        document.getElementById('btnToggleMainDays').addEventListener('click', toggleMainStudyDays);
 
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebar = document.getElementById('sidebar');
@@ -1055,6 +1243,7 @@
         });
         window.addEventListener('resize', () => {
             if (window.innerWidth > 1024) document.body.style.overflow = 'auto';
+            updateMainDaysButtonState();
         });
         document.getElementById('btnLogout').addEventListener('click', () => { if(confirm('Đăng xuất?')) auth.signOut(); });
     </script>
