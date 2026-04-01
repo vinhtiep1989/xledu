@@ -221,7 +221,7 @@
                 <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
                 <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
                 <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
+                <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
             </nav>
@@ -1050,16 +1050,37 @@
             if (confirm('Đăng xuất hệ thống?')) auth.signOut();
         });
 
-        btnMenu.addEventListener('click', () => {
+        function openSidebar() {
             sidebar.classList.add('open');
             overlay.classList.add('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
-        });
+            if (window.innerWidth <= 1024) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.touchAction = 'none';
+            }
+        }
 
-        overlay.addEventListener('click', () => {
+        function closeSidebar() {
             sidebar.classList.remove('open');
             overlay.classList.remove('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
+            document.body.style.touchAction = '';
+        }
+
+        btnMenu.addEventListener('click', openSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        document.querySelectorAll('.sidebar-nav-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) closeSidebar();
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) closeSidebar();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
         });
 
         document.getElementById('globalSearch').addEventListener('input', filterTable);

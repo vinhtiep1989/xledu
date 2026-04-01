@@ -16,7 +16,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
         /* Thêm padding cho body để trên mobile form không chạm viền */
-        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--bg-dark); overflow: hidden; position: relative; padding: 20px; }
+        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; background-color: var(--bg-dark); overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; position: relative; padding: 20px; }
         
         .bg-glow { position: absolute; border-radius: 50%; filter: blur(100px); z-index: 0; animation: float 10s infinite ease-in-out alternate; }
         .glow-1 { width: 400px; height: 400px; background: rgba(46, 204, 113, 0.15); top: -100px; left: -100px; }
@@ -274,6 +274,7 @@
             setLoadingState(true);
 
             try {
+                await auth.setPersistence(rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION);
                 await auth.signInWithEmailAndPassword(email, password);
                 if (rememberMeCheckbox.checked) localStorage.setItem('xl_saved_email', email);
                 else localStorage.removeItem('xl_saved_email');

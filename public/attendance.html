@@ -280,7 +280,7 @@
                 <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
                 <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
                 <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
+                <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
             </nav>
@@ -488,7 +488,8 @@
             if (userDocData) {
                 return userDocData.fullName || userDocData.displayName || userDocData.name || user.email;
             }
-            return user.email;
+            const fallbackEmail = normalizeEmail((user && user.email) || '');
+            return fallbackEmail ? (fallbackEmail.split('@')[0] || fallbackEmail) : '';
         }
 
         function formatFirestoreDateTime(value) {
@@ -758,31 +759,44 @@
         }
 
         // MỞ KHÓA TẠM THỜI TẤT CẢ QUYỀN THEO YÊU CẦU
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('userEmailDisplay').textContent = user.email;
-                document.getElementById('attTeacherName').textContent = user.email;
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
 
-                db.collection("users").where("email", "==", user.email).get().then(snap => {
-                    let role = "teacher";
-                    let teacherDisplayName = user.email;
-                    if(!snap.empty) {
-                        const userData = snap.docs[0].data() || {};
-                        role = userData.role || "teacher";
-                        teacherDisplayName = getTeacherDisplayName(userData, user);
-                        const normalizedEmail = normalizeEmail(user.email);
-                        if (normalizedEmail) teacherDirectoryByEmail[normalizedEmail] = teacherDisplayName;
-                    }
-                    currentUserInfo = {
-                        email: user.email || '',
-                        displayName: teacherDisplayName,
-                        role: role
-                    };
-                    document.getElementById('attTeacherName').textContent = teacherDisplayName;
-                    document.getElementById('userRoleDisplay').textContent = (role === 'admin') ? "Admin" : "Giáo viên";
-                    loadClassInfo();
-                });
-            } else window.location.href = 'login.html';
+            const currentEmail = normalizeEmail(user.email || '');
+            document.getElementById('userEmailDisplay').textContent = currentEmail;
+            document.getElementById('attTeacherName').textContent = currentEmail;
+
+            try {
+                let userData = null;
+                const directDoc = await db.collection('users').doc(currentEmail).get().catch(() => null);
+                if (directDoc && directDoc.exists) {
+                    userData = directDoc.data() || {};
+                } else {
+                    const snap = await db.collection("users").where("email", "==", currentEmail).limit(1).get();
+                    if (!snap.empty) userData = snap.docs[0].data() || {};
+                }
+
+                const role = (userData && userData.role) || 'teacher';
+                const teacherDisplayName = getTeacherDisplayName(userData, { email: currentEmail }) || currentEmail;
+                if (currentEmail) teacherDirectoryByEmail[currentEmail] = teacherDisplayName;
+                currentUserInfo = {
+                    email: currentEmail,
+                    displayName: teacherDisplayName,
+                    role: role
+                };
+                document.getElementById('attTeacherName').textContent = teacherDisplayName;
+                document.getElementById('userRoleDisplay').textContent = teacherDisplayName;
+            } catch (_) {
+                const fallbackName = currentEmail ? (currentEmail.split('@')[0] || currentEmail) : '';
+                currentUserInfo = { email: currentEmail, displayName: fallbackName, role: 'teacher' };
+                document.getElementById('attTeacherName').textContent = fallbackName;
+                document.getElementById('userRoleDisplay').textContent = fallbackName;
+            }
+
+            loadClassInfo();
         });
 
         function loadClassInfo() {
@@ -1225,13 +1239,17 @@
         function openSidebar() {
             sidebar.classList.add('open');
             sidebarOverlay.classList.add('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
+            if (window.innerWidth <= 1024) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.touchAction = 'none';
+            }
         }
 
         function closeSidebar() {
             sidebar.classList.remove('open');
             sidebarOverlay.classList.remove('open');
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = '';
+            document.body.style.touchAction = '';
         }
 
         mobileMenuBtn.addEventListener('click', openSidebar);
@@ -1242,8 +1260,11 @@
             });
         });
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024) document.body.style.overflow = 'auto';
+            if (window.innerWidth > 1024) closeSidebar();
             updateMainDaysButtonState();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
         });
         document.getElementById('btnLogout').addEventListener('click', () => { if(confirm('Đăng xuất?')) auth.signOut(); });
     </script>

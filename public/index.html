@@ -12,7 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; --border-grey: #e8f1ec; --header-height: 90px; --sidebar-width: 270px; }
+        :root { --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; --border-grey: #e8f1ec; --danger-red: #e74c3c; --header-height: 90px; --sidebar-width: 270px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
         body { background-color: var(--bg-body); color: var(--text-dark); }
@@ -87,6 +87,45 @@
         .chart-bar-fill { height: 100%; background-color: var(--accent-gold-plated); border-radius: 3px; width: 0%; transition: 1s ease-in-out; }
         .chart-bar-number { font-weight: 700; width: 35px; text-align: right;}
 
+
+
+        .important-alert-panel { margin-bottom: 30px; border: 1px solid rgba(224, 170, 62, 0.18); box-shadow: 0 8px 24px rgba(13, 27, 42, 0.04); }
+        .important-alert-header { display: flex; align-items: center; gap: 10px; }
+        .important-alert-header i { color: var(--accent-gold); }
+        .important-alert-count { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 14px; border-radius: 999px; background: rgba(224, 170, 62, 0.12); color: #9a6c0a; font-size: 0.8rem; font-weight: 800; }
+        .important-alert-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+        .important-alert-pill { background: linear-gradient(180deg, #fffdf7 0%, #fff 100%); border: 1px solid rgba(224, 170, 62, 0.16); border-radius: 12px; padding: 14px; }
+        .important-alert-pill-value { display: block; font-size: 1.45rem; font-weight: 800; color: var(--text-dark); line-height: 1.1; }
+        .important-alert-pill-label { display: block; margin-top: 5px; font-size: 0.8rem; font-weight: 700; color: #7a6744; }
+        .important-alert-pill-sub { display: block; margin-top: 4px; font-size: 0.72rem; color: #8d8d8d; }
+        .important-alert-list { display: grid; gap: 12px; }
+        .important-alert-card { border-radius: 14px; border: 1px solid var(--border-grey); background: #fff; padding: 15px; }
+        .important-alert-card.pending { border-color: rgba(231, 76, 60, 0.18); background: linear-gradient(180deg, #fff9f8 0%, #fff 100%); }
+        .important-alert-card.done { border-color: rgba(46, 204, 113, 0.18); background: linear-gradient(180deg, #f8fffb 0%, #fff 100%); }
+        .important-alert-card.missed { border-color: rgba(224, 170, 62, 0.22); background: linear-gradient(180deg, #fffdf6 0%, #fff 100%); }
+        .important-alert-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+        .important-alert-class-code { display: inline-flex; align-items: center; gap: 6px; min-height: 24px; padding: 0 10px; border-radius: 999px; background: rgba(13, 27, 42, 0.05); color: #29405a; font-size: 0.73rem; font-weight: 800; }
+        .important-alert-class-name { font-size: 1rem; font-weight: 800; color: var(--text-dark); line-height: 1.3; margin-top: 8px; }
+        .important-alert-teacher { margin-top: 4px; font-size: 0.82rem; color: #697887; }
+        .important-alert-status { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border-radius: 999px; font-size: 0.74rem; font-weight: 800; white-space: nowrap; }
+        .important-alert-status.pending { background: rgba(231, 76, 60, 0.12); color: var(--danger-red); }
+        .important-alert-status.done { background: rgba(46, 204, 113, 0.12); color: #1e8e52; }
+        .important-alert-status.missed { background: rgba(224, 170, 62, 0.14); color: #b07600; }
+        .important-alert-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+        .important-alert-meta-item { background: rgba(244, 247, 246, 0.7); border: 1px solid rgba(232, 241, 236, 0.9); border-radius: 10px; padding: 10px 12px; }
+        .important-alert-meta-label { display: block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: #8a97a4; letter-spacing: 0.04em; }
+        .important-alert-meta-value { display: block; margin-top: 5px; font-size: 0.84rem; font-weight: 700; color: var(--text-dark); line-height: 1.35; }
+        .important-alert-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+        .important-alert-link { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 10px; text-decoration: none; font-size: 0.8rem; font-weight: 800; transition: 0.2s ease; }
+        .important-alert-link.pending { background: rgba(231, 76, 60, 0.1); color: var(--danger-red); border: 1px solid rgba(231, 76, 60, 0.2); }
+        .important-alert-link.pending:hover { background: var(--danger-red); color: #fff; }
+        .important-alert-link.done { background: rgba(46, 204, 113, 0.1); color: #1e8e52; border: 1px solid rgba(46, 204, 113, 0.2); }
+        .important-alert-link.done:hover { background: #1e8e52; color: #fff; }
+        .important-alert-empty { padding: 24px 18px; text-align: center; border: 1px dashed var(--border-grey); border-radius: 12px; background: linear-gradient(180deg, #fcfefc 0%, #f8fbf9 100%); }
+        .important-alert-empty i { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: rgba(46, 204, 113, 0.12); color: var(--primary-green); font-size: 1.25rem; margin-bottom: 12px; }
+        .important-alert-empty-title { font-size: 0.95rem; font-weight: 800; color: var(--text-dark); }
+        .important-alert-empty-subtitle { margin-top: 5px; font-size: 0.8rem; color: #7f8c8d; }
+
         /* BỐ CỤC PC */
         @media (min-width: 1025px) {
             body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -118,7 +157,7 @@
             .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
             
             @media (max-width: 768px) {
-                .statistics-grid, .dashboard-bottom-grid, .mini-charts-grid { display: flex; flex-direction: column; gap: 15px; }
+                .statistics-grid, .dashboard-bottom-grid, .mini-charts-grid, .important-alert-summary { display: flex; flex-direction: column; gap: 15px; }
             }
             @media (min-width: 769px) {
                 .statistics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
@@ -126,6 +165,9 @@
                 .mini-charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
             }
             .panel { padding: 15px; }
+            .important-alert-meta { grid-template-columns: 1fr; }
+            .important-alert-card-head { flex-direction: column; }
+            .important-alert-count { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -165,7 +207,7 @@
                 <a href="index.html" class="sidebar-nav-item active"><i class="fa-solid fa-house"></i> Trang chủ</a>
                 <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
                 <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
-                <a href="#" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ giáo viên</a>
+                <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
             </nav>
@@ -180,7 +222,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-chalkboard-user"></i></div><div class="stat-card-title">Tổng giáo viên</div></div>
-                    <div class="stat-card-number" id="stat-teachers">0</div><div class="stat-card-subtitle">Đồng bộ hồ sơ giáo viên</div>
+                    <div class="stat-card-number" id="stat-teachers">0</div><div class="stat-card-subtitle">Lấy từ cột chức danh = Giáo viên</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-book-open-reader"></i></div><div class="stat-card-title">Lớp học đang mở</div></div>
@@ -189,6 +231,44 @@
                 <div class="stat-card">
                     <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-briefcase"></i></div><div class="stat-card-title">Nhân sự nội bộ</div></div>
                     <div class="stat-card-number" id="stat-admins">0</div><div class="stat-card-subtitle">Lấy từ cột chức danh, trừ giáo viên</div>
+                </div>
+            </div>
+
+
+
+            <div class="panel important-alert-panel">
+                <div class="panel-header">
+                    <div>
+                        <h3 class="important-alert-header"><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo quan trọng</h3>
+                        <p class="panel-header-subtitle">Theo dõi lớp sắp vào ca trước 30 phút, đang trong ca nhưng chưa điểm danh, và kết quả điểm danh sau 30 phút kết thúc ca.</p>
+                    </div>
+                    <div class="important-alert-count" id="important-alert-count">0 lớp cần chú ý</div>
+                </div>
+
+                <div class="important-alert-summary">
+                    <div class="important-alert-pill">
+                        <span class="important-alert-pill-value" id="important-alert-pending-count">0</span>
+                        <span class="important-alert-pill-label">Đang cần điểm danh</span>
+                        <span class="important-alert-pill-sub">Từ 30 phút trước ca đến 30 phút sau khi kết thúc</span>
+                    </div>
+                    <div class="important-alert-pill">
+                        <span class="important-alert-pill-value" id="important-alert-done-count">0</span>
+                        <span class="important-alert-pill-label">Đã điểm danh sau ca</span>
+                        <span class="important-alert-pill-sub">Hiển thị khi đã qua 30 phút sau giờ kết thúc</span>
+                    </div>
+                    <div class="important-alert-pill">
+                        <span class="important-alert-pill-value" id="important-alert-missed-count">0</span>
+                        <span class="important-alert-pill-label">Chưa điểm danh sau ca</span>
+                        <span class="important-alert-pill-sub">Cần rà soát các buổi đã khép phiên theo lịch học</span>
+                    </div>
+                </div>
+
+                <div class="important-alert-list" id="important-alert-list">
+                    <div class="important-alert-empty">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <div class="important-alert-empty-title">Đang tải cảnh báo quan trọng...</div>
+                        <div class="important-alert-empty-subtitle">Hệ thống đang kiểm tra lịch học và dữ liệu điểm danh thời gian thực.</div>
+                    </div>
                 </div>
             </div>
 
@@ -247,10 +327,13 @@
         const db = firebase.firestore();
 
         const DASHBOARD_CONFIG = {
-            teacherProfileCollection: 'teacherProfiles',
+            teacherProfileCollection: 'staff',
             realtimeSessionMinutes: 120,
             sessionGraceMinutes: 10,
-            maxFeaturedClasses: 5
+            maxFeaturedClasses: 5,
+            alertLeadMinutes: 30,
+            alertResultDelayMinutes: 30,
+            dashboardRefreshMs: 30000
         };
 
         const dashboardState = {
@@ -264,6 +347,7 @@
         let classesUnsub = null;
         let teacherProfilesUnsub = null;
         let usersUnsub = null;
+        let dashboardClockTimer = null;
 
         function normalizeEmail(email) {
             return String(email || '').trim().toLowerCase();
@@ -300,7 +384,9 @@
                 (profile && (profile.name || profile.fullName || profile.displayName || profile.teacherName)) || ''
             ).trim();
             if (fullName) return fullName;
-            return getRoleLabel((profile && profile.role) || 'teacher');
+            const fallbackEmail = normalizeEmail((user && user.email) || (profile && profile.email) || '');
+            if (fallbackEmail) return fallbackEmail.split('@')[0] || fallbackEmail;
+            return 'Người dùng';
         }
 
         async function fetchCurrentUserProfile(user) {
@@ -345,6 +431,75 @@
             if (typeof value.seconds === 'number') return new Date(value.seconds * 1000);
             const date = new Date(value);
             return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+
+
+        function minutesToTime(totalMinutes) {
+            const normalized = ((totalMinutes % (24 * 60)) + (24 * 60)) % (24 * 60);
+            const hours = String(Math.floor(normalized / 60)).padStart(2, '0');
+            const minutes = String(normalized % 60).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        function parseTimeToMinutes(value) {
+            const parts = String(value || '').split(':');
+            if (parts.length !== 2) return NaN;
+            const hour = Number(parts[0]);
+            const minute = Number(parts[1]);
+            if (Number.isNaN(hour) || Number.isNaN(minute)) return NaN;
+            return hour * 60 + minute;
+        }
+
+        function getSortedScheduleDays(values) {
+            return Array.from(new Set((values || []).map((item) => String(item)))).sort((a, b) => Number(a) - Number(b));
+        }
+
+        function formatTime(value) {
+            const date = getDateFromAny(value);
+            if (!date) return 'Chưa điểm danh';
+            return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatDateTime(value) {
+            const date = getDateFromAny(value);
+            if (!date) return 'Chưa có dữ liệu';
+            return date.toLocaleString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatTimeRange(start, end) {
+            return `${formatTime(start)} - ${formatTime(end)}`;
+        }
+
+        function formatMinutesLabel(totalMinutes) {
+            const rounded = Math.max(0, Math.round(totalMinutes));
+            if (rounded === 0) return 'Đúng thời điểm hiện tại';
+            return `${rounded} phút`;
+        }
+
+        function getTodaySessionWindow(classData, now = new Date()) {
+            const scheduleDays = getSortedScheduleDays(classData && (classData.scheduleDays || classData.studyDays || classData.learningDays || classData.daysOfWeek || []));
+            const startTime = (classData && (classData.startTime || classData.studyStartTime)) || '';
+            const startMinutes = parseTimeToMinutes(startTime);
+            const durationMinutes = Number(classData && (classData.classDurationMinutes || classData.durationMinutes || classData.sessionDurationMinutes)) || DASHBOARD_CONFIG.realtimeSessionMinutes;
+
+            if (!scheduleDays.length || Number.isNaN(startMinutes)) return null;
+            if (!scheduleDays.includes(String(now.getDay()))) return null;
+
+            const start = new Date(now);
+            start.setHours(Math.floor(startMinutes / 60), startMinutes % 60, 0, 0);
+
+            const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
+            const alertStart = new Date(start.getTime() - DASHBOARD_CONFIG.alertLeadMinutes * 60 * 1000);
+            const resultReadyAt = new Date(end.getTime() + DASHBOARD_CONFIG.alertResultDelayMinutes * 60 * 1000);
+
+            return { start, end, alertStart, resultReadyAt, durationMinutes };
         }
 
         function getStudentSyncKey(student) {
@@ -398,6 +553,7 @@
                 classData && classData.hasClassToday
             ];
             if (explicitCandidates.some((value) => value === true)) return true;
+            if (getTodaySessionWindow(classData, now)) return true;
 
             const weekdays = [
                 classData && classData.studyDays,
@@ -507,6 +663,8 @@
                     totalCount,
                     todayRecord,
                     lastAttendanceAt,
+                    sessionWindow: getTodaySessionWindow(classData, now),
+                    scheduleLabel: normalizeText(classData && classData.scheduleLabel),
                     hasAttendanceToday: hasAttendanceToday(classData, now),
                     isRealtimeActive: isRealtimeActiveClass(classData, now),
                     hasScheduledSessionToday: classHasScheduledSessionToday(classData, now)
@@ -524,6 +682,143 @@
                 });
             });
             return uniqueStudents;
+        }
+
+
+
+        function buildImportantAlertItems(classSummaries, now = new Date()) {
+            return classSummaries.reduce((items, item) => {
+                const windowInfo = item.sessionWindow;
+                if (!windowInfo) return items;
+
+                const hasCheckedIn = !!item.hasAttendanceToday;
+                const sessionRange = formatTimeRange(windowInfo.start, windowInfo.end);
+                const lastAttendanceText = hasCheckedIn ? formatDateTime(item.lastAttendanceAt) : 'Chưa có bản ghi điểm danh hôm nay';
+                const baseItem = {
+                    ...item,
+                    sessionRange,
+                    lastAttendanceText,
+                    startTimeText: formatTime(windowInfo.start),
+                    endTimeText: formatTime(windowInfo.end)
+                };
+
+                if (now >= windowInfo.alertStart && now <= windowInfo.resultReadyAt && !hasCheckedIn) {
+                    let statusLabel = 'Đang cần điểm danh';
+                    let detailLabel = `Ca học ${sessionRange}`;
+                    let variant = 'pending';
+
+                    if (now < windowInfo.start) {
+                        const leadMinutes = (windowInfo.start.getTime() - now.getTime()) / 60000;
+                        statusLabel = 'Sắp vào ca nhưng chưa điểm danh';
+                        detailLabel = `Bắt đầu sau ${formatMinutesLabel(leadMinutes)}`;
+                    } else if (now <= windowInfo.end) {
+                        const lateMinutes = (now.getTime() - windowInfo.start.getTime()) / 60000;
+                        statusLabel = 'Đang trong ca nhưng chưa điểm danh';
+                        detailLabel = `Đã vào ca ${formatMinutesLabel(lateMinutes)}`;
+                    } else {
+                        const afterEndMinutes = (now.getTime() - windowInfo.end.getTime()) / 60000;
+                        statusLabel = 'Ca đã kết thúc nhưng chưa chốt điểm danh';
+                        detailLabel = `Đã qua giờ kết thúc ${formatMinutesLabel(afterEndMinutes)}`;
+                        variant = 'missed';
+                    }
+
+                    items.push({
+                        ...baseItem,
+                        alertType: 'pending',
+                        variant,
+                        statusLabel,
+                        detailLabel,
+                        actionLabel: 'Mở điểm danh ngay',
+                        actionClass: 'pending'
+                    });
+                    return items;
+                }
+
+                if (now > windowInfo.resultReadyAt) {
+                    const done = hasCheckedIn;
+                    items.push({
+                        ...baseItem,
+                        alertType: done ? 'done' : 'missed',
+                        variant: done ? 'done' : 'missed',
+                        statusLabel: done ? 'Đã điểm danh hoàn tất' : 'Chưa điểm danh sau khi khép ca',
+                        detailLabel: done
+                            ? `Điểm danh lúc ${formatTime(item.lastAttendanceAt)}`
+                            : 'Không tìm thấy bản ghi điểm danh trong ngày cho ca học này',
+                        actionLabel: done ? 'Xem lớp điểm danh' : 'Kiểm tra lớp này',
+                        actionClass: done ? 'done' : 'pending'
+                    });
+                }
+
+                return items;
+            }, []).sort((a, b) => {
+                const aPriority = a.alertType === 'pending' ? 0 : (a.alertType === 'missed' ? 1 : 2);
+                const bPriority = b.alertType === 'pending' ? 0 : (b.alertType === 'missed' ? 1 : 2);
+                if (aPriority !== bPriority) return aPriority - bPriority;
+                const aStart = a.sessionWindow ? a.sessionWindow.start.getTime() : 0;
+                const bStart = b.sessionWindow ? b.sessionWindow.start.getTime() : 0;
+                return aPriority === 2 ? bStart - aStart : aStart - bStart;
+            });
+        }
+
+        function renderImportantAlerts(classSummaries, now = new Date()) {
+            const listEl = document.getElementById('important-alert-list');
+            if (!listEl) return;
+
+            const alertItems = buildImportantAlertItems(classSummaries, now);
+            const pendingCount = alertItems.filter((item) => item.alertType === 'pending').length;
+            const doneCount = alertItems.filter((item) => item.alertType === 'done').length;
+            const missedCount = alertItems.filter((item) => item.alertType === 'missed').length;
+            const totalCount = pendingCount + missedCount;
+
+            setTextValue('important-alert-pending-count', pendingCount);
+            setTextValue('important-alert-done-count', doneCount);
+            setTextValue('important-alert-missed-count', missedCount);
+            setTextValue('important-alert-count', totalCount > 0 ? `${totalCount} lớp cần chú ý` : 'Không có lớp cần chú ý');
+
+            if (!alertItems.length) {
+                listEl.innerHTML = `
+                    <div class="important-alert-empty">
+                        <i class="fa-solid fa-shield-heart"></i>
+                        <div class="important-alert-empty-title">Không có cảnh báo quan trọng trong khung giờ hiện tại</div>
+                        <div class="important-alert-empty-subtitle">Hệ thống sẽ tự theo dõi lớp từ 30 phút trước ca học đến sau 30 phút kết thúc ca để nhắc điểm danh.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = alertItems.map((item) => `
+                <div class="important-alert-card ${item.variant}">
+                    <div class="important-alert-card-head">
+                        <div>
+                            <span class="important-alert-class-code"><i class="fa-solid fa-layer-group"></i> ${escapeHtml(item.classCode || 'Chưa mã hóa')}</span>
+                            <div class="important-alert-class-name">${escapeHtml(item.className || 'Chưa có tên lớp')}</div>
+                            <div class="important-alert-teacher">Giáo viên: <strong>${escapeHtml(item.teacherLabel || 'Chưa phân công')}</strong></div>
+                        </div>
+                        <span class="important-alert-status ${item.variant}"><i class="fa-solid fa-bell"></i> ${escapeHtml(item.statusLabel)}</span>
+                    </div>
+
+                    <div class="important-alert-meta">
+                        <div class="important-alert-meta-item">
+                            <span class="important-alert-meta-label">Ca học hôm nay</span>
+                            <span class="important-alert-meta-value">${escapeHtml(item.sessionRange)}</span>
+                        </div>
+                        <div class="important-alert-meta-item">
+                            <span class="important-alert-meta-label">Trạng thái theo dõi</span>
+                            <span class="important-alert-meta-value">${escapeHtml(item.detailLabel)}</span>
+                        </div>
+                        <div class="important-alert-meta-item">
+                            <span class="important-alert-meta-label">Điểm danh gần nhất</span>
+                            <span class="important-alert-meta-value">${escapeHtml(item.lastAttendanceText)}</span>
+                        </div>
+                    </div>
+
+                    <div class="important-alert-actions">
+                        <a href="attendance.html?id=${encodeURIComponent(item.id)}" class="important-alert-link ${item.actionClass}">
+                            <i class="fa-solid fa-clipboard-user"></i> ${escapeHtml(item.actionLabel)}
+                        </a>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function getActiveLearningStudentCount(classSummaries, now = new Date()) {
@@ -581,6 +876,7 @@
 
             renderTeacherAndInternalStats();
             renderFeaturedClasses(classSummaries);
+            renderImportantAlerts(classSummaries, now);
         }
 
         function subscribeStudentsForClass(classData) {
@@ -633,7 +929,7 @@
                 dashboardState.teacherProfiles = snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() || {}) }));
                 recomputeDashboard();
             }, (error) => {
-                console.error('Không đọc được hồ sơ giáo viên:', error);
+                console.error('Không đọc được hồ sơ nhân sự:', error);
                 dashboardState.teacherProfiles = [];
                 recomputeDashboard();
             });
@@ -649,6 +945,15 @@
                 dashboardState.users = [];
                 recomputeDashboard();
             });
+        }
+
+
+
+        function startDashboardClock() {
+            if (dashboardClockTimer) clearInterval(dashboardClockTimer);
+            dashboardClockTimer = setInterval(() => {
+                recomputeDashboard();
+            }, DASHBOARD_CONFIG.dashboardRefreshMs);
         }
 
         function loadDashboardData() {
@@ -672,6 +977,7 @@
                 }
 
                 document.getElementById('page-loader').style.display = 'none';
+                startDashboardClock();
                 loadDashboardData();
             } else {
                 window.location.href = 'login.html';
@@ -711,26 +1017,37 @@
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
 
-        btnMenu.addEventListener('click', () => {
+        function openSidebar() {
             sidebar.classList.add('open');
             overlay.classList.add('open');
-            if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
-        });
+            if (window.innerWidth <= 1024) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.touchAction = 'none';
+            }
+        }
 
-        overlay.addEventListener('click', () => {
+        function closeSidebar() {
             sidebar.classList.remove('open');
             overlay.classList.remove('open');
             document.body.style.overflow = '';
-        });
+            document.body.style.touchAction = '';
+        }
+
+        btnMenu.addEventListener('click', openSidebar);
+        overlay.addEventListener('click', closeSidebar);
 
         document.querySelectorAll('.sidebar-nav-item').forEach((item) => {
             item.addEventListener('click', () => {
-                if (window.innerWidth <= 1024) {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('open');
-                    document.body.style.overflow = '';
-                }
+                if (window.innerWidth <= 1024) closeSidebar();
             });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) closeSidebar();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
         });
     </script>
 </body>
