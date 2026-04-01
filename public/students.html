@@ -733,7 +733,11 @@
         }
         @media (max-width: 900px) {
             .class-stats-mobile-hint { display: inline-flex; }
-            .class-stats-list { min-width: 780px; }
+            .class-stats-list { min-width: 720px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 82px minmax(160px, 1.5fr) minmax(150px, 1.2fr) 82px 82px 82px;
+            }
             .class-stats-head-row > :nth-child(1),
             .class-stat-row > :nth-child(1) {
                 position: sticky;
@@ -745,7 +749,7 @@
             .class-stats-head-row > :nth-child(2),
             .class-stat-row > :nth-child(2) {
                 position: sticky;
-                left: 104px;
+                left: 82px;
                 z-index: 5;
                 background: inherit;
                 box-shadow: 1px 0 0 #edf3ef;
@@ -760,18 +764,27 @@
             .class-stats-panel { padding: 12px; }
             .class-stats-title { font-size: 0.92rem; }
             .class-stats-subtitle { font-size: 0.74rem; }
-            .class-stats-list { min-width: 760px; }
+            .class-stats-list { min-width: 680px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 72px minmax(138px, 1.35fr) minmax(132px, 1.1fr) 76px 76px 76px;
+            }
             .class-stats-head-row > div,
-            .class-stat-row > div { padding: 7px 8px; }
-            .class-head-label { font-size: 0.63rem; }
+            .class-stat-row > div { padding: 7px 7px; }
+            .class-head-label { font-size: 0.61rem; }
             .class-filter-input,
             .class-filter-select {
-                min-height: 26px;
-                padding: 3px 5px;
+                min-height: 25px;
+                padding: 3px 4px;
                 border-radius: 6px;
-                font-size: 0.67rem;
+                font-size: 0.65rem;
             }
-            .class-stat-row { font-size: 0.72rem; }
+            .class-stat-row { font-size: 0.70rem; }
+            .class-stat-name { font-size: 0.74rem; }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) {
+                left: 72px;
+            }
         }
         @supports (-webkit-touch-callout: none) {
             .class-stats-table-wrap,
