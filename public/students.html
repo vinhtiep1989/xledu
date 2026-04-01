@@ -733,7 +733,11 @@
         }
         @media (max-width: 900px) {
             .class-stats-mobile-hint { display: inline-flex; }
-            .class-stats-list { min-width: 780px; }
+            .class-stats-list { min-width: 720px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 82px minmax(160px, 1.5fr) minmax(150px, 1.2fr) 82px 82px 82px;
+            }
             .class-stats-head-row > :nth-child(1),
             .class-stat-row > :nth-child(1) {
                 position: sticky;
@@ -745,7 +749,7 @@
             .class-stats-head-row > :nth-child(2),
             .class-stat-row > :nth-child(2) {
                 position: sticky;
-                left: 104px;
+                left: 82px;
                 z-index: 5;
                 background: inherit;
                 box-shadow: 1px 0 0 #edf3ef;
@@ -760,18 +764,27 @@
             .class-stats-panel { padding: 12px; }
             .class-stats-title { font-size: 0.92rem; }
             .class-stats-subtitle { font-size: 0.74rem; }
-            .class-stats-list { min-width: 760px; }
+            .class-stats-list { min-width: 680px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 72px minmax(138px, 1.35fr) minmax(132px, 1.1fr) 76px 76px 76px;
+            }
             .class-stats-head-row > div,
-            .class-stat-row > div { padding: 7px 8px; }
-            .class-head-label { font-size: 0.63rem; }
+            .class-stat-row > div { padding: 7px 7px; }
+            .class-head-label { font-size: 0.61rem; }
             .class-filter-input,
             .class-filter-select {
-                min-height: 26px;
-                padding: 3px 5px;
+                min-height: 25px;
+                padding: 3px 4px;
                 border-radius: 6px;
-                font-size: 0.67rem;
+                font-size: 0.65rem;
             }
-            .class-stat-row { font-size: 0.72rem; }
+            .class-stat-row { font-size: 0.70rem; }
+            .class-stat-name { font-size: 0.74rem; }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) {
+                left: 72px;
+            }
         }
         @supports (-webkit-touch-callout: none) {
             .class-stats-table-wrap,
@@ -1007,6 +1020,209 @@
             }
         }
 
+    
+
+        /* ===== mobile hardening for student bulk form + tighter class stats ===== */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: min(100%, calc(100vw - 16px));
+                max-width: min(100%, calc(100vw - 16px));
+                padding: 12px;
+                border-radius: 14px;
+            }
+            .modal-topbar {
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+            .modal-title { font-size: 1rem; }
+            .modal-subtitle {
+                font-size: 0.75rem;
+                line-height: 1.4;
+                overflow-wrap: anywhere;
+            }
+            .modal-tools {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .btn-modal-tool {
+                width: 100%;
+                min-height: 38px;
+                justify-content: center;
+                font-size: 0.76rem;
+                padding: 9px 10px;
+            }
+            #studentForm,
+            #studentForm .table-wrapper,
+            #studentForm .helper-text,
+            #studentForm .modal-actions {
+                min-width: 0;
+                max-width: 100%;
+            }
+            #studentForm .table-wrapper {
+                overflow-x: auto;
+                overflow-y: hidden;
+                max-width: 100%;
+                border-radius: 10px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .bulk-table {
+                table-layout: fixed;
+                min-width: 1320px;
+            }
+            .bulk-table th,
+            .bulk-table td {
+                padding: 5px 4px;
+                overflow: hidden;
+                vertical-align: middle;
+            }
+            .bulk-table th { font-size: 0.63rem; }
+            .bulk-table td > * {
+                min-width: 0;
+                max-width: 100%;
+            }
+            .bulk-input,
+            .bulk-select {
+                display: block;
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;
+                min-height: 34px;
+                padding: 7px 8px;
+                border-radius: 7px;
+                font-size: 0.74rem;
+                line-height: 1.2;
+            }
+            .bulk-input[type="date"] {
+                min-width: 0;
+                padding-right: 6px;
+            }
+            .bulk-remove-btn {
+                width: 34px;
+                height: 34px;
+                border-radius: 7px;
+                font-size: 0.9rem;
+            }
+            .helper-text {
+                font-size: 0.72rem;
+                line-height: 1.45;
+            }
+            .modal-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .btn-cancel,
+            .btn-save {
+                width: 100%;
+                min-height: 40px;
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+
+            .bulk-table th:nth-child(1) { width: 36px !important; }
+            .bulk-table th:nth-child(2) { width: 140px !important; }
+            .bulk-table th:nth-child(3) { width: 118px !important; }
+            .bulk-table th:nth-child(4) { width: 150px !important; }
+            .bulk-table th:nth-child(5) { width: 116px !important; }
+            .bulk-table th:nth-child(6) { width: 74px !important; }
+            .bulk-table th:nth-child(7) { width: 122px !important; }
+            .bulk-table th:nth-child(8) { width: 145px !important; }
+            .bulk-table th:nth-child(9) { width: 116px !important; }
+            .bulk-table th:nth-child(10) { width: 118px !important; }
+            .bulk-table th:nth-child(11) { width: 180px !important; }
+            .bulk-table th:nth-child(12) { width: 118px !important; }
+            .bulk-table th:nth-child(13) { width: 150px !important; }
+            .bulk-table th:nth-child(14) { width: 48px !important; }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: min(100%, calc(100vw - 10px));
+                max-width: min(100%, calc(100vw - 10px));
+                padding: 10px;
+            }
+            .modal-title { font-size: 0.94rem; }
+            .modal-subtitle { font-size: 0.71rem; }
+            .bulk-table { min-width: 1220px; }
+            .bulk-table th,
+            .bulk-table td { padding: 4px 3px; }
+            .bulk-table th { font-size: 0.59rem; }
+            .bulk-input,
+            .bulk-select {
+                min-height: 32px;
+                padding: 6px 7px;
+                font-size: 0.7rem;
+            }
+            .bulk-table th:nth-child(2) { width: 128px !important; }
+            .bulk-table th:nth-child(3) { width: 110px !important; }
+            .bulk-table th:nth-child(4) { width: 138px !important; }
+            .bulk-table th:nth-child(7) { width: 112px !important; }
+            .bulk-table th:nth-child(8) { width: 132px !important; }
+            .bulk-table th:nth-child(11) { width: 168px !important; }
+            .bulk-table th:nth-child(13) { width: 136px !important; }
+            .bulk-remove-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .class-stats-list { min-width: 590px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 58px minmax(102px, 1.2fr) minmax(100px, 1.02fr) 64px 64px 64px;
+            }
+            .class-stats-head-row > div,
+            .class-stat-row > div { padding: 6px 5px; }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) { left: 58px; }
+            .class-head-label { font-size: 0.56rem; }
+            .class-filter-input,
+            .class-filter-select {
+                min-height: 23px;
+                padding: 2px 4px;
+                font-size: 0.6rem;
+                border-radius: 5px;
+            }
+            .class-stat-row { font-size: 0.67rem; }
+            .class-stat-code,
+            .class-stat-name { font-size: 0.69rem; }
+            .class-stat-manager { font-size: 0.62rem; }
+        }
+
+        @media (min-width: 481px) and (max-width: 640px) {
+            .class-stats-list { min-width: 640px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 64px minmax(116px, 1.24fr) minmax(108px, 1.04fr) 68px 68px 68px;
+            }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) { left: 64px; }
+            .class-stats-head-row > div,
+            .class-stat-row > div { padding: 6px 6px; }
+            .class-head-label { font-size: 0.58rem; }
+            .class-filter-input,
+            .class-filter-select {
+                min-height: 24px;
+                padding: 2px 4px;
+                font-size: 0.61rem;
+            }
+            .class-stat-row { font-size: 0.68rem; }
+            .class-stat-code,
+            .class-stat-name { font-size: 0.7rem; }
+            .class-stat-manager { font-size: 0.63rem; }
+        }
+
+        @media (min-width: 641px) and (max-width: 900px) {
+            .class-stats-list { min-width: 700px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 76px minmax(136px, 1.34fr) minmax(122px, 1.08fr) 74px 74px 74px;
+            }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) { left: 76px; }
+        }
+
     </style>
 </head>
 <body>
@@ -1039,7 +1255,7 @@
                 <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
                 <a href="students.html" class="sidebar-nav-item active"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
-                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="internal.html" class="sidebar-nav-item" data-admin-only-nav="internal" style="display:none;"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
             </nav>
         </aside>
@@ -1185,7 +1401,7 @@
                         <tbody id="bulkStudentRows"></tbody>
                     </table>
                 </div>
-                <div class="helper-text">Nhập nhiều mã lớp, ngăn cách bằng dấu phẩy. Khi lưu, hệ thống sẽ tự đưa học sinh sang các lớp tương ứng và ngược lại sẽ tự thống kê số lớp đang theo học tại trung tâm.</div>
+                <div class="helper-text" id="studentClassCodeHint">Nhập nhiều mã lớp, ngăn cách bằng dấu phẩy. Khi lưu, hệ thống sẽ tự đưa học sinh sang các lớp tương ứng, đồng bộ sang điểm danh và tự thống kê số lớp đang theo học tại trung tâm.</div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" id="btnCancelStudent">Hủy</button>
                     <button type="submit" class="btn-save" id="btnSaveStudent">Lưu danh sách học sinh</button>
@@ -1240,6 +1456,28 @@
         function normalizeTextLower(value) { return normalizeText(value).toLowerCase(); }
         function normalizeEmail(email) { return normalizeText(email).toLowerCase(); }
         function normalizeCode(code) { return normalizeText(code).toUpperCase(); }
+        function createOrGetClassCodeDatalist() {
+            let datalist = document.getElementById('classCodeSuggestions');
+            if (!datalist) {
+                datalist = document.createElement('datalist');
+                datalist.id = 'classCodeSuggestions';
+                document.body.appendChild(datalist);
+            }
+            return datalist;
+        }
+        function renderClassCodeSuggestions() {
+            const datalist = createOrGetClassCodeDatalist();
+            const options = classesCache
+                .map(cls => ({ code: normalizeCode(cls.classCode), name: normalizeText(cls.className || '') }))
+                .filter(item => item.code)
+                .sort((a, b) => a.code.localeCompare(b.code, 'vi'));
+            datalist.innerHTML = options.map(item => `<option value="${escapeHtml(item.code)}">${escapeHtml(item.name)}</option>`).join('');
+            const hint = document.getElementById('studentClassCodeHint');
+            if (hint) {
+                const codes = options.map(item => item.code).slice(0, 12);
+                hint.innerHTML = `Nhập nhiều mã lớp, ngăn cách bằng dấu phẩy. Khi lưu, hệ thống sẽ tự đưa học sinh sang các lớp tương ứng, đồng bộ sang điểm danh và tự thống kê số lớp đang theo học tại trung tâm. ${codes.length ? `Lớp đã thiết lập: <strong>${escapeHtml(codes.join(', '))}</strong>${options.length > codes.length ? '...' : ''}.` : ''}`;
+            }
+        }
         function digitsOnly(value) { return String(value || '').replace(/\D+/g, ''); }
         function formatDateInputValue(value) {
             if (!value) return '';
@@ -1257,6 +1495,14 @@
         function escapeHtml(value) {
             return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
+
+function syncAdminOnlyMenu(role) {
+    const isAdmin = String(role || '').toLowerCase() === 'admin';
+    document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
+        item.style.display = isAdmin ? 'flex' : 'none';
+    });
+}
+
         function showToast(title, message) {
             const toast = document.getElementById('success-toast');
             document.getElementById('toastTitle').innerText = title;
@@ -1855,7 +2101,7 @@ function renderStudentTable() {
         }
         function createBulkRow(student = {}, options = {}) {
             const row = document.createElement('tr');
-            row.innerHTML = `<td class="col-center row-index">1</td><td><input type="text" class="bulk-input" data-field="name" value="${escapeHtml(student.name || '')}" placeholder="Họ và tên"></td><td><input type="date" class="bulk-input" data-field="dob" value="${escapeHtml(formatDateInputValue(student.dob || ''))}"></td><td><input type="text" class="bulk-input" data-field="address" value="${escapeHtml(student.address || '')}" placeholder="Địa chỉ"></td><td><input type="text" class="bulk-input" data-field="studentCccd" value="${escapeHtml(student.studentCccd || '')}" placeholder="CCCD học sinh"></td><td><input type="text" class="bulk-input" data-field="gradeClass" value="${escapeHtml(student.gradeClass || '')}" placeholder="VD: 8A"></td><td><input type="text" class="bulk-input" data-field="school" value="${escapeHtml(student.school || '')}" placeholder="Trường"></td><td><input type="text" class="bulk-input" data-field="parentName" value="${escapeHtml(student.parentName || '')}" placeholder="Phụ huynh"></td><td><input type="text" class="bulk-input" data-field="parentCccd" value="${escapeHtml(student.parentCccd || '')}" placeholder="CCCD PH"></td><td><input type="text" class="bulk-input" data-field="parentPhone" value="${escapeHtml(student.parentPhone || '')}" placeholder="SĐT PH"></td><td><input type="text" class="bulk-input" data-field="linkedCodes" value="${escapeHtml((student._centerClassCodes || student.linkedClassCodes || []).join(', '))}" placeholder="TOAN-6A, VAN-8B"></td><td><select class="bulk-select" data-field="mode"><option value="Trực tiếp" ${(student.mode || 'Trực tiếp') === 'Trực tiếp' ? 'selected' : ''}>Trực tiếp</option><option value="Trực tuyến" ${(student.mode || '') === 'Trực tuyến' ? 'selected' : ''}>Trực tuyến</option></select></td><td><input type="text" class="bulk-input" data-field="note" value="${escapeHtml(student.note || '')}" placeholder="Ghi chú"></td><td class="col-center"><button type="button" class="bulk-remove-btn" title="Xóa dòng"><i class="fa-solid fa-trash"></i></button></td>`;
+            row.innerHTML = `<td class="col-center row-index">1</td><td><input type="text" class="bulk-input" data-field="name" value="${escapeHtml(student.name || '')}" placeholder="Họ và tên"></td><td><input type="date" class="bulk-input" data-field="dob" value="${escapeHtml(formatDateInputValue(student.dob || ''))}"></td><td><input type="text" class="bulk-input" data-field="address" value="${escapeHtml(student.address || '')}" placeholder="Địa chỉ"></td><td><input type="text" class="bulk-input" data-field="studentCccd" value="${escapeHtml(student.studentCccd || '')}" placeholder="CCCD học sinh"></td><td><input type="text" class="bulk-input" data-field="gradeClass" value="${escapeHtml(student.gradeClass || '')}" placeholder="VD: 8A"></td><td><input type="text" class="bulk-input" data-field="school" value="${escapeHtml(student.school || '')}" placeholder="Trường"></td><td><input type="text" class="bulk-input" data-field="parentName" value="${escapeHtml(student.parentName || '')}" placeholder="Phụ huynh"></td><td><input type="text" class="bulk-input" data-field="parentCccd" value="${escapeHtml(student.parentCccd || '')}" placeholder="CCCD PH"></td><td><input type="text" class="bulk-input" data-field="parentPhone" value="${escapeHtml(student.parentPhone || '')}" placeholder="SĐT PH"></td><td><input type="text" class="bulk-input" data-field="linkedCodes" list="classCodeSuggestions" autocomplete="off" value="${escapeHtml((student._centerClassCodes || student.linkedClassCodes || []).join(', '))}" placeholder="TOAN-6A, VAN-8B"></td><td><select class="bulk-select" data-field="mode"><option value="Trực tiếp" ${(student.mode || 'Trực tiếp') === 'Trực tiếp' ? 'selected' : ''}>Trực tiếp</option><option value="Trực tuyến" ${(student.mode || '') === 'Trực tuyến' ? 'selected' : ''}>Trực tuyến</option></select></td><td><input type="text" class="bulk-input" data-field="note" value="${escapeHtml(student.note || '')}" placeholder="Ghi chú"></td><td class="col-center"><button type="button" class="bulk-remove-btn" title="Xóa dòng"><i class="fa-solid fa-trash"></i></button></td>`;
             if (options.disableRemove) {
                 const btn = row.querySelector('.bulk-remove-btn');
                 btn.disabled = true; btn.style.opacity = '0.35'; btn.style.cursor = 'not-allowed';
@@ -1876,12 +2122,13 @@ function renderStudentTable() {
             selectedStudentSyncKey = '';
             selectedStudentSyncKeys.clear();
             studentModalTitle.innerText = 'Thêm học sinh mới';
-            studentModalSubtitle.innerText = 'Bảng nhập chiều ngang, có thể thêm nhiều học sinh một lần.';
+            studentModalSubtitle.innerText = 'Mặc định tạo sẵn 1 học sinh. Khi cần nhập thêm, bấm Thêm dòng để mở rộng danh sách.';
             btnSaveStudent.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Lưu danh sách học sinh';
             document.getElementById('btnAddStudentRow').style.display = 'inline-flex';
             document.getElementById('btnFillAllCodes').style.display = 'inline-flex';
             clearBulkRows();
-            for (let i = 0; i < 3; i++) createBulkRow();
+            createBulkRow();
+            renderClassCodeSuggestions();
             studentModal.classList.add('show');
         }
         function openEditStudentModal() {
@@ -1896,6 +2143,7 @@ function renderStudentTable() {
             document.getElementById('btnFillAllCodes').style.display = 'none';
             clearBulkRows();
             createBulkRow(student, { disableRemove: true });
+            renderClassCodeSuggestions();
             studentModal.classList.add('show');
         }
         function closeStudentModal() { studentModal.classList.remove('show'); }
@@ -2042,6 +2290,7 @@ function loadClasses() {
                 });
                 rebuildStudentEnrollmentMap();
                 refreshWholePageView();
+                renderClassCodeSuggestions();
                 if (classesCache.length === 0) document.getElementById('page-loader').style.display = 'none';
             }, (error) => {
                 alert('Lỗi tải danh sách lớp: ' + error.message);
@@ -2068,10 +2317,12 @@ function loadClasses() {
                 const displayName = getUserDisplayName(userData, { email: currentEmail }) || currentEmail;
                 currentUserInfo = { email: currentEmail, displayName, role };
                 document.getElementById('userRoleDisplay').textContent = displayName;
+                syncAdminOnlyMenu(role);
             } catch (_) {
                 const fallbackName = currentEmail ? (currentEmail.split('@')[0] || currentEmail) : '';
                 currentUserInfo = { email: currentEmail, displayName: fallbackName, role: 'teacher' };
                 document.getElementById('userRoleDisplay').textContent = fallbackName;
+                syncAdminOnlyMenu('teacher');
             }
 
             updatePermissionUI();
