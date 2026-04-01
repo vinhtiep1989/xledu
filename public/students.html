@@ -1020,6 +1020,209 @@
             }
         }
 
+    
+
+        /* ===== mobile hardening for student bulk form + tighter class stats ===== */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: min(100%, calc(100vw - 16px));
+                max-width: min(100%, calc(100vw - 16px));
+                padding: 12px;
+                border-radius: 14px;
+            }
+            .modal-topbar {
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+            .modal-title { font-size: 1rem; }
+            .modal-subtitle {
+                font-size: 0.75rem;
+                line-height: 1.4;
+                overflow-wrap: anywhere;
+            }
+            .modal-tools {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .btn-modal-tool {
+                width: 100%;
+                min-height: 38px;
+                justify-content: center;
+                font-size: 0.76rem;
+                padding: 9px 10px;
+            }
+            #studentForm,
+            #studentForm .table-wrapper,
+            #studentForm .helper-text,
+            #studentForm .modal-actions {
+                min-width: 0;
+                max-width: 100%;
+            }
+            #studentForm .table-wrapper {
+                overflow-x: auto;
+                overflow-y: hidden;
+                max-width: 100%;
+                border-radius: 10px;
+                -webkit-overflow-scrolling: touch;
+            }
+            .bulk-table {
+                table-layout: fixed;
+                min-width: 1320px;
+            }
+            .bulk-table th,
+            .bulk-table td {
+                padding: 5px 4px;
+                overflow: hidden;
+                vertical-align: middle;
+            }
+            .bulk-table th { font-size: 0.63rem; }
+            .bulk-table td > * {
+                min-width: 0;
+                max-width: 100%;
+            }
+            .bulk-input,
+            .bulk-select {
+                display: block;
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;
+                min-height: 34px;
+                padding: 7px 8px;
+                border-radius: 7px;
+                font-size: 0.74rem;
+                line-height: 1.2;
+            }
+            .bulk-input[type="date"] {
+                min-width: 0;
+                padding-right: 6px;
+            }
+            .bulk-remove-btn {
+                width: 34px;
+                height: 34px;
+                border-radius: 7px;
+                font-size: 0.9rem;
+            }
+            .helper-text {
+                font-size: 0.72rem;
+                line-height: 1.45;
+            }
+            .modal-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .btn-cancel,
+            .btn-save {
+                width: 100%;
+                min-height: 40px;
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+
+            .bulk-table th:nth-child(1) { width: 36px !important; }
+            .bulk-table th:nth-child(2) { width: 140px !important; }
+            .bulk-table th:nth-child(3) { width: 118px !important; }
+            .bulk-table th:nth-child(4) { width: 150px !important; }
+            .bulk-table th:nth-child(5) { width: 116px !important; }
+            .bulk-table th:nth-child(6) { width: 74px !important; }
+            .bulk-table th:nth-child(7) { width: 122px !important; }
+            .bulk-table th:nth-child(8) { width: 145px !important; }
+            .bulk-table th:nth-child(9) { width: 116px !important; }
+            .bulk-table th:nth-child(10) { width: 118px !important; }
+            .bulk-table th:nth-child(11) { width: 180px !important; }
+            .bulk-table th:nth-child(12) { width: 118px !important; }
+            .bulk-table th:nth-child(13) { width: 150px !important; }
+            .bulk-table th:nth-child(14) { width: 48px !important; }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: min(100%, calc(100vw - 10px));
+                max-width: min(100%, calc(100vw - 10px));
+                padding: 10px;
+            }
+            .modal-title { font-size: 0.94rem; }
+            .modal-subtitle { font-size: 0.71rem; }
+            .bulk-table { min-width: 1220px; }
+            .bulk-table th,
+            .bulk-table td { padding: 4px 3px; }
+            .bulk-table th { font-size: 0.59rem; }
+            .bulk-input,
+            .bulk-select {
+                min-height: 32px;
+                padding: 6px 7px;
+                font-size: 0.7rem;
+            }
+            .bulk-table th:nth-child(2) { width: 128px !important; }
+            .bulk-table th:nth-child(3) { width: 110px !important; }
+            .bulk-table th:nth-child(4) { width: 138px !important; }
+            .bulk-table th:nth-child(7) { width: 112px !important; }
+            .bulk-table th:nth-child(8) { width: 132px !important; }
+            .bulk-table th:nth-child(11) { width: 168px !important; }
+            .bulk-table th:nth-child(13) { width: 136px !important; }
+            .bulk-remove-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .class-stats-list { min-width: 590px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 58px minmax(102px, 1.2fr) minmax(100px, 1.02fr) 64px 64px 64px;
+            }
+            .class-stats-head-row > div,
+            .class-stat-row > div { padding: 6px 5px; }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) { left: 58px; }
+            .class-head-label { font-size: 0.56rem; }
+            .class-filter-input,
+            .class-filter-select {
+                min-height: 23px;
+                padding: 2px 4px;
+                font-size: 0.6rem;
+                border-radius: 5px;
+            }
+            .class-stat-row { font-size: 0.67rem; }
+            .class-stat-code,
+            .class-stat-name { font-size: 0.69rem; }
+            .class-stat-manager { font-size: 0.62rem; }
+        }
+
+        @media (min-width: 481px) and (max-width: 640px) {
+            .class-stats-list { min-width: 640px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 64px minmax(116px, 1.24fr) minmax(108px, 1.04fr) 68px 68px 68px;
+            }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) { left: 64px; }
+            .class-stats-head-row > div,
+            .class-stat-row > div { padding: 6px 6px; }
+            .class-head-label { font-size: 0.58rem; }
+            .class-filter-input,
+            .class-filter-select {
+                min-height: 24px;
+                padding: 2px 4px;
+                font-size: 0.61rem;
+            }
+            .class-stat-row { font-size: 0.68rem; }
+            .class-stat-code,
+            .class-stat-name { font-size: 0.7rem; }
+            .class-stat-manager { font-size: 0.63rem; }
+        }
+
+        @media (min-width: 641px) and (max-width: 900px) {
+            .class-stats-list { min-width: 700px; }
+            .class-stats-head-row,
+            .class-stat-row {
+                grid-template-columns: 76px minmax(136px, 1.34fr) minmax(122px, 1.08fr) 74px 74px 74px;
+            }
+            .class-stats-head-row > :nth-child(2),
+            .class-stat-row > :nth-child(2) { left: 76px; }
+        }
+
     </style>
 </head>
 <body>
