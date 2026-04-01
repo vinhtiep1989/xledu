@@ -75,6 +75,11 @@
         .form-help { margin-top: -4px; margin-bottom: 12px; color: #6b7c93; font-size: 0.78rem; line-height: 1.5; }
         .readonly-input { background: #eef3f7 !important; color: #5d6d7e; cursor: not-allowed; }
         .action-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+        .permission-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 8px; }
+        .permission-option { position: relative; }
+        .permission-option input { position: absolute; opacity: 0; pointer-events: none; }
+        .permission-option span { display: flex; align-items: center; justify-content: center; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-grey); background: #f8faf9; font-size: 0.82rem; font-weight: 700; color: #5d6d7e; cursor: pointer; transition: 0.2s; }
+        .permission-option input:checked + span { background: rgba(46,204,113,0.12); border-color: rgba(46,204,113,0.35); color: #1f8b4d; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; }
@@ -107,6 +112,7 @@
             .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
             .panel { padding: 15px; }
             .modal-content { padding: 20px; }
+            .permission-picker { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -193,12 +199,12 @@
                 </div>
                 <div class="form-group"><label>SĐT</label><input type="tel" id="u_phone"></div>
                 <div class="form-group">
-                    <label>Phân quyền</label>
-                    <select id="u_role">
-                        <option value="teacher">Giáo viên</option>
-                        <option value="manager">Quản lý</option>
-                        <option value="admin">Admin</option>
-                    </select>
+                    <label>Phân quyền (có thể chọn nhiều)</label>
+                    <div class="permission-picker" id="u_role_group">
+                        <label class="permission-option"><input type="checkbox" class="role-checkbox" value="teacher"><span>Giáo viên</span></label>
+                        <label class="permission-option"><input type="checkbox" class="role-checkbox" value="manager"><span>Quản lý</span></label>
+                        <label class="permission-option"><input type="checkbox" class="role-checkbox" value="admin"><span>Admin</span></label>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Trạng thái</label>
@@ -248,7 +254,7 @@
         const inputCurrentPassword = document.getElementById('u_current_pass');
         const inputPassword = document.getElementById('u_pass');
         const inputPhone = document.getElementById('u_phone');
-        const inputRole = document.getElementById('u_role');
+        const inputRoleCheckboxes = Array.from(document.querySelectorAll('.role-checkbox'));
         const inputStatus = document.getElementById('u_status');
         const currentPasswordGroup = document.getElementById('currentPasswordGroup');
         const passwordGroup = document.getElementById('passwordGroup');
@@ -259,6 +265,49 @@
             return String(email || '').trim().toLowerCase();
         }
 
+        function normalizeRoles(data) {
+            const roles = [];
+            const source = data && data.roles;
+            if (Array.isArray(source)) {
+                source.forEach((role) => {
+                    const normalized = String(role || '').trim().toLowerCase();
+                    if (normalized && !roles.includes(normalized)) roles.push(normalized);
+                });
+            }
+            const legacyRole = String(data && data.role || '').trim().toLowerCase();
+            if (legacyRole && !roles.includes(legacyRole)) roles.push(legacyRole);
+            return roles;
+        }
+
+        function getPrimaryRole(data) {
+            const roles = normalizeRoles(data);
+            if (roles.includes('admin')) return 'admin';
+            if (roles.includes('manager')) return 'manager';
+            if (roles.includes('teacher')) return 'teacher';
+            return 'teacher';
+        }
+
+        function hasRolePermission(data, role) {
+            return normalizeRoles(data).includes(String(role || '').trim().toLowerCase());
+        }
+
+        function getSelectedRoles() {
+            return inputRoleCheckboxes.filter(input => input.checked).map(input => input.value);
+        }
+
+        function setSelectedRoles(roles) {
+            const normalized = Array.from(new Set((roles || []).map(role => String(role || '').trim().toLowerCase()).filter(Boolean)));
+            inputRoleCheckboxes.forEach((input) => {
+                input.checked = normalized.includes(input.value);
+            });
+        }
+
+        function getLegacyRoleValue(roles) {
+            if ((roles || []).includes('admin')) return 'admin';
+            if ((roles || []).includes('manager')) return 'manager';
+            if ((roles || []).includes('teacher')) return 'teacher';
+            return 'teacher';
+        }
 
 function syncAdminOnlyMenu(role) {
     const isAdmin = String(role || '').toLowerCase() === 'admin';
@@ -281,10 +330,14 @@ function syncAdminOnlyMenu(role) {
             return 'Người dùng';
         }
 
-        function getRoleBadge(role) {
-            if (role === 'admin') return '<span class="role-badge role-admin">ADMIN</span>';
-            if (role === 'manager') return '<span class="role-badge role-manager">QUẢN LÝ</span>';
-            return '<span class="role-badge role-teacher">GIÁO VIÊN</span>';
+        function getRoleBadge(data) {
+            const roles = normalizeRoles(data);
+            if (!roles.length) roles.push('teacher');
+            return roles.map((role) => {
+                if (role === 'admin') return '<span class="role-badge role-admin">ADMIN</span>';
+                if (role === 'manager') return '<span class="role-badge role-manager">QUẢN LÝ</span>';
+                return '<span class="role-badge role-teacher">GIÁO VIÊN</span>';
+            }).join(' ');
         }
 
         function getStatusBadge(status) {
@@ -306,8 +359,7 @@ function syncAdminOnlyMenu(role) {
         }
 
         function updatePermissionUI() {
-            const role = currentUserProfile && currentUserProfile.role ? currentUserProfile.role : 'teacher';
-            const roleLabel = getRoleLabel(role);
+            const role = getPrimaryRole(currentUserProfile);
             document.getElementById('currentRoleLabel').textContent = getDisplayName(currentUserProfile, currentAuthUser && currentAuthUser.email);
             syncAdminOnlyMenu(role);
 
@@ -342,7 +394,7 @@ function syncAdminOnlyMenu(role) {
             const snap = await db.collection('users').where('email', '==', email).limit(1).get();
             if (!snap.empty) return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
 
-            return { id: user.uid, uid: user.uid, email: email, name: user.email, role: 'admin', status: 'active', accountStatus: 'active' };
+            return { id: user.uid, uid: user.uid, email: email, name: user.email, role: 'admin', roles: ['admin'], status: 'active', accountStatus: 'active' };
         }
 
         async function createAuthUserDirect(email, password) {
@@ -415,7 +467,7 @@ function syncAdminOnlyMenu(role) {
             inputName.value = data.name || '';
             inputEmail.value = data.email || '';
             inputPhone.value = data.phone || '';
-            inputRole.value = data.role || 'teacher';
+            setSelectedRoles(normalizeRoles(data).length ? normalizeRoles(data) : ['teacher']);
             inputStatus.value = data.status || data.accountStatus || 'active';
             inputCurrentPassword.value = '';
             inputPassword.value = '';
@@ -430,7 +482,7 @@ function syncAdminOnlyMenu(role) {
                 inputPassword.required = false;
                 inputPassword.placeholder = 'Để trống nếu chưa đổi mật khẩu';
                 inputCurrentPassword.placeholder = 'Chỉ nhập khi hồ sơ cũ chưa lưu đúng mật khẩu hiện tại';
-                userFormHelp.textContent = 'Admin được sửa họ tên, SĐT, phân quyền, trạng thái và cấp lại mật khẩu. Email đăng nhập được giữ nguyên, kể cả Admin cũng không được sửa. Khi cấp lại mật khẩu, hệ thống sẽ đồng bộ luôn lên Firebase Authentication.';
+                userFormHelp.textContent = 'Admin được sửa họ tên, SĐT, các quyền, trạng thái và cấp lại mật khẩu. Email đăng nhập được giữ nguyên, kể cả Admin cũng không được sửa. Khi cấp lại mật khẩu, hệ thống sẽ đồng bộ luôn lên Firebase Authentication.';
                 return;
             }
 
@@ -444,7 +496,7 @@ function syncAdminOnlyMenu(role) {
             inputPassword.required = true;
             inputPassword.placeholder = '';
             inputStatus.value = 'active';
-            userFormHelp.textContent = 'Mật khẩu khởi tạo sẽ được dùng để tạo Firebase Auth và lưu đồng bộ trong hồ sơ người dùng để Admin có thể cấp lại mật khẩu sau này.';
+            userFormHelp.textContent = 'Mật khẩu khởi tạo sẽ được dùng để tạo Firebase Auth và lưu đồng bộ trong hồ sơ người dùng. Một tài khoản có thể được gán nhiều quyền cùng lúc.';
         }
 
         function resetUserForm() {
@@ -475,7 +527,7 @@ function syncAdminOnlyMenu(role) {
         }
 
         function openModal() {
-            if (!currentUserProfile || currentUserProfile.role !== 'admin') {
+            if (!hasRolePermission(currentUserProfile, 'admin')) {
                 showAlert('Chỉ Admin mới được tạo tài khoản hệ thống.');
                 return;
             }
@@ -489,7 +541,7 @@ function syncAdminOnlyMenu(role) {
         }
 
         function canManageAccounts() {
-            return currentUserProfile && currentUserProfile.role === 'admin';
+            return hasRolePermission(currentUserProfile, 'admin');
         }
 
         function isCurrentUserDoc(docData, docId) {
@@ -513,7 +565,7 @@ function syncAdminOnlyMenu(role) {
 
                 rows.sort((a, b) => {
                     const roleOrder = { admin: 0, manager: 1, teacher: 2 };
-                    const roleDiff = (roleOrder[a.role] ?? 9) - (roleOrder[b.role] ?? 9);
+                    const roleDiff = (roleOrder[getPrimaryRole(a)] ?? 9) - (roleOrder[getPrimaryRole(b)] ?? 9);
                     if (roleDiff !== 0) return roleDiff;
                     return String(a.name || '').localeCompare(String(b.name || ''), 'vi');
                 });
@@ -535,7 +587,7 @@ function syncAdminOnlyMenu(role) {
                             <td>${escapeHtml(d.email || '')}</td>
                             <td><span class="secure-text">Đã bảo mật</span></td>
                             <td>${escapeHtml(d.phone || '---')}</td>
-                            <td>${getRoleBadge(d.role || 'teacher')}</td>
+                            <td>${getRoleBadge(d)}</td>
                             <td>${getStatusBadge(status)}</td>
                             <td style="text-align: right; white-space: nowrap;">
                                 <button type="button" class="action-btn btn-edit js-user-action" data-action="edit" data-user-id="${escapeHtml(String(d.id || ''))}" title="Chỉnh sửa" ${editDisabled}><i class="fa-solid fa-pen"></i></button>
@@ -566,11 +618,17 @@ function syncAdminOnlyMenu(role) {
             const email = normalizeEmail(inputEmail.value);
             const password = inputPassword.value.trim();
             const phone = inputPhone.value.trim();
-            const role = inputRole.value;
+            const roles = getSelectedRoles();
+            const role = getLegacyRoleValue(roles);
             const status = inputStatus.value || 'active';
 
             if (!name || !email) {
                 showAlert('Vui lòng nhập đầy đủ họ tên và email.');
+                return;
+            }
+
+            if (!roles.length) {
+                showAlert('Vui lòng chọn ít nhất 1 quyền cho tài khoản.');
                 return;
             }
 
@@ -605,7 +663,7 @@ function syncAdminOnlyMenu(role) {
                     let nextStoredPassword = existingData.password || '';
                     let passwordChanged = false;
 
-                    if (isCurrentUserDoc(existingData, docRef.id) && (role !== 'admin' || status === 'closed')) {
+                    if (isCurrentUserDoc(existingData, docRef.id) && (!roles.includes('admin') || status === 'closed')) {
                         showAlert('Không thể tự hạ quyền hoặc tự khóa chính tài khoản đang đăng nhập.');
                         return;
                     }
@@ -641,6 +699,7 @@ function syncAdminOnlyMenu(role) {
                         email: fixedEmail,
                         phone: phone,
                         role: role,
+                        roles: roles,
                         status: status,
                         accountStatus: status,
                         password: nextStoredPassword,
@@ -681,6 +740,7 @@ function syncAdminOnlyMenu(role) {
                     email: email,
                     phone: phone,
                     role: role,
+                    roles: roles,
                     status: status,
                     accountStatus: status,
                     password: authCreated ? password : (existingData.password || password),

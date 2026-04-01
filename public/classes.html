@@ -322,10 +322,10 @@
                 </div>
 
                 <div class="form-group autocomplete-container">
-                    <label>Quản Lý Lớp</label>
+                    <label>Quản Lý Lớp (Có thể chọn nhiều)</label>
                     <input type="text" id="classManagerInput" class="form-control" placeholder="Nhập tên quản lý để tìm và chọn..." autocomplete="off">
                     <div id="managerSuggestions" class="suggestions-box"></div>
-                    <div id="selectedManagerContainer" class="selected-single-tag"></div>
+                    <div id="selectedManagerContainer" class="tags-container"></div>
                 </div>
 
                 <div class="form-group autocomplete-container">
@@ -400,7 +400,7 @@
         let teacherList = [];
         let managerList = [];
         let currentSelectedTeachers = [];
-        let currentSelectedManager = null;
+        let currentSelectedManagers = [];
         let currentAuthUser = null;
         let currentUserProfile = null;
         let classesCache = [];
@@ -424,6 +424,66 @@
         const managerInput = document.getElementById('classManagerInput');
         const managerSuggestionsBox = document.getElementById('managerSuggestions');
         const selectedManagerContainer = document.getElementById('selectedManagerContainer');
+
+        function normalizeRoles(data) {
+            const roles = [];
+            const source = data && data.roles;
+            if (Array.isArray(source)) {
+                source.forEach(role => {
+                    const normalized = String(role || '').trim().toLowerCase();
+                    if (normalized && !roles.includes(normalized)) roles.push(normalized);
+                });
+            }
+            const legacyRole = String(data && data.role || '').trim().toLowerCase();
+            if (legacyRole && !roles.includes(legacyRole)) roles.push(legacyRole);
+            return roles;
+        }
+
+        function hasAnyRole(data, expectedRoles) {
+            const normalizedRoles = normalizeRoles(data);
+            return expectedRoles.some(role => normalizedRoles.includes(String(role || '').trim().toLowerCase()));
+        }
+
+        function getPrimaryRole(data) {
+            const normalizedRoles = normalizeRoles(data);
+            if (normalizedRoles.includes('admin')) return 'admin';
+            if (normalizedRoles.includes('manager')) return 'manager';
+            if (normalizedRoles.includes('teacher')) return 'teacher';
+            return String(data && data.role || '').trim().toLowerCase() || 'teacher';
+        }
+
+        function getUniquePeople(items) {
+            const seen = new Set();
+            const results = [];
+            (items || []).forEach((item) => {
+                const email = normalizeEmail(item && item.email);
+                const name = getDisplayName(item || {}, email) || email || 'Chưa rõ';
+                const key = email || name.toLowerCase();
+                if (!key || seen.has(key)) return;
+                seen.add(key);
+                results.push({ name, email });
+            });
+            return results;
+        }
+
+        function getClassManagers(classData) {
+            if (Array.isArray(classData && classData.managers) && classData.managers.length) {
+                return getUniquePeople(classData.managers);
+            }
+            if (classData && classData.manager) {
+                return getUniquePeople([{ name: classData.manager.name || classData.managerNameDisplay || 'Chưa gán', email: classData.manager.email || classData.managerEmail || '' }]);
+            }
+            if (classData && classData.managerNameDisplay && classData.managerNameDisplay !== 'Chưa gán') {
+                return getUniquePeople([{ name: classData.managerNameDisplay, email: classData.managerEmail || '' }]);
+            }
+            return [];
+        }
+
+        function getManagerDisplayText(classData) {
+            const managers = getClassManagers(classData);
+            return managers.length ? managers.map(item => item.name || item.email || '').join(', ') : 'Chưa gán';
+        }
+
 
         function normalizeEmail(email) {
             return String(email || '').trim().toLowerCase();
@@ -465,8 +525,8 @@
 
         function renderCurrentUserHeader(user, profile) {
             document.getElementById('userEmailDisplay').textContent = user.email || '';
-            document.getElementById('currentUserName').textContent = getDisplayName(profile, user.email) || getRoleLabel(profile && profile.role);
-            syncAdminOnlyMenu((profile && profile.role) || 'teacher');
+            document.getElementById('currentUserName').textContent = getDisplayName(profile, user.email) || getRoleLabel(getPrimaryRole(profile));
+            syncAdminOnlyMenu(getPrimaryRole(profile));
         }
 
 
@@ -568,14 +628,17 @@ function syncAdminOnlyMenu(role) {
         }
 
         async function fetchTeachers() {
-            const snap = await db.collection('users').where('role', '==', 'teacher').get().catch(() => null);
+            const snap = await db.collection('users').get().catch(() => null);
             teacherList = [];
             if (snap) {
                 snap.forEach(doc => {
-                    const person = sanitizePersonData(doc.data() || {});
+                    const data = doc.data() || {};
+                    if (!hasAnyRole(data, ['teacher'])) return;
+                    const person = sanitizePersonData(data);
                     if (person.name || person.email) teacherList.push(person);
                 });
             }
+            teacherList = getUniquePeople(teacherList);
             if (teacherList.length === 0) {
                 teacherList = [
                     { name: 'Nguyễn Phượng Ngân', email: 'ngannguyen@gmail.com' },
@@ -588,13 +651,16 @@ function syncAdminOnlyMenu(role) {
 
         async function fetchManagers() {
             managerList = [];
-            const snap = await db.collection('users').where('role', 'in', ['manager', 'admin']).get().catch(() => null);
+            const snap = await db.collection('users').get().catch(() => null);
             if (snap) {
                 snap.forEach(doc => {
-                    const person = sanitizePersonData(doc.data() || {});
+                    const data = doc.data() || {};
+                    if (!hasAnyRole(data, ['manager', 'admin'])) return;
+                    const person = sanitizePersonData(data);
                     if (person.name || person.email) managerList.push(person);
                 });
             }
+            managerList = getUniquePeople(managerList);
             if (managerList.length === 0 && currentUserProfile) {
                 managerList.push({ name: getDisplayName(currentUserProfile, currentAuthUser && currentAuthUser.email), email: normalizeEmail(currentAuthUser && currentAuthUser.email) });
             }
@@ -610,13 +676,14 @@ function syncAdminOnlyMenu(role) {
             });
         }
 
-        function renderManagerTag() {
+        function renderManagerTags() {
             selectedManagerContainer.innerHTML = '';
-            if (!currentSelectedManager) return;
-            const badge = document.createElement('span');
-            badge.className = 'manager-badge';
-            badge.innerHTML = `<i class="fa-solid fa-user-tie"></i> ${escapeHtml(currentSelectedManager.name)} <i class="fa-solid fa-circle-xmark" style="cursor:pointer;" onclick="removeManager()"></i>`;
-            selectedManagerContainer.appendChild(badge);
+            currentSelectedManagers.forEach((manager, index) => {
+                const badge = document.createElement('span');
+                badge.className = 'teacher-tag';
+                badge.innerHTML = `<i class="fa-solid fa-user-tie"></i> ${escapeHtml(manager.name)} <i class="fa-solid fa-circle-xmark" onclick="removeManager(${index})"></i>`;
+                selectedManagerContainer.appendChild(badge);
+            });
         }
 
         window.removeTeacher = function(index) {
@@ -624,9 +691,9 @@ function syncAdminOnlyMenu(role) {
             renderTeacherTags();
         };
 
-        window.removeManager = function() {
-            currentSelectedManager = null;
-            renderManagerTag();
+        window.removeManager = function(index) {
+            currentSelectedManagers.splice(index, 1);
+            renderManagerTags();
         };
 
         function renderSuggestions(targetBox, items, onSelect) {
@@ -675,8 +742,12 @@ function syncAdminOnlyMenu(role) {
 
             const filtered = managerList.filter(item => item.name.toLowerCase().includes(keyword) || item.email.toLowerCase().includes(keyword));
             renderSuggestions(managerSuggestionsBox, filtered, (item) => {
-                currentSelectedManager = { name: item.name, email: item.email };
-                renderManagerTag();
+                const exists = currentSelectedManagers.some(manager => normalizeEmail(manager.email) === normalizeEmail(item.email) || (manager.name || '').toLowerCase() === (item.name || '').toLowerCase());
+                if (!exists) {
+                    currentSelectedManagers.push({ name: item.name, email: item.email });
+                    currentSelectedManagers = getUniquePeople(currentSelectedManagers);
+                    renderManagerTags();
+                }
                 managerInput.value = '';
                 managerSuggestionsBox.style.display = 'none';
             });
@@ -696,9 +767,9 @@ function syncAdminOnlyMenu(role) {
             addForm.reset();
             editClassIdInput.value = '';
             currentSelectedTeachers = [];
-            currentSelectedManager = null;
+            currentSelectedManagers = [];
             renderTeacherTags();
-            renderManagerTag();
+            renderManagerTags();
             resetScheduleForm();
             modalTitleText.innerText = 'Thêm Lớp Học Mới';
             addModal.classList.add('show');
@@ -801,8 +872,9 @@ function syncAdminOnlyMenu(role) {
                 const stats = classAttendanceStats[classData.id] || { present: 0, total: classData.studentCount || 0 };
                 const realtimeState = getClassRealtimeState(classData, now);
                 const scheduleLabel = classData.scheduleLabel || buildScheduleLabel(classData.scheduleDays, classData.startTime);
-                const managerName = (classData.manager && classData.manager.name) || classData.managerNameDisplay || 'Chưa gán';
-                const managerEmail = (classData.manager && classData.manager.email) || classData.managerEmail || '';
+                const managerItems = getClassManagers(classData);
+                const managerName = managerItems.length ? managerItems.map(item => item.name || item.email || '').join(', ') : 'Chưa gán';
+                const managerEmail = managerItems.map(item => item.email || '').filter(Boolean).join(', ');
                 const teacherSearchText = (classData.teacherNamesDisplay || classData.teacherName || '').toLowerCase();
 
                 let teachersHtml = 'Chưa phân công';
@@ -816,8 +888,8 @@ function syncAdminOnlyMenu(role) {
                     ? `<span class="schedule-badge"><i class="fa-regular fa-clock"></i> ${escapeHtml(scheduleLabel)}</span>`
                     : '<span class="schedule-empty">Chưa cài lịch</span>';
 
-                const managerHtml = managerName !== 'Chưa gán'
-                    ? `<span class="manager-badge"><i class="fa-solid fa-user-tie"></i> ${escapeHtml(managerName)}</span>`
+                const managerHtml = managerItems.length
+                    ? managerItems.map(item => `<span class="manager-badge"><i class="fa-solid fa-user-tie"></i> ${escapeHtml(item.name || item.email || '')}</span>`).join('')
                     : '<span class="manager-badge empty"><i class="fa-solid fa-user-slash"></i> Chưa gán</span>';
 
                 const row = document.createElement('tr');
@@ -945,14 +1017,19 @@ function syncAdminOnlyMenu(role) {
             try {
                 const schedulePayload = getSchedulePayloadFromForm();
                 const teacherNamesString = currentSelectedTeachers.map(item => item.name).join(', ');
+                const selectedManagers = getUniquePeople(currentSelectedManagers);
+                const managerNamesString = selectedManagers.map(item => item.name).join(', ');
+                const managerEmailsString = selectedManagers.map(item => item.email).filter(Boolean).join(', ');
                 const editId = editClassIdInput.value.trim();
 
                 const classData = {
                     classCode: document.getElementById('classCode').value.trim(),
                     className: document.getElementById('className').value.trim(),
-                    manager: currentSelectedManager ? { name: currentSelectedManager.name, email: currentSelectedManager.email } : null,
-                    managerNameDisplay: currentSelectedManager ? currentSelectedManager.name : 'Chưa gán',
-                    managerEmail: currentSelectedManager ? currentSelectedManager.email : '',
+                    managers: selectedManagers,
+                    manager: selectedManagers[0] ? { name: selectedManagers[0].name, email: selectedManagers[0].email } : null,
+                    managerNameDisplay: managerNamesString || 'Chưa gán',
+                    managerEmail: selectedManagers[0] ? selectedManagers[0].email : '',
+                    managerEmailsDisplay: managerEmailsString,
                     teachers: currentSelectedTeachers,
                     teacherNamesDisplay: teacherNamesString || 'Chưa phân công',
                     scheduleDays: schedulePayload.scheduleDays,
@@ -1011,12 +1088,8 @@ function syncAdminOnlyMenu(role) {
             }
             renderTeacherTags();
 
-            currentSelectedManager = data.manager
-                ? { name: data.manager.name || data.managerNameDisplay || 'Chưa gán', email: data.manager.email || data.managerEmail || '' }
-                : (data.managerNameDisplay && data.managerNameDisplay !== 'Chưa gán'
-                    ? { name: data.managerNameDisplay, email: data.managerEmail || '' }
-                    : null);
-            renderManagerTag();
+            currentSelectedManagers = getClassManagers(data);
+            renderManagerTags();
 
             setScheduleForm(data);
 
