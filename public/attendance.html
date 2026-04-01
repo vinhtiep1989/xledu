@@ -281,7 +281,7 @@
                 <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
                 <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
-                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="internal.html" class="sidebar-nav-item" data-admin-only-nav="internal" style="display:none;"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
             </nav>
         </aside>
@@ -789,11 +789,13 @@
                 };
                 document.getElementById('attTeacherName').textContent = teacherDisplayName;
                 document.getElementById('userRoleDisplay').textContent = teacherDisplayName;
+                syncAdminOnlyMenu(role);
             } catch (_) {
                 const fallbackName = currentEmail ? (currentEmail.split('@')[0] || currentEmail) : '';
                 currentUserInfo = { email: currentEmail, displayName: fallbackName, role: 'teacher' };
                 document.getElementById('attTeacherName').textContent = fallbackName;
                 document.getElementById('userRoleDisplay').textContent = fallbackName;
+                syncAdminOnlyMenu('teacher');
             }
 
             loadClassInfo();
@@ -870,6 +872,14 @@
         }
 
         let studentsData = [];
+
+
+function syncAdminOnlyMenu(role) {
+    const isAdmin = String(role || '').toLowerCase() === 'admin';
+    document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
+        item.style.display = isAdmin ? 'flex' : 'none';
+    });
+}
 
         function loadStudents() {
             db.collection("classes").doc(classId).collection("students").orderBy("name").onSnapshot((snapshot) => {

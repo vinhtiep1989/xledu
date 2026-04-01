@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quản lý nội bộ - Xứ Lạng Education</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff;
+            --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71;
+            --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6;
+            --border-grey: #e8f1ec; --danger-red: #e74c3c; --edit-blue: #3498db;
+            --header-height: 90px; --sidebar-width: 270px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        html { -webkit-text-size-adjust: 100%; }
+        body { background-color: var(--bg-body); color: var(--text-dark); }
+        #page-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-gold); font-size: 2.5rem; }
+        #page-loader p { font-size: 1rem; color: var(--text-light); margin-top: 15px; font-weight: 500; }
+
+        .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px; }
+        .header-left { display: flex; align-items: center; gap: 15px; z-index: 10; }
+        .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
+        .header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; z-index: 5; }
+        .header-title { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224,170,62,0.5); }
+        .header-subtitle { font-size: 1rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 500; }
+        .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; z-index: 10; }
+        .user-info { text-align: right; color: var(--text-light); }
+        .user-id { color: var(--accent-gold); font-weight: bold; display: flex; align-items: center; justify-content: flex-end; gap: 8px; font-size: 0.85rem; }
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background-color: var(--primary-green); animation: pulse-live 1.5s infinite; }
+        @keyframes pulse-live { 0% { box-shadow: 0 0 0 0 rgba(46,204,113,0.7); } 70% { box-shadow: 0 0 0 10px rgba(46,204,113,0); } 100% { box-shadow: 0 0 0 0 rgba(46,204,113,0); } }
+        .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; white-space: nowrap; padding: 8px 15px; font-size: 0.85rem; }
+        .btn-logout:hover { background: rgba(224,170,62,0.15); }
+
+        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; z-index: 2; }
+        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255,255,255,0.02); transition: all 0.3s; border: 1px solid transparent; }
+        .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+        .sidebar-nav-item:hover { color: #fff; transform: translateX(5px); background: rgba(255,255,255,0.08); }
+        .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46,204,113,0.15), rgba(46,204,113,0.05)); border: 1px solid rgba(46,204,113,0.3); transform: translateX(4px); }
+        .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224,170,62,0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; }
+        .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
+        .sidebar-overlay.open { display: block; }
+
+        .toast-notification { position: fixed; top: 100px; right: -420px; background-color: var(--bg-card-white); border-left: 5px solid var(--primary-green); padding: 15px 22px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; z-index: 2500; transition: right 0.35s ease; max-width: 380px; }
+        .toast-notification.show { right: 20px; }
+        .toast-icon { font-size: 1.4rem; color: var(--primary-green); }
+        .toast-text h4 { font-size: 0.92rem; margin-bottom: 4px; }
+        .toast-text p { font-size: 0.8rem; color: #667381; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
+        .page-title { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
+        .page-title i { color: var(--accent-gold); }
+        .page-subtitle { margin-top: 6px; font-size: 0.9rem; color: #6c7a89; max-width: 860px; line-height: 1.55; }
+        .page-meta-line { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .page-permission-chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; border-radius: 999px; background: #f8faf9; border: 1px solid var(--border-grey); color: #486177; font-size: 0.77rem; font-weight: 700; }
+        .page-permission-chip.is-manage { background: rgba(46,204,113,0.10); color: #1f8f55; border-color: rgba(46,204,113,0.18); }
+        .page-permission-chip.is-readonly { background: rgba(231,76,60,0.08); color: #b33a2f; border-color: rgba(231,76,60,0.16); }
+
+        .panel { background-color: var(--bg-card-white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); width: 100%; }
+        .panel-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+        .panel-header h3 { font-size: 1.05rem; }
+        .panel-header-subtitle { font-size: 0.8rem; color: #7f8c8d; margin-top: 4px; line-height: 1.5; }
+
+        .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .summary-card { background: linear-gradient(180deg, #fff 0%, #fbfdfc 100%); border: 1px solid var(--border-grey); border-radius: 14px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .summary-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .summary-card-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(46,204,113,0.08); color: var(--primary-green); }
+        .summary-card-value { font-size: 1.5rem; font-weight: 800; color: var(--text-dark); margin-top: 12px; }
+        .summary-card-label { font-size: 0.8rem; font-weight: 700; color: #617282; text-transform: uppercase; letter-spacing: 0.02em; }
+        .summary-card-note { margin-top: 6px; font-size: 0.76rem; color: #8a96a3; line-height: 1.45; }
+
+        .toolbar-panel { margin-bottom: 20px; }
+        .toolbar-grid { display: grid; grid-template-columns: 1.1fr 0.7fr 0.8fr 1.2fr auto; gap: 10px; align-items: end; }
+        .form-group { margin-bottom: 0; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: #5a6c7d; margin-bottom: 6px; }
+        .form-control, .search-control, .filter-select { width: 100%; min-height: 40px; padding: 10px 12px; border: 1px solid #dce8e0; border-radius: 10px; outline: none; background: #fff; font-size: 0.85rem; color: #334155; transition: 0.2s; }
+        .form-control:focus, .search-control:focus, .filter-select:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 3px rgba(224,170,62,0.1); }
+        .button-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .btn-action { border: none; border-radius: 10px; min-height: 40px; padding: 0 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s ease; white-space: nowrap; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-gold), #c99327); color: #fff; box-shadow: 0 5px 14px rgba(224,170,62,0.22); }
+        .btn-primary:hover { transform: translateY(-1px); }
+        .btn-secondary { background: rgba(46,204,113,0.12); color: #1f8f55; border: 1px solid rgba(46,204,113,0.18); }
+        .btn-secondary:hover { background: rgba(46,204,113,0.18); }
+        .btn-danger { background: rgba(231,76,60,0.12); color: #b33a2f; border: 1px solid rgba(231,76,60,0.18); }
+        .btn-danger:hover { background: rgba(231,76,60,0.18); }
+
+        .folder-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .folder-card { position: relative; background: linear-gradient(180deg, #fff 0%, #f9fcfa 100%); border: 1px solid var(--border-grey); border-radius: 14px; padding: 16px; cursor: pointer; transition: 0.2s ease; min-height: 150px; display: flex; flex-direction: column; gap: 10px; }
+        .folder-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(13,27,42,0.05); }
+        .folder-card.active { border-color: rgba(46,204,113,0.4); box-shadow: 0 12px 28px rgba(46,204,113,0.12); background: linear-gradient(180deg, #fafffc 0%, #f1fbf5 100%); }
+        .folder-card-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .folder-card-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(224,170,62,0.12); color: #9a6c0a; }
+        .folder-card-name { font-size: 0.9rem; font-weight: 800; color: var(--text-dark); line-height: 1.35; }
+        .folder-card-desc { font-size: 0.76rem; color: #6f7f8d; line-height: 1.45; min-height: 34px; }
+        .folder-card-stats { display: flex; justify-content: space-between; gap: 10px; margin-top: auto; }
+        .folder-stat { background: #fff; border: 1px solid #ecf3ef; border-radius: 10px; padding: 8px 10px; flex: 1; }
+        .folder-stat-value { font-size: 0.95rem; font-weight: 800; color: var(--text-dark); }
+        .folder-stat-label { font-size: 0.68rem; color: #81909c; margin-top: 3px; text-transform: uppercase; }
+        .folder-card-tag { position: absolute; right: 14px; top: 14px; display: inline-flex; align-items: center; justify-content: center; min-height: 22px; padding: 0 8px; border-radius: 999px; background: rgba(13,27,42,0.06); color: #476177; font-size: 0.66rem; font-weight: 800; }
+
+        .table-topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+        .table-title { font-size: 1.05rem; font-weight: 800; }
+        .table-note { font-size: 0.8rem; color: #718191; margin-top: 4px; }
+        .mobile-table-hint { display: inline-flex; align-items: center; gap: 8px; font-size: 0.74rem; color: #6f7f8d; background: #f7faf8; border: 1px solid #e5eeea; border-radius: 999px; padding: 6px 10px; margin-bottom: 10px; }
+        .table-wrapper { width: 100%; overflow: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; border: 1px solid #dfe9e3; background: #fbfdfc; }
+        .excel-table { width: 100%; min-width: 1500px; border-collapse: separate; border-spacing: 0; font-size: 0.74rem; background: #fff; color: #334155; }
+        .excel-table th, .excel-table td { border-right: 1px solid #ebf1ed; border-bottom: 1px solid #edf3ef; padding: 6px 8px; vertical-align: middle; line-height: 1.35; }
+        .excel-table th:last-child, .excel-table td:last-child { border-right: none; }
+        .excel-table thead th { position: sticky; top: 0; z-index: 6; background: linear-gradient(180deg, #fcfefc 0%, #f2f7f4 100%); text-align: center; font-size: 0.67rem; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.03em; }
+        .excel-table tbody tr:nth-child(even) td { background: #fcfdfc; }
+        .excel-table tbody tr:hover td { background-color: rgba(224,170,62,0.05); }
+        .excel-table thead th:nth-child(1), .excel-table tbody td:nth-child(1) { position: sticky; left: 0; z-index: 9; min-width: 48px; text-align: center; background: linear-gradient(180deg, #fdfefd 0%, #eef5f1 100%); }
+        .excel-table thead th:nth-child(2), .excel-table tbody td:nth-child(2) { position: sticky; left: 48px; z-index: 8; min-width: 110px; background: linear-gradient(180deg, #fdfefd 0%, #eef5f1 100%); }
+        .excel-table thead th:nth-child(3), .excel-table tbody td:nth-child(3) { position: sticky; left: 158px; z-index: 7; min-width: 240px; background: linear-gradient(180deg, #fdfefd 0%, #eef5f1 100%); box-shadow: 8px 0 16px rgba(13,27,42,0.06), 1px 0 0 #dbe6df; }
+        .excel-table tbody td:nth-child(1), .excel-table tbody td:nth-child(2), .excel-table tbody td:nth-child(3) { background: inherit; }
+        .table-row-index { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 22px; border-radius: 7px; background: #f6faf8; border: 1px solid #e1ebe5; color: #607080; font-size: 0.66rem; font-weight: 800; }
+        .money-text { color: #d35400; font-weight: 800; white-space: nowrap; }
+        .status-badge { display: inline-flex; align-items: center; justify-content: center; min-height: 22px; padding: 0 9px; border-radius: 999px; font-size: 0.68rem; font-weight: 800; white-space: nowrap; }
+        .status-badge.pending { background: rgba(224,170,62,0.12); color: #9a6c0a; }
+        .status-badge.done { background: rgba(46,204,113,0.12); color: #1e8e52; }
+        .status-badge.review { background: rgba(52,152,219,0.12); color: #216a94; }
+        .status-badge.draft { background: rgba(13,27,42,0.08); color: #476177; }
+        .action-cell { text-align: right; white-space: nowrap; }
+        .action-btn { width: 32px; height: 32px; border: none; border-radius: 8px; background: #f4f7f6; color: #415261; cursor: pointer; transition: 0.2s; }
+        .action-btn:hover { background: #e9efec; }
+        .action-btn.edit { color: var(--edit-blue); }
+        .action-btn.delete { color: var(--danger-red); }
+        .empty-state { padding: 42px 18px; text-align: center; color: #7f8c8d; font-size: 0.86rem; }
+        .empty-state i { font-size: 1.4rem; color: #d0d9d4; margin-bottom: 8px; display: block; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13,27,42,0.82); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 3000; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 18px; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--bg-card-white); width: 100%; max-width: 880px; padding: 24px; border-radius: 14px; box-shadow: 0 15px 40px rgba(0,0,0,0.35); transform: translateY(20px); transition: all 0.3s ease; border-top: 5px solid var(--accent-gold); max-height: calc(100vh - 36px); overflow-y: auto; }
+        .modal-overlay.show .modal-content { transform: translateY(0); }
+        .modal-title { font-size: 1.08rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; }
+        .modal-subtitle { font-size: 0.8rem; color: #758391; margin-top: 5px; line-height: 1.45; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .textarea-control { min-height: 110px; resize: vertical; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+
+        .access-denied { display: none; margin-top: 20px; background: linear-gradient(180deg, #fff9f8 0%, #fff 100%); border: 1px solid rgba(231,76,60,0.14); border-radius: 16px; padding: 26px; text-align: center; }
+        .access-denied.show { display: block; }
+        .access-denied-icon { width: 70px; height: 70px; border-radius: 20px; background: rgba(231,76,60,0.08); color: var(--danger-red); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 14px; }
+        .access-denied-title { font-size: 1.2rem; font-weight: 800; color: var(--text-dark); }
+        .access-denied-note { margin-top: 10px; color: #7c8895; line-height: 1.6; }
+
+        .footer-note { margin-top: 12px; font-size: 0.78rem; color: #7f8c8d; line-height: 1.55; }
+
+        @media (min-width: 1025px) {
+            body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+            .main-wrapper { display: flex; flex: 1; overflow: hidden; }
+            .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; padding: 30px 15px; }
+            .dashboard-content { flex: 1; padding: 24px; overflow-y: auto; }
+        }
+
+        @media (max-width: 1024px) {
+            :root { --header-height: 70px; }
+            html, body { height: auto; min-height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; display: block !important; }
+            .header { position: sticky; top: 0; padding: 0 15px; }
+            .mobile-menu-btn { display: block; }
+            .header-title { font-size: 1.25rem; letter-spacing: 1px; }
+            .header-subtitle, .user-info { display: none; }
+            .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
+            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto; }
+            .sidebar.open { left: 0; }
+            .main-wrapper { display: block; height: auto; }
+            .dashboard-content { display: block; padding: 15px; padding-bottom: 40px; height: auto; overflow: visible; }
+            .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .toolbar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .button-row { grid-column: 1 / -1; }
+            .form-grid { grid-template-columns: 1fr; }
+            .excel-table { min-width: 1220px; }
+        }
+
+        @media (max-width: 640px) {
+            .summary-grid { grid-template-columns: 1fr; }
+            .toolbar-grid { grid-template-columns: 1fr; }
+            .folder-grid { grid-template-columns: 1fr; }
+            .panel { padding: 15px; }
+            .folder-card { min-height: auto; }
+            .mobile-table-hint { display: inline-flex; }
+        }
+    </style>
+</head>
+<body>
+    <div id="page-loader"><i class="fa-solid fa-spinner fa-spin"></i><p>Đang tải phân quyền nội bộ...</p></div>
+
+    <div class="toast-notification" id="success-toast">
+        <div class="toast-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="toast-text"><h4 id="toastTitle">Thành công!</h4><p id="toastMessage">Thao tác hoàn tất.</p></div>
+    </div>
+
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+        <div class="header-center">
+            <div class="header-title">XỨ LẠNG EDUCATION</div>
+            <div class="header-subtitle">Chắp cánh ước mơ</div>
+        </div>
+        <div class="header-user">
+            <div class="user-info">Chào, <span id="currentUserName">...</span><div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>
+            <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <aside class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
+                <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
+                <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
+                <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
+                <a href="internal.html" class="sidebar-nav-item active" data-admin-only-nav="internal" style="display:none;"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="page-header" id="pageHeader">
+                <div>
+                    <div class="page-title"><i class="fa-solid fa-sitemap"></i> QUẢN LÝ NỘI BỘ</div>
+                    <div class="page-subtitle">Khu vực dữ liệu nội bộ bảo mật cao, tách theo 11 thư mục nghiệp vụ: Chi tháng, hao hụt, cơ sở vật chất, Thuê phòng, tổng hợp, lương công ty, quyết toán, định giá tháng, lưu kết quả tháng, Chi riêng cá nhân Dũng và chi khác. Quyền truy cập lấy trực tiếp từ phân quyền Admin trong mục Quản lý hệ thống.</div>
+                    <div class="page-meta-line">
+                        <span class="page-permission-chip" id="permissionChip"><i class="fa-solid fa-shield-halved"></i> Đang kiểm tra quyền truy cập...</span>
+                    </div>
+                </div>
+            </div>
+
+            <section id="securedArea" style="display:none;">
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-card-top">
+                            <div class="summary-card-label">Tổng hồ sơ tháng chọn</div>
+                            <div class="summary-card-icon"><i class="fa-solid fa-folder-tree"></i></div>
+                        </div>
+                        <div class="summary-card-value" id="summaryEntryCount">0</div>
+                        <div class="summary-card-note">Tổng số chứng từ / khoản mục trong 11 thư mục theo tháng đang xem.</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-top">
+                            <div class="summary-card-label">Tổng giá trị tháng chọn</div>
+                            <div class="summary-card-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        </div>
+                        <div class="summary-card-value" id="summaryMonthTotal">0 ₫</div>
+                        <div class="summary-card-note">Cộng toàn bộ dữ liệu nội bộ của tháng đang lọc.</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-top">
+                            <div class="summary-card-label">Thư mục đang mở</div>
+                            <div class="summary-card-icon"><i class="fa-solid fa-folder-open"></i></div>
+                        </div>
+                        <div class="summary-card-value" id="summaryFolderName">Chi tháng</div>
+                        <div class="summary-card-note" id="summaryFolderNote">Đang theo dõi dữ liệu của thư mục Chi tháng.</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-top">
+                            <div class="summary-card-label">Tổng giá trị thư mục mở</div>
+                            <div class="summary-card-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                        </div>
+                        <div class="summary-card-value" id="summaryFolderTotal">0 ₫</div>
+                        <div class="summary-card-note">Cộng riêng theo thư mục đang chọn và tháng đang xem.</div>
+                    </div>
+                </div>
+
+                <section class="panel toolbar-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Bộ lọc và thao tác nhanh</h3>
+                            <p class="panel-header-subtitle">Thay đổi tháng, năm, tìm kiếm nhanh hoặc thêm mới chứng từ. Mọi thao tác đều ghi nhận người cập nhật và thời gian cập nhật.</p>
+                        </div>
+                    </div>
+                    <div class="toolbar-grid">
+                        <div class="form-group">
+                            <label for="folderSelect">Thư mục đang thao tác</label>
+                            <select class="filter-select" id="folderSelect"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="monthSelect">Tháng</label>
+                            <select class="filter-select" id="monthSelect"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="yearSelect">Năm</label>
+                            <select class="filter-select" id="yearSelect"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchInput">Tìm kiếm</label>
+                            <input type="text" class="search-control" id="searchInput" placeholder="Nhập tên mục chi, mã chứng từ, người phụ trách...">
+                        </div>
+                        <div class="button-row">
+                            <button class="btn-action btn-primary" id="btnAddEntry"><i class="fa-solid fa-plus"></i> Thêm hồ sơ</button>
+                            <button class="btn-action btn-secondary" id="btnResetFilter"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button>
+                        </div>
+                    </div>
+                    <div class="footer-note">Tối ưu cho iOS và Android: vùng bảng cho phép vuốt ngang, thanh điều hướng mobile dạng off-canvas, vùng nhập liệu lớn và dễ chạm trên Safari iPhone/iPad cũng như Chrome Android.</div>
+                </section>
+
+                <section class="panel" style="margin-bottom:20px;">
+                    <div class="panel-header">
+                        <div>
+                            <h3>11 thư mục nội bộ</h3>
+                            <p class="panel-header-subtitle">Mỗi thư mục hoạt động độc lập nhưng cùng dùng một chuẩn dữ liệu để tổng hợp theo tháng và rà soát nhanh.</p>
+                        </div>
+                    </div>
+                    <div class="folder-grid" id="folderGrid"></div>
+                </section>
+
+                <section class="panel">
+                    <div class="table-topbar">
+                        <div>
+                            <div class="table-title" id="tableTitle">Danh sách hồ sơ nội bộ</div>
+                            <div class="table-note" id="tableNote">Đang tải dữ liệu của thư mục đã chọn.</div>
+                        </div>
+                    </div>
+                    <div class="mobile-table-hint"><i class="fa-solid fa-arrows-left-right"></i> Vuốt ngang để xem đủ cột trên iPhone, iPad và Android.</div>
+                    <div class="table-wrapper">
+                        <table class="excel-table">
+                            <thead>
+                                <tr>
+                                    <th>TT</th>
+                                    <th>Ngày</th>
+                                    <th>Khoản mục / Nội dung</th>
+                                    <th>Mã hồ sơ</th>
+                                    <th>Người phụ trách</th>
+                                    <th>Số lượng</th>
+                                    <th>Đơn giá</th>
+                                    <th>Thành tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ghi chú</th>
+                                    <th>Cập nhật</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="entryTableBody">
+                                <tr><td colspan="12" class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu nội bộ...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </section>
+
+            <section class="access-denied" id="accessDeniedBox">
+                <div class="access-denied-icon"><i class="fa-solid fa-user-shield"></i></div>
+                <div class="access-denied-title">Khu vực này chỉ dành cho Admin</div>
+                <div class="access-denied-note" id="accessDeniedNote">Hệ thống đang xác minh tài khoản. Nếu bạn không có phân quyền Admin trong mục Quản lý hệ thống, bạn sẽ không thể xem bất kỳ dữ liệu nào của khu vực này.</div>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="entryModal">
+        <div class="modal-content">
+            <div>
+                <div class="modal-title" id="entryModalTitle">Thêm hồ sơ nội bộ</div>
+                <div class="modal-subtitle">Mỗi hồ sơ được gắn chặt với một thư mục và một tháng quản trị để tiện tổng hợp, rà soát và quyết toán.</div>
+            </div>
+            <form id="entryForm">
+                <input type="hidden" id="entryId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="entryFolder">Thư mục</label>
+                        <select class="form-control" id="entryFolder" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="entryDate">Ngày phát sinh</label>
+                        <input type="date" class="form-control" id="entryDate" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="entryTitle">Khoản mục / Nội dung</label>
+                        <input type="text" class="form-control" id="entryTitle" placeholder="Ví dụ: Tiền điện tháng 04, hao hụt sách, thuê phòng ca tối..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="entryReference">Mã hồ sơ / chứng từ</label>
+                        <input type="text" class="form-control" id="entryReference" placeholder="VD: CT-042026-01">
+                    </div>
+                    <div class="form-group">
+                        <label for="entryOwner">Người phụ trách</label>
+                        <input type="text" class="form-control" id="entryOwner" placeholder="Nhập người chịu trách nhiệm / người chi">
+                    </div>
+                    <div class="form-group">
+                        <label for="entryQuantity">Số lượng</label>
+                        <input type="number" step="0.01" min="0" class="form-control" id="entryQuantity" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="entryUnitCost">Đơn giá</label>
+                        <input type="number" step="1000" min="0" class="form-control" id="entryUnitCost" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="entryAmount">Thành tiền</label>
+                        <input type="number" step="1000" min="0" class="form-control" id="entryAmount" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="entryStatus">Trạng thái</label>
+                        <select class="form-control" id="entryStatus">
+                            <option value="draft">Nháp</option>
+                            <option value="pending">Chờ xử lý</option>
+                            <option value="review">Đang rà soát</option>
+                            <option value="done">Hoàn tất</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="entryNote">Ghi chú</label>
+                        <textarea class="form-control textarea-control" id="entryNote" placeholder="Nhập thông tin đối chiếu, giải trình hoặc ghi chú cần lưu."></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-action btn-secondary" id="btnCancelModal">Hủy</button>
+                    <button type="submit" class="btn-action btn-primary" id="btnSubmitEntry"><i class="fa-solid fa-floppy-disk"></i> Lưu hồ sơ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
+            authDomain: "xledu-dea6a.firebaseapp.com",
+            projectId: "xledu-dea6a",
+            storageBucket: "xledu-dea6a.firebasestorage.app",
+            messagingSenderId: "56988683349",
+            appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const INTERNAL_FOLDERS = [
+            { id: 'chi-thang', name: 'Chi tháng', icon: 'fa-wallet', tag: 'Tháng', description: 'Các khoản chi vận hành phát sinh định kỳ trong tháng.' },
+            { id: 'hao-hut', name: 'Hao hụt', icon: 'fa-arrow-trend-down', tag: 'Rà soát', description: 'Theo dõi tổn thất, thất thoát hoặc hao hụt cần kiểm tra.' },
+            { id: 'co-so-vat-chat', name: 'Cơ sở vật chất', icon: 'fa-building', tag: 'Tài sản', description: 'Quản lý sửa chữa, mua mới và bảo trì cơ sở vật chất.' },
+            { id: 'thue-phong', name: 'Thuê phòng', icon: 'fa-door-open', tag: 'Mặt bằng', description: 'Lưu chi phí thuê phòng, thuê địa điểm, thuê ca học.' },
+            { id: 'tong-hop', name: 'Tổng hợp', icon: 'fa-layer-group', tag: 'Báo cáo', description: 'Nơi gom các khoản cần theo dõi tổng hợp theo tháng.' },
+            { id: 'luong-cong-ty', name: 'Lương công ty', icon: 'fa-money-bill-wave', tag: 'Nhân sự', description: 'Theo dõi lương, phụ cấp và chi phí nhân sự nội bộ.' },
+            { id: 'quyet-toan', name: 'Quyết toán', icon: 'fa-file-invoice-dollar', tag: 'Kết sổ', description: 'Quản lý các khoản đã đối chiếu, chuẩn bị quyết toán.' },
+            { id: 'dinh-gia-thang', name: 'Định giá tháng', icon: 'fa-scale-balanced', tag: 'Định giá', description: 'Lưu dữ liệu định giá, đánh giá chi phí theo từng tháng.' },
+            { id: 'luu-ket-qua-thang', name: 'Lưu kết quả tháng', icon: 'fa-box-archive', tag: 'Lưu trữ', description: 'Lưu các kết quả chốt tháng, bản tóm tắt và đối chiếu.' },
+            { id: 'chi-rieng-dung', name: 'Chi riêng cá nhân Dũng', icon: 'fa-user-lock', tag: 'Riêng', description: 'Khu vực theo dõi riêng các khoản mục gắn với cá nhân Dũng.' },
+            { id: 'chi-khac', name: 'Chi khác', icon: 'fa-ellipsis', tag: 'Khác', description: 'Các khoản chưa nằm trong danh mục còn lại hoặc phát sinh đột xuất.' }
+        ];
+
+        const state = {
+            currentAuthUser: null,
+            currentUserProfile: null,
+            entries: [],
+            unsubscribeEntries: null,
+            selectedFolderId: 'chi-thang',
+            selectedMonth: new Date().getMonth() + 1,
+            selectedYear: new Date().getFullYear(),
+            currentEditingId: '',
+            redirectTimer: null
+        };
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const permissionChip = document.getElementById('permissionChip');
+        const securedArea = document.getElementById('securedArea');
+        const accessDeniedBox = document.getElementById('accessDeniedBox');
+        const accessDeniedNote = document.getElementById('accessDeniedNote');
+        const folderGrid = document.getElementById('folderGrid');
+        const folderSelect = document.getElementById('folderSelect');
+        const monthSelect = document.getElementById('monthSelect');
+        const yearSelect = document.getElementById('yearSelect');
+        const searchInput = document.getElementById('searchInput');
+        const entryTableBody = document.getElementById('entryTableBody');
+        const tableTitle = document.getElementById('tableTitle');
+        const tableNote = document.getElementById('tableNote');
+        const entryModal = document.getElementById('entryModal');
+        const entryForm = document.getElementById('entryForm');
+        const entryModalTitle = document.getElementById('entryModalTitle');
+        const btnSubmitEntry = document.getElementById('btnSubmitEntry');
+
+        function normalizeEmail(email) {
+            return String(email || '').trim().toLowerCase();
+        }
+
+        function normalizeText(value) {
+            return String(value || '').trim();
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatMoney(value) {
+            const num = Number(value || 0);
+            return num.toLocaleString('vi-VN') + ' ₫';
+        }
+
+        function getDateFromAny(value) {
+            if (!value) return null;
+            if (typeof value.toDate === 'function') return value.toDate();
+            if (typeof value.seconds === 'number') return new Date(value.seconds * 1000);
+            const parsed = new Date(value);
+            return Number.isNaN(parsed.getTime()) ? null : parsed;
+        }
+
+        function formatDateDisplay(value) {
+            const date = getDateFromAny(value);
+            if (!date) return '---';
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        function formatDateTimeDisplay(value) {
+            const date = getDateFromAny(value);
+            if (!date) return '---';
+            return date.toLocaleString('vi-VN');
+        }
+
+        function buildMonthKey(year, month) {
+            return `${year}_${String(month).padStart(2, '0')}`;
+        }
+
+        function getFolderDef(folderId) {
+            return INTERNAL_FOLDERS.find(item => item.id === folderId) || INTERNAL_FOLDERS[0];
+        }
+
+        function isAccountClosed(profile) {
+            const status = String((profile && (profile.status || profile.accountStatus)) || 'active').toLowerCase();
+            return ['closed', 'inactive', 'disabled', 'locked'].includes(status);
+        }
+
+        function getDisplayName(profile, fallbackEmail = '') {
+            const name = normalizeText(profile && (profile.name || profile.fullName || profile.displayName));
+            if (name) return name;
+            const email = normalizeEmail((profile && profile.email) || fallbackEmail);
+            return email ? (email.split('@')[0] || email) : 'Admin';
+        }
+
+        function syncAdminOnlyMenu(role) {
+            const isAdmin = String(role || '').toLowerCase() === 'admin';
+            document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
+                item.style.display = isAdmin ? 'flex' : 'none';
+            });
+        }
+
+        function showToast(title, message) {
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            const toast = document.getElementById('success-toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3200);
+        }
+
+        function setLoading(isLoading, text = 'Đang tải phân quyền nội bộ...') {
+            const loader = document.getElementById('page-loader');
+            loader.style.display = isLoading ? 'flex' : 'none';
+            const label = loader.querySelector('p');
+            if (label) label.textContent = text;
+        }
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('open');
+            if (window.innerWidth <= 1024) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.touchAction = 'none';
+            }
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+            document.body.style.touchAction = '';
+        }
+
+        function fillStaticFilters() {
+            folderSelect.innerHTML = INTERNAL_FOLDERS.map(item => `<option value="${item.id}">${item.name}</option>`).join('');
+            document.getElementById('entryFolder').innerHTML = INTERNAL_FOLDERS.map(item => `<option value="${item.id}">${item.name}</option>`).join('');
+            monthSelect.innerHTML = Array.from({ length: 12 }, (_, index) => {
+                const month = index + 1;
+                return `<option value="${month}">Tháng ${month}</option>`;
+            }).join('');
+
+            const currentYear = new Date().getFullYear();
+            const years = [];
+            for (let year = currentYear - 3; year <= currentYear + 3; year += 1) years.push(year);
+            yearSelect.innerHTML = years.map(year => `<option value="${year}">${year}</option>`).join('');
+
+            folderSelect.value = state.selectedFolderId;
+            monthSelect.value = String(state.selectedMonth);
+            yearSelect.value = String(state.selectedYear);
+            document.getElementById('entryFolder').value = state.selectedFolderId;
+        }
+
+        function getFilteredEntries() {
+            const keyword = normalizeText(searchInput.value).toLowerCase();
+            const monthKey = buildMonthKey(state.selectedYear, state.selectedMonth);
+            return state.entries
+                .filter(item => item.folderId === state.selectedFolderId)
+                .filter(item => (item.monthKey || '') === monthKey)
+                .filter(item => {
+                    if (!keyword) return true;
+                    const haystack = [
+                        item.title,
+                        item.referenceCode,
+                        item.owner,
+                        item.note,
+                        item.folderName
+                    ].map(value => String(value || '').toLowerCase()).join(' ');
+                    return haystack.includes(keyword);
+                })
+                .sort((a, b) => {
+                    const aDate = getDateFromAny(a.transactionDate || a.createdAt);
+                    const bDate = getDateFromAny(b.transactionDate || b.createdAt);
+                    return (bDate ? bDate.getTime() : 0) - (aDate ? aDate.getTime() : 0);
+                });
+        }
+
+        function getMonthEntries() {
+            const monthKey = buildMonthKey(state.selectedYear, state.selectedMonth);
+            return state.entries.filter(item => (item.monthKey || '') === monthKey);
+        }
+
+        function updateSummary() {
+            const monthEntries = getMonthEntries();
+            const activeFolder = getFolderDef(state.selectedFolderId);
+            const folderEntries = monthEntries.filter(item => item.folderId === state.selectedFolderId);
+            const totalMonth = monthEntries.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+            const totalFolder = folderEntries.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+            document.getElementById('summaryEntryCount').textContent = monthEntries.length.toLocaleString('vi-VN');
+            document.getElementById('summaryMonthTotal').textContent = formatMoney(totalMonth);
+            document.getElementById('summaryFolderName').textContent = activeFolder.name;
+            document.getElementById('summaryFolderNote').textContent = activeFolder.description;
+            document.getElementById('summaryFolderTotal').textContent = formatMoney(totalFolder);
+        }
+
+        function renderFolders() {
+            const monthEntries = getMonthEntries();
+            folderGrid.innerHTML = INTERNAL_FOLDERS.map(folder => {
+                const items = monthEntries.filter(item => item.folderId === folder.id);
+                const total = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+                return `
+                    <button type="button" class="folder-card ${folder.id === state.selectedFolderId ? 'active' : ''}" data-folder-id="${folder.id}">
+                        <span class="folder-card-tag">${escapeHtml(folder.tag)}</span>
+                        <div class="folder-card-top">
+                            <div class="folder-card-icon"><i class="fa-solid ${folder.icon}"></i></div>
+                        </div>
+                        <div class="folder-card-name">${escapeHtml(folder.name)}</div>
+                        <div class="folder-card-desc">${escapeHtml(folder.description)}</div>
+                        <div class="folder-card-stats">
+                            <div class="folder-stat">
+                                <div class="folder-stat-value">${items.length.toLocaleString('vi-VN')}</div>
+                                <div class="folder-stat-label">Hồ sơ</div>
+                            </div>
+                            <div class="folder-stat">
+                                <div class="folder-stat-value">${escapeHtml(formatMoney(total))}</div>
+                                <div class="folder-stat-label">Giá trị</div>
+                            </div>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function getStatusBadge(status) {
+            const normalized = String(status || 'draft').toLowerCase();
+            if (normalized === 'done') return '<span class="status-badge done">Hoàn tất</span>';
+            if (normalized === 'review') return '<span class="status-badge review">Rà soát</span>';
+            if (normalized === 'pending') return '<span class="status-badge pending">Chờ xử lý</span>';
+            return '<span class="status-badge draft">Nháp</span>';
+        }
+
+        function renderTable() {
+            const activeFolder = getFolderDef(state.selectedFolderId);
+            const rows = getFilteredEntries();
+            tableTitle.textContent = activeFolder.name;
+            tableNote.textContent = `Hiển thị dữ liệu thư mục ${activeFolder.name} của tháng ${state.selectedMonth}/${state.selectedYear}.`;
+
+            if (!rows.length) {
+                entryTableBody.innerHTML = `<tr><td colspan="12" class="empty-state"><i class="fa-solid fa-folder-open"></i>Chưa có hồ sơ nào trong thư mục ${escapeHtml(activeFolder.name)} theo bộ lọc hiện tại.</td></tr>`;
+                updateSummary();
+                renderFolders();
+                return;
+            }
+
+            entryTableBody.innerHTML = rows.map((item, index) => {
+                const updatedBy = normalizeText(item.updatedByName || item.createdByName || item.updatedByEmail || item.createdByEmail || '---');
+                const updatedAt = formatDateTimeDisplay(item.updatedAt || item.createdAt);
+                return `
+                    <tr>
+                        <td class="col-center"><span class="table-row-index">${index + 1}</span></td>
+                        <td>${escapeHtml(formatDateDisplay(item.transactionDate))}</td>
+                        <td><strong>${escapeHtml(item.title || '---')}</strong></td>
+                        <td>${escapeHtml(item.referenceCode || '---')}</td>
+                        <td>${escapeHtml(item.owner || '---')}</td>
+                        <td class="col-center">${Number(item.quantity || 0).toLocaleString('vi-VN')}</td>
+                        <td class="money-text">${escapeHtml(formatMoney(item.unitCost || 0))}</td>
+                        <td class="money-text">${escapeHtml(formatMoney(item.amount || 0))}</td>
+                        <td>${getStatusBadge(item.status)}</td>
+                        <td>${escapeHtml(item.note || '---')}</td>
+                        <td><strong>${escapeHtml(updatedBy)}</strong><br><span style="color:#7f8c8d;">${escapeHtml(updatedAt)}</span></td>
+                        <td class="action-cell">
+                            <button type="button" class="action-btn edit" data-action="edit" data-id="${item.id}" title="Chỉnh sửa"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" class="action-btn delete" data-action="delete" data-id="${item.id}" title="Xóa"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            updateSummary();
+            renderFolders();
+        }
+
+        function applyAutoAmount() {
+            const quantity = Number(document.getElementById('entryQuantity').value || 0);
+            const unitCost = Number(document.getElementById('entryUnitCost').value || 0);
+            if (quantity > 0 && unitCost > 0) {
+                document.getElementById('entryAmount').value = String(Math.round(quantity * unitCost));
+            }
+        }
+
+        function resetEntryForm() {
+            state.currentEditingId = '';
+            entryForm.reset();
+            document.getElementById('entryId').value = '';
+            document.getElementById('entryFolder').value = state.selectedFolderId;
+            document.getElementById('entryDate').value = `${state.selectedYear}-${String(state.selectedMonth).padStart(2, '0')}-01`;
+            document.getElementById('entryStatus').value = 'draft';
+            entryModalTitle.textContent = 'Thêm hồ sơ nội bộ';
+            btnSubmitEntry.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu hồ sơ';
+        }
+
+        function openEntryModal(id = '') {
+            resetEntryForm();
+            if (id) {
+                const item = state.entries.find(entry => entry.id === id);
+                if (!item) {
+                    showToast('Không tìm thấy', 'Hồ sơ cần chỉnh sửa không còn tồn tại.');
+                    return;
+                }
+                state.currentEditingId = id;
+                document.getElementById('entryId').value = id;
+                document.getElementById('entryFolder').value = item.folderId || state.selectedFolderId;
+                const date = getDateFromAny(item.transactionDate);
+                document.getElementById('entryDate').value = date ? date.toISOString().slice(0, 10) : '';
+                document.getElementById('entryTitle').value = item.title || '';
+                document.getElementById('entryReference').value = item.referenceCode || '';
+                document.getElementById('entryOwner').value = item.owner || '';
+                document.getElementById('entryQuantity').value = item.quantity || '';
+                document.getElementById('entryUnitCost').value = item.unitCost || '';
+                document.getElementById('entryAmount').value = item.amount || '';
+                document.getElementById('entryStatus').value = item.status || 'draft';
+                document.getElementById('entryNote').value = item.note || '';
+                entryModalTitle.textContent = 'Chỉnh sửa hồ sơ nội bộ';
+                btnSubmitEntry.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Cập nhật hồ sơ';
+            }
+            entryModal.classList.add('show');
+        }
+
+        function closeEntryModal() {
+            entryModal.classList.remove('show');
+            resetEntryForm();
+        }
+
+        async function fetchCurrentUserProfileStrict(user) {
+            const email = normalizeEmail(user && user.email);
+            if (!email) return null;
+
+            const byEmailDoc = await db.collection('users').doc(email).get().catch(() => null);
+            if (byEmailDoc && byEmailDoc.exists) return { id: byEmailDoc.id, ...(byEmailDoc.data() || {}) };
+
+            const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+            if (!snap.empty) return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
+            return null;
+        }
+
+        function applyAuthorizedUI(profile) {
+            const displayName = getDisplayName(profile, state.currentAuthUser && state.currentAuthUser.email);
+            document.getElementById('currentUserName').textContent = displayName;
+            document.getElementById('userEmailDisplay').textContent = normalizeEmail(profile && profile.email || (state.currentAuthUser && state.currentAuthUser.email));
+            permissionChip.classList.remove('is-readonly');
+            permissionChip.classList.add('is-manage');
+            permissionChip.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Quyền: Admin toàn quyền khu vực nội bộ';
+            securedArea.style.display = '';
+            accessDeniedBox.classList.remove('show');
+            syncAdminOnlyMenu('admin');
+        }
+
+        function denyAccess(message) {
+            securedArea.style.display = 'none';
+            accessDeniedBox.classList.add('show');
+            accessDeniedNote.textContent = message;
+            permissionChip.classList.remove('is-manage');
+            permissionChip.classList.add('is-readonly');
+            permissionChip.innerHTML = '<i class="fa-solid fa-lock"></i> Quyền: Bị từ chối truy cập';
+            syncAdminOnlyMenu('teacher');
+            clearTimeout(state.redirectTimer);
+            state.redirectTimer = setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1600);
+        }
+
+        function subscribeEntries() {
+            if (state.unsubscribeEntries) state.unsubscribeEntries();
+            state.unsubscribeEntries = db.collection('internalEntries').onSnapshot((snapshot) => {
+                state.entries = snapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() || {}) }));
+                renderTable();
+            }, (error) => {
+                console.error(error);
+                entryTableBody.innerHTML = '<tr><td colspan="12" class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i>Không thể tải dữ liệu nội bộ từ Firestore.</td></tr>';
+            });
+        }
+
+        async function saveEntry(event) {
+            event.preventDefault();
+            const folderId = document.getElementById('entryFolder').value;
+            const folderDef = getFolderDef(folderId);
+            const transactionDateRaw = document.getElementById('entryDate').value;
+            const title = normalizeText(document.getElementById('entryTitle').value);
+            const referenceCode = normalizeText(document.getElementById('entryReference').value);
+            const owner = normalizeText(document.getElementById('entryOwner').value);
+            const quantity = Number(document.getElementById('entryQuantity').value || 0);
+            const unitCost = Number(document.getElementById('entryUnitCost').value || 0);
+            const amount = Number(document.getElementById('entryAmount').value || 0);
+            const status = document.getElementById('entryStatus').value || 'draft';
+            const note = normalizeText(document.getElementById('entryNote').value);
+
+            if (!folderId || !title || !transactionDateRaw || amount < 0) {
+                showToast('Thiếu dữ liệu', 'Vui lòng nhập đầy đủ thư mục, ngày, nội dung và thành tiền hợp lệ.');
+                return;
+            }
+
+            const dateObj = new Date(transactionDateRaw + 'T00:00:00');
+            const monthKey = buildMonthKey(dateObj.getFullYear(), dateObj.getMonth() + 1);
+            const profile = state.currentUserProfile || {};
+            const actorName = getDisplayName(profile, state.currentAuthUser && state.currentAuthUser.email);
+            const actorEmail = normalizeEmail(profile.email || (state.currentAuthUser && state.currentAuthUser.email));
+
+            btnSubmitEntry.disabled = true;
+            const original = btnSubmitEntry.innerHTML;
+            btnSubmitEntry.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
+
+            try {
+                const payload = {
+                    folderId,
+                    folderName: folderDef.name,
+                    transactionDate: dateObj.toISOString(),
+                    monthKey,
+                    title,
+                    referenceCode,
+                    owner,
+                    quantity,
+                    unitCost,
+                    amount,
+                    status,
+                    note,
+                    updatedByName: actorName,
+                    updatedByEmail: actorEmail,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (state.currentEditingId) {
+                    await db.collection('internalEntries').doc(state.currentEditingId).set(payload, { merge: true });
+                    showToast('Đã cập nhật', 'Hồ sơ nội bộ đã được cập nhật thành công.');
+                } else {
+                    payload.createdByName = actorName;
+                    payload.createdByEmail = actorEmail;
+                    payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('internalEntries').add(payload);
+                    showToast('Đã thêm mới', 'Hồ sơ nội bộ đã được tạo thành công.');
+                }
+
+                closeEntryModal();
+            } catch (error) {
+                console.error(error);
+                showToast('Lưu thất bại', 'Không thể lưu hồ sơ nội bộ vào Firestore.');
+            } finally {
+                btnSubmitEntry.disabled = false;
+                btnSubmitEntry.innerHTML = original;
+            }
+        }
+
+        async function deleteEntry(id) {
+            const entry = state.entries.find(item => item.id === id);
+            if (!entry) {
+                showToast('Không tìm thấy', 'Hồ sơ cần xóa không còn tồn tại.');
+                return;
+            }
+            if (!confirm(`Xác nhận xóa hồ sơ "${entry.title || 'không tên'}"?`)) return;
+            try {
+                await db.collection('internalEntries').doc(id).delete();
+                showToast('Đã xóa', 'Hồ sơ nội bộ đã được xóa thành công.');
+            } catch (error) {
+                console.error(error);
+                showToast('Xóa thất bại', 'Không thể xóa hồ sơ nội bộ.');
+            }
+        }
+
+        function bindEvents() {
+            mobileMenuBtn.addEventListener('click', openSidebar);
+            sidebarOverlay.addEventListener('click', closeSidebar);
+            document.querySelectorAll('.sidebar-nav-item').forEach((item) => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 1024) closeSidebar();
+                });
+            });
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 1024) closeSidebar();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeSidebar();
+                    closeEntryModal();
+                }
+            });
+
+            folderSelect.addEventListener('change', () => {
+                state.selectedFolderId = folderSelect.value;
+                renderTable();
+            });
+            monthSelect.addEventListener('change', () => {
+                state.selectedMonth = Number(monthSelect.value || state.selectedMonth);
+                renderTable();
+            });
+            yearSelect.addEventListener('change', () => {
+                state.selectedYear = Number(yearSelect.value || state.selectedYear);
+                renderTable();
+            });
+            searchInput.addEventListener('input', renderTable);
+            document.getElementById('btnResetFilter').addEventListener('click', () => {
+                state.selectedFolderId = INTERNAL_FOLDERS[0].id;
+                state.selectedMonth = new Date().getMonth() + 1;
+                state.selectedYear = new Date().getFullYear();
+                folderSelect.value = state.selectedFolderId;
+                monthSelect.value = String(state.selectedMonth);
+                yearSelect.value = String(state.selectedYear);
+                searchInput.value = '';
+                renderTable();
+            });
+            document.getElementById('btnAddEntry').addEventListener('click', () => openEntryModal(''));
+            document.getElementById('btnCancelModal').addEventListener('click', closeEntryModal);
+            entryModal.addEventListener('click', (event) => {
+                if (event.target === entryModal) closeEntryModal();
+            });
+            entryForm.addEventListener('submit', saveEntry);
+            document.getElementById('entryQuantity').addEventListener('input', applyAutoAmount);
+            document.getElementById('entryUnitCost').addEventListener('input', applyAutoAmount);
+            document.getElementById('btnLogout').addEventListener('click', () => {
+                if (confirm('Bạn có muốn đăng xuất hệ thống?')) auth.signOut();
+            });
+
+            folderGrid.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-folder-id]');
+                if (!button) return;
+                state.selectedFolderId = button.dataset.folderId;
+                folderSelect.value = state.selectedFolderId;
+                renderTable();
+            });
+
+            entryTableBody.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-action]');
+                if (!button) return;
+                const action = button.dataset.action;
+                const id = button.dataset.id;
+                if (!action || !id) return;
+                if (action === 'edit') openEntryModal(id);
+                if (action === 'delete') deleteEntry(id);
+            });
+        }
+
+        fillStaticFilters();
+        bindEvents();
+        resetEntryForm();
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            setLoading(true, 'Đang xác thực quyền Admin nội bộ...');
+            state.currentAuthUser = user;
+
+            try {
+                const profile = await fetchCurrentUserProfileStrict(user);
+                state.currentUserProfile = profile;
+
+                if (!profile) {
+                    denyAccess('Tài khoản chưa có hồ sơ trong Quản lý hệ thống nên không thể vào khu vực nội bộ. Hệ thống sẽ chuyển về trang chủ.');
+                    return;
+                }
+
+                if (isAccountClosed(profile)) {
+                    denyAccess('Tài khoản đang bị khóa trong Quản lý hệ thống nên không thể truy cập dữ liệu nội bộ. Hệ thống sẽ chuyển về trang chủ.');
+                    return;
+                }
+
+                if (String(profile.role || '').toLowerCase() !== 'admin') {
+                    denyAccess('Chỉ tài khoản có role Admin đồng bộ từ Quản lý hệ thống mới được phép xem và thao tác trong khu vực này. Hệ thống sẽ chuyển về trang chủ.');
+                    return;
+                }
+
+                applyAuthorizedUI(profile);
+                subscribeEntries();
+            } catch (error) {
+                console.error(error);
+                denyAccess('Không thể xác minh phân quyền với Quản lý hệ thống. Hệ thống sẽ chuyển về trang chủ để đảm bảo an toàn dữ liệu.');
+            } finally {
+                setLoading(false);
+            }
+        });
+    </script>
+</body>
+</html>

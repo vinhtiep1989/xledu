@@ -1255,7 +1255,7 @@
                 <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
                 <a href="students.html" class="sidebar-nav-item active"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
                 <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
-                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
+                <a href="internal.html" class="sidebar-nav-item" data-admin-only-nav="internal" style="display:none;"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
                 <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
             </nav>
         </aside>
@@ -1473,6 +1473,14 @@
         function escapeHtml(value) {
             return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
+
+function syncAdminOnlyMenu(role) {
+    const isAdmin = String(role || '').toLowerCase() === 'admin';
+    document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
+        item.style.display = isAdmin ? 'flex' : 'none';
+    });
+}
+
         function showToast(title, message) {
             const toast = document.getElementById('success-toast');
             document.getElementById('toastTitle').innerText = title;
@@ -2284,10 +2292,12 @@ function loadClasses() {
                 const displayName = getUserDisplayName(userData, { email: currentEmail }) || currentEmail;
                 currentUserInfo = { email: currentEmail, displayName, role };
                 document.getElementById('userRoleDisplay').textContent = displayName;
+                syncAdminOnlyMenu(role);
             } catch (_) {
                 const fallbackName = currentEmail ? (currentEmail.split('@')[0] || currentEmail) : '';
                 currentUserInfo = { email: currentEmail, displayName: fallbackName, role: 'teacher' };
                 document.getElementById('userRoleDisplay').textContent = fallbackName;
+                syncAdminOnlyMenu('teacher');
             }
 
             updatePermissionUI();
