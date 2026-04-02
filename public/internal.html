@@ -216,8 +216,10 @@
     .file-card-name { margin-top: 14px; font-weight: 800; font-size: 0.96rem; color: var(--text-dark); line-height: 1.4; word-break: break-word; }
     .file-card-meta { margin-top: 8px; color: var(--text-soft); font-size: 0.78rem; line-height: 1.6; flex-grow: 1; }
     .file-card-meta p { margin-bottom: 4px; }
-    .file-card-actions { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); display: flex; gap: 8px; }
-    .file-card-actions .btn-action { flex: 1 1 auto; }
+    .file-card-actions { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); display: flex; gap: 8px; flex-wrap: wrap; }
+    .file-card-actions .btn-action { flex: 1 1 calc(50% - 4px); }
+    .btn-danger { background: rgba(231,76,60,0.10); color: #c0392b; border: 1px solid rgba(231,76,60,0.18); }
+    .btn-danger:hover { background: rgba(231,76,60,0.18); }
     .empty-file-list {
       grid-column: 1 / -1; min-height: 220px; border: 1px dashed var(--border); border-radius: 16px; background: #fcfefd;
       display: flex; align-items: center; justify-content: center; text-align: center; color: var(--text-soft); padding: 24px;
@@ -785,6 +787,7 @@
           <div class="file-card-actions">
             <button class="btn-action btn-primary" onclick="openInternalExcelFile('${file.id}')"><i class="fa-solid fa-table"></i> Mở file</button>
             <button class="btn-action btn-neutral" onclick="downloadInternalExcelFile('${file.id}')"><i class="fa-solid fa-download"></i> Tải về</button>
+            <button class="btn-action btn-danger" onclick="deleteInternalExcelFile('${file.id}')"><i class="fa-solid fa-trash"></i> Xóa file</button>
           </div>
         </div>
       `).join('');
@@ -955,6 +958,56 @@
         hideLoader();
       }
     }
+
+    async function deleteInternalExcelFile(fileId) {
+      if (!ensureAdminAccess()) { redirectNonAdmin(); return; }
+      if (!state.currentFolderId || isArchiveFolder()) return;
+
+      const files = await loadFolderFiles(state.currentFolderId);
+      const fileMeta = files.find(file => file.id === fileId);
+      if (!fileMeta) {
+        alert('Không tìm thấy file Excel để xóa.');
+        return;
+      }
+
+      const confirmed = window.confirm('Bạn có chắc muốn xóa file sau không?\n\n' + fileMeta.fileName + '\n\nThao tác này sẽ xóa dữ liệu file khỏi danh sách hiện tại.');
+      if (!confirmed) return;
+
+      showLoader('Đang xóa file Excel...');
+      try {
+        const nextFiles = files.filter(file => file.id !== fileId);
+
+        try {
+          localStorage.removeItem(getFileDataLocalKey(fileId));
+        } catch (storageError) {
+          console.warn('Không thể xóa dữ liệu file ở local.', storageError);
+        }
+
+        if (db) {
+          try {
+            await withTimeout(db.collection(FILE_DATA_COLLECTION).doc(fileId).delete(), 4000);
+          } catch (cloudDeleteError) {
+            console.warn('Không thể xóa dữ liệu file trên Cloud.', cloudDeleteError);
+          }
+        }
+
+        await persistFolderFiles(state.currentFolderId, nextFiles);
+
+        if (state.currentFileId === fileId) {
+          state.currentFileId = null;
+          state.currentFileMeta = null;
+        }
+
+        renderFolderFileList(nextFiles);
+        alert('Đã xóa file thành công.');
+      } catch (error) {
+        console.error('Không thể xóa file:', error);
+        alert('Không thể xóa file: ' + error.message);
+      } finally {
+        hideLoader();
+      }
+    }
+
 
     // Nhóm các file lưu trữ theo Năm và Tháng
     function renderModernArchiveUI(entries) {

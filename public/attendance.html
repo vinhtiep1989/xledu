@@ -141,9 +141,28 @@
         .attendance-summary-days { font-size: 0.74rem; color: var(--text-dark); line-height: 1.4; margin-top: 3px; display: flex; flex-direction: column; gap: 3px; }
         .attendance-summary-day-item { padding: 3px 6px; border-radius: 6px; background: #f8faf9; border: 1px solid #edf3ef; }
         .attendance-summary-updated { font-size: 0.68rem; color: #7f8c8d; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-grey); }
+        
         .attendance-teacher-empty { padding: 10px 12px; background: #f8faf9; border-radius: 8px; border: 1px dashed var(--border-grey); font-size: 0.8rem; color: #666; }
 
-        /* MODAL THÊM HỌC SINH */
+        .admin-teaching-payout-panel { display: none; }
+        .admin-teaching-payout-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 14px; }
+        .admin-teaching-payout-summary-card { background: #f8faf9; border: 1px solid var(--border-grey); border-radius: 10px; padding: 10px 12px; }
+        .admin-teaching-payout-summary-value { display: block; font-size: 1.08rem; font-weight: 800; color: var(--primary-green); line-height: 1.15; }
+        .admin-teaching-payout-summary-label { display: block; font-size: 0.73rem; color: #66727f; margin-top: 3px; }
+        .admin-teaching-payout-table { min-width: 720px; font-size: 0.8rem; }
+        .admin-teaching-payout-table th,
+        .admin-teaching-payout-table td { padding: 8px 10px; border: 1px solid var(--border-grey); }
+        .admin-teaching-payout-table thead th { background: #112031; color: #fff; text-align: center; }
+        .admin-teaching-payout-table tbody td { background: #fff; }
+        .admin-teaching-payout-table tfoot th { background: #e8f1ec; color: var(--text-dark); font-weight: 800; }
+        .admin-teaching-payout-name { font-weight: 800; color: var(--text-dark); }
+        .admin-teaching-payout-email { font-size: 0.72rem; color: #7f8c8d; margin-top: 3px; word-break: break-word; }
+        .teacher-payout-percent-wrap { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+        .teacher-payout-percent-input { width: 78px; padding: 6px 8px; border: 1px solid #ccd8d2; border-radius: 6px; text-align: right; font-size: 0.82rem; font-weight: 700; outline: none; }
+        .teacher-payout-percent-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 2px rgba(224,170,62,0.12); }
+        .admin-teaching-payout-note { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: #f8faf9; border: 1px dashed var(--border-grey); color: #607080; font-size: 0.78rem; line-height: 1.55; }
+
+/* MODAL THÊM HỌC SINH */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px;}
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--bg-card-white); width: 100%; max-width: 450px; padding: 25px; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: all 0.3s ease; border-top: 4px solid var(--accent-gold); }
@@ -185,8 +204,12 @@
         .bulk-readonly { background: #f1f5f4; color: #607080; font-weight: 700; }
         .bulk-remove-btn { width: 38px; height: 38px; border: none; border-radius: 8px; background: rgba(231,76,60,0.1); color: #c0392b; cursor: pointer; font-size: 1rem; }
         .helper-text { margin-top: 12px; font-size: 0.78rem; color: #7f8c8d; line-height: 1.5; }
-        .toast-notification { position: fixed; top: 100px; right: -350px; background-color: var(--bg-card-white); border-left: 5px solid var(--primary-green); padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 15px; z-index: 2000; transition: right 0.4s ease; }
-        .toast-notification.show { right: 20px; }
+        .toast-notification { position: fixed; top: 96px; right: 12px; max-width: min(280px, calc(100vw - 24px)); background-color: var(--bg-card-white); border-left: 4px solid var(--primary-green); padding: 10px 12px; border-radius: 10px; box-shadow: 0 10px 24px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 10px; z-index: 2000; opacity: 0; pointer-events: none; transform: translateX(calc(100% + 24px)); transition: transform 0.25s ease, opacity 0.25s ease; }
+        .toast-notification.show { opacity: 1; transform: translateX(0); }
+        .toast-icon { font-size: 1rem; color: var(--primary-green); line-height: 1; }
+        .toast-text h4 { font-size: 0.88rem; line-height: 1.2; color: var(--text-dark); margin: 0; font-weight: 800; }
+        .toast-text p { font-size: 0.76rem; line-height: 1.35; color: #607080; margin: 3px 0 0; }
+        .toast-notification.compact .toast-text p { display: none; }
 
 
         @media (max-width: 1024px) {
@@ -271,8 +294,10 @@
             .att-legend strong { grid-column: 1 / -1; }
             .att-info-box { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; font-size: 0.8rem; }
             .btn-save-att { width: 100%; min-height: 44px; border-radius: 10px; }
-            .toast-notification { top: 82px; right: -360px; max-width: calc(100vw - 24px); }
-            .toast-notification.show { right: 12px; }
+            .toast-notification { top: 82px; right: 12px; max-width: calc(100vw - 24px); padding: 9px 11px; }
+            .toast-icon { font-size: 0.95rem; }
+            .toast-text h4 { font-size: 0.82rem; }
+            .toast-text p { font-size: 0.72rem; }
         }
 
         @media (max-width: 768px) {
@@ -360,7 +385,7 @@
             </div>
 
             <div class="panel">
-                <div class="attendance-stats-panel-title"><i class="fa-solid fa-clipboard-user"></i> THỐNG KÊ <span>GIÁO VIÊN ĐIỂM DANH</span></div>
+                <div class="attendance-stats-panel-title"><i class="fa-solid fa-clipboard-user"></i> THỐNG KÊ <span>ĐIỂM DANH & CHỈNH SỬA</span></div>
                 <div id="attendanceTeacherStats" class="attendance-teacher-stats">
                     <div class="attendance-teacher-empty">Chưa có dữ liệu điểm danh trong tháng này.</div>
                 </div>
@@ -389,6 +414,48 @@
                     <button class="btn-save-att" onclick="saveAttendance()"><i class="fa-solid fa-floppy-disk"></i> Chốt & Lưu Điểm Danh</button>
                 </div>
             </div>
+
+            <div class="panel admin-teaching-payout-panel" id="adminTeachingPayoutPanel">
+                <div class="attendance-stats-panel-title"><i class="fa-solid fa-calculator"></i> BẢNG TÍNH <span>TIỀN GIẢNG DẠY</span></div>
+                <div class="admin-teaching-payout-summary" id="adminTeachingPayoutSummary">
+                    <div class="admin-teaching-payout-summary-card">
+                        <span class="admin-teaching-payout-summary-value">0 ₫</span>
+                        <span class="admin-teaching-payout-summary-label">Tổng thu điểm danh trong tháng</span>
+                    </div>
+                    <div class="admin-teaching-payout-summary-card">
+                        <span class="admin-teaching-payout-summary-value">0</span>
+                        <span class="admin-teaching-payout-summary-label">Tổng số buổi học thực tế</span>
+                    </div>
+                    <div class="admin-teaching-payout-summary-card">
+                        <span class="admin-teaching-payout-summary-value">0 ₫</span>
+                        <span class="admin-teaching-payout-summary-label">Đơn giá 1 buổi</span>
+                    </div>
+                    <div class="admin-teaching-payout-summary-card">
+                        <span class="admin-teaching-payout-summary-value">0 ₫</span>
+                        <span class="admin-teaching-payout-summary-label">Tổng thực nhận giáo viên</span>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table class="admin-teaching-payout-table">
+                        <thead>
+                            <tr>
+                                <th style="min-width:220px;">Họ và tên</th>
+                                <th style="width:120px;">Số buổi</th>
+                                <th style="width:120px;">%</th>
+                                <th style="min-width:170px;">Tổng tiền giảng dạy</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTeachingPayoutBody">
+                            <tr><td colspan="4" class="col-center" style="padding: 18px;">Đang tải dữ liệu giáo viên...</td></tr>
+                        </tbody>
+                        <tfoot id="adminTeachingPayoutFoot"></tfoot>
+                    </table>
+                </div>
+                <div class="admin-teaching-payout-note" id="adminTeachingPayoutNote">
+                    Tổng tiền giảng dạy = (tổng thu điểm danh trong tháng / tổng số buổi học thực tế) × số buổi của giáo viên × % được hưởng.
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -454,12 +521,23 @@
         const urlParams = new URLSearchParams(window.location.search);
         const classId = urlParams.get('id');
 
-        function showToast(title, message) {
+        let toastTimer = null;
+        function showToast(title, message = '', duration = 3000) {
             const toast = document.getElementById('success-toast');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastMessage').innerText = message;
+            const titleEl = document.getElementById('toastTitle');
+            const messageEl = document.getElementById('toastMessage');
+            if (!toast || !titleEl || !messageEl) return;
+            if (toastTimer) clearTimeout(toastTimer);
+            titleEl.innerText = title || 'Đã lưu';
+            messageEl.innerText = message || '';
+            toast.classList.toggle('compact', !message);
+            toast.classList.remove('show');
+            void toast.offsetWidth;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+                toastTimer = null;
+            }, Math.max(1000, Number(duration) || 3000));
         }
         window.showToast = showToast;
 
@@ -467,9 +545,10 @@
         let currentMonthKey = '';
         let currentMonthNumber = 0;
         let currentYearNumber = 0;
-        let currentUserInfo = { email: '', displayName: '', role: 'teacher' };
+        let currentUserInfo = { email: '', displayName: '', role: 'teacher', roles: ['teacher'] };
         let originalAttendanceSnapshot = {};
         let attendanceTeacherLog = {};
+        let attendanceManagerEditLog = {};
         let attendanceDayOffLog = {};
         let classRealtimeUnsubscribe = null;
         let teacherDirectoryByEmail = {};
@@ -483,6 +562,9 @@
         let localDayOffState = {};
         let currentAttendanceAccess = null;
         let attendanceAccessTimer = null;
+        let userRolesByEmail = {};
+        let assignedTeachingRoster = [];
+        let teachingPayoutSettings = {};
 
         const CLASS_DURATION_MINUTES = 120;
         const OPEN_BEFORE_MINUTES = 60;
@@ -492,6 +574,52 @@
         function normalizeTextLower(value) { return normalizeText(value).toLowerCase(); }
         function normalizeEmail(email) { return normalizeText(email).toLowerCase(); }
         function normalizeCode(code) { return normalizeText(code).toUpperCase(); }
+        function normalizeRoleToken(value) {
+            const raw = normalizeTextLower(value);
+            if (!raw) return '';
+            if (['admin', 'administrator', 'superadmin', 'super-admin'].includes(raw)) return 'admin';
+            if (['manager', 'management', 'quanly', 'quan-ly', 'quản lý', 'supervisor'].includes(raw)
+                || raw.includes('manager')
+                || raw.includes('quan ly')
+                || raw.includes('quản lý')
+                || raw.includes('quanly')) return 'manager';
+            if (['teacher', 'giao vien', 'giáo viên', 'giaovien'].includes(raw)
+                || raw.includes('teacher')
+                || raw.includes('giao vien')
+                || raw.includes('giáo viên')
+                || raw.includes('giaovien')) return 'teacher';
+            return '';
+        }
+        function normalizeRoles(source) {
+            const rawRoles = Array.isArray(source)
+                ? source
+                : (Array.isArray(source && source.roles) ? source.roles : ((source && source.role) ? [source.role] : [source]));
+            const cleaned = rawRoles
+                .map(normalizeRoleToken)
+                .filter(role => ['teacher', 'manager', 'admin'].includes(role));
+            const unique = Array.from(new Set(cleaned));
+            return unique.length ? unique : ['teacher'];
+        }
+        function hasRole(source, role) {
+            return normalizeRoles(source).includes(normalizeRoleToken(role));
+        }
+        function getPrimaryRole(source) {
+            const roles = normalizeRoles(source);
+            if (roles.includes('admin')) return 'admin';
+            if (roles.includes('manager')) return 'manager';
+            return 'teacher';
+        }
+        function isAdminRole(role) {
+            return hasRole(role, 'admin');
+        }
+        function isManagerRole(role) {
+            return hasRole(role, 'manager') && !hasRole(role, 'admin');
+        }
+        function getRoleBadgeLabel(role) {
+            if (isAdminRole(role)) return 'Admin';
+            if (isManagerRole(role)) return 'Quản lý';
+            return 'Giáo viên';
+        }
         function digitsOnly(value) { return String(value || '').replace(/\D+/g, ''); }
         function formatDateInputValue(value) {
             const raw = normalizeText(value);
@@ -602,13 +730,248 @@
             }
             return getPeopleArray(managers);
         }
+
         function getTeachersFromClassData(data) {
             const teachers = [];
             if (Array.isArray(data && data.teachers)) teachers.push(...data.teachers);
             if (data && data.teacherName && !Array.isArray(data.teachers)) teachers.push({ name: data.teacherName, email: data.teacherEmail || '' });
             return getPeopleArray(teachers);
         }
-        function parseTimeToMinutes(value) {
+        function formatCurrencyVnd(value) {
+            const safeValue = Number(value) || 0;
+            return `${Math.round(safeValue).toLocaleString('vi-VN')} ₫`;
+        }
+        function getTeacherPayoutKey(teacher) {
+            const email = normalizeEmail(teacher && teacher.email);
+            const name = normalizeTextLower(teacher && teacher.name);
+            return email ? `email_${hashString(email)}` : `name_${hashString(name || 'teacher')}`;
+        }
+        function clampTeachingPercent(value) {
+            const parsed = Number(String(value).replace(',', '.'));
+            if (!Number.isFinite(parsed)) return 70;
+            return Math.min(100, Math.max(0, Math.round(parsed * 10) / 10));
+        }
+        function getCurrentMonthTeachingPayoutSettings(data = currentClassInfo) {
+            const monthConfig = data && data.teachingPayoutSettings && data.teachingPayoutSettings[currentMonthKey];
+            return monthConfig && typeof monthConfig === 'object' ? monthConfig : {};
+        }
+        async function ensureUserProfilesLoaded(emails = []) {
+            const normalizedEmails = Array.from(new Set((emails || []).map(normalizeEmail).filter(Boolean)));
+            const missingEmails = normalizedEmails.filter(email => !(email in teacherDirectoryByEmail) || !(email in userRolesByEmail));
+            if (!missingEmails.length) return;
+            const chunkSize = 10;
+            for (let i = 0; i < missingEmails.length; i += chunkSize) {
+                const chunk = missingEmails.slice(i, i + chunkSize);
+                try {
+                    const snapshot = await db.collection('users').where('email', 'in', chunk).get();
+                    snapshot.forEach((doc) => {
+                        const userData = doc.data() || {};
+                        const email = normalizeEmail(userData.email);
+                        if (!email) return;
+                        teacherDirectoryByEmail[email] = userData.fullName || userData.displayName || userData.name || userData.email || email;
+                        userRolesByEmail[email] = normalizeRoles(userData);
+                    });
+                } catch (_) {}
+                chunk.forEach((email) => {
+                    if (!(email in teacherDirectoryByEmail)) teacherDirectoryByEmail[email] = email;
+                    if (!(email in userRolesByEmail)) userRolesByEmail[email] = ['teacher'];
+                });
+            }
+        }
+        async function refreshAssignedTeachingRoster() {
+            const classTeachers = getTeachersFromClassData(currentClassInfo);
+            const managerList = getManagersFromClassData(currentClassInfo);
+            const emailsToLoad = [...classTeachers, ...managerList].map(item => item.email);
+            await ensureUserProfilesLoaded(emailsToLoad);
+            assignedTeachingRoster = classTeachers
+                .filter((teacher) => !!(teacher && (teacher.name || teacher.email)))
+                .map((teacher) => {
+                    const email = normalizeEmail(teacher.email);
+                    const name = teacherDirectoryByEmail[email] || normalizeText(teacher.name) || email || 'Chưa rõ';
+                    return {
+                        key: getTeacherPayoutKey({ email, name }),
+                        email,
+                        name
+                    };
+                });
+            teachingPayoutSettings = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo) };
+            toggleAdminTeachingPayoutPanel();
+        }
+        function getAttendanceFinancialMetrics() {
+            const metrics = {
+                daySums: new Array(currentMonthDays).fill(0),
+                grandTotal: 0,
+                globalSessions: 0,
+                activeStudyDays: 0,
+                revenuePerStudyDay: 0,
+                dayActivityMap: {}
+            };
+            studentsData.forEach((st) => {
+                const selects = document.querySelectorAll(`.day-select-${st.id}`);
+                let countForTuition = 0;
+                selects.forEach((sel) => {
+                    const day = Number(sel.dataset.day || 0);
+                    const val = sel.value;
+                    if (!day || isDayOff(day)) return;
+                    if (['V', 'P', 'M', 'ĐB'].includes(val)) {
+                        countForTuition++;
+                        metrics.daySums[day - 1] += 1;
+                        metrics.globalSessions += 1;
+                        metrics.dayActivityMap[day] = true;
+                    }
+                });
+                const tuitionInput = document.querySelector(`.tuition-${st.id}`);
+                const tuitionVal = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
+                metrics.grandTotal += countForTuition * tuitionVal;
+            });
+            metrics.activeStudyDays = Object.keys(metrics.dayActivityMap).length;
+            metrics.revenuePerStudyDay = metrics.activeStudyDays ? (metrics.grandTotal / metrics.activeStudyDays) : 0;
+            return metrics;
+        }
+        function getTeacherSessionCount(teacher, metrics = getAttendanceFinancialMetrics()) {
+            const teacherEmail = normalizeEmail(teacher && teacher.email);
+            const teacherName = normalizeTextLower(teacher && teacher.name);
+            return Object.keys(attendanceTeacherLog || {}).reduce((count, dayKey) => {
+                const day = Number(dayKey);
+                const record = attendanceTeacherLog[dayKey];
+                if (!record || !day || isDayOff(day) || !metrics.dayActivityMap[day]) return count;
+                const recordEmail = normalizeEmail(record.teacherEmail || record.reportedByEmail);
+                const recordName = normalizeTextLower(resolveTeacherName(record) || record.teacherName || record.reportedByName);
+                const emailMatched = teacherEmail && recordEmail && teacherEmail === recordEmail;
+                const nameMatched = teacherName && recordName && teacherName === recordName;
+                return (emailMatched || (!teacherEmail && nameMatched) || (teacherEmail && !recordEmail && nameMatched)) ? count + 1 : count;
+            }, 0);
+        }
+        function toggleAdminTeachingPayoutPanel() {
+            const panel = document.getElementById('adminTeachingPayoutPanel');
+            if (!panel) return;
+            panel.style.display = hasRole(currentUserInfo, 'admin') ? 'block' : 'none';
+        }
+        function getTeachingPayoutPercentForTeacher(teacherKey) {
+            const currentInputs = document.querySelector(`.teacher-payout-percent-input[data-teacher-key="${teacherKey}"]`);
+            if (currentInputs) return clampTeachingPercent(currentInputs.value);
+            return clampTeachingPercent(teachingPayoutSettings[teacherKey]);
+        }
+        function updateTeachingPayoutPreview() {
+            if (!hasRole(currentUserInfo, 'admin')) return;
+            const panel = document.getElementById('adminTeachingPayoutPanel');
+            if (!panel) return;
+            const metrics = getAttendanceFinancialMetrics();
+            let totalTeacherSessions = 0;
+            let totalTeacherPayout = 0;
+            assignedTeachingRoster.forEach((teacher) => {
+                const row = document.querySelector(`tr[data-teacher-key="${teacher.key}"]`);
+                if (!row) return;
+                const sessionCount = getTeacherSessionCount(teacher, metrics);
+                const percent = getTeachingPayoutPercentForTeacher(teacher.key);
+                const grossAmount = metrics.revenuePerStudyDay * sessionCount;
+                const payoutAmount = grossAmount * percent / 100;
+                totalTeacherSessions += sessionCount;
+                totalTeacherPayout += payoutAmount;
+                const sessionCell = row.querySelector('.teacher-session-count');
+                const amountCell = row.querySelector('.teacher-payout-amount');
+                if (sessionCell) sessionCell.innerText = sessionCount;
+                if (amountCell) {
+                    amountCell.innerText = formatCurrencyVnd(payoutAmount);
+                    amountCell.title = `Tổng trước phần trăm: ${formatCurrencyVnd(grossAmount)} · Đơn giá 1 buổi: ${formatCurrencyVnd(metrics.revenuePerStudyDay)}`;
+                }
+            });
+            const summary = document.getElementById('adminTeachingPayoutSummary');
+            if (summary) {
+                summary.innerHTML = `
+                    <div class="admin-teaching-payout-summary-card">
+                        <span class="admin-teaching-payout-summary-value">${formatCurrencyVnd(metrics.grandTotal)}</span>
+                        <span class="admin-teaching-payout-summary-label">Tổng thu điểm danh trong tháng</span>
+                    </div>
+                    <div class="admin-teaching-payout-summary-card">
+                        <span class="admin-teaching-payout-summary-value">${metrics.activeStudyDays}</span>
+                        <span class="admin-teaching-payout-summary-label">Tổng số buổi học thực tế</span>
+                    </div>
+                    <div class="admin-teaching-payout-summary-card">
+                        <span class="admin-teaching-payout-summary-value">${formatCurrencyVnd(metrics.revenuePerStudyDay)}</span>
+                        <span class="admin-teaching-payout-summary-label">Đơn giá 1 buổi</span>
+                    </div>
+                    <div class="admin-teaching-payout-summary-card">
+                        <span class="admin-teaching-payout-summary-value">${formatCurrencyVnd(totalTeacherPayout)}</span>
+                        <span class="admin-teaching-payout-summary-label">Tổng thực nhận giáo viên</span>
+                    </div>
+                `;
+            }
+            const foot = document.getElementById('adminTeachingPayoutFoot');
+            if (foot) {
+                foot.innerHTML = `
+                    <tr>
+                        <th style="text-align:left;">TỔNG CỘNG</th>
+                        <th>${totalTeacherSessions}</th>
+                        <th></th>
+                        <th>${formatCurrencyVnd(totalTeacherPayout)}</th>
+                    </tr>
+                `;
+            }
+            const note = document.getElementById('adminTeachingPayoutNote');
+            if (note) {
+                note.innerHTML = `Tổng tiền giảng dạy = (tổng thu điểm danh trong tháng <strong>${formatCurrencyVnd(metrics.grandTotal)}</strong> / tổng số buổi học thực tế <strong>${metrics.activeStudyDays}</strong>) × số buổi của giáo viên × % được hưởng.`;
+            }
+        }
+        function renderAdminTeachingPayoutPanel() {
+            const panel = document.getElementById('adminTeachingPayoutPanel');
+            const tbody = document.getElementById('adminTeachingPayoutBody');
+            if (!panel || !tbody) return;
+            toggleAdminTeachingPayoutPanel();
+            if (!hasRole(currentUserInfo, 'admin')) return;
+            if (!assignedTeachingRoster.length) {
+                tbody.innerHTML = '<tr><td colspan="4" class="col-center" style="padding: 18px;">Lớp này chưa có giáo viên giảng dạy hợp lệ để tính tiền.</td></tr>';
+                const foot = document.getElementById('adminTeachingPayoutFoot');
+                if (foot) foot.innerHTML = '';
+                updateTeachingPayoutPreview();
+                return;
+            }
+            const metrics = getAttendanceFinancialMetrics();
+            tbody.innerHTML = assignedTeachingRoster.map((teacher) => {
+                const percent = getTeachingPayoutPercentForTeacher(teacher.key);
+                const sessionCount = getTeacherSessionCount(teacher, metrics);
+                const payoutAmount = metrics.revenuePerStudyDay * sessionCount * percent / 100;
+                const emailHtml = teacher.email && teacher.email !== teacher.name ? `<div class="admin-teaching-payout-email">${escapeHtml(teacher.email)}</div>` : '';
+                return `
+                    <tr data-teacher-key="${teacher.key}">
+                        <td>
+                            <div class="admin-teaching-payout-name">${escapeHtml(teacher.name)}</div>
+                            ${emailHtml}
+                        </td>
+                        <td class="col-center teacher-session-count">${sessionCount}</td>
+                        <td class="col-center">
+                            <div class="teacher-payout-percent-wrap">
+                                <input type="number" class="teacher-payout-percent-input" data-teacher-key="${teacher.key}" min="0" max="100" step="0.1" value="${percent}">
+                                <span>%</span>
+                            </div>
+                        </td>
+                        <td class="col-right money-text teacher-payout-amount">${formatCurrencyVnd(payoutAmount)}</td>
+                    </tr>
+                `;
+            }).join('');
+            updateTeachingPayoutPreview();
+        }
+        async function persistTeachingPayoutPercent(teacherKey, rawValue) {
+            if (!hasRole(currentUserInfo, 'admin')) return;
+            const percent = clampTeachingPercent(rawValue);
+            const input = document.querySelector(`.teacher-payout-percent-input[data-teacher-key="${teacherKey}"]`);
+            if (input) input.value = percent;
+            teachingPayoutSettings = { ...teachingPayoutSettings, [teacherKey]: percent };
+            updateTeachingPayoutPreview();
+            const updateData = {};
+            updateData[`teachingPayoutSettings.${currentMonthKey}`] = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo), ...teachingPayoutSettings };
+            await db.collection('classes').doc(classId).set(updateData, { merge: true });
+            currentClassInfo = {
+                ...(currentClassInfo || {}),
+                teachingPayoutSettings: {
+                    ...((currentClassInfo && currentClassInfo.teachingPayoutSettings) || {}),
+                    [currentMonthKey]: { ...updateData[`teachingPayoutSettings.${currentMonthKey}`] }
+                }
+            };
+            showToast('Đã lưu tỷ lệ', 'Tỷ lệ hưởng tiền giảng dạy đã được cập nhật.');
+        }
+
+function parseTimeToMinutes(value) {
             const parts = String(value || '').split(':');
             if (parts.length !== 2) return NaN;
             const hour = Number(parts[0]);
@@ -642,7 +1005,8 @@
             return { statusKey: fallbackActive ? 'online' : 'offline', canAttend: !!fallbackActive };
         }
         function getAttendanceAccessScope(classData, now = new Date()) {
-            const role = String((currentUserInfo && currentUserInfo.role) || 'teacher').trim().toLowerCase();
+            const role = getPrimaryRole(currentUserInfo);
+            const roles = normalizeRoles(currentUserInfo);
             const currentEmail = normalizeEmail(currentUserInfo && currentUserInfo.email);
             const currentNameKey = normalizeTextLower(currentUserInfo && currentUserInfo.displayName);
             const currentKey = currentEmail || currentNameKey;
@@ -650,45 +1014,66 @@
             const teachers = getTeachersFromClassData(classData);
             const managerKeys = managers.map(normalizePersonKey);
             const teacherKeys = teachers.map(normalizePersonKey);
-            const isAdmin = role === 'admin';
+            const isAdmin = roles.includes('admin');
+            const isRoleManager = roles.includes('manager');
             const isAssignedManager = !!currentKey && managerKeys.includes(currentKey);
             const isAssignedTeacher = !!currentKey && teacherKeys.includes(currentKey);
             const realtimeState = getClassRealtimeState(classData, now);
-            const canManageAnytime = isAdmin || isAssignedManager;
+            const isManagerEditor = isAdmin || isRoleManager || isAssignedManager;
+            const canManageAnytime = isManagerEditor;
             const canManageAttendance = canManageAnytime || (isAssignedTeacher && realtimeState.canAttend);
             return {
                 role,
+                roles,
                 isAdmin,
+                isRoleManager,
                 isAssignedManager,
                 isAssignedTeacher,
+                isManagerEditor,
                 realtimeState,
                 canManageAnytime,
                 canManageAttendance,
+                canSaveAttendance: canManageAttendance,
+                canManageStudents: canManageAnytime,
+                canEditTuition: canManageAnytime,
+                canMarkDayOff: canManageAnytime,
                 canAccessPage: canManageAttendance,
                 denyMessage: isAssignedTeacher
-                    ? 'Bạn là giáo viên của lớp này nhưng chỉ được vào trang điểm danh khi lớp đang trong ca học. Quản lý được gán hoặc Admin mới được truy cập khi lớp offline.'
-                    : 'Bạn không có quyền truy cập trang điểm danh của lớp này. Chỉ Admin, quản lý được gán hoặc giáo viên được gán trong ca học mới được phép vào.'
+                    ? 'Bạn là giáo viên của lớp này nhưng chỉ được vào trang điểm danh khi lớp đang trong ca học. Quản lý hoặc Admin mới được truy cập khi lớp offline.'
+                    : 'Bạn không có quyền truy cập trang điểm danh của lớp này. Chỉ Admin, tài khoản quản lý hoặc giáo viên được gán trong ca học mới được phép vào.'
             };
         }
+        function setControlPermission(control, canUse, deniedTitle) {
+            if (!control) return;
+            control.disabled = !canUse;
+            if (!control.dataset.lockedTitle) control.dataset.lockedTitle = control.title || '';
+            control.title = canUse ? (control.dataset.lockedTitle || '') : deniedTitle;
+        }
         function applyAttendancePermissionUi(access) {
-            const canManage = !!(access && access.canManageAttendance);
-            const actionButtons = [
-                document.getElementById('btnMarkTodayOff'),
-                document.getElementById('btnOpenAddStudentModal'),
-                document.querySelector('.btn-delete-hs'),
-                document.querySelector('.btn-save-att'),
-                document.getElementById('btnAddAttendanceStudentRow'),
-                document.getElementById('btnFillAttendanceCodes'),
-                document.getElementById('btnSaveStudent')
-            ].filter(Boolean);
-            actionButtons.forEach((button) => {
-                button.disabled = !canManage;
-                if (!canManage && !button.dataset.lockedTitle) button.dataset.lockedTitle = button.title || '';
-                button.title = canManage ? (button.dataset.lockedTitle || '') : 'Bạn không có quyền thao tác tại trang điểm danh của lớp này.';
-            });
+            const canAttend = !!(access && access.canManageAttendance);
+            const canSave = !!(access && access.canSaveAttendance);
+            const canManageStudents = !!(access && access.canManageStudents);
+            const canEditTuition = !!(access && access.canEditTuition);
+            const canMarkDayOff = !!(access && access.canMarkDayOff);
+
+            setControlPermission(document.querySelector('.btn-save-att'), canSave, 'Bạn không có quyền lưu điểm danh của lớp này.');
+            setControlPermission(document.getElementById('btnMarkTodayOff'), canMarkDayOff, 'Chỉ quản lý hoặc Admin mới được báo nghỉ toàn buổi.');
+            setControlPermission(document.getElementById('btnOpenAddStudentModal'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được thêm học sinh tại trang điểm danh.');
+            setControlPermission(document.querySelector('.btn-delete-hs'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được xóa học sinh tại trang điểm danh.');
+            setControlPermission(document.getElementById('btnAddAttendanceStudentRow'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được thêm dòng học sinh.');
+            setControlPermission(document.getElementById('btnFillAttendanceCodes'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được gán mã lớp.');
+            setControlPermission(document.getElementById('btnSaveStudent'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được lưu học sinh.');
+
             document.querySelectorAll('.tuition-input').forEach((input) => {
-                input.disabled = !canManage;
-                input.title = canManage ? '' : 'Bạn không có quyền chỉnh sửa học phí tại trang điểm danh.';
+                input.disabled = !canEditTuition;
+                input.title = canEditTuition ? '' : 'Giáo viên không được chỉnh sửa học phí tại trang điểm danh.';
+            });
+
+            document.querySelectorAll('.att-select').forEach((select) => {
+                if (!canAttend) {
+                    select.disabled = true;
+                    select.title = 'Bạn không có quyền điểm danh ở lớp này tại thời điểm hiện tại.';
+                }
             });
         }
         function redirectAttendanceAccessDenied(message) {
@@ -720,11 +1105,19 @@
             }
             return access;
         }
+        function enforceManagerPermission(actionLabel) {
+            const access = currentClassInfo ? ensureAttendancePageAccess(currentClassInfo) : currentAttendanceAccess;
+            if (!access || !access.canManageAnytime) {
+                throw new Error(`Chỉ quản lý hoặc Admin mới có quyền ${actionLabel} cho lớp này.`);
+            }
+            return access;
+        }
         function syncAdminOnlyMenu(role) {
-            const isAdmin = String(role || '').toLowerCase() === 'admin';
+            const isAdmin = hasRole(role, 'admin');
             document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
                 item.style.display = isAdmin ? 'flex' : 'none';
             });
+            toggleAdminTeachingPayoutPanel();
         }
         function getTeacherDisplayName(userDocData, user) {
             if (userDocData) return userDocData.fullName || userDocData.displayName || userDocData.name || user.email;
@@ -744,15 +1137,49 @@
         function formatAttendanceDay(day) {
             return `${String(day).padStart(2, '0')}/${String(currentMonthNumber).padStart(2, '0')}`;
         }
+        function getMonthlyLogEntries(sourceData, rootKey, monthKey) {
+            const data = sourceData || {};
+            const nestedMonthLog = data && data[rootKey] && data[rootKey][monthKey];
+            if (nestedMonthLog && typeof nestedMonthLog === 'object' && !Array.isArray(nestedMonthLog)) {
+                return nestedMonthLog;
+            }
+            const prefix = `${rootKey}.${monthKey}.`;
+            const flatLog = {};
+            Object.keys(data).forEach((key) => {
+                if (!key.startsWith(prefix)) return;
+                const dayKey = key.slice(prefix.length);
+                if (!dayKey) return;
+                flatLog[dayKey] = data[key];
+            });
+            return flatLog;
+        }
         function getAttendanceLockRecord(day) {
             return (attendanceTeacherLog && attendanceTeacherLog[String(day)]) || null;
+        }
+        function getManagerEditRecord(day) {
+            return (attendanceManagerEditLog && attendanceManagerEditLog[String(day)]) || null;
+        }
+        function resolveManagerEditName(record) {
+            if (!record) return 'Chưa rõ';
+            return record.editorName || teacherDirectoryByEmail[normalizeEmail(record.editorEmail)] || record.editorEmail || 'Chưa rõ';
+        }
+        function buildManagerEditReason(day, record) {
+            const editorName = resolveManagerEditName(record);
+            const roleLabel = getRoleBadgeLabel(record && record.editorRole);
+            return `Ngày ${formatAttendanceDay(day)} đã được ${editorName} (${roleLabel}) chỉnh sửa/chốt lại. Giáo viên không thể sửa ngày này.`;
+        }
+        function isManagerAttendanceEditor(access = currentAttendanceAccess) {
+            return !!(access && access.isManagerEditor);
+        }
+        function canCurrentUserOverrideAttendanceLock(access = currentAttendanceAccess) {
+            return isManagerAttendanceEditor(access);
         }
         function isCurrentUserAttendanceOwner(day, logSource = attendanceTeacherLog) {
             const record = (logSource && logSource[String(day)]) || null;
             const ownerEmail = normalizeEmail(record && record.teacherEmail);
             const myEmail = normalizeEmail(currentUserInfo && currentUserInfo.email);
             if (!record || !ownerEmail || !myEmail) return true;
-            return ownerEmail === myEmail;
+            return ownerEmail === myEmail || canCurrentUserOverrideAttendanceLock();
         }
         function buildLockReason(day, record) {
             const ownerName = resolveTeacherName(record);
@@ -766,7 +1193,7 @@
             const ownerEmail = normalizeEmail(record && (record.reportedByEmail || record.teacherEmail));
             const myEmail = normalizeEmail(currentUserInfo && currentUserInfo.email);
             if (!record || !ownerEmail || !myEmail) return true;
-            return ownerEmail === myEmail;
+            return ownerEmail === myEmail || canCurrentUserOverrideAttendanceLock();
         }
         function buildDayOffReason(day, record) {
             const ownerName = resolveTeacherName(record);
@@ -810,11 +1237,11 @@
             const btn = document.getElementById('btnMarkTodayOff');
             if (!btn) return;
             const today = getTodayDay();
-            if (!(currentAttendanceAccess && currentAttendanceAccess.canManageAttendance)) {
+            if (!(currentAttendanceAccess && currentAttendanceAccess.canMarkDayOff)) {
                 btn.disabled = true;
                 btn.classList.remove('active');
                 btn.innerHTML = '<i class="fa-solid fa-bed"></i> Báo nghỉ hôm nay';
-                btn.title = 'Bạn không có quyền báo nghỉ trên lớp này.';
+                btn.title = 'Chỉ quản lý hoặc Admin mới được báo nghỉ trên lớp này.';
                 return;
             }
             if (!today) {
@@ -863,21 +1290,25 @@
                 const day = String(select.dataset.day || '');
                 const dayNumber = Number(day);
                 const record = getAttendanceLockRecord(day);
+                const managerEditRecord = getManagerEditRecord(day);
                 const dayOffRecord = getDayOffRecord(day);
                 const lockedByOther = !!record && !isCurrentUserAttendanceOwner(day);
+                const lockedByManagerEdit = !!managerEditRecord && !isManagerAttendanceEditor(currentAttendanceAccess);
                 const futureDay = isFutureDay(dayNumber);
                 const dayOff = isDayOff(day);
                 const blockedByPermission = !(currentAttendanceAccess && currentAttendanceAccess.canManageAttendance);
-                const disabled = blockedByPermission || lockedByOther || futureDay || dayOff;
-                activeAttendanceLocks[day] = lockedByOther;
+                const disabled = blockedByPermission || lockedByOther || lockedByManagerEdit || futureDay || dayOff;
+                activeAttendanceLocks[day] = lockedByOther || lockedByManagerEdit;
                 select.disabled = disabled;
-                select.classList.toggle('att-locked', lockedByOther);
+                select.classList.toggle('att-locked', lockedByOther || lockedByManagerEdit);
                 select.classList.toggle('att-day-off', dayOff);
                 select.classList.toggle('att-future-day', futureDay);
                 if (dayOff) {
                     select.title = dayOffRecord ? buildDayOffReason(day, dayOffRecord) : `Ngày ${formatAttendanceDay(day)} đã được báo nghỉ toàn buổi.`;
                 } else if (futureDay) {
                     select.title = `Chỉ được điểm danh đến ngày hiện tại. Không thể nhập trước cho ngày ${formatAttendanceDay(day)}.`;
+                } else if (lockedByManagerEdit) {
+                    select.title = buildManagerEditReason(day, managerEditRecord);
                 } else if (lockedByOther) {
                     select.title = buildLockReason(day, record);
                 } else {
@@ -888,7 +1319,7 @@
             const saveButton = document.querySelector('.btn-save-att');
             if (saveButton) {
                 const hasForeignLocks = Object.values(activeAttendanceLocks).some(Boolean);
-                saveButton.title = hasForeignLocks ? 'Các ngày đã được giáo viên khác chốt sẽ bị khóa chỉnh sửa.' : '';
+                saveButton.title = hasForeignLocks ? 'Một số ngày đã bị khóa do giáo viên hoặc quản lý/Admin đã chốt chỉnh sửa.' : (saveButton.dataset.lockedTitle || '');
             }
             refreshDayColumnVisuals();
             updateDayOffButtonState();
@@ -922,8 +1353,8 @@
         }
         async function ensureTeacherDirectoryLoaded() {
             const emailList = Array.from(new Set(
-                [...Object.values(attendanceTeacherLog || {}), ...Object.values(attendanceDayOffLog || {})]
-                    .map(record => normalizeEmail(record && (record.teacherEmail || record.reportedByEmail)))
+                [...Object.values(attendanceTeacherLog || {}), ...Object.values(attendanceManagerEditLog || {}), ...Object.values(attendanceDayOffLog || {})]
+                    .map(record => normalizeEmail(record && (record.teacherEmail || record.reportedByEmail || record.editorEmail)))
                     .filter(Boolean)
             ));
             const missingEmails = emailList.filter(email => !(email in teacherDirectoryByEmail));
@@ -979,48 +1410,119 @@
                     return a.teacherName.localeCompare(b.teacherName, 'vi');
                 });
         }
-        function renderAttendanceTeacherStats() {
-            const statsContainer = document.getElementById('attendanceTeacherStats');
-            if (!statsContainer) return;
-            const summaryItems = buildAttendanceTeacherSummary();
-            const totalSessions = Object.keys(attendanceTeacherLog || {}).filter(day => attendanceTeacherLog[day]).length;
-            if (summaryItems.length === 0) {
-                statsContainer.innerHTML = '<div class="attendance-teacher-empty">Chưa có dữ liệu điểm danh trong tháng này.</div>';
-                return;
-            }
-            const cardsHtml = summaryItems.map(item => {
-                const safeName = escapeHtml(item.teacherName || 'Chưa rõ');
-                const safeEmail = escapeHtml(item.teacherEmail || '');
-                const emailHtml = safeEmail && safeEmail.toLowerCase() !== safeName.toLowerCase() ? `<div class="attendance-summary-email">${safeEmail}</div>` : '';
-                const detailHtml = item.records.map(record => `<div class="attendance-summary-day-item">Ngày ${formatAttendanceDay(record.day)} · ${escapeHtml(formatFirestoreDateTime(record.updatedAt))}</div>`).join('');
-                const sessionText = item.sessionCount === 1 ? '1 buổi' : `${item.sessionCount} buổi`;
+        function buildAttendanceManagerEditSummary() {
+            const summaryMap = {};
+            const sortedDays = Object.keys(attendanceManagerEditLog || {})
+                .filter(day => attendanceManagerEditLog[day])
+                .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+            sortedDays.forEach(day => {
+                const record = attendanceManagerEditLog[day] || {};
+                const managerEmail = normalizeEmail(record.editorEmail || record.teacherEmail || record.reportedByEmail);
+                const managerName = resolveTeacherName({
+                    teacherEmail: managerEmail,
+                    teacherName: record.editorName || record.teacherName || record.reportedByName || record.editorEmail || 'Chưa rõ'
+                });
+                const key = managerEmail || managerName;
+                if (!summaryMap[key]) {
+                    summaryMap[key] = { managerName, managerEmail: record.editorEmail || managerEmail || '', records: [], updatedAt: record.updatedAt || null };
+                }
+                summaryMap[key].managerName = managerName;
+                if (!summaryMap[key].managerEmail && (record.editorEmail || managerEmail)) summaryMap[key].managerEmail = record.editorEmail || managerEmail || '';
+                summaryMap[key].records.push({ day: parseInt(day, 10), updatedAt: record.updatedAt || null });
+                if (record.updatedAt) summaryMap[key].updatedAt = record.updatedAt;
+            });
+            return Object.values(summaryMap)
+                .map(item => ({ ...item, records: item.records.sort((a, b) => a.day - b.day), editCount: item.records.length }))
+                .sort((a, b) => {
+                    if (b.editCount !== a.editCount) return b.editCount - a.editCount;
+                    return a.managerName.localeCompare(b.managerName, 'vi');
+                });
+        }
+        function renderAttendanceSummaryCards(items, config = {}) {
+            return items.map(item => {
+                const displayName = escapeHtml(item.displayName || item.teacherName || item.managerName || 'Chưa rõ');
+                const displayEmail = escapeHtml(item.displayEmail || item.teacherEmail || item.managerEmail || '');
+                const emailHtml = displayEmail && displayEmail.toLowerCase() !== displayName.toLowerCase() ? `<div class="attendance-summary-email">${displayEmail}</div>` : '';
+                const detailHtml = (item.records || []).map(record => `<div class="attendance-summary-day-item">Ngày ${formatAttendanceDay(record.day)} · ${escapeHtml(formatFirestoreDateTime(record.updatedAt))}</div>`).join('');
+                const badgeLabel = typeof config.badgeLabel === 'function' ? config.badgeLabel(item) : '';
+                const daysLabel = config.daysLabel || 'Ngày đã cập nhật';
+                const updatedLabel = config.updatedLabel || 'Cập nhật gần nhất';
                 return `
                     <div class="attendance-summary-card">
                         <div class="attendance-summary-card-top">
                             <div>
-                                <div class="attendance-summary-name">${safeName}</div>
+                                <div class="attendance-summary-name">${displayName}</div>
                                 ${emailHtml}
                             </div>
-                            <div class="attendance-summary-badge">${sessionText}/tháng</div>
+                            <div class="attendance-summary-badge">${badgeLabel}</div>
                         </div>
-                        <div class="attendance-summary-days-label">Ngày đã điểm danh</div>
+                        <div class="attendance-summary-days-label">${daysLabel}</div>
                         <div class="attendance-summary-days">${detailHtml}</div>
-                        <div class="attendance-summary-updated">Cập nhật gần nhất: ${escapeHtml(formatFirestoreDateTime(item.updatedAt))}</div>
+                        <div class="attendance-summary-updated">${updatedLabel}: ${escapeHtml(formatFirestoreDateTime(item.updatedAt))}</div>
                     </div>
                 `;
             }).join('');
+        }
+        function renderAttendanceTeacherStats() {
+            const statsContainer = document.getElementById('attendanceTeacherStats');
+            if (!statsContainer) return;
+            const teacherSummaryItems = buildAttendanceTeacherSummary();
+            const managerSummaryItems = buildAttendanceManagerEditSummary();
+            const totalTeacherSessions = Object.keys(attendanceTeacherLog || {}).filter(day => attendanceTeacherLog[day]).length;
+            const totalManagerEditDays = Object.keys(attendanceManagerEditLog || {}).filter(day => attendanceManagerEditLog[day]).length;
+            if (teacherSummaryItems.length === 0 && managerSummaryItems.length === 0) {
+                statsContainer.innerHTML = '<div class="attendance-teacher-empty">Chưa có dữ liệu điểm danh hoặc chỉnh sửa trong tháng này.</div>';
+                return;
+            }
+            const teacherSectionHtml = teacherSummaryItems.length
+                ? `
+                    <div class="attendance-summary-strip">
+                        <div class="attendance-summary-pill">
+                            <span class="attendance-summary-value">${totalTeacherSessions}</span>
+                            <span class="attendance-summary-label">Buổi đã chốt bởi giáo viên</span>
+                        </div>
+                        <div class="attendance-summary-pill">
+                            <span class="attendance-summary-value">${teacherSummaryItems.length}</span>
+                            <span class="attendance-summary-label">Giáo viên đã chốt điểm danh</span>
+                        </div>
+                    </div>
+                    <div class="attendance-summary-grid">${renderAttendanceSummaryCards(
+                        teacherSummaryItems.map(item => ({ ...item, displayName: item.teacherName, displayEmail: item.teacherEmail })),
+                        {
+                            badgeLabel: (item) => item.sessionCount === 1 ? '1 buổi/tháng' : `${item.sessionCount} buổi/tháng`,
+                            daysLabel: 'Ngày giáo viên đã chốt',
+                            updatedLabel: 'Giáo viên cập nhật gần nhất'
+                        }
+                    )}</div>
+                `
+                : '<div class="attendance-teacher-empty">Chưa có giáo viên nào chốt điểm danh trong tháng này.</div>';
+            const managerSectionHtml = managerSummaryItems.length
+                ? `
+                    <div class="attendance-summary-strip" style="margin-top: 14px;">
+                        <div class="attendance-summary-pill">
+                            <span class="attendance-summary-value">${totalManagerEditDays}</span>
+                            <span class="attendance-summary-label">Ngày đã được quản lý chỉnh sửa</span>
+                        </div>
+                        <div class="attendance-summary-pill">
+                            <span class="attendance-summary-value">${managerSummaryItems.length}</span>
+                            <span class="attendance-summary-label">Quản lý/Admin đã chỉnh sửa</span>
+                        </div>
+                    </div>
+                    <div class="attendance-summary-grid">${renderAttendanceSummaryCards(
+                        managerSummaryItems.map(item => ({ ...item, displayName: item.managerName, displayEmail: item.managerEmail })),
+                        {
+                            badgeLabel: (item) => item.editCount === 1 ? '1 ngày sửa' : `${item.editCount} ngày sửa`,
+                            daysLabel: 'Ngày quản lý đã sửa bảng',
+                            updatedLabel: 'Quản lý cập nhật gần nhất'
+                        }
+                    )}</div>
+                `
+                : '<div class="attendance-teacher-empty" style="margin-top: 14px;">Chưa có quản lý/Admin nào chỉnh sửa bảng điểm danh trong tháng này.</div>';
             statsContainer.innerHTML = `
-                <div class="attendance-summary-strip">
-                    <div class="attendance-summary-pill">
-                        <span class="attendance-summary-value">${totalSessions}</span>
-                        <span class="attendance-summary-label">Buổi đã điểm danh trong tháng</span>
-                    </div>
-                    <div class="attendance-summary-pill">
-                        <span class="attendance-summary-value">${summaryItems.length}</span>
-                        <span class="attendance-summary-label">Người đã chốt điểm danh</span>
-                    </div>
-                </div>
-                <div class="attendance-summary-grid">${cardsHtml}</div>
+                <div class="attendance-summary-days-label" style="margin-bottom: 8px;">Thống kê giáo viên chốt buổi học</div>
+                ${teacherSectionHtml}
+                <div class="attendance-summary-days-label" style="margin: 16px 0 8px;">Nhật ký quản lý/Admin chỉnh sửa bảng điểm danh</div>
+                ${managerSectionHtml}
             `;
         }
         function subscribeClassRealtime() {
@@ -1028,14 +1530,18 @@
             classRealtimeUnsubscribe = db.collection('classes').doc(classId).onSnapshot(async (doc) => {
                 if (!doc.exists) return;
                 const data = doc.data() || {};
-                attendanceTeacherLog = (data.attendanceTeacherLog && data.attendanceTeacherLog[currentMonthKey]) || {};
-                attendanceDayOffLog = (data.attendanceDayOffLog && data.attendanceDayOffLog[currentMonthKey]) || {};
+                attendanceTeacherLog = getMonthlyLogEntries(data, 'attendanceTeacherLog', currentMonthKey);
+                attendanceManagerEditLog = getMonthlyLogEntries(data, 'attendanceManagerEditLog', currentMonthKey);
+                attendanceDayOffLog = getMonthlyLogEntries(data, 'attendanceDayOffLog', currentMonthKey);
                 currentClassInfo = { ...(currentClassInfo || {}), ...data };
+                teachingPayoutSettings = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo) };
                 ensureAttendancePageAccess(currentClassInfo);
                 await ensureTeacherDirectoryLoaded();
+                await refreshAssignedTeachingRoster();
                 renderAttendanceTeacherStats();
                 refreshAttendanceCellState();
                 calculateTotals();
+                renderAdminTeachingPayoutPanel();
             });
         }
         function getChangedAttendanceDays() {
@@ -1163,6 +1669,7 @@
                     tbody.innerHTML = `<tr><td colspan="${currentMonthDays + 7}" class="col-center" style="padding: 30px; color:#888;">Lớp chưa có học sinh nào. Hãy thêm học sinh ở ngay trang điểm danh hoặc từ trang danh sách học sinh.</td></tr>`;
                     document.getElementById('attTfoot').innerHTML = '';
                     calculateTotals();
+                    renderAdminTeachingPayoutPanel();
                     return;
                 }
                 studentsData = [];
@@ -1205,6 +1712,7 @@
                 generateTableFooter();
                 refreshAttendanceCellState();
                 calculateTotals();
+                renderAdminTeachingPayoutPanel();
             });
         }
         function generateTableFooter() {
@@ -1227,33 +1735,27 @@
             refreshDayColumnVisuals();
         }
         window.calculateTotals = function() {
+            const metrics = getAttendanceFinancialMetrics();
             if (studentsData.length === 0) {
                 const sumTotalSessions = document.getElementById('sumTotalSessions');
                 const sumGrandTotal = document.getElementById('sumGrandTotal');
                 if (sumTotalSessions) sumTotalSessions.innerText = '0';
                 if (sumGrandTotal) sumGrandTotal.innerText = '0 ₫';
+                updateTeachingPayoutPreview();
                 return;
             }
-            let daySums = new Array(currentMonthDays).fill(0);
-            let grandTotal = 0;
-            let globalSessions = 0;
             studentsData.forEach(st => {
                 const selects = document.querySelectorAll(`.day-select-${st.id}`);
                 let countForTuition = 0;
                 selects.forEach(sel => {
                     const day = Number(sel.dataset.day || 0);
                     const val = sel.value;
-                    if (isDayOff(day)) return;
-                    if (['V', 'P', 'M', 'ĐB'].includes(val)) {
-                        countForTuition++;
-                        daySums[day - 1] += 1;
-                        globalSessions += 1;
-                    }
+                    if (!day || isDayOff(day)) return;
+                    if (['V', 'P', 'M', 'ĐB'].includes(val)) countForTuition++;
                 });
                 const tuitionInput = document.querySelector(`.tuition-${st.id}`);
                 const tuitionVal = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
                 const rowTotal = countForTuition * tuitionVal;
-                grandTotal += rowTotal;
                 const sessionCountCell = document.querySelector(`.session-count-${st.id}`);
                 if (sessionCountCell) sessionCountCell.innerText = countForTuition;
                 const rowTotalCell = document.querySelector(`.row-total-${st.id}`);
@@ -1262,10 +1764,11 @@
             const footerSumCells = document.querySelectorAll('.col-sum-day');
             footerSumCells.forEach((cell, index) => {
                 const day = index + 1;
-                cell.innerText = isDayOff(day) ? 'Nghỉ' : daySums[index];
+                cell.innerText = isDayOff(day) ? 'Nghỉ' : metrics.daySums[index];
             });
-            document.getElementById('sumTotalSessions').innerText = globalSessions;
-            document.getElementById('sumGrandTotal').innerText = `${grandTotal.toLocaleString('vi-VN')} ₫`;
+            document.getElementById('sumTotalSessions').innerText = metrics.globalSessions;
+            document.getElementById('sumGrandTotal').innerText = `${metrics.grandTotal.toLocaleString('vi-VN')} ₫`;
+            updateTeachingPayoutPreview();
         };
         window.exportToExcel = function() {
             const btnExport = document.querySelector('.btn-export-excel');
@@ -1410,7 +1913,7 @@
             if (tbody) tbody.innerHTML = '';
         }
         function openAttendanceStudentModal() {
-            enforceAttendanceManagePermission('thêm học sinh');
+            enforceManagerPermission('thêm học sinh');
             clearAttendanceBulkRows();
             createAttendanceBulkRow();
             document.getElementById('addStudentModal').classList.add('show');
@@ -1523,7 +2026,7 @@
             };
         }
         async function saveStudentAcrossClassesFromAttendance(formData) {
-            enforceAttendanceManagePermission('thêm học sinh');
+            enforceManagerPermission('thêm học sinh');
             const currentClassCode = getCurrentClassCode();
             if (!currentClassCode) throw new Error('Không tìm thấy mã lớp hiện tại để đồng bộ học sinh.');
             const linkedCodes = parseLinkedClassCodes(formData.linkedCodesRaw || '', currentClassCode);
@@ -1563,7 +2066,7 @@
             for (const touchedClassId of touchedClassIds) await syncClassStudentCount(touchedClassId);
         }
         window.deleteSelectedStudents = async function() {
-            enforceAttendanceManagePermission('xóa học sinh');
+            enforceManagerPermission('xóa học sinh');
             const selected = [...document.querySelectorAll('.student-checkbox:checked')];
             if (selected.length === 0) return alert('Vui lòng chọn ít nhất 1 học sinh để xóa khỏi lớp này.');
             if (!confirm(`Chắc chắn gỡ ${selected.length} học sinh khỏi lớp hiện tại? Hệ thống sẽ đồng bộ lại số lớp đang học.`)) return;
@@ -1601,7 +2104,7 @@
             }
         };
         function toggleTodayOff() {
-            enforceAttendanceManagePermission('báo nghỉ');
+            enforceManagerPermission('báo nghỉ');
             const today = getTodayDay();
             if (!today) {
                 showToast('Không khả dụng', 'Chỉ có thể báo nghỉ trong tháng hiện tại.');
@@ -1619,7 +2122,7 @@
             calculateTotals();
         }
         window.saveAttendance = async function() {
-            enforceAttendanceManagePermission('lưu điểm danh');
+            const access = enforceAttendanceManagePermission('lưu điểm danh');
             const btn = document.querySelector('.btn-save-att');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
             btn.disabled = true;
@@ -1628,22 +2131,28 @@
                 const studentPayloads = buildPendingStudentPayloads();
                 const classRef = db.collection('classes').doc(classId);
                 const myEmail = normalizeEmail(currentUserInfo.email);
+                const isManagerEditor = isManagerAttendanceEditor(access);
                 await db.runTransaction(async (transaction) => {
                     const classSnapshot = await transaction.get(classRef);
                     if (!classSnapshot.exists) throw new Error('Lớp học không còn tồn tại.');
                     const liveData = classSnapshot.data() || {};
-                    const liveMonthLog = (liveData.attendanceTeacherLog && liveData.attendanceTeacherLog[currentMonthKey]) || {};
-                    const liveDayOffLog = (liveData.attendanceDayOffLog && liveData.attendanceDayOffLog[currentMonthKey]) || {};
+                    const liveMonthLog = getMonthlyLogEntries(liveData, 'attendanceTeacherLog', currentMonthKey);
+                    const liveManagerEditLog = getMonthlyLogEntries(liveData, 'attendanceManagerEditLog', currentMonthKey);
+                    const liveDayOffLog = getMonthlyLogEntries(liveData, 'attendanceDayOffLog', currentMonthKey);
                     changedDays.forEach((day) => {
                         if (isFutureDay(day)) throw new Error(`Không thể chốt điểm danh trước cho ngày ${formatAttendanceDay(day)}.`);
                         const existingRecord = liveMonthLog[String(day)];
+                        const existingManagerRecord = liveManagerEditLog[String(day)];
                         const ownerEmail = normalizeEmail(existingRecord && existingRecord.teacherEmail);
-                        if (existingRecord && ownerEmail && ownerEmail !== myEmail) {
+                        if (!isManagerEditor && existingManagerRecord) {
+                            throw new Error(buildManagerEditReason(day, existingManagerRecord));
+                        }
+                        if (!isManagerEditor && existingRecord && ownerEmail && ownerEmail !== myEmail) {
                             throw new Error(buildLockReason(day, existingRecord));
                         }
                         const dayOffRecord = liveDayOffLog[String(day)];
                         const dayOffOwner = normalizeEmail(dayOffRecord && (dayOffRecord.reportedByEmail || dayOffRecord.teacherEmail));
-                        if (dayOffRecord && dayOffOwner && dayOffOwner !== myEmail && Object.prototype.hasOwnProperty.call(localDayOffState, String(day))) {
+                        if (!isManagerEditor && dayOffRecord && dayOffOwner && dayOffOwner !== myEmail && Object.prototype.hasOwnProperty.call(localDayOffState, String(day))) {
                             throw new Error(buildDayOffReason(day, dayOffRecord));
                         }
                     });
@@ -1653,8 +2162,10 @@
                     const classUpdateData = { status: 'active' };
                     changedDays.forEach((day) => {
                         const attendanceFieldPath = `attendanceTeacherLog.${currentMonthKey}.${day}`;
+                        const managerEditFieldPath = `attendanceManagerEditLog.${currentMonthKey}.${day}`;
                         const dayOffFieldPath = `attendanceDayOffLog.${currentMonthKey}.${day}`;
                         const existingRecord = liveMonthLog[String(day)] || null;
+                        const existingManagerEditRecord = liveManagerEditLog[String(day)] || null;
                         const existingDayOffRecord = liveDayOffLog[String(day)] || null;
                         if (isDayOff(day)) {
                             classUpdateData[attendanceFieldPath] = firebase.firestore.FieldValue.delete();
@@ -1663,24 +2174,61 @@
                                 reportedByEmail: (existingDayOffRecord && existingDayOffRecord.reportedByEmail) || currentUserInfo.email || '',
                                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                             };
+                            if (isManagerEditor) {
+                                classUpdateData[managerEditFieldPath] = {
+                                    editorName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                                    editorEmail: currentUserInfo.email || '',
+                                    editorRole: access.isAdmin ? 'admin' : 'manager',
+                                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                };
+                            } else if (existingManagerEditRecord) {
+                                classUpdateData[managerEditFieldPath] = existingManagerEditRecord;
+                            }
                         } else {
                             classUpdateData[dayOffFieldPath] = firebase.firestore.FieldValue.delete();
                             if (dayHasAnyAttendance(day)) {
-                                classUpdateData[attendanceFieldPath] = {
-                                    teacherName: (existingRecord && existingRecord.teacherName) || currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
-                                    teacherEmail: (existingRecord && existingRecord.teacherEmail) || currentUserInfo.email || '',
-                                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                                };
+                                if (isManagerEditor) {
+                                    classUpdateData[managerEditFieldPath] = {
+                                        editorName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                                        editorEmail: currentUserInfo.email || '',
+                                        editorRole: access.isAdmin ? 'admin' : 'manager',
+                                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                    };
+                                    if (existingRecord) {
+                                        classUpdateData[attendanceFieldPath] = {
+                                            teacherName: (existingRecord && existingRecord.teacherName) || 'Chưa rõ',
+                                            teacherEmail: (existingRecord && existingRecord.teacherEmail) || '',
+                                            updatedAt: (existingRecord && existingRecord.updatedAt) || firebase.firestore.FieldValue.serverTimestamp()
+                                        };
+                                    }
+                                } else {
+                                    classUpdateData[managerEditFieldPath] = existingManagerEditRecord ? existingManagerEditRecord : firebase.firestore.FieldValue.delete();
+                                    classUpdateData[attendanceFieldPath] = {
+                                        teacherName: (existingRecord && existingRecord.teacherName) || currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                                        teacherEmail: (existingRecord && existingRecord.teacherEmail) || currentUserInfo.email || '',
+                                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                    };
+                                }
                             } else {
                                 classUpdateData[attendanceFieldPath] = firebase.firestore.FieldValue.delete();
+                                if (isManagerEditor) {
+                                    classUpdateData[managerEditFieldPath] = {
+                                        editorName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                                        editorEmail: currentUserInfo.email || '',
+                                        editorRole: access.isAdmin ? 'admin' : 'manager',
+                                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                    };
+                                } else if (existingManagerEditRecord) {
+                                    classUpdateData[managerEditFieldPath] = existingManagerEditRecord;
+                                }
                             }
                         }
                     });
-                    transaction.set(classRef, classUpdateData, { merge: true });
+                    transaction.update(classRef, classUpdateData);
                 });
                 captureCurrentDomSnapshot();
                 document.getElementById('attTime').innerText = new Date().toLocaleString('vi-VN');
-                showToast('Thành công!', 'Dữ liệu điểm danh đã được lưu. Ngày báo nghỉ sẽ không tính vào kinh phí học.');
+                showToast('Đã lưu');
             } catch (err) {
                 showToast('Không thể lưu', err && err.message ? err.message : 'Đã xảy ra lỗi khi lưu điểm danh.');
             } finally {
@@ -1697,8 +2245,10 @@
             }
             const data = doc.data() || {};
             currentClassInfo = data;
+            teachingPayoutSettings = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo) };
             ensureAttendancePageAccess(currentClassInfo);
             currentScheduleDays = getMainStudyDaysForCurrentClass();
+            await refreshAssignedTeachingRoster();
             document.getElementById('displayClassName').innerText = data.className || 'Chưa đặt tên';
             document.getElementById('displayClassTeacher').innerText = data.teacherNamesDisplay || data.teacherName || 'Chưa có';
             generateTableHeader();
@@ -1706,11 +2256,12 @@
             applyMainStudyDaysVisibility();
             subscribeClassRealtime();
             loadStudents();
+            renderAdminTeachingPayoutPanel();
         }
         const addStudentForm = document.getElementById('addStudentForm');
         addStudentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            enforceAttendanceManagePermission('thêm học sinh');
+            enforceManagerPermission('thêm học sinh');
             const btn = document.getElementById('btnSaveStudent');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
@@ -1747,19 +2298,24 @@
                     const snap = await db.collection('users').where('email', '==', currentEmail).limit(1).get();
                     if (!snap.empty) userData = snap.docs[0].data() || {};
                 }
-                const role = (userData && userData.role) || 'teacher';
+                const roles = normalizeRoles(userData);
+                const role = getPrimaryRole(userData);
                 const teacherDisplayName = getTeacherDisplayName(userData, { email: currentEmail }) || currentEmail;
-                if (currentEmail) teacherDirectoryByEmail[currentEmail] = teacherDisplayName;
-                currentUserInfo = { email: currentEmail, displayName: teacherDisplayName, role };
+                if (currentEmail) {
+                    teacherDirectoryByEmail[currentEmail] = teacherDisplayName;
+                    userRolesByEmail[currentEmail] = roles;
+                }
+                currentUserInfo = { email: currentEmail, displayName: teacherDisplayName, role, roles };
                 document.getElementById('attTeacherName').textContent = teacherDisplayName;
                 document.getElementById('userRoleDisplay').textContent = teacherDisplayName;
-                syncAdminOnlyMenu(role);
+                syncAdminOnlyMenu(currentUserInfo);
             } catch (_) {
                 const fallbackName = currentEmail ? (currentEmail.split('@')[0] || currentEmail) : '';
-                currentUserInfo = { email: currentEmail, displayName: fallbackName, role: 'teacher' };
+                currentUserInfo = { email: currentEmail, displayName: fallbackName, role: 'teacher', roles: ['teacher'] };
+                if (currentEmail) userRolesByEmail[currentEmail] = ['teacher'];
                 document.getElementById('attTeacherName').textContent = fallbackName;
                 document.getElementById('userRoleDisplay').textContent = fallbackName;
-                syncAdminOnlyMenu('teacher');
+                syncAdminOnlyMenu(currentUserInfo);
             }
             try {
                 await loadClassesDirectory();
@@ -1787,6 +2343,22 @@
         document.getElementById('btnOpenAddStudentModal').addEventListener('click', openAttendanceStudentModal);
         document.getElementById('btnCancelAttendanceStudent').addEventListener('click', closeAttendanceStudentModal);
         document.getElementById('addStudentModal').addEventListener('click', (e) => { if (e.target.id === 'addStudentModal') closeAttendanceStudentModal(); });
+
+        document.addEventListener('input', (event) => {
+            if (event.target.classList.contains('teacher-payout-percent-input')) {
+                updateTeachingPayoutPreview();
+            }
+        });
+        document.addEventListener('change', async (event) => {
+            if (event.target.classList.contains('teacher-payout-percent-input')) {
+                try {
+                    await persistTeachingPayoutPercent(event.target.dataset.teacherKey, event.target.value);
+                } catch (error) {
+                    showToast('Không thể lưu tỷ lệ', error && error.message ? error.message : 'Đã xảy ra lỗi khi lưu tỷ lệ hưởng.');
+                }
+            }
+        });
+
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebar = document.getElementById('sidebar');
         const sidebarOverlay = document.getElementById('sidebarOverlay');

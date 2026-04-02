@@ -186,12 +186,18 @@
         .schedule-center-panel { padding: 20px; min-width: 0; }
         .schedule-toolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
         .schedule-toolbar h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        .schedule-toolbar-minimal { justify-content: center; margin-bottom: 18px; }
+        .schedule-title-wrap { width: 100%; text-align: center; }
+        .schedule-title-wrap h3 { margin: 0; font-size: clamp(1.7rem, 2.5vw, 2.35rem); font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; color: #17324a; }
         .schedule-permission-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px; border-radius: 999px; background: rgba(13, 27, 42, 0.05); color: #445566; font-size: 0.78rem; font-weight: 800; }
         .schedule-permission-chip.admin { background: rgba(46, 204, 113, 0.14); color: #148f4b; }
         .schedule-permission-chip.viewer { background: rgba(224, 170, 62, 0.14); color: #8f6512; }
+        .schedule-save-status { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px; border-radius: 999px; background: rgba(13, 27, 42, 0.06); color: #526171; font-size: 0.78rem; font-weight: 800; }
+        .schedule-save-status.saved { background: rgba(46, 204, 113, 0.12); color: #148f4b; }
+        .schedule-save-status.unsaved { background: rgba(224, 170, 62, 0.14); color: #8f6512; }
 
-        .schedule-board-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
-        .schedule-tab { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(13, 27, 42, 0.08); background: #fff; border-radius: 14px; padding: 10px 14px; font-size: 0.83rem; font-weight: 700; color: #51606f; cursor: pointer; box-shadow: 0 6px 14px rgba(13, 27, 42, 0.03); }
+        .schedule-board-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; justify-content: center; }
+        .schedule-tab { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(13, 27, 42, 0.08); background: #fff; border-radius: 14px; padding: 10px 16px; min-width: 180px; font-size: 0.83rem; font-weight: 800; color: #51606f; cursor: pointer; box-shadow: 0 6px 14px rgba(13, 27, 42, 0.03); }
         .schedule-tab.active { background: linear-gradient(135deg, rgba(46, 204, 113, 0.16) 0%, rgba(46, 204, 113, 0.05) 100%); color: #148f4b; border-color: rgba(46, 204, 113, 0.3); }
         .schedule-tab-delete { width: 24px; height: 24px; border: none; border-radius: 50%; background: rgba(13, 27, 42, 0.06); color: #6f7b85; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
         .schedule-tab.active .schedule-tab-delete { background: rgba(20, 143, 75, 0.12); color: #148f4b; }
@@ -215,11 +221,30 @@
         .schedule-color-input { width: 42px; height: 42px; border: none; border-radius: 12px; background: transparent; cursor: pointer; }
         .schedule-selected-cell-label { min-width: 240px; font-size: 0.82rem; font-weight: 700; color: #51606f; }
         .schedule-color-toolbar .action-btn { min-height: 36px; padding: 0 12px; font-size: 0.78rem; }
+        .schedule-toolbar-minimal { flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+        .schedule-toolbar-status { width: 100%; display: flex; justify-content: center; }
+        .schedule-admin-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 12px 0 16px; }
+        .schedule-admin-tools .action-btn { min-height: 38px; }
+        .schedule-color-toolbar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+        .schedule-color-toolbar-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .schedule-palette-hint { font-size: 0.78rem; color: #6d7a87; font-weight: 600; }
+        .schedule-palette-row { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+        .schedule-palette-block { display: flex; flex-direction: column; gap: 8px; }
+        .schedule-palette-title { font-size: 0.76rem; font-weight: 800; color: #6d7a87; text-transform: uppercase; letter-spacing: 0.04em; }
+        .schedule-swatch-grid { display: grid; grid-template-columns: repeat(10, 28px); gap: 8px; }
+        .schedule-swatch { width: 28px; height: 28px; border-radius: 8px; border: 1px solid rgba(13, 27, 42, 0.14); cursor: pointer; position: relative; box-shadow: 0 4px 10px rgba(13, 27, 42, 0.06); transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; }
+        .schedule-swatch:hover { transform: translateY(-1px); box-shadow: 0 8px 16px rgba(13, 27, 42, 0.12); }
+        .schedule-swatch.active { border-color: #148f4b; box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.25); }
+        .schedule-swatch.active::after { content: '\2713'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 900; color: var(--swatch-check, #ffffff); }
+        .schedule-swatch[data-color="#ffffff"],
+        .schedule-swatch[data-color="#f2f2f2"],
+        .schedule-swatch[data-color="#fff2cc"] { border-color: rgba(13, 27, 42, 0.24); }
+        .schedule-palette-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 
         .schedule-builder-scroller { overflow: visible; border-radius: 18px; border: 1px solid var(--border-grey); background: linear-gradient(180deg, #f7fbf8 0%, #ffffff 100%); padding: 12px; }
         .schedule-table-shell { width: 100%; }
         .schedule-grid-table { width: 100%; border-collapse: collapse; table-layout: fixed; background: #fff; border-radius: 18px; overflow: hidden; }
-        .schedule-grid-table thead th { background: #25d6dc; color: #11323b; font-weight: 800; font-size: clamp(0.66rem, 0.74vw, 0.88rem); text-align: center; border: 1px solid rgba(17, 50, 59, 0.28); padding: 9px 4px; }
+        .schedule-grid-table thead th { background: #25d6dc; color: #11323b; font-weight: 800; font-size: clamp(0.66rem, 0.74vw, 0.88rem); text-align: center; border: 1px solid rgba(17, 50, 59, 0.28); padding: 9px 4px; white-space: nowrap; }
         .schedule-grid-table tbody td { border: 1px solid rgba(17, 50, 59, 0.28); vertical-align: stretch; background: #fff; }
         .schedule-grid-table tbody tr.session-divider td { border-top-width: 6px; border-top-color: #0d0d0d; }
         .schedule-time-cell { background: #f1f1f1 !important; font-weight: 800; color: #1e2b37; text-align: center; padding: 6px 4px; }
@@ -230,10 +255,15 @@
         .schedule-inline-action { border: 1px solid rgba(13, 27, 42, 0.08); background: #fff; border-radius: 8px; font-size: 0.68rem; font-weight: 700; color: #51606f; padding: 5px 4px; cursor: pointer; }
         .schedule-inline-action:hover { color: #148f4b; border-color: rgba(46, 204, 113, 0.32); }
 
-        .schedule-room-cell { background: #fff400 !important; text-align: center; font-weight: 800; color: #4a4500; padding: 4px; }
+        .schedule-room-cell { background: #fff400 !important; text-align: center; font-weight: 800; color: #4a4500; padding: 4px 6px; }
         .schedule-room-cell.right { background: #f4f7fa !important; }
-        .schedule-row-chip { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 46px; }
+        .schedule-row-chip { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 46px; width: 100%; }
         .schedule-row-index { font-size: 0.86rem; line-height: 1; }
+        .schedule-room-editor { min-height: 28px; min-width: 46px; max-width: 100%; padding: 4px 8px; border-radius: 8px; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; text-align: center; line-height: 1.1; outline: none; white-space: nowrap; word-break: normal; overflow: hidden; text-overflow: ellipsis; }
+        .schedule-room-editor[contenteditable="true"] { cursor: text; background: rgba(255, 255, 255, 0.42); border-color: rgba(17, 50, 59, 0.12); }
+        .schedule-room-editor[contenteditable="true"]:focus { background: #ffffff; border-color: rgba(46, 204, 113, 0.34); box-shadow: inset 0 0 0 2px rgba(46, 204, 113, 0.18); }
+        .schedule-room-editor.empty { opacity: 0.72; }
+        .schedule-room-editor.empty::before { content: 'Phòng'; }
         .remove-row-btn { border: none; background: rgba(141, 106, 0, 0.12); color: #8d6a00; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .remove-row-btn:hover { background: rgba(231, 76, 60, 0.12); color: #c0392b; }
 
@@ -245,6 +275,13 @@
         .schedule-cell-editor.selected { box-shadow: inset 0 0 0 2px rgba(46, 204, 113, 0.32), 0 0 0 2px rgba(46, 204, 113, 0.18); position: relative; z-index: 1; }
         .schedule-empty-board { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 46px 18px; color: #7f8c8d; text-align: center; }
         .schedule-empty-board i { width: 56px; height: 56px; border-radius: 50%; background: rgba(46, 204, 113, 0.12); color: #148f4b; display: inline-flex; align-items: center; justify-content: center; font-size: 1.35rem; }
+
+        .schedule-page-header,
+        .schedule-page-copy,
+        .schedule-page-actions,
+        .schedule-page-kicker,
+        .schedule-board-meta,
+        .schedule-board-detail-grid { display: none !important; }
 
         .schedule-below-stack { display: flex; flex-direction: column; gap: 18px; }
         .compact-stat-panel, .compact-alert-panel, .compact-classes-panel { padding: 16px; }
@@ -303,6 +340,8 @@
             .schedule-board-meta, .compact-stat-grid { grid-template-columns: 1fr; }
             .schedule-color-toolbar { gap: 10px; }
             .schedule-selected-cell-label { min-width: 0; }
+            .schedule-swatch-grid { grid-template-columns: repeat(8, 28px); }
+            .schedule-palette-row { flex-direction: column; }
         }
 
 
@@ -314,7 +353,7 @@
 
     <div class="toast-notification" id="success-toast">
         <div class="toast-icon"><i class="fa-solid fa-circle-check"></i></div>
-        <div class="toast-text"><h4>Thành công!</h4><p>Đã thay đổi Logo.</p></div>
+        <div class="toast-text"><h4>Thành công!</h4><p>Dữ liệu đã được lưu.</p></div>
     </div>
 
     <header class="header">
@@ -353,70 +392,47 @@
         
         <main class="dashboard-content">
             <section class="schedule-dashboard">
-                <div class="panel schedule-page-header">
-                    <div class="schedule-page-copy">
-                        <span class="schedule-page-kicker">Trung tâm thời khóa biểu</span>
-                        <h2>Thời khóa biểu luôn ở giữa, rõ ràng và là khu vực hiển thị chính</h2>
-                        <p>Khu vực bảng lịch học được ưu tiên toàn bộ chiều ngang. Các thống kê, cảnh báo và lớp đang hoạt động được chuyển xuống dưới để không còn nằm cùng hàng ngang với thời khóa biểu.</p>
-                    </div>
-                    <div class="schedule-page-actions" data-schedule-admin-control>
-                        <button class="action-btn gold" id="addScheduleBoardBtn"><i class="fa-solid fa-table-cells-large"></i> Thêm bảng mới</button>
-                        <button class="action-btn" id="duplicateScheduleBoardBtn"><i class="fa-solid fa-copy"></i> Nhân bảng hiện tại</button>
-                    </div>
-                </div>
-
                 <section class="panel schedule-center-panel">
-                    <div class="schedule-toolbar">
-                        <div>
-                            <h3>Hiển thị thời khóa biểu trung tâm</h3>
-                            <p class="panel-header-subtitle">Mỗi bảng có thông tin trung tâm, cơ sở và địa chỉ riêng. Admin được chỉnh sửa toàn bộ, giáo viên chỉ xem.</p>
+                    <div class="schedule-toolbar schedule-toolbar-minimal">
+                        <div class="schedule-title-wrap">
+                            <h3>THỜI KHÓA BIỂU</h3>
                         </div>
-                        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-                            <div class="schedule-permission-chip viewer" id="schedulePermissionChip"><i class="fa-solid fa-eye"></i> Chế độ xem giáo viên</div>
-                            <div class="schedule-toolbar-actions" data-schedule-admin-control>
-                                <button class="action-btn" id="renameScheduleBoardBtn"><i class="fa-solid fa-pen"></i> Đổi tên bảng</button>
-                                <button class="action-btn" id="addScheduleSessionBtn"><i class="fa-solid fa-layer-group"></i> Thêm ca học</button>
-                                <button class="action-btn danger" id="resetScheduleBoardBtn"><i class="fa-solid fa-rotate-left"></i> Khôi phục mẫu</button>
-                            </div>
+                        <div class="schedule-toolbar-status">
+                            <div class="schedule-permission-chip viewer" id="schedulePermissionChip"><i class="fa-solid fa-eye"></i> Chế độ giáo viên: chỉ xem</div>
+                            <div class="schedule-save-status saved" id="scheduleSaveStatus"><i class="fa-solid fa-floppy-disk"></i> Đã lưu</div>
                         </div>
+                    </div>
+
+                    <div class="schedule-admin-tools" data-schedule-admin-control>
+                        <button class="action-btn gold" id="saveScheduleBtn"><i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi</button>
+                        <button class="action-btn" id="addScheduleBoardBtn"><i class="fa-solid fa-table-cells-large"></i> Thêm bảng mới</button>
+                        <button class="action-btn" id="duplicateScheduleBoardBtn"><i class="fa-solid fa-copy"></i> Nhân bảng</button>
+                        <button class="action-btn" id="renameScheduleBoardBtn"><i class="fa-solid fa-pen"></i> Đổi tên bảng</button>
+                        <button class="action-btn" id="addScheduleSessionBtn"><i class="fa-solid fa-layer-group"></i> Thêm ca học</button>
+                        <button class="action-btn danger" id="resetScheduleBoardBtn"><i class="fa-solid fa-rotate-left"></i> Khôi phục mẫu</button>
                     </div>
 
                     <div class="schedule-board-tabs" id="scheduleBoardTabs"></div>
 
-                    <div class="schedule-board-meta">
-                        <div class="schedule-meta-chip"><span>Bảng đang chọn</span><strong id="activeScheduleBoardName">—</strong></div>
-                        <div class="schedule-meta-chip"><span>Số ngày hiển thị</span><strong id="activeScheduleBoardDayCount">0</strong></div>
-                        <div class="schedule-meta-chip"><span>Số ca học</span><strong id="activeScheduleBoardSessionCount">0</strong></div>
-                        <div class="schedule-meta-chip"><span>Số hàng tổng</span><strong id="activeScheduleBoardRowCount">0</strong></div>
-                    </div>
-
-                    <div class="schedule-board-detail-grid">
-                        <div class="schedule-detail-card schedule-detail-field">
-                            <label for="scheduleCenterTitleInput">Tên trung tâm</label>
-                            <input id="scheduleCenterTitleInput" class="schedule-detail-input" data-schedule-readonly-field="centerTitle" type="text" placeholder="Nhập tên trung tâm">
+                    <div class="schedule-color-toolbar" id="scheduleColorToolbar" data-schedule-admin-control>
+                        <div class="schedule-color-toolbar-header">
+                            <div class="schedule-selected-cell-label" id="scheduleSelectedCellLabel">Chọn một ô rồi bấm màu để áp dụng ngay.</div>
+                            <div class="schedule-palette-hint">Bảng màu cố định kiểu Word, màu chọn gần nhất sẽ được ghi nhớ.</div>
                         </div>
-                        <div class="schedule-detail-card schedule-detail-field">
-                            <label for="scheduleBranchTitleInput">Cơ sở</label>
-                            <input id="scheduleBranchTitleInput" class="schedule-detail-input" data-schedule-readonly-field="branchTitle" type="text" placeholder="Nhập cơ sở">
+                        <div class="schedule-palette-row">
+                            <div class="schedule-palette-block">
+                                <div class="schedule-palette-title">Màu nền ô</div>
+                                <div class="schedule-swatch-grid" id="scheduleBgPalette"></div>
+                            </div>
+                            <div class="schedule-palette-block">
+                                <div class="schedule-palette-title">Màu chữ</div>
+                                <div class="schedule-swatch-grid" id="scheduleTextPalette"></div>
+                            </div>
+                            <div class="schedule-palette-actions">
+                                <button class="action-btn" id="clearScheduleCellContentBtn"><i class="fa-solid fa-eraser"></i> Xóa nội dung ô</button>
+                                <button class="action-btn" id="resetScheduleCellStyleBtn"><i class="fa-solid fa-fill-drip"></i> Trả màu mặc định</button>
+                            </div>
                         </div>
-                        <div class="schedule-detail-card schedule-detail-field">
-                            <label for="scheduleAddressInput">Địa chỉ</label>
-                            <input id="scheduleAddressInput" class="schedule-detail-input" data-schedule-readonly-field="address" type="text" placeholder="Nhập địa chỉ trung tâm">
-                        </div>
-                    </div>
-
-                    <div class="schedule-color-toolbar" data-schedule-admin-control>
-                        <div class="schedule-selected-cell-label" id="scheduleSelectedCellLabel">Chọn một ô để đổ màu hoặc đổi màu chữ.</div>
-                        <div class="schedule-color-group">
-                            <label for="scheduleBgColorPicker">Nền ô</label>
-                            <input id="scheduleBgColorPicker" class="schedule-color-input" type="color" value="#ffffff">
-                        </div>
-                        <div class="schedule-color-group">
-                            <label for="scheduleTextColorPicker">Màu chữ</label>
-                            <input id="scheduleTextColorPicker" class="schedule-color-input" type="color" value="#1f2d3b">
-                        </div>
-                        <button class="action-btn" id="clearScheduleCellContentBtn"><i class="fa-solid fa-eraser"></i> Xóa nội dung ô</button>
-                        <button class="action-btn" id="resetScheduleCellStyleBtn"><i class="fa-solid fa-fill-drip"></i> Xóa màu tùy chọn</button>
                     </div>
 
                     <div class="schedule-builder-scroller">
@@ -557,16 +573,36 @@
             users: []
         };
 
-        const SCHEDULE_STORAGE_KEY = 'xledu_schedule_boards_v3';
-        const LEGACY_SCHEDULE_STORAGE_KEYS = ['xledu_schedule_boards_v2'];
+        const SCHEDULE_STORAGE_KEY = 'xledu_schedule_boards_v4';
+        const LEGACY_SCHEDULE_STORAGE_KEYS = ['xledu_schedule_boards_v3', 'xledu_schedule_boards_v2'];
         const scheduleState = {
             boards: [],
             activeBoardId: null,
             initialized: false,
             eventsBound: false,
             isAdmin: false,
-            selectedCellRef: null
+            selectedCellRef: null,
+            lastBgColor: '#ffffff',
+            lastTextColor: '#1f2d3b',
+            hasUnsavedChanges: false,
+            lastSavedAt: null
         };
+
+        const SCHEDULE_BG_SWATCHES = [
+            '#ffffff', '#f2f2f2', '#d9d9d9', '#bfbfbf', '#000000',
+            '#fff2cc', '#fde9d9', '#f4cccc', '#d9ead3', '#d0e0e3',
+            '#cfe2f3', '#d9d2e9', '#ead1dc', '#ffe599', '#f9cb9c',
+            '#ea9999', '#b6d7a8', '#a2c4c9', '#9fc5e8', '#b4a7d6',
+            '#c27ba0', '#ffd966', '#f6b26b', '#e06666', '#93c47d',
+            '#76a5af', '#6fa8dc', '#8e7cc3', '#a64d79', '#bf9000'
+        ];
+
+        const SCHEDULE_TEXT_SWATCHES = [
+            '#000000', '#434343', '#666666', '#999999', '#ffffff',
+            '#980000', '#c00000', '#e69138', '#f1c232', '#6aa84f',
+            '#38761d', '#0b5394', '#3d85c6', '#674ea7', '#741b47',
+            '#1f1f1f', '#1155cc', '#45818e', '#783f04', '#7f6000'
+        ];
 
         function generateScheduleId(prefix = 'schedule') {
             return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -681,8 +717,12 @@
             try {
                 localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify({
                     boards: scheduleState.boards,
-                    activeBoardId: scheduleState.activeBoardId
+                    activeBoardId: scheduleState.activeBoardId,
+                    lastBgColor: scheduleState.lastBgColor,
+                    lastTextColor: scheduleState.lastTextColor
                 }));
+                scheduleState.hasUnsavedChanges = false;
+                scheduleState.lastSavedAt = new Date();
             } catch (error) {
                 console.error('Không thể lưu thời khóa biểu cục bộ:', error);
             }
@@ -709,6 +749,9 @@
                 if (parsed) {
                     scheduleState.boards = normalizeScheduleBoards(parsed.boards);
                     scheduleState.activeBoardId = parsed.activeBoardId;
+                    scheduleState.lastBgColor = normalizeColorValue(parsed.lastBgColor, '#ffffff');
+                    scheduleState.lastTextColor = normalizeColorValue(parsed.lastTextColor, '#1f2d3b');
+                    scheduleState.lastSavedAt = new Date();
                 }
             } catch (error) {
                 console.error('Không thể đọc thời khóa biểu đã lưu:', error);
@@ -795,10 +838,14 @@
             ensureScheduleState();
             tabsEl.innerHTML = scheduleState.boards.map((board) => {
                 const activeClass = board.id === scheduleState.activeBoardId ? 'active' : '';
+                const tabLabel = String((board && board.branchTitle) || (board && board.name) || 'Cơ sở').trim() || 'Cơ sở';
+                const deleteButton = scheduleState.isAdmin && scheduleState.boards.length > 1
+                    ? `<button type="button" class="schedule-tab-delete" data-delete-board-id="${board.id}" title="Xóa bảng"><i class="fa-solid fa-xmark"></i></button>`
+                    : '';
                 return `
                     <div class="schedule-tab ${activeClass}" data-board-id="${board.id}">
-                        <span>${escapeHtml(board.name)}</span>
-                        ${scheduleState.isAdmin && scheduleState.boards.length > 1 ? `<button type="button" class="schedule-tab-delete" data-delete-board-id="${board.id}" aria-label="Xóa bảng"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                        <span>${escapeHtml(tabLabel)}</span>
+                        ${deleteButton}
                     </div>
                 `;
             }).join('');
@@ -821,29 +868,58 @@
 
         function renderSelectedCellToolbar() {
             const labelEl = document.getElementById('scheduleSelectedCellLabel');
-            const bgPicker = document.getElementById('scheduleBgColorPicker');
-            const textPicker = document.getElementById('scheduleTextColorPicker');
-            if (!labelEl || !bgPicker || !textPicker) return;
+            if (!labelEl) return;
 
             const selected = getSelectedCellRecord();
             if (!selected) {
-                labelEl.textContent = 'Chọn một ô để đổ màu hoặc đổi màu chữ.';
-                bgPicker.value = '#ffffff';
-                textPicker.value = '#1f2d3b';
+                labelEl.textContent = 'Chọn một ô rồi bấm màu để áp dụng ngay.';
+                renderScheduleSwatchPalettes();
                 return;
             }
 
             const dayLabel = selected.board.days[selected.dayIndex] || `Cột ${selected.dayIndex + 1}`;
-            const cellStyle = getScheduleCellStyle(selected.cell, `${selected.session.label}-${selected.row.label}-${selected.dayIndex}`);
             labelEl.textContent = `Ô đang chọn: ${dayLabel} · ${selected.session.label} · Phòng ${selected.row.label}`;
-            bgPicker.value = normalizeColorValue(cellStyle.bgColor, '#ffffff');
-            textPicker.value = normalizeColorValue(cellStyle.textColor, '#1f2d3b');
+            renderScheduleSwatchPalettes();
         }
 
         function normalizeColorValue(value, fallback) {
             const text = String(value || '').trim();
-            if (/^#[0-9a-fA-F]{6}$/.test(text)) return text;
+            if (/^#[0-9a-fA-F]{6}$/.test(text)) return text.toLowerCase();
             return fallback;
+        }
+
+        function getSwatchCheckColor(color) {
+            const normalized = normalizeColorValue(color, '#ffffff').replace('#', '');
+            const r = parseInt(normalized.slice(0, 2), 16);
+            const g = parseInt(normalized.slice(2, 4), 16);
+            const b = parseInt(normalized.slice(4, 6), 16);
+            const luminance = (0.299 * r) + (0.587 * g) + (0.114 * b);
+            return luminance > 170 ? '#17324a' : '#ffffff';
+        }
+
+        function renderScheduleSwatchGroup(containerId, colors, activeColor, role) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const normalizedActive = normalizeColorValue(activeColor, role === 'bg' ? '#ffffff' : '#1f2d3b');
+            container.innerHTML = colors.map((color) => {
+                const normalizedColor = normalizeColorValue(color, normalizedActive);
+                const activeClass = normalizedColor === normalizedActive ? 'active' : '';
+                return `
+                    <button
+                        type="button"
+                        class="schedule-swatch ${activeClass}"
+                        data-swatch-role="${role}"
+                        data-color="${normalizedColor}"
+                        style="background:${normalizedColor}; --swatch-check:${getSwatchCheckColor(normalizedColor)};"
+                        title="${normalizedColor.toUpperCase()}"
+                    ></button>
+                `;
+            }).join('');
+        }
+
+        function renderScheduleSwatchPalettes() {
+            renderScheduleSwatchGroup('scheduleBgPalette', SCHEDULE_BG_SWATCHES, scheduleState.lastBgColor, 'bg');
+            renderScheduleSwatchGroup('scheduleTextPalette', SCHEDULE_TEXT_SWATCHES, scheduleState.lastTextColor, 'text');
         }
 
         function buildScheduleBoardHtml(board) {
@@ -857,15 +933,17 @@
                 `;
             }
 
-            const sideWidth = 84 + 50 + 50 + 84;
+            const timeColumnWidth = 76;
+            const roomColumnWidth = 72;
+            const sideWidth = timeColumnWidth + roomColumnWidth + roomColumnWidth + timeColumnWidth;
             const dayWidth = `calc((100% - ${sideWidth}px) / ${board.days.length})`;
             const colGroup = `
                 <colgroup>
-                    <col style="width:84px;">
-                    <col style="width:50px;">
+                    <col style="width:${timeColumnWidth}px;">
+                    <col style="width:${roomColumnWidth}px;">
                     ${board.days.map(() => `<col style="width:${dayWidth};">`).join('')}
-                    <col style="width:50px;">
-                    <col style="width:84px;">
+                    <col style="width:${roomColumnWidth}px;">
+                    <col style="width:${timeColumnWidth}px;">
                 </colgroup>
             `;
             const headerCells = board.days.map((day) => `<th>${escapeHtml(day)}</th>`).join('');
@@ -903,6 +981,7 @@
                                             <div class="time-actions">
                                                 <button type="button" class="schedule-inline-action" data-schedule-action="rename-session" data-session-id="${session.id}">Tên ca</button>
                                                 <button type="button" class="schedule-inline-action" data-schedule-action="add-row" data-session-id="${session.id}">+ Hàng</button>
+                                                <button type="button" class="schedule-inline-action" data-schedule-action="prompt-remove-row" data-session-id="${session.id}">Xóa hàng</button>
                                                 <button type="button" class="schedule-inline-action" data-schedule-action="delete-session" data-session-id="${session.id}">Xóa ca</button>
                                             </div>
                                         ` : ''}
@@ -911,12 +990,26 @@
                             ` : ''}
                             <td class="schedule-room-cell">
                                 <div class="schedule-row-chip">
-                                    <span class="schedule-row-index">${escapeHtml(row.label)}</span>
+                                    <div
+                                        class="schedule-room-editor ${String(row.label || '').trim() ? '' : 'empty'}"
+                                        contenteditable="${scheduleState.isAdmin ? 'true' : 'false'}"
+                                        data-board-id="${board.id}"
+                                        data-session-id="${session.id}"
+                                        data-row-id="${row.id}"
+                                        spellcheck="false"
+                                    >${String(row.label || '').trim() ? escapeScheduleText(row.label) : ''}</div>
                                     ${scheduleState.isAdmin && session.rows.length > 1 ? `<button type="button" class="remove-row-btn" data-schedule-action="remove-row" data-session-id="${session.id}" data-row-id="${row.id}" title="Xóa hàng"><i class="fa-solid fa-minus"></i></button>` : ''}
                                 </div>
                             </td>
                             ${dayCells}
-                            <td class="schedule-room-cell right"><div class="schedule-row-chip"><span class="schedule-row-index">${escapeHtml(row.label)}</span></div></td>
+                            <td class="schedule-room-cell right"><div class="schedule-row-chip"><div
+                                class="schedule-room-editor ${String(row.label || '').trim() ? '' : 'empty'}"
+                                contenteditable="${scheduleState.isAdmin ? 'true' : 'false'}"
+                                data-board-id="${board.id}"
+                                data-session-id="${session.id}"
+                                data-row-id="${row.id}"
+                                spellcheck="false"
+                            >${String(row.label || '').trim() ? escapeScheduleText(row.label) : ''}</div></div></td>
                             ${rowIndex === 0 ? `<td class="schedule-time-cell right" rowspan="${session.rows.length}"><div class="schedule-time-content"><span class="time-range">${escapeHtml(session.label)}</span></div></td>` : ''}
                         </tr>
                     `;
@@ -945,6 +1038,75 @@
             `;
         }
 
+
+        function formatScheduleSavedTime(value) {
+            const date = value instanceof Date ? value : null;
+            if (!date || Number.isNaN(date.getTime())) return '';
+            return date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function updateScheduleSaveStatus() {
+            const statusEl = document.getElementById('scheduleSaveStatus');
+            const saveBtn = document.getElementById('saveScheduleBtn');
+            if (!statusEl) return;
+
+            const timeLabel = formatScheduleSavedTime(scheduleState.lastSavedAt);
+            if (scheduleState.isAdmin) {
+                if (scheduleState.hasUnsavedChanges) {
+                    statusEl.className = 'schedule-save-status unsaved';
+                    statusEl.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Có thay đổi chưa lưu';
+                    if (saveBtn) {
+                        saveBtn.classList.add('gold');
+                        saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi';
+                    }
+                } else {
+                    statusEl.className = 'schedule-save-status saved';
+                    statusEl.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${timeLabel ? `Đã lưu ${timeLabel}` : 'Đã lưu'}`;
+                    if (saveBtn) {
+                        saveBtn.classList.remove('gold');
+                        saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Đã lưu';
+                    }
+                }
+                return;
+            }
+
+            statusEl.className = 'schedule-save-status saved';
+            statusEl.innerHTML = `<i class="fa-solid fa-eye"></i> ${timeLabel ? `Bản đã lưu ${timeLabel}` : 'Đang xem bản đã lưu'}`;
+            if (saveBtn) saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi';
+        }
+
+        function showScheduleToast(message = 'Dữ liệu đã được lưu.') {
+            const toast = document.getElementById('success-toast');
+            if (!toast) return;
+            const textEl = toast.querySelector('.toast-text p');
+            if (textEl) textEl.textContent = message;
+            toast.classList.add('show');
+            window.clearTimeout(showScheduleToast.timerId);
+            showScheduleToast.timerId = window.setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2200);
+        }
+
+        function saveScheduleChanges(showToast = true) {
+            if (!scheduleState.isAdmin) return;
+            persistScheduleState();
+            renderScheduleBuilder();
+            if (showToast) showScheduleToast('Đã lưu thay đổi thời khóa biểu.');
+        }
+
+        function updateScheduleState(mutator, options = {}) {
+            ensureScheduleState();
+            mutator(scheduleState);
+            if (options.markDirty !== false) {
+                scheduleState.hasUnsavedChanges = true;
+            }
+            renderScheduleBuilder();
+        }
+
+        function updateScheduleUiState(mutator) {
+            updateScheduleState(mutator, { markDirty: false });
+        }
+
         function updateSchedulePermissionChip() {
             const chip = document.getElementById('schedulePermissionChip');
             if (!chip) return;
@@ -959,6 +1121,7 @@
             clearSelectedCellIfNeeded();
             renderScheduleTabs();
             updateSchedulePermissionChip();
+            updateScheduleSaveStatus();
 
             const board = getActiveScheduleBoard();
             const root = document.getElementById('scheduleBuilderRoot');
@@ -970,13 +1133,6 @@
             setTextValue('activeScheduleBoardRowCount', board ? getScheduleBoardTotalRows(board) : 0);
             renderScheduleBoardDetails(board);
             renderSelectedCellToolbar();
-        }
-
-        function updateScheduleState(mutator) {
-            ensureScheduleState();
-            mutator(scheduleState);
-            persistScheduleState();
-            renderScheduleBuilder();
         }
 
         function setSchedulePermission(role) {
@@ -1118,13 +1274,67 @@
             });
         }
 
+        function updateScheduleRowLabel(boardId, sessionId, rowId, value) {
+            if (!scheduleState.isAdmin) return;
+            updateScheduleState((state) => {
+                const board = state.boards.find((item) => item.id === boardId);
+                const session = board && board.sessions.find((item) => item.id === sessionId);
+                const rowIndex = session && session.rows.findIndex((item) => item.id === rowId);
+                const row = session && rowIndex > -1 ? session.rows[rowIndex] : null;
+                if (!row) return;
+                const nextLabel = String(value || '').trim();
+                row.label = nextLabel || row.label || String(rowIndex + 1);
+            });
+        }
+
+        function promptRemoveRowFromSession(sessionId) {
+            if (!scheduleState.isAdmin) return;
+            const board = getActiveScheduleBoard();
+            const session = board && board.sessions.find((item) => item.id === sessionId);
+            if (!session) return;
+            if (session.rows.length <= 1) {
+                alert('Ca học này phải giữ lại ít nhất 1 hàng.');
+                return;
+            }
+
+            const selected = getSelectedCellRecord();
+            const defaultRowLabel = selected && selected.session.id === sessionId ? String(selected.row.label || '').trim() : String(session.rows[session.rows.length - 1].label || '').trim();
+            const optionsText = session.rows.map((row, index) => `${index + 1}. Phòng ${row.label}`).join('\n');
+            const input = prompt(`Chọn hàng cần xóa trong ca "${session.label}":\n${optionsText}\n\nNhập STT hoặc số phòng muốn xóa:`, defaultRowLabel || '');
+            if (input === null) return;
+
+            const normalizedInput = String(input || '').trim();
+            if (!normalizedInput) return;
+
+            let targetRow = session.rows.find((row) => String(row.label || '').trim() === normalizedInput);
+            if (!targetRow) {
+                const indexValue = parseInt(normalizedInput, 10);
+                if (!Number.isNaN(indexValue) && indexValue >= 1 && indexValue <= session.rows.length) {
+                    targetRow = session.rows[indexValue - 1];
+                }
+            }
+
+            if (!targetRow) {
+                alert('Không tìm thấy hàng cần xóa. Vui lòng nhập đúng STT hoặc số phòng.');
+                return;
+            }
+
+            removeRowFromSession(sessionId, targetRow.id);
+        }
+
         function removeRowFromSession(sessionId, rowId) {
             if (!scheduleState.isAdmin) return;
+            const board = getActiveScheduleBoard();
+            const session = board && board.sessions.find((item) => item.id === sessionId);
+            const row = session && session.rows.find((item) => item.id === rowId);
+            if (!session || !row || session.rows.length <= 1) return;
+            if (!confirm(`Bạn có chắc muốn xóa hàng / phòng "${row.label}" trong ca "${session.label}"?`)) return;
+
             updateScheduleState((state) => {
                 const active = state.boards.find((item) => item.id === state.activeBoardId);
                 const target = active && active.sessions.find((item) => item.id === sessionId);
                 if (!target || target.rows.length <= 1) return;
-                target.rows = target.rows.filter((row) => row.id !== rowId);
+                target.rows = target.rows.filter((entry) => entry.id !== rowId);
                 if (state.selectedCellRef && state.selectedCellRef.sessionId === sessionId && state.selectedCellRef.rowId === rowId) {
                     state.selectedCellRef = null;
                 }
@@ -1165,23 +1375,52 @@
             });
         }
 
-        function selectScheduleCell(boardId, sessionId, rowId, dayIndex) {
+        function placeCaretAtEnd(element) {
+            if (!element) return;
+            const selection = window.getSelection && window.getSelection();
+            if (!selection) return;
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            range.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        function focusScheduleCellEditor(ref) {
+            if (!ref) return;
+            window.requestAnimationFrame(() => {
+                const selector = `.schedule-cell-editor[data-board-id="${ref.boardId}"][data-session-id="${ref.sessionId}"][data-row-id="${ref.rowId}"][data-day-index="${ref.dayIndex}"]`;
+                const editor = document.querySelector(selector);
+                if (!editor) return;
+                editor.focus();
+                placeCaretAtEnd(editor);
+            });
+        }
+
+        function selectScheduleCell(boardId, sessionId, rowId, dayIndex, shouldFocus = false) {
             if (!scheduleState.isAdmin) return;
-            scheduleState.selectedCellRef = { boardId, sessionId, rowId, dayIndex: Number(dayIndex) };
+            const ref = { boardId, sessionId, rowId, dayIndex: Number(dayIndex) };
+            scheduleState.selectedCellRef = ref;
             renderScheduleBuilder();
+            if (shouldFocus) focusScheduleCellEditor(ref);
         }
 
         function updateSelectedCellColors(bgColor, textColor) {
-            if (!scheduleState.isAdmin || !scheduleState.selectedCellRef) return;
+            if (!scheduleState.isAdmin) return;
             updateScheduleState((state) => {
+                if (typeof bgColor === 'string') state.lastBgColor = normalizeColorValue(bgColor, '#ffffff');
+                if (typeof textColor === 'string') state.lastTextColor = normalizeColorValue(textColor, '#1f2d3b');
+
+                if (!state.selectedCellRef) return;
+
                 const ref = state.selectedCellRef;
                 const board = state.boards.find((item) => item.id === ref.boardId);
                 const session = board && board.sessions.find((item) => item.id === ref.sessionId);
                 const row = session && session.rows.find((item) => item.id === ref.rowId);
                 const cell = row && row.cells && row.cells[Number(ref.dayIndex)];
                 if (!cell) return;
-                if (typeof bgColor === 'string') cell.bgColor = bgColor;
-                if (typeof textColor === 'string') cell.textColor = textColor;
+                if (typeof bgColor === 'string') cell.bgColor = normalizeColorValue(bgColor, '#ffffff');
+                if (typeof textColor === 'string') cell.textColor = normalizeColorValue(textColor, '#1f2d3b');
             });
         }
 
@@ -1216,6 +1455,7 @@
             if (scheduleState.eventsBound) return;
             scheduleState.eventsBound = true;
 
+            document.getElementById('saveScheduleBtn')?.addEventListener('click', () => saveScheduleChanges(true));
             document.getElementById('addScheduleBoardBtn')?.addEventListener('click', addScheduleBoard);
             document.getElementById('duplicateScheduleBoardBtn')?.addEventListener('click', duplicateActiveScheduleBoard);
             document.getElementById('renameScheduleBoardBtn')?.addEventListener('click', renameActiveScheduleBoard);
@@ -1224,11 +1464,13 @@
             document.getElementById('resetScheduleCellStyleBtn')?.addEventListener('click', resetSelectedCellStyle);
             document.getElementById('clearScheduleCellContentBtn')?.addEventListener('click', clearSelectedCellContent);
 
-            document.getElementById('scheduleBgColorPicker')?.addEventListener('input', (event) => {
-                updateSelectedCellColors(event.target.value, undefined);
-            });
-            document.getElementById('scheduleTextColorPicker')?.addEventListener('input', (event) => {
-                updateSelectedCellColors(undefined, event.target.value);
+            document.getElementById('scheduleColorToolbar')?.addEventListener('click', (event) => {
+                const swatch = event.target.closest('.schedule-swatch');
+                if (!swatch || !scheduleState.isAdmin) return;
+                const role = swatch.dataset.swatchRole;
+                const color = swatch.dataset.color;
+                if (role === 'bg') updateSelectedCellColors(color, undefined);
+                if (role === 'text') updateSelectedCellColors(undefined, color);
             });
 
             document.getElementById('scheduleCenterTitleInput')?.addEventListener('change', (event) => updateActiveBoardField('centerTitle', event.target.value));
@@ -1244,7 +1486,7 @@
                 }
                 const tab = event.target.closest('[data-board-id]');
                 if (!tab) return;
-                updateScheduleState((state) => {
+                updateScheduleUiState((state) => {
                     state.activeBoardId = tab.dataset.boardId;
                     if (state.selectedCellRef && state.selectedCellRef.boardId !== state.activeBoardId) {
                         state.selectedCellRef = null;
@@ -1260,17 +1502,43 @@
                     const rowId = actionButton.dataset.rowId;
                     if (action === 'rename-session') renameSession(sessionId);
                     if (action === 'add-row') addRowToSession(sessionId);
+                    if (action === 'prompt-remove-row') promptRemoveRowFromSession(sessionId);
                     if (action === 'delete-session') deleteSession(sessionId);
                     if (action === 'remove-row') removeRowFromSession(sessionId, rowId);
                     return;
                 }
 
+                const roomEditor = event.target.closest('.schedule-room-editor');
+                if (roomEditor && scheduleState.isAdmin) {
+                    roomEditor.focus();
+                    return;
+                }
+
                 const editor = event.target.closest('.schedule-cell-editor');
                 if (!editor || !scheduleState.isAdmin) return;
-                selectScheduleCell(editor.dataset.boardId, editor.dataset.sessionId, editor.dataset.rowId, editor.dataset.dayIndex);
+                selectScheduleCell(editor.dataset.boardId, editor.dataset.sessionId, editor.dataset.rowId, editor.dataset.dayIndex, true);
+            });
+
+            document.getElementById('scheduleBuilderRoot')?.addEventListener('keydown', (event) => {
+                const roomEditor = event.target.closest('.schedule-room-editor');
+                if (roomEditor && event.key === 'Enter') {
+                    event.preventDefault();
+                    roomEditor.blur();
+                }
             });
 
             document.getElementById('scheduleBuilderRoot')?.addEventListener('blur', (event) => {
+                const roomEditor = event.target.closest('.schedule-room-editor');
+                if (roomEditor && scheduleState.isAdmin) {
+                    updateScheduleRowLabel(
+                        roomEditor.dataset.boardId,
+                        roomEditor.dataset.sessionId,
+                        roomEditor.dataset.rowId,
+                        roomEditor.innerText.replace(/ /g, ' ').trim()
+                    );
+                    return;
+                }
+
                 const editor = event.target.closest('.schedule-cell-editor');
                 if (!editor || !scheduleState.isAdmin) return;
                 updateScheduleCellText(
@@ -1281,6 +1549,20 @@
                     editor.innerText.replace(/ /g, ' ').trim()
                 );
             }, true);
+
+            document.addEventListener('keydown', (event) => {
+                if (!scheduleState.isAdmin) return;
+                const isSaveShortcut = (event.ctrlKey || event.metaKey) && String(event.key || '').toLowerCase() === 's';
+                if (!isSaveShortcut) return;
+                event.preventDefault();
+                saveScheduleChanges(true);
+            });
+
+            window.addEventListener('beforeunload', (event) => {
+                if (!scheduleState.isAdmin || !scheduleState.hasUnsavedChanges) return;
+                event.preventDefault();
+                event.returnValue = '';
+            });
         }
 
         function initializeScheduleWorkspace() {
@@ -1361,10 +1643,28 @@
             };
         }
 
+        function resolveAccessRole(profile) {
+            const candidates = [
+                profile && profile.role,
+                profile && profile.roleName,
+                profile && profile.accountRole,
+                profile && profile.permissionRole,
+                profile && profile.type
+            ];
+            for (const candidate of candidates) {
+                const normalized = normalizeLoose(candidate);
+                if (!normalized) continue;
+                if (normalized === 'admin' || normalized.includes('admin')) return 'admin';
+                if (normalized === 'manager') return 'manager';
+                if (normalized === 'teacher' || normalized.includes('giao vien')) return 'teacher';
+            }
+            return 'teacher';
+        }
+
         function renderCurrentUserHeader(user, profile) {
             const email = user && user.email ? user.email : '';
             const displayName = getUserDisplayName(profile, user);
-            const role = (profile && profile.role) || 'teacher';
+            const role = resolveAccessRole(profile);
 
             document.getElementById('userEmailDisplay').textContent = email;
             document.getElementById('currentUserName').textContent = displayName;

@@ -486,6 +486,49 @@
             return String(email || '').trim().toLowerCase();
         }
 
+        function normalizeRoleToken(value) {
+            const raw = String(value || '').trim().toLowerCase();
+            if (!raw) return '';
+            if (['admin', 'administrator', 'superadmin', 'super-admin'].includes(raw)) return 'admin';
+            if (['manager', 'management', 'quanly', 'quan-ly', 'quản lý', 'supervisor'].includes(raw)
+                || raw.includes('manager')
+                || raw.includes('quan ly')
+                || raw.includes('quản lý')
+                || raw.includes('quanly')) return 'manager';
+            if (['teacher', 'giao vien', 'giáo viên', 'giaovien'].includes(raw)
+                || raw.includes('teacher')
+                || raw.includes('giao vien')
+                || raw.includes('giáo viên')
+                || raw.includes('giaovien')) return 'teacher';
+            return '';
+        }
+
+        function normalizeRoles(data) {
+            const rawRoles = Array.isArray(data)
+                ? data
+                : (Array.isArray(data && data.roles) ? data.roles : ((data && data.role) ? [data.role] : []));
+            const cleaned = rawRoles
+                .map(normalizeRoleToken)
+                .filter(role => ['teacher', 'manager', 'admin'].includes(role));
+            const unique = Array.from(new Set(cleaned));
+            return unique.length ? unique : ['teacher'];
+        }
+
+        function hasRole(data, role) {
+            return normalizeRoles(data).includes(normalizeRoleToken(role));
+        }
+
+        function getPrimaryRole(data) {
+            const roles = normalizeRoles(data);
+            if (roles.includes('admin')) return 'admin';
+            if (roles.includes('manager')) return 'manager';
+            return 'teacher';
+        }
+
+        function getCurrentUserRoles() {
+            return normalizeRoles(currentUserProfile);
+        }
+
         function getRoleLabel(role) {
             if (role === 'admin') return 'Admin';
             if (role === 'manager') return 'Quản lý';
@@ -514,7 +557,7 @@
         }
 
         function getCurrentUserRole() {
-            return String((currentUserProfile && currentUserProfile.role) || 'teacher').trim().toLowerCase();
+            return getPrimaryRole(currentUserProfile);
         }
 
         function normalizePersonKey(person) {
@@ -537,6 +580,7 @@
 
         function getClassAccessScope(classData) {
             const role = getCurrentUserRole();
+            const roles = getCurrentUserRoles();
             const currentEmail = getCurrentUserEmail();
             const managers = getManagersFromClassData(classData);
             const teachers = getTeachersFromClassData(classData);
@@ -545,27 +589,29 @@
             const currentNameKey = String(getDisplayName(currentUserProfile, currentEmail) || '').trim().toLowerCase();
             const currentKey = currentEmail || currentNameKey;
 
-            const isAdmin = role === 'admin';
+            const isAdmin = roles.includes('admin');
+            const isRoleManager = roles.includes('manager');
             const isAssignedManager = !!currentKey && managerKeys.includes(currentKey);
             const isAssignedTeacher = !!currentKey && teacherKeys.includes(currentKey);
-            const isElevatedManager = isAdmin || isAssignedManager;
 
             return {
                 role,
+                roles,
                 isAdmin,
+                isRoleManager,
                 isAssignedManager,
                 isAssignedTeacher,
-                canManageClass: isAdmin || isAssignedManager || isAssignedTeacher,
+                canManageClass: isAdmin || isRoleManager || isAssignedManager || isAssignedTeacher,
                 canEditClass: isAdmin,
                 canDeleteClass: isAdmin,
                 canCreateClass: isAdmin,
-                canUseManagementAccessAnytime: isAdmin || isAssignedManager,
-                canViewOnly: !(isAdmin || isAssignedManager || isAssignedTeacher)
+                canUseManagementAccessAnytime: isAdmin || isRoleManager || isAssignedManager,
+                canViewOnly: !(isAdmin || isRoleManager || isAssignedManager || isAssignedTeacher)
             };
         }
 
         function syncPermissionUi() {
-            const isAdmin = getCurrentUserRole() === 'admin';
+            const isAdmin = hasRole(currentUserProfile, 'admin');
 
             btnOpenModal.style.display = isAdmin ? 'inline-flex' : 'none';
             btnEditSelected.style.display = isAdmin ? 'inline-flex' : 'none';
@@ -582,18 +628,18 @@
             const snap = await db.collection('users').where('email', '==', email).limit(1).get();
             if (!snap.empty) return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
 
-            return { id: user.uid, email, name: user.email || '', role: 'teacher', status: 'active' };
+            return { id: user.uid, email, name: user.email || '', role: 'teacher', roles: ['teacher'], status: 'active' };
         }
 
         function renderCurrentUserHeader(user, profile) {
             document.getElementById('userEmailDisplay').textContent = user.email || '';
-            document.getElementById('currentUserName').textContent = getDisplayName(profile, user.email) || getRoleLabel(profile && profile.role);
-            syncAdminOnlyMenu((profile && profile.role) || 'teacher');
+            document.getElementById('currentUserName').textContent = getDisplayName(profile, user.email) || getRoleLabel(getPrimaryRole(profile));
+            syncAdminOnlyMenu(profile || { role: 'teacher' });
         }
 
 
-function syncAdminOnlyMenu(role) {
-    const isAdmin = String(role || '').toLowerCase() === 'admin';
+function syncAdminOnlyMenu(roleSource) {
+    const isAdmin = hasRole(roleSource, 'admin');
     document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
         item.style.display = isAdmin ? 'flex' : 'none';
     });
@@ -690,14 +736,19 @@ function syncAdminOnlyMenu(role) {
         }
 
         async function fetchTeachers() {
-            const snap = await db.collection('users').where('role', '==', 'teacher').get().catch(() => null);
             teacherList = [];
-            if (snap) {
+            const [legacySnap, modernSnap] = await Promise.all([
+                db.collection('users').where('role', '==', 'teacher').get().catch(() => null),
+                db.collection('users').where('roles', 'array-contains', 'teacher').get().catch(() => null)
+            ]);
+            [legacySnap, modernSnap].forEach((snap) => {
+                if (!snap) return;
                 snap.forEach(doc => {
                     const person = sanitizePersonData(doc.data() || {});
                     if (person.name || person.email) teacherList.push(person);
                 });
-            }
+            });
+            teacherList = normalizePeopleArray(teacherList);
             if (teacherList.length === 0) {
                 teacherList = [
                     { name: 'Nguyễn Phượng Ngân', email: 'ngannguyen@gmail.com' },
@@ -710,13 +761,18 @@ function syncAdminOnlyMenu(role) {
 
         async function fetchManagers() {
             managerList = [];
-            const snap = await db.collection('users').where('role', 'in', ['manager', 'admin']).get().catch(() => null);
-            if (snap) {
+            const [legacySnap, modernSnap] = await Promise.all([
+                db.collection('users').where('role', 'in', ['manager', 'admin']).get().catch(() => null),
+                db.collection('users').where('roles', 'array-contains-any', ['manager', 'admin']).get().catch(() => null)
+            ]);
+            [legacySnap, modernSnap].forEach((snap) => {
+                if (!snap) return;
                 snap.forEach(doc => {
                     const person = sanitizePersonData(doc.data() || {});
                     if (person.name || person.email) managerList.push(person);
                 });
-            }
+            });
+            managerList = normalizePeopleArray(managerList);
             if (managerList.length === 0 && currentUserProfile) {
                 managerList.push({ name: getDisplayName(currentUserProfile, currentAuthUser && currentAuthUser.email), email: normalizeEmail(currentAuthUser && currentAuthUser.email) });
             }
@@ -851,7 +907,7 @@ function syncAdminOnlyMenu(role) {
 
         function openCreateModal() {
             const role = getCurrentUserRole();
-            if (role !== 'admin') {
+            if (!hasRole(currentUserProfile, 'admin')) {
                 alert('Bạn không có quyền tạo lớp mới. Chỉ Admin mới được thêm lớp.');
                 return;
             }
@@ -1101,7 +1157,7 @@ function syncAdminOnlyMenu(role) {
                     <td class="col-center"><input type="checkbox" class="row-checkbox ${access.isAdmin ? '' : 'checkbox-readonly'}" value="${classData.id}" ${access.isAdmin ? '' : 'disabled title="Chỉ Admin mới được chọn lớp để sửa hoặc xóa"'}></td>
                     <td class="col-center">${index++}</td>
                     <td><span class="class-code">${escapeHtml(classData.classCode || '')}</span></td>
-                    <td class="col-bold">${escapeHtml(classData.className || '')}<div class="permission-note">${access.isAdmin ? 'Admin toàn quyền lớp này.' : access.isAssignedManager ? 'Bạn là quản lý của lớp này, được phép quản lý điểm danh cả khi lớp offline.' : access.isAssignedTeacher ? 'Bạn là giáo viên được gán vào lớp này, được phép vào điểm danh khi lớp online.' : 'Bạn chỉ có quyền xem thông tin lớp này.'}</div></td>
+                    <td class="col-bold">${escapeHtml(classData.className || '')}<div class="permission-note">${access.isAdmin ? 'Admin toàn quyền lớp này.' : access.isRoleManager ? 'Bạn có quyền quản lý, được phép quản lý điểm danh cả khi lớp offline.' : access.isAssignedManager ? 'Bạn là quản lý của lớp này, được phép quản lý điểm danh cả khi lớp offline.' : access.isAssignedTeacher ? 'Bạn là giáo viên được gán vào lớp này, được phép vào điểm danh khi lớp online.' : 'Bạn chỉ có quyền xem thông tin lớp này.'}</div></td>
                     <td>${scheduleHtml}</td>
                     <td>${managerHtml}</td>
                     <td>${teachersHtml}<span class="hidden-teacher-search" style="display:none;">${escapeHtml(classData.teacherNamesDisplay || classData.teacherName || '')}</span></td>
@@ -1286,13 +1342,13 @@ function syncAdminOnlyMenu(role) {
             document.getElementById('classCode').value = data.classCode || '';
             document.getElementById('className').value = data.className || '';
 
-            currentSelectedTeachers = Array.isArray(data.teachers) ? data.teachers : [];
+            currentSelectedTeachers = normalizePeopleArray(Array.isArray(data.teachers) ? data.teachers : []);
             if (currentSelectedTeachers.length === 0 && data.teacherName && data.teacherName !== 'Chưa phân công') {
                 currentSelectedTeachers.push({ name: data.teacherName, email: '' });
             }
             renderTeacherTags();
 
-            currentSelectedManagers = getManagersFromClassData(data);
+            currentSelectedManagers = normalizePeopleArray(getManagersFromClassData(data));
             renderManagerTags();
 
             setScheduleForm(data);
@@ -1404,7 +1460,7 @@ function syncAdminOnlyMenu(role) {
                 currentUserProfile = await fetchCurrentUserProfile(user);
                 renderCurrentUserHeader(user, currentUserProfile);
             } catch (error) {
-                currentUserProfile = { email: normalizeEmail(user.email || ''), name: user.email || '', role: 'teacher' };
+                currentUserProfile = { email: normalizeEmail(user.email || ''), name: user.email || '', role: 'teacher', roles: ['teacher'] };
                 renderCurrentUserHeader(user, currentUserProfile);
             } finally {
                 syncPermissionUi();

@@ -41,8 +41,10 @@
         .form-options { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
         .remember-me { display: flex; align-items: center; gap: 8px; color: #555; cursor: pointer; }
         .remember-me input[type="checkbox"] { accent-color: var(--accent-gold); width: 16px; height: 16px; cursor: pointer; }
+        .option-links { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
         .forgot-password { color: var(--accent-gold-plated); text-decoration: none; font-weight: 600; transition: color 0.3s; cursor: pointer; }
         .forgot-password:hover { color: var(--accent-gold); text-decoration: underline; }
+        .forgot-password.secondary-link { font-size: 0.8rem; opacity: 0.92; }
         
         .btn-login { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent-gold), #c99327); color: var(--bg-card-white); border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(224, 170, 62, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(224, 170, 62, 0.4); background: linear-gradient(135deg, #eec05c, var(--accent-gold)); }
@@ -65,6 +67,14 @@
         .contact-info { background: var(--input-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left; border: 1px solid var(--border-grey); }
         .contact-info p { margin: 8px 0; font-size: 0.95rem; color: var(--text-dark); font-weight: 500; }
         .contact-info i { color: var(--primary-green); width: 25px; text-align: center; margin-right: 5px; }
+        .modal-note { margin: -6px 0 18px; color: #6b7a88; font-size: 0.88rem; line-height: 1.5; }
+        .modal-form { gap: 14px; }
+        .modal-error { margin-top: 0; margin-bottom: 2px; }
+        .modal-help { font-size: 0.8rem; color: #6c7a89; text-align: left; line-height: 1.5; margin-top: -2px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 6px; }
+        .modal-actions .btn-login { margin-top: 0; flex: 1; }
+        .btn-secondary-modal { flex: 1; background: #eef2f5; color: var(--text-dark); border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.3s; padding: 15px; }
+        .btn-secondary-modal:hover { background: #e3e9ee; }
         .btn-close-modal { background: var(--bg-dark); color: white; border: none; padding: 10px 30px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
         .btn-close-modal:hover { background: #1a365d; }
 
@@ -73,6 +83,7 @@
             .login-card { padding: 30px 20px; }
             .brand-title { font-size: 1.6rem; }
             .modal-content { padding: 20px; }
+            .modal-actions { flex-direction: column-reverse; }
             .bg-glow { display: none; } /* Tắt bóng sáng trên mobile cho mượt */
         }
     </style>
@@ -103,7 +114,10 @@
             </div>
             <div class="form-options">
                 <label class="remember-me"><input type="checkbox" id="rememberMe"> Nhớ tài khoản</label>
-                <a class="forgot-password" id="openForgotModal">Quên mật khẩu?</a>
+                <div class="option-links">
+                    <a class="forgot-password" id="openChangePasswordModal">Đổi mật khẩu</a>
+                    <a class="forgot-password secondary-link" id="openForgotModal">Quên mật khẩu?</a>
+                </div>
             </div>
             
             <button type="submit" class="btn-login" id="loginBtn">
@@ -133,6 +147,44 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fa-solid fa-key"></i></div>
+            <h2 class="modal-title">Đổi mật khẩu</h2>
+            <p class="modal-note">Nhập đúng mật khẩu cũ, sau đó xác nhận mật khẩu mới. Sau khi đổi xong, hệ thống sẽ tự cập nhật mật khẩu mới vào hồ sơ tài khoản trong trang quản lý hệ thống.</p>
+            <form class="login-form modal-form" id="changePasswordForm">
+                <div class="error-message modal-error" id="changePasswordError"></div>
+                <div class="input-group">
+                    <input type="email" id="changePasswordEmail" placeholder="Nhập email tài khoản" required>
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="oldPassword" placeholder="Nhập mật khẩu cũ" required autocomplete="current-password">
+                    <i class="fa-solid fa-lock"></i>
+                    <i class="fa-solid fa-eye toggle-password" id="toggleOldPassword"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="newPassword" placeholder="Nhập mật khẩu mới" required minlength="6" autocomplete="new-password">
+                    <i class="fa-solid fa-lock"></i>
+                    <i class="fa-solid fa-eye toggle-password" id="toggleNewPassword"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="confirmNewPassword" placeholder="Xác nhận mật khẩu mới" required minlength="6" autocomplete="new-password">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <i class="fa-solid fa-eye toggle-password" id="toggleConfirmNewPassword"></i>
+                </div>
+                <div class="modal-help">Mật khẩu mới phải có ít nhất 6 ký tự và trùng khớp với ô xác nhận.</div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary-modal" id="closeChangePasswordModal">Hủy</button>
+                    <button type="submit" class="btn-login" id="changePasswordSubmitBtn">
+                        <span id="changePasswordBtnText">Xác nhận đổi mật khẩu</span>
+                        <i class="fa-solid fa-spinner" id="changePasswordLoadingIcon"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
@@ -150,18 +202,34 @@
         // --- XỬ LÝ POPUP LIÊN HỆ & QUÊN MẬT KHẨU ---
         const contactBtn = document.getElementById('openContactModal');
         const forgotBtn = document.getElementById('openForgotModal');
+        const changePasswordBtn = document.getElementById('openChangePasswordModal');
         const contactModal = document.getElementById('contactModal');
+        const changePasswordModal = document.getElementById('changePasswordModal');
         const closeContactBtn = document.getElementById('closeContactModal');
+        const closeChangePasswordBtn = document.getElementById('closeChangePasswordModal');
         const emailInput = document.getElementById('email');
         const rememberMeCheckbox = document.getElementById('rememberMe');
         const togglePassword = document.getElementById('togglePassword');
+        const toggleOldPassword = document.getElementById('toggleOldPassword');
+        const toggleNewPassword = document.getElementById('toggleNewPassword');
+        const toggleConfirmNewPassword = document.getElementById('toggleConfirmNewPassword');
         const passwordInput = document.getElementById('password');
         const loginForm = document.getElementById('loginForm');
         const loginBtn = document.getElementById('loginBtn');
         const btnText = document.getElementById('btnText');
         const loadingIcon = document.getElementById('loadingIcon');
         const errorMessage = document.getElementById('errorMessage');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        const changePasswordEmailInput = document.getElementById('changePasswordEmail');
+        const oldPasswordInput = document.getElementById('oldPassword');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+        const changePasswordError = document.getElementById('changePasswordError');
+        const changePasswordSubmitBtn = document.getElementById('changePasswordSubmitBtn');
+        const changePasswordBtnText = document.getElementById('changePasswordBtnText');
+        const changePasswordLoadingIcon = document.getElementById('changePasswordLoadingIcon');
         let authCheckInProgress = false;
+        let passwordChangeFlow = false;
 
         function normalizeEmail(email) {
             return String(email || '').trim().toLowerCase();
@@ -170,6 +238,22 @@
         function showModal(e) {
             e.preventDefault();
             contactModal.classList.add('show');
+        }
+
+        function openChangePasswordModal(e) {
+            e.preventDefault();
+            hideChangePasswordError();
+            changePasswordForm.reset();
+            const seededEmail = normalizeEmail(emailInput.value || localStorage.getItem('xl_saved_email'));
+            if (seededEmail) changePasswordEmailInput.value = seededEmail;
+            changePasswordModal.classList.add('show');
+        }
+
+        function closeChangePasswordModal() {
+            changePasswordModal.classList.remove('show');
+            changePasswordForm.reset();
+            hideChangePasswordError();
+            setChangePasswordLoading(false);
         }
 
         function setLoadingState(isLoading) {
@@ -187,6 +271,75 @@
 
         function hideError() {
             errorMessage.style.display = 'none';
+        }
+
+        function setChangePasswordLoading(isLoading) {
+            changePasswordBtnText.textContent = isLoading ? 'Đang đổi mật khẩu...' : 'Xác nhận đổi mật khẩu';
+            changePasswordLoadingIcon.style.display = isLoading ? 'inline-block' : 'none';
+            changePasswordSubmitBtn.style.opacity = isLoading ? '0.8' : '1';
+            changePasswordSubmitBtn.disabled = isLoading;
+        }
+
+        function showChangePasswordError(message) {
+            changePasswordError.style.display = 'block';
+            changePasswordError.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> ' + message;
+        }
+
+        function hideChangePasswordError() {
+            changePasswordError.style.display = 'none';
+            changePasswordError.innerHTML = '';
+        }
+
+        function togglePasswordVisibility(inputElement, toggleElement) {
+            const type = inputElement.getAttribute('type') === 'password' ? 'text' : 'password';
+            inputElement.setAttribute('type', type);
+            toggleElement.classList.toggle('fa-eye');
+            toggleElement.classList.toggle('fa-eye-slash');
+        }
+
+        function translatePasswordChangeError(error) {
+            const code = String((error && error.code) || (error && error.message) || '').toLowerCase();
+            if (!code) return 'Không thể đổi mật khẩu. Vui lòng thử lại.';
+            if (code.includes('auth/wrong-password') || code.includes('auth/invalid-credential') || code.includes('auth/invalid-login-credentials')) {
+                return 'Mật khẩu cũ không đúng. Vui lòng kiểm tra lại.';
+            }
+            if (code.includes('auth/user-not-found')) return 'Không tìm thấy tài khoản với email đã nhập.';
+            if (code.includes('auth/weak-password')) return 'Mật khẩu mới phải có ít nhất 6 ký tự.';
+            if (code.includes('auth/too-many-requests')) return 'Bạn đã thao tác quá nhiều lần. Vui lòng thử lại sau.';
+            if (code.includes('auth/requires-recent-login')) return 'Phiên xác thực đã cũ. Vui lòng thử lại bằng cách nhập đúng mật khẩu cũ.';
+            if (code.includes('chưa được cấp quyền trên hệ thống')) return 'Tài khoản chưa được cấp quyền trên hệ thống. Vui lòng liên hệ Admin.';
+            if (code.includes('đang bị khóa')) return 'Tài khoản đang bị khóa. Vui lòng liên hệ Admin.';
+            return 'Không thể đổi mật khẩu lúc này. Vui lòng thử lại.';
+        }
+
+        async function syncPasswordToSystemRecord(email, newPassword, uid) {
+            const normalizedEmail = normalizeEmail(email);
+            const payload = {
+                email: normalizedEmail,
+                password: newPassword,
+                passwordUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            if (uid) {
+                payload.uid = uid;
+                payload.authUid = uid;
+            }
+
+            const directRef = db.collection('users').doc(normalizedEmail);
+            const directDoc = await directRef.get().catch(() => null);
+            if (directDoc && directDoc.exists) {
+                await directRef.set(payload, { merge: true });
+                return true;
+            }
+
+            const snap = await db.collection('users').where('email', '==', normalizedEmail).limit(1).get();
+            if (!snap.empty) {
+                await snap.docs[0].ref.set(payload, { merge: true });
+                return true;
+            }
+
+            return false;
         }
 
         async function getUserProfileByEmail(email) {
@@ -242,13 +395,17 @@
         }
 
         auth.onAuthStateChanged((user) => {
+            if (passwordChangeFlow) return;
             if (user) validateSignedInUser(user);
         });
 
         contactBtn.addEventListener('click', showModal);
         forgotBtn.addEventListener('click', showModal);
+        changePasswordBtn.addEventListener('click', openChangePasswordModal);
         closeContactBtn.addEventListener('click', () => contactModal.classList.remove('show'));
+        closeChangePasswordBtn.addEventListener('click', closeChangePasswordModal);
         contactModal.addEventListener('click', (e) => { if (e.target === contactModal) contactModal.classList.remove('show'); });
+        changePasswordModal.addEventListener('click', (e) => { if (e.target === changePasswordModal) closeChangePasswordModal(); });
 
         document.addEventListener('DOMContentLoaded', () => {
             const savedEmail = localStorage.getItem('xl_saved_email');
@@ -259,10 +416,96 @@
         });
 
         togglePassword.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
+            togglePasswordVisibility(passwordInput, this);
+        });
+        toggleOldPassword.addEventListener('click', function () {
+            togglePasswordVisibility(oldPasswordInput, this);
+        });
+        toggleNewPassword.addEventListener('click', function () {
+            togglePasswordVisibility(newPasswordInput, this);
+        });
+        toggleConfirmNewPassword.addEventListener('click', function () {
+            togglePasswordVisibility(confirmNewPasswordInput, this);
+        });
+
+        changePasswordForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = normalizeEmail(changePasswordEmailInput.value);
+            const oldPassword = oldPasswordInput.value;
+            const newPassword = newPasswordInput.value;
+            const confirmNewPassword = confirmNewPasswordInput.value;
+
+            hideChangePasswordError();
+
+            if (!email || !oldPassword || !newPassword || !confirmNewPassword) {
+                showChangePasswordError('Vui lòng nhập đầy đủ email, mật khẩu cũ và mật khẩu mới.');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showChangePasswordError('Mật khẩu mới phải có ít nhất 6 ký tự.');
+                return;
+            }
+
+            if (newPassword !== confirmNewPassword) {
+                showChangePasswordError('Mật khẩu mới và xác nhận mật khẩu mới chưa khớp.');
+                return;
+            }
+
+            if (newPassword === oldPassword) {
+                showChangePasswordError('Mật khẩu mới phải khác mật khẩu cũ.');
+                return;
+            }
+
+            passwordChangeFlow = true;
+            setChangePasswordLoading(true);
+
+            let passwordUpdated = false;
+            let syncedToSystem = false;
+
+            try {
+                await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                const userCredential = await auth.signInWithEmailAndPassword(email, oldPassword);
+                const signedInUser = userCredential.user;
+                if (!signedInUser) throw new Error('Không thể xác thực tài khoản.');
+
+                const profile = await getUserProfileByEmail(email);
+                if (!profile) throw new Error('Tài khoản chưa được cấp quyền trên hệ thống.');
+                if (isAccountClosed(profile)) throw new Error('Tài khoản đang bị khóa.');
+
+                const credential = firebase.auth.EmailAuthProvider.credential(email, oldPassword);
+                await signedInUser.reauthenticateWithCredential(credential);
+                await signedInUser.updatePassword(newPassword);
+                passwordUpdated = true;
+
+                syncedToSystem = await syncPasswordToSystemRecord(email, newPassword, signedInUser.uid);
+                await auth.signOut();
+                closeChangePasswordModal();
+                emailInput.value = email;
+                passwordInput.value = '';
+
+                if (rememberMeCheckbox.checked) {
+                    localStorage.setItem('xl_saved_email', email);
+                }
+
+                alert(
+                    syncedToSystem
+                        ? 'Đổi mật khẩu thành công. Mật khẩu mới đã được cập nhật vào hồ sơ tài khoản trong Quản lý hệ thống. Vui lòng đăng nhập lại bằng mật khẩu mới.'
+                        : 'Đổi mật khẩu thành công. Tuy nhiên chưa tìm thấy hồ sơ tài khoản trong Quản lý hệ thống để cập nhật mật khẩu lưu trữ.'
+                );
+            } catch (error) {
+                console.error(error);
+                try { if (auth.currentUser) await auth.signOut(); } catch (_) {}
+                if (passwordUpdated) {
+                    showChangePasswordError('Mật khẩu đã được đổi thành công nhưng chưa đồng bộ được vào hồ sơ hệ thống. Vui lòng đăng nhập bằng mật khẩu mới và kiểm tra lại trong mục Quản lý hệ thống.');
+                } else {
+                    showChangePasswordError(translatePasswordChangeError(error));
+                }
+            } finally {
+                setChangePasswordLoading(false);
+                passwordChangeFlow = false;
+            }
         });
 
         loginForm.addEventListener('submit', async function(e) {
