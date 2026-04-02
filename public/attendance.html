@@ -63,6 +63,12 @@
         
         .btn-delete-hs { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;}
         .btn-delete-hs:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3); }
+        .btn-withdraw-hs { background: linear-gradient(135deg, #8e44ad, #6c3483); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(142, 68, 173, 0.22); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;}
+        .btn-withdraw-hs:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(142, 68, 173, 0.32); }
+        .student-withdrawn-badge { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: rgba(142,68,173,0.12); color: #6c3483; font-size: 0.68rem; font-weight: 800; white-space: nowrap; }
+        .student-row-withdrawn td { background-color: #faf5fc !important; }
+        .student-row-withdrawn .sticky-col-left-2 { background-color: #faf5fc !important; }
+        .student-row-withdrawn .tuition-input, .student-row-withdrawn .att-select { cursor: not-allowed; }
 
         .panel { background-color: var(--bg-card-white); border-radius: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); width: 100%; margin-bottom: 20px;}
         
@@ -161,6 +167,9 @@
         .teacher-payout-percent-input { width: 78px; padding: 6px 8px; border: 1px solid #ccd8d2; border-radius: 6px; text-align: right; font-size: 0.82rem; font-weight: 700; outline: none; }
         .teacher-payout-percent-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 2px rgba(224,170,62,0.12); }
         .admin-teaching-payout-note { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: #f8faf9; border: 1px dashed var(--border-grey); color: #607080; font-size: 0.78rem; line-height: 1.55; }
+        .withdrawn-students-section { margin-top: 16px; display: none; }
+        .withdrawn-students-standalone-panel { display: none; }
+        .withdrawn-students-empty { padding: 12px; border: 1px dashed var(--border-grey); border-radius: 10px; background: #f8faf9; color: #6f8090; font-size: 0.8rem; }
 
 /* MODAL THÊM HỌC SINH */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px;}
@@ -186,8 +195,10 @@
         .day-column.is-future-day, .day-col.is-future-day, .col-sum-day.is-future-day { background: #eef3f7 !important; color: #6c7a89 !important; }
         .att-select.att-day-off { background-color: #d5dadd !important; color: #5f6b75 !important; border-color: #c0c8ce !important; }
         .att-select.att-future-day { background-color: #eef3f7 !important; color: #6c7a89 !important; border-color: #d9e2ea !important; }
+        .att-select.att-before-enrollment { background-color: #f0f2f5 !important; color: #98a1ab !important; border-color: #d7dde3 !important; }
         .table-wrapper td.is-day-off, .table-wrapper th.is-day-off { background: #d5dadd !important; }
         .table-wrapper td.is-future-day, .table-wrapper th.is-future-day { background: #eef3f7 !important; }
+        .table-wrapper td.is-before-enrollment, .table-wrapper th.is-before-enrollment { background: #f0f2f5 !important; color: #98a1ab !important; }
 
         .modal-content.modal-content-wide { max-width: 1500px; }
         .modal-topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -368,6 +379,7 @@
                     <button class="btn-main-days" id="btnToggleMainDays" type="button"><i class="fa-regular fa-calendar-days"></i> Hiển thị ngày học chính</button>
                     <button class="btn-day-off" id="btnMarkTodayOff" type="button"><i class="fa-solid fa-bed"></i> Báo nghỉ hôm nay</button>
                     <button class="btn-add-hs" id="btnOpenAddStudentModal" type="button"><i class="fa-solid fa-user-plus"></i> Thêm HS</button>
+                    <button class="btn-withdraw-hs" id="btnWithdrawStudent" onclick="markSelectedStudentsAsWithdrawn()"><i class="fa-solid fa-user-lock"></i> Thôi học</button>
                     <button class="btn-delete-hs" onclick="deleteSelectedStudents()"><i class="fa-solid fa-user-minus"></i> Xóa HS</button>
                 </div>
             </div>
@@ -454,6 +466,43 @@
                 <div class="admin-teaching-payout-note" id="adminTeachingPayoutNote">
                     Tổng tiền giảng dạy = (tổng thu điểm danh trong tháng / tổng số buổi học thực tế) × số buổi của giáo viên × % được hưởng.
                 </div>
+                <div class="withdrawn-students-section" id="withdrawnStudentsSection">
+                    <div class="attendance-stats-panel-title"><i class="fa-solid fa-user-clock"></i> BẢNG THỐNG KÊ <span>HỌC SINH XIN THÔI HỌC</span></div>
+                    <div id="withdrawnStudentsEmpty" class="withdrawn-students-empty">Chưa có học sinh nào xin thôi học trong tháng này.</div>
+                    <div class="table-wrapper" id="withdrawnStudentsTableWrap" style="display:none;">
+                        <table class="admin-teaching-payout-table">
+                            <thead>
+                                <tr>
+                                    <th style="min-width:220px;">Họ và tên học sinh</th>
+                                    <th style="width:120px;">Số buổi học</th>
+                                    <th style="min-width:170px;">Tổng kinh phí</th>
+                                </tr>
+                            </thead>
+                            <tbody id="withdrawnStudentsBody"></tbody>
+                            <tfoot id="withdrawnStudentsFoot"></tfoot>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="panel withdrawn-students-standalone-panel" id="withdrawnStudentsStandalonePanel">
+                <div class="attendance-stats-panel-title"><i class="fa-solid fa-user-clock"></i> BẢNG THỐNG KÊ <span>HỌC SINH XIN THÔI HỌC</span></div>
+                <div class="admin-teaching-payout-note" style="margin-bottom:12px;">Tổng kinh phí ở bảng này vẫn được cộng vào tổng kinh phí của lớp trong tháng để làm căn cứ tính doanh thu thực tế.</div>
+                <div id="withdrawnStudentsEmptyStandalone" class="withdrawn-students-empty">Chưa có học sinh nào xin thôi học trong tháng này.</div>
+                <div class="table-wrapper" id="withdrawnStudentsTableWrapStandalone" style="display:none;">
+                    <table class="admin-teaching-payout-table">
+                        <thead>
+                            <tr>
+                                <th style="min-width:220px;">Họ và tên học sinh</th>
+                                <th style="width:120px;">Số buổi học</th>
+                                <th style="min-width:170px;">Tổng kinh phí</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawnStudentsBodyStandalone"></tbody>
+                        <tfoot id="withdrawnStudentsFootStandalone"></tfoot>
+                    </table>
+                </div>
             </div>
 
         </main>
@@ -505,6 +554,8 @@
             </form>
         </div>
     </div>
+
+    <datalist id="studentCccdSuggestions"></datalist>
 
     <script>
         const firebaseConfig = {
@@ -566,6 +617,9 @@
         let userRolesByEmail = {};
         let assignedTeachingRoster = [];
         let teachingPayoutSettings = {};
+        let withdrawnStudentStats = {};
+        let studentProfileCacheByCccd = {};
+        let studentCccdSuggestionToken = 0;
 
         const CLASS_DURATION_MINUTES = 120;
         const OPEN_BEFORE_MINUTES = 60;
@@ -630,6 +684,24 @@
             if (Number.isNaN(d.getTime())) return '';
             return d.toISOString().slice(0, 10);
         }
+        function parseDateOnly(value) {
+            const iso = formatDateInputValue(value);
+            if (!iso) return null;
+            const [year, month, day] = iso.split('-').map(Number);
+            const parsed = new Date(year, month - 1, day);
+            parsed.setHours(0, 0, 0, 0);
+            return Number.isNaN(parsed.getTime()) ? null : parsed;
+        }
+        function getTodayDateInputValue() {
+            const now = new Date();
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        }
+        function formatDateDisplayVietnamese(value) {
+            const iso = formatDateInputValue(value);
+            if (!iso) return '';
+            const [year, month, day] = iso.split('-');
+            return `${day}/${month}/${year}`;
+        }
         function escapeHtml(value) {
             return String(value || '')
                 .replace(/&/g, '&amp;')
@@ -686,10 +758,79 @@
         function getCurrentClassCode() {
             return normalizeCode((currentClassInfo && currentClassInfo.classCode) || '');
         }
+        function getEnrollmentDateByClass(student) {
+            const raw = student && student.enrollmentDateByClass;
+            return raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+        }
+        function getStudentEnrollmentDateForCurrentClass(student) {
+            const byClass = getEnrollmentDateByClass(student);
+            const currentClassCode = getCurrentClassCode();
+            return formatDateInputValue(
+                byClass[classId]
+                || (currentClassCode ? byClass[currentClassCode] : '')
+                || (student && student.enrollmentDate)
+                || (student && student.enrolledAt)
+                || ''
+            );
+        }
+        function isDayBeforeStudentEnrollment(student, day) {
+            const enrollmentDate = parseDateOnly(getStudentEnrollmentDateForCurrentClass(student));
+            if (!enrollmentDate) return false;
+            const cellDate = new Date(currentYearNumber, currentMonthNumber - 1, Number(day));
+            cellDate.setHours(0, 0, 0, 0);
+            return cellDate < enrollmentDate;
+        }
+        function buildBeforeEnrollmentReason(student, day) {
+            const enrollmentDate = getStudentEnrollmentDateForCurrentClass(student);
+            if (!enrollmentDate) return `Học sinh chưa đến thời điểm bắt đầu học của ngày ${formatAttendanceDay(day)}.`;
+            return `Học sinh bắt đầu học từ ngày ${formatDateDisplayVietnamese(enrollmentDate)}. Các ngày trước đó được khóa để thể hiện thời điểm vào lớp.`;
+        }
         function getTodayDay() {
             const now = new Date();
             if (now.getFullYear() !== currentYearNumber || (now.getMonth() + 1) !== currentMonthNumber) return null;
             return now.getDate();
+        }
+        function parseMonthKeyParts(monthKey) {
+            const raw = normalizeText(monthKey);
+            const match = raw.match(/^(\d{4})_(\d{2})$/);
+            if (!match) return null;
+            return { year: Number(match[1]), month: Number(match[2]) };
+        }
+        function compareMonthKeys(left, right) {
+            const a = parseMonthKeyParts(left);
+            const b = parseMonthKeyParts(right);
+            if (!a || !b) return 0;
+            if (a.year !== b.year) return a.year - b.year;
+            return a.month - b.month;
+        }
+        function getNextMonthKey(baseMonthKey = currentMonthKey) {
+            const parts = parseMonthKeyParts(baseMonthKey);
+            if (!parts) return '';
+            const nextDate = new Date(parts.year, parts.month, 1);
+            return `${nextDate.getFullYear()}_${String(nextDate.getMonth() + 1).padStart(2, '0')}`;
+        }
+        function getStudentWithdrawStatus(student) {
+            return student && student.withdrawStatus && typeof student.withdrawStatus === 'object' ? student.withdrawStatus : {};
+        }
+        function shouldHideWithdrawnStudentForMonth(student, monthKey = currentMonthKey) {
+            const status = getStudentWithdrawStatus(student);
+            const hideFromMonthKey = normalizeText(status.hideFromMonthKey || student.withdrawHideFromMonthKey || '');
+            if (!hideFromMonthKey || !monthKey) return false;
+            return compareMonthKeys(monthKey, hideFromMonthKey) >= 0;
+        }
+        function isStudentWithdrawnLockedThisMonth(student, monthKey = currentMonthKey) {
+            if (!student) return false;
+            const status = getStudentWithdrawStatus(student);
+            const withdrawnMonthKey = normalizeText(status.withdrawnAtMonthKey || student.withdrawnAtMonthKey || '');
+            if (!withdrawnMonthKey) return false;
+            return withdrawnMonthKey === monthKey && !shouldHideWithdrawnStudentForMonth(student, monthKey);
+        }
+        function buildWithdrawnStudentReason(student) {
+            const status = getStudentWithdrawStatus(student);
+            const withdrawnAt = status && status.lockedAt && typeof status.lockedAt.toDate === 'function' ? status.lockedAt.toDate() : null;
+            const byName = normalizeText(status.lockedByName || status.removedByName || 'Quản lý');
+            const withdrawnTime = withdrawnAt ? withdrawnAt.toLocaleString('vi-VN') : 'tháng hiện tại';
+            return `Học sinh đã được chuyển sang trạng thái thôi học bởi ${byName}. Dòng này được khóa cứng trong ${withdrawnTime}, giữ nguyên số buổi và học phí đã phát sinh; sang tháng kế tiếp sẽ tự ẩn khỏi bảng điểm danh.`;
         }
         function isFutureDay(day) {
             const today = getTodayDay();
@@ -756,6 +897,13 @@
             const monthConfig = data && data.teachingPayoutSettings && data.teachingPayoutSettings[currentMonthKey];
             return monthConfig && typeof monthConfig === 'object' ? monthConfig : {};
         }
+        function getCurrentMonthWithdrawnStudentStats(data = currentClassInfo) {
+            const monthConfig = data && data.withdrawnStudentStats && data.withdrawnStudentStats[currentMonthKey];
+            return monthConfig && typeof monthConfig === 'object' ? monthConfig : {};
+        }
+        function getClassInfoById(targetClassId) {
+            return classesCache.find(cls => cls && cls.id === targetClassId) || null;
+        }
         async function ensureUserProfilesLoaded(emails = []) {
             const normalizedEmails = Array.from(new Set((emails || []).map(normalizeEmail).filter(Boolean)));
             const missingEmails = normalizedEmails.filter(email => !(email in teacherDirectoryByEmail) || !(email in userRolesByEmail));
@@ -798,7 +946,8 @@
             teachingPayoutSettings = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo) };
             toggleAdminTeachingPayoutPanel();
         }
-        function getAttendanceFinancialMetrics() {
+        function getAttendanceFinancialMetrics(options = {}) {
+            const includeWithdrawn = !!(options && options.includeWithdrawn);
             const metrics = {
                 daySums: new Array(currentMonthDays).fill(0),
                 grandTotal: 0,
@@ -813,7 +962,7 @@
                 selects.forEach((sel) => {
                     const day = Number(sel.dataset.day || 0);
                     const val = sel.value;
-                    if (!day || isDayOff(day)) return;
+                    if (!day || isDayOff(day) || isDayBeforeStudentEnrollment(st, day)) return;
                     if (['V', 'P', 'M', 'ĐB'].includes(val)) {
                         countForTuition++;
                         metrics.daySums[day - 1] += 1;
@@ -825,11 +974,25 @@
                 const tuitionVal = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
                 metrics.grandTotal += countForTuition * tuitionVal;
             });
+            if (includeWithdrawn) {
+                Object.values(withdrawnStudentStats || {}).forEach((entry) => {
+                    const sessionCount = Number(entry && entry.sessionCount) || 0;
+                    const totalAmount = Number(entry && entry.totalAmount) || 0;
+                    const attendedDays = Array.isArray(entry && entry.attendedDays) ? entry.attendedDays : [];
+                    metrics.globalSessions += sessionCount;
+                    metrics.grandTotal += totalAmount;
+                    attendedDays.forEach((dayValue) => {
+                        const day = Number(dayValue);
+                        if (!day || day < 1 || day > currentMonthDays) return;
+                        metrics.dayActivityMap[day] = true;
+                    });
+                });
+            }
             metrics.activeStudyDays = Object.keys(metrics.dayActivityMap).length;
             metrics.revenuePerStudyDay = metrics.activeStudyDays ? (metrics.grandTotal / metrics.activeStudyDays) : 0;
             return metrics;
         }
-        function getTeacherSessionCount(teacher, metrics = getAttendanceFinancialMetrics()) {
+        function getTeacherSessionCount(teacher, metrics = getAttendanceFinancialMetrics({ includeWithdrawn: true })) {
             const teacherEmail = normalizeEmail(teacher && teacher.email);
             const teacherName = normalizeTextLower(teacher && teacher.name);
             return Object.keys(attendanceTeacherLog || {}).reduce((count, dayKey) => {
@@ -854,10 +1017,13 @@
             return clampTeachingPercent(teachingPayoutSettings[teacherKey]);
         }
         function updateTeachingPayoutPreview() {
-            if (!hasRole(currentUserInfo, 'admin')) return;
+            if (!hasRole(currentUserInfo, 'admin')) {
+                renderWithdrawnStudentsPanel();
+                return;
+            }
             const panel = document.getElementById('adminTeachingPayoutPanel');
             if (!panel) return;
-            const metrics = getAttendanceFinancialMetrics();
+            const metrics = getAttendanceFinancialMetrics({ includeWithdrawn: true });
             let totalTeacherSessions = 0;
             let totalTeacherPayout = 0;
             assignedTeachingRoster.forEach((teacher) => {
@@ -882,7 +1048,7 @@
                 summary.innerHTML = `
                     <div class="admin-teaching-payout-summary-card">
                         <span class="admin-teaching-payout-summary-value">${formatCurrencyVnd(metrics.grandTotal)}</span>
-                        <span class="admin-teaching-payout-summary-label">Tổng thu điểm danh trong tháng</span>
+                        <span class="admin-teaching-payout-summary-label">Tổng thu điểm danh trong tháng (kể cả HS xin thôi học)</span>
                     </div>
                     <div class="admin-teaching-payout-summary-card">
                         <span class="admin-teaching-payout-summary-value">${metrics.activeStudyDays}</span>
@@ -911,8 +1077,9 @@
             }
             const note = document.getElementById('adminTeachingPayoutNote');
             if (note) {
-                note.innerHTML = `Tổng tiền giảng dạy = (tổng thu điểm danh trong tháng <strong>${formatCurrencyVnd(metrics.grandTotal)}</strong> / tổng số buổi học thực tế <strong>${metrics.activeStudyDays}</strong>) × số buổi của giáo viên × % được hưởng.`;
+                note.innerHTML = `Tổng tiền giảng dạy = (tổng thu điểm danh trong tháng <strong>${formatCurrencyVnd(metrics.grandTotal)}</strong> / tổng số buổi học thực tế <strong>${metrics.activeStudyDays}</strong>) × số buổi của giáo viên × % được hưởng. Phần tổng thu này bao gồm cả học phí của học sinh đã xin thôi học trong tháng.`;
             }
+            renderWithdrawnStudentsPanel();
         }
         function renderAdminTeachingPayoutPanel() {
             const panel = document.getElementById('adminTeachingPayoutPanel');
@@ -927,7 +1094,7 @@
                 updateTeachingPayoutPreview();
                 return;
             }
-            const metrics = getAttendanceFinancialMetrics();
+            const metrics = getAttendanceFinancialMetrics({ includeWithdrawn: true });
             tbody.innerHTML = assignedTeachingRoster.map((teacher) => {
                 const percent = getTeachingPayoutPercentForTeacher(teacher.key);
                 const sessionCount = getTeacherSessionCount(teacher, metrics);
@@ -951,6 +1118,63 @@
                 `;
             }).join('');
             updateTeachingPayoutPreview();
+        }
+        function renderWithdrawnStudentsPanel() {
+            const section = document.getElementById('withdrawnStudentsStandalonePanel');
+            const emptyState = document.getElementById('withdrawnStudentsEmptyStandalone');
+            const tableWrap = document.getElementById('withdrawnStudentsTableWrapStandalone');
+            const body = document.getElementById('withdrawnStudentsBodyStandalone');
+            const foot = document.getElementById('withdrawnStudentsFootStandalone');
+            const legacySection = document.getElementById('withdrawnStudentsSection');
+            if (legacySection) legacySection.style.display = 'none';
+            if (!section || !emptyState || !tableWrap || !body || !foot) return;
+            if (!(hasRole(currentUserInfo, 'admin') || hasRole(currentUserInfo, 'manager'))) {
+                section.style.display = 'none';
+                return;
+            }
+            section.style.display = 'block';
+            const items = Object.values(withdrawnStudentStats || {})
+                .filter(item => item && (normalizeText(item.name) || Number(item.totalAmount) || Number(item.sessionCount)))
+                .sort((a, b) => {
+                    const timeA = a && a.removedAt && typeof a.removedAt.toMillis === 'function' ? a.removedAt.toMillis() : 0;
+                    const timeB = b && b.removedAt && typeof b.removedAt.toMillis === 'function' ? b.removedAt.toMillis() : 0;
+                    if (timeB !== timeA) return timeB - timeA;
+                    return normalizeText(a && a.name).localeCompare(normalizeText(b && b.name), 'vi');
+                });
+            if (!items.length) {
+                emptyState.style.display = 'block';
+                tableWrap.style.display = 'none';
+                body.innerHTML = '';
+                foot.innerHTML = '';
+                return;
+            }
+            section.dataset.totalAmount = String(items.reduce((sum, item) => sum + (Number(item && item.totalAmount) || 0), 0));
+            emptyState.style.display = 'none';
+            tableWrap.style.display = 'block';
+            let totalSessions = 0;
+            let totalAmount = 0;
+            body.innerHTML = items.map((item) => {
+                const sessionCount = Number(item.sessionCount) || 0;
+                const amount = Number(item.totalAmount) || 0;
+                totalSessions += sessionCount;
+                totalAmount += amount;
+                return `
+                    <tr>
+                        <td>
+                            <div class="admin-teaching-payout-name">${escapeHtml(item.name || 'Chưa rõ')}</div>
+                        </td>
+                        <td class="col-center">${sessionCount}</td>
+                        <td class="col-right money-text">${formatCurrencyVnd(amount)}</td>
+                    </tr>
+                `;
+            }).join('');
+            foot.innerHTML = `
+                <tr>
+                    <th style="text-align:left;">TỔNG CỘNG</th>
+                    <th>${totalSessions}</th>
+                    <th>${formatCurrencyVnd(totalAmount)}</th>
+                </tr>
+            `;
         }
         async function persistTeachingPayoutPercent(teacherKey, rawValue) {
             if (!hasRole(currentUserInfo, 'admin')) return;
@@ -1060,14 +1284,18 @@ function parseTimeToMinutes(value) {
             setControlPermission(document.querySelector('.btn-save-att'), canSave, 'Bạn không có quyền lưu điểm danh của lớp này.');
             setControlPermission(document.getElementById('btnMarkTodayOff'), canMarkDayOff, 'Chỉ quản lý hoặc Admin mới được báo nghỉ toàn buổi.');
             setControlPermission(document.getElementById('btnOpenAddStudentModal'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được thêm học sinh tại trang điểm danh.');
+            setControlPermission(document.getElementById('btnWithdrawStudent'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được chuyển học sinh sang trạng thái thôi học.');
             setControlPermission(document.querySelector('.btn-delete-hs'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được xóa học sinh tại trang điểm danh.');
             setControlPermission(document.getElementById('btnAddAttendanceStudentRow'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được thêm dòng học sinh.');
             setControlPermission(document.getElementById('btnFillAttendanceCodes'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được gán mã lớp.');
             setControlPermission(document.getElementById('btnSaveStudent'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được lưu học sinh.');
 
             document.querySelectorAll('.tuition-input').forEach((input) => {
-                input.disabled = !canEditTuition;
-                input.title = canEditTuition ? '' : 'Giáo viên không được chỉnh sửa học phí tại trang điểm danh.';
+                const withdrawnLocked = input.dataset.withdrawn === '1';
+                input.disabled = withdrawnLocked || !canEditTuition;
+                input.title = withdrawnLocked
+                    ? 'Học phí của học sinh thôi học được giữ nguyên trong tháng hiện tại.'
+                    : (canEditTuition ? '' : 'Giáo viên không được chỉnh sửa học phí tại trang điểm danh.');
             });
 
             document.querySelectorAll('.att-select').forEach((select) => {
@@ -1290,6 +1518,8 @@ function parseTimeToMinutes(value) {
             document.querySelectorAll('.att-select').forEach((select) => {
                 const day = String(select.dataset.day || '');
                 const dayNumber = Number(day);
+                const studentId = String(select.dataset.studentId || '');
+                const student = studentsData.find((item) => String(item.id) === studentId) || null;
                 const record = getAttendanceLockRecord(day);
                 const managerEditRecord = getManagerEditRecord(day);
                 const dayOffRecord = getDayOffRecord(day);
@@ -1297,14 +1527,27 @@ function parseTimeToMinutes(value) {
                 const lockedByManagerEdit = !!managerEditRecord && !isManagerAttendanceEditor(currentAttendanceAccess);
                 const futureDay = isFutureDay(dayNumber);
                 const dayOff = isDayOff(day);
+                const beforeEnrollment = !!(student && isDayBeforeStudentEnrollment(student, dayNumber));
                 const blockedByPermission = !(currentAttendanceAccess && currentAttendanceAccess.canManageAttendance);
-                const disabled = blockedByPermission || lockedByOther || lockedByManagerEdit || futureDay || dayOff;
+                const withdrawnLocked = !!(student && isStudentWithdrawnLockedThisMonth(student));
+                const disabled = blockedByPermission || lockedByOther || lockedByManagerEdit || futureDay || dayOff || beforeEnrollment || withdrawnLocked;
                 activeAttendanceLocks[day] = lockedByOther || lockedByManagerEdit;
                 select.disabled = disabled;
                 select.classList.toggle('att-locked', lockedByOther || lockedByManagerEdit);
                 select.classList.toggle('att-day-off', dayOff);
                 select.classList.toggle('att-future-day', futureDay);
-                if (dayOff) {
+                select.classList.toggle('att-before-enrollment', beforeEnrollment);
+                const parentCell = select.closest('td');
+                if (parentCell) {
+                    parentCell.classList.toggle('is-before-enrollment', beforeEnrollment);
+                    parentCell.classList.toggle('is-day-off', dayOff);
+                    parentCell.classList.toggle('is-future-day', futureDay);
+                }
+                if (withdrawnLocked) {
+                    select.title = buildWithdrawnStudentReason(student);
+                } else if (beforeEnrollment) {
+                    select.title = buildBeforeEnrollmentReason(student, day);
+                } else if (dayOff) {
                     select.title = dayOffRecord ? buildDayOffReason(day, dayOffRecord) : `Ngày ${formatAttendanceDay(day)} đã được báo nghỉ toàn buổi.`;
                 } else if (futureDay) {
                     select.title = `Chỉ được điểm danh đến ngày hiện tại. Không thể nhập trước cho ngày ${formatAttendanceDay(day)}.`;
@@ -1315,6 +1558,7 @@ function parseTimeToMinutes(value) {
                 } else {
                     select.title = '';
                 }
+                updateSelectColor(select);
             });
 
             const saveButton = document.querySelector('.btn-save-att');
@@ -1344,8 +1588,12 @@ function parseTimeToMinutes(value) {
                 const updateData = { attendance: {}, tuition: 0 };
                 document.querySelectorAll(`.day-select-${st.id}`).forEach((sel) => {
                     const day = Number(sel.dataset.day || 0);
-                    if (isDayOff(day)) return;
-                    if (sel.value !== '') updateData.attendance[sel.dataset.day] = sel.value;
+                    if (!day) return;
+                    if (isDayOff(day) || isDayBeforeStudentEnrollment(st, day) || sel.value === '') {
+                        updateData.attendance[sel.dataset.day] = firebase.firestore.FieldValue.delete();
+                        return;
+                    }
+                    updateData.attendance[sel.dataset.day] = sel.value;
                 });
                 const tuitionInput = document.querySelector(`.tuition-${st.id}`);
                 updateData.tuition = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
@@ -1536,6 +1784,7 @@ function parseTimeToMinutes(value) {
                 attendanceDayOffLog = getMonthlyLogEntries(data, 'attendanceDayOffLog', currentMonthKey);
                 currentClassInfo = { ...(currentClassInfo || {}), ...data };
                 teachingPayoutSettings = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo) };
+                withdrawnStudentStats = { ...getCurrentMonthWithdrawnStudentStats(currentClassInfo) };
                 ensureAttendancePageAccess(currentClassInfo);
                 await ensureTeacherDirectoryLoaded();
                 await refreshAssignedTeachingRoster();
@@ -1561,6 +1810,7 @@ function parseTimeToMinutes(value) {
         function dayHasAnyAttendance(day) {
             if (isDayOff(day)) return false;
             return studentsData.some(st => {
+                if (isDayBeforeStudentEnrollment(st, day)) return false;
                 const select = document.querySelector(`.day-select-${st.id}[data-day="${day}"]`);
                 return !!(select && select.value);
             });
@@ -1648,6 +1898,11 @@ function parseTimeToMinutes(value) {
                 select.style.color = '#6c7a89';
                 return;
             }
+            if (select.classList.contains('att-before-enrollment')) {
+                select.style.backgroundColor = '#f0f2f5';
+                select.style.color = '#98a1ab';
+                return;
+            }
             select.style.color = 'white';
             if (val === 'V') select.style.backgroundColor = '#2ecc71';
             else if (val === 'K') select.style.backgroundColor = '#e74c3c';
@@ -1677,10 +1932,15 @@ function parseTimeToMinutes(value) {
                 tbody.innerHTML = '';
                 snapshot.forEach((doc) => {
                     const st = { id: doc.id, ...doc.data() };
+                    if (shouldHideWithdrawnStudentForMonth(st)) return;
                     studentsData.push(st);
-                    let rowHtml = `<tr>
-                        <td class="col-center sticky-col-left-1"><input type="checkbox" class="student-checkbox" value="${doc.id}"></td>
-                        <td class="col-bold sticky-col-left-2">${escapeHtml(st.name || '')}</td>
+                    cacheStudentProfile(st);
+                    const withdrawnLocked = isStudentWithdrawnLockedThisMonth(st);
+                    const withdrawnTitle = withdrawnLocked ? buildWithdrawnStudentReason(st) : '';
+                    const withdrawnBadge = withdrawnLocked ? '<span class="student-withdrawn-badge"><i class="fa-solid fa-user-lock"></i> Thôi học</span>' : '';
+                    let rowHtml = `<tr class="${withdrawnLocked ? 'student-row-withdrawn' : ''}" title="${escapeHtml(withdrawnTitle)}">
+                        <td class="col-center sticky-col-left-1"><input type="checkbox" class="student-checkbox" value="${doc.id}" ${withdrawnLocked ? 'disabled title="Học sinh này đã thôi học trong tháng, không chọn lại được."' : ''}></td>
+                        <td class="col-bold sticky-col-left-2">${escapeHtml(st.name || '')}${withdrawnBadge}</td>
                         <td class="col-center">${escapeHtml(st.school || '')}</td>
                         <td class="col-center">${escapeHtml(st.mode || 'Trực tiếp')}</td>`;
                     const attendanceRecord = st.attendance || {};
@@ -1688,8 +1948,8 @@ function parseTimeToMinutes(value) {
                         const val = attendanceRecord[i] || '';
                         const cellDate = new Date(currentYearNumber, currentMonthNumber - 1, i);
                         const weekday = cellDate.getDay();
-                        rowHtml += `<td class="col-center day-column day-col-${i}" data-day="${i}" data-weekday="${weekday}" style="padding: 2px;">
-                            <select class="att-select day-select-${doc.id}" data-day="${i}" onchange="handleAttendanceSelectChange(this)">
+                        rowHtml += `<td class="col-center day-column day-col-${i}" data-day="${i}" data-weekday="${weekday}" data-student-id="${doc.id}" style="padding: 2px;">
+                            <select class="att-select day-select-${doc.id}" data-day="${i}" data-student-id="${doc.id}" onchange="handleAttendanceSelectChange(this)" ${withdrawnLocked ? 'disabled title="Dòng học sinh thôi học đã bị khóa cứng trong tháng hiện tại."' : ''}>
                                 <option value="" ${val === '' ? 'selected' : ''}></option>
                                 <option value="V" ${val === 'V' ? 'selected' : ''}>✔</option>
                                 <option value="K" ${val === 'K' ? 'selected' : ''}>K</option>
@@ -1702,12 +1962,19 @@ function parseTimeToMinutes(value) {
                     }
                     const tuition = st.tuition || 0;
                     rowHtml += `
-                        <td class="col-center sticky-col-right-3"><input type="number" class="tuition-input tuition-${doc.id}" value="${tuition}" step="1000" oninput="calculateTotals()"></td>
+                        <td class="col-center sticky-col-right-3"><input type="number" class="tuition-input tuition-${doc.id}" data-withdrawn="${withdrawnLocked ? '1' : '0'}" value="${tuition}" step="1000" oninput="calculateTotals()" ${withdrawnLocked ? 'disabled title="Học phí của học sinh thôi học được giữ nguyên trong tháng hiện tại."' : ''}></td>
                         <td class="col-center col-bold sticky-col-right-2 session-count-${doc.id}">0</td>
                         <td class="col-right money-text row-total-${doc.id} sticky-col-right-1">0 ₫</td>
                     </tr>`;
                     tbody.innerHTML += rowHtml;
                 });
+                if (studentsData.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="${currentMonthDays + 7}" class="col-center" style="padding: 30px; color:#888;">Tháng này lớp không còn học sinh đang theo học. Các học sinh đã thôi học sẽ tự ẩn khỏi bảng từ đầu tháng tiếp theo.</td></tr>`;
+                    document.getElementById('attTfoot').innerHTML = '';
+                    calculateTotals();
+                    renderAdminTeachingPayoutPanel();
+                    return;
+                }
                 document.querySelectorAll('.att-select').forEach(sel => updateSelectColor(sel));
                 captureCurrentDomSnapshot();
                 generateTableFooter();
@@ -1736,12 +2003,14 @@ function parseTimeToMinutes(value) {
             refreshDayColumnVisuals();
         }
         window.calculateTotals = function() {
-            const metrics = getAttendanceFinancialMetrics();
+            const liveMetrics = getAttendanceFinancialMetrics();
+            const summaryMetrics = getAttendanceFinancialMetrics({ includeWithdrawn: true });
             if (studentsData.length === 0) {
                 const sumTotalSessions = document.getElementById('sumTotalSessions');
                 const sumGrandTotal = document.getElementById('sumGrandTotal');
-                if (sumTotalSessions) sumTotalSessions.innerText = '0';
-                if (sumGrandTotal) sumGrandTotal.innerText = '0 ₫';
+                if (sumTotalSessions) sumTotalSessions.innerText = String(summaryMetrics.globalSessions || 0);
+                if (sumGrandTotal) sumGrandTotal.innerText = `${(summaryMetrics.grandTotal || 0).toLocaleString('vi-VN')} ₫`;
+                renderWithdrawnStudentsPanel();
                 updateTeachingPayoutPreview();
                 return;
             }
@@ -1751,7 +2020,7 @@ function parseTimeToMinutes(value) {
                 selects.forEach(sel => {
                     const day = Number(sel.dataset.day || 0);
                     const val = sel.value;
-                    if (!day || isDayOff(day)) return;
+                    if (!day || isDayOff(day) || isDayBeforeStudentEnrollment(st, day)) return;
                     if (['V', 'P', 'M', 'ĐB'].includes(val)) countForTuition++;
                 });
                 const tuitionInput = document.querySelector(`.tuition-${st.id}`);
@@ -1765,10 +2034,11 @@ function parseTimeToMinutes(value) {
             const footerSumCells = document.querySelectorAll('.col-sum-day');
             footerSumCells.forEach((cell, index) => {
                 const day = index + 1;
-                cell.innerText = isDayOff(day) ? 'Nghỉ' : metrics.daySums[index];
+                cell.innerText = isDayOff(day) ? 'Nghỉ' : liveMetrics.daySums[index];
             });
-            document.getElementById('sumTotalSessions').innerText = metrics.globalSessions;
-            document.getElementById('sumGrandTotal').innerText = `${metrics.grandTotal.toLocaleString('vi-VN')} ₫`;
+            document.getElementById('sumTotalSessions').innerText = summaryMetrics.globalSessions;
+            document.getElementById('sumGrandTotal').innerText = `${summaryMetrics.grandTotal.toLocaleString('vi-VN')} ₫`;
+            renderWithdrawnStudentsPanel();
             updateTeachingPayoutPreview();
         };
         window.exportToExcel = function() {
@@ -1872,13 +2142,14 @@ function parseTimeToMinutes(value) {
             if (!tbody) return null;
             const currentClassCode = getCurrentClassCode();
             const extraCodes = (student.extraLinkedClassCodes || []).join(', ');
+            const defaultEnrollmentDate = formatDateInputValue(student.enrollmentDate || student.enrolledAt || getTodayDateInputValue());
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td class="col-center row-index">1</td>
                 <td><input type="text" class="bulk-input" data-field="name" value="${escapeHtml(student.name || '')}" placeholder="Họ và tên"></td>
                 <td><input type="date" class="bulk-input" data-field="dob" value="${escapeHtml(formatDateInputValue(student.dob || ''))}"></td>
                 <td><input type="text" class="bulk-input" data-field="address" value="${escapeHtml(student.address || '')}" placeholder="Địa chỉ"></td>
-                <td><input type="text" class="bulk-input" data-field="studentCccd" value="${escapeHtml(student.studentCccd || '')}" placeholder="CCCD học sinh *" inputmode="numeric" maxlength="12" required></td>
+                <td><input type="text" class="bulk-input" data-field="studentCccd" value="${escapeHtml(student.studentCccd || '')}" placeholder="CCCD học sinh *" inputmode="numeric" maxlength="12" list="studentCccdSuggestions" autocomplete="off" required></td>
                 <td><input type="text" class="bulk-input" data-field="gradeClass" value="${escapeHtml(student.gradeClass || '')}" placeholder="VD: 8A"></td>
                 <td><input type="text" class="bulk-input" data-field="school" value="${escapeHtml(student.school || '')}" placeholder="Trường"></td>
                 <td><input type="text" class="bulk-input" data-field="parentName" value="${escapeHtml(student.parentName || '')}" placeholder="Phụ huynh"></td>
@@ -1887,7 +2158,7 @@ function parseTimeToMinutes(value) {
                 <td><input type="text" class="bulk-input bulk-readonly" data-field="currentClassCode" value="${escapeHtml(currentClassCode)}" readonly></td>
                 <td><input type="text" class="bulk-input" data-field="linkedCodes" list="classCodeSuggestions" autocomplete="off" value="${escapeHtml(extraCodes)}" placeholder="VD: VAN-8B, TOAN-6A"></td>
                 <td><select class="bulk-select" data-field="mode"><option value="Trực tiếp" ${(student.mode || 'Trực tiếp') === 'Trực tiếp' ? 'selected' : ''}>Trực tiếp</option><option value="Trực tuyến" ${(student.mode || '') === 'Trực tuyến' ? 'selected' : ''}>Trực tuyến</option></select></td>
-                <td><input type="date" class="bulk-input" data-field="enrollmentDate" value="${escapeHtml(formatDateInputValue(student.enrollmentDate || student.enrolledAt || ''))}"></td>
+                <td><input type="date" class="bulk-input" data-field="enrollmentDate" value="${escapeHtml(defaultEnrollmentDate)}"></td>
                 <td><input type="text" class="bulk-input" data-field="note" value="${escapeHtml(student.note || '')}" placeholder="Ghi chú"></td>
                 <td class="col-center"><button type="button" class="bulk-remove-btn" title="Xóa dòng"><i class="fa-solid fa-trash"></i></button></td>
             `;
@@ -1920,6 +2191,7 @@ function parseTimeToMinutes(value) {
             createAttendanceBulkRow();
             document.getElementById('addStudentModal').classList.add('show');
             renderClassCodeSuggestions();
+            renderStudentCccdSuggestionsFromProfiles(Object.values(studentProfileCacheByCccd).length ? Object.values(studentProfileCacheByCccd) : studentsData);
         }
         function closeAttendanceStudentModal() {
             document.getElementById('addStudentModal').classList.remove('show');
@@ -1937,7 +2209,7 @@ function parseTimeToMinutes(value) {
                 parentCccd: digitsOnly(profile.parentCccd || ''),
                 parentPhone: profile.parentPhone || '',
                 mode: profile.mode || 'Trực tiếp',
-                enrollmentDate: formatDateInputValue(profile.enrollmentDate || profile.enrolledAt || ''),
+                enrollmentDate: getStudentEnrollmentDateForCurrentClass(profile) || formatDateInputValue(profile.enrollmentDate || profile.enrolledAt || '') || getTodayDateInputValue(),
                 note: profile.note || ''
             };
             Object.entries(fieldMap).forEach(([field, value]) => {
@@ -1947,16 +2219,95 @@ function parseTimeToMinutes(value) {
                 else input.value = value || '';
             });
         }
+        function createOrGetStudentCccdDatalist() {
+            let datalist = document.getElementById('studentCccdSuggestions');
+            if (!datalist) {
+                datalist = document.createElement('datalist');
+                datalist.id = 'studentCccdSuggestions';
+                document.body.appendChild(datalist);
+            }
+            return datalist;
+        }
+        function cacheStudentProfile(profile) {
+            const studentCccd = digitsOnly(profile && (profile.studentCccd || profile.cccd));
+            if (!studentCccd) return;
+            studentProfileCacheByCccd[studentCccd] = chooseBetterStudent(studentProfileCacheByCccd[studentCccd], profile);
+        }
+        function renderStudentCccdSuggestionsFromProfiles(profiles = []) {
+            const datalist = createOrGetStudentCccdDatalist();
+            const unique = [];
+            const seen = new Set();
+            (profiles || []).forEach((profile) => {
+                const studentCccd = digitsOnly(profile && (profile.studentCccd || profile.cccd));
+                if (!studentCccd || seen.has(studentCccd)) return;
+                seen.add(studentCccd);
+                cacheStudentProfile(profile);
+                unique.push(profile);
+            });
+            datalist.innerHTML = unique.slice(0, 12).map((profile) => {
+                const studentCccd = digitsOnly(profile.studentCccd || profile.cccd);
+                const labelParts = [normalizeText(profile.name), normalizeText(profile.school), normalizeText(profile.gradeClass || profile.grade)].filter(Boolean);
+                const label = labelParts.join(' - ');
+                return `<option value="${escapeHtml(studentCccd)}" label="${escapeHtml(label)}"></option>`;
+            }).join('');
+        }
+        async function fetchStudentProfilesByCccdPrefix(prefix) {
+            const normalizedPrefix = digitsOnly(prefix);
+            const matchedProfiles = [];
+            const seen = new Set();
+            const pushProfile = (profile) => {
+                const studentCccd = digitsOnly(profile && (profile.studentCccd || profile.cccd));
+                if (!studentCccd || seen.has(studentCccd)) return;
+                seen.add(studentCccd);
+                cacheStudentProfile(profile);
+                matchedProfiles.push(profile);
+            };
+            Object.values(studentProfileCacheByCccd).forEach((profile) => {
+                const studentCccd = digitsOnly(profile && (profile.studentCccd || profile.cccd));
+                if (!normalizedPrefix || studentCccd.startsWith(normalizedPrefix)) pushProfile(profile);
+            });
+            studentsData.forEach((profile) => {
+                const studentCccd = digitsOnly(profile && (profile.studentCccd || profile.cccd));
+                if (!normalizedPrefix || studentCccd.startsWith(normalizedPrefix)) pushProfile(profile);
+            });
+            if (normalizedPrefix.length >= 3) {
+                const snapshot = await db.collectionGroup('students')
+                    .orderBy('studentCccd')
+                    .startAt(normalizedPrefix)
+                    .endAt(`${normalizedPrefix}`)
+                    .limit(12)
+                    .get()
+                    .catch(() => null);
+                if (snapshot) snapshot.forEach((doc) => pushProfile(doc.data() || {}));
+            }
+            return matchedProfiles.slice(0, 12);
+        }
+        async function updateStudentCccdSuggestions(prefix = '') {
+            const token = ++studentCccdSuggestionToken;
+            const profiles = await fetchStudentProfilesByCccdPrefix(prefix);
+            if (token !== studentCccdSuggestionToken) return;
+            renderStudentCccdSuggestionsFromProfiles(profiles);
+        }
+
         async function findStudentProfileByCccd(studentCccd) {
             const normalizedCccd = digitsOnly(studentCccd);
             if (!normalizedCccd) return null;
-            let bestProfile = null;
+            let bestProfile = studentProfileCacheByCccd[normalizedCccd] || null;
             studentsData.forEach((student) => {
                 if (digitsOnly(student.studentCccd || student.cccd) === normalizedCccd) {
                     bestProfile = chooseBetterStudent(bestProfile, student);
                 }
             });
-            if (bestProfile) return bestProfile;
+            if (bestProfile) {
+                cacheStudentProfile(bestProfile);
+                return bestProfile;
+            }
+            const syncSnapshot = await db.collectionGroup('students').where('syncStudentKey', '==', `student:${normalizedCccd}`).limit(10).get().catch(() => null);
+            if (syncSnapshot && !syncSnapshot.empty) {
+                syncSnapshot.forEach((doc) => {
+                    bestProfile = chooseBetterStudent(bestProfile, doc.data() || {});
+                });
+            }
             const lookupValues = Array.from(new Set([normalizedCccd, normalizeText(studentCccd)].filter(Boolean)));
             for (const value of lookupValues) {
                 const snapshot = await db.collectionGroup('students').where('studentCccd', '==', value).limit(10).get().catch(() => null);
@@ -1964,9 +2315,10 @@ function parseTimeToMinutes(value) {
                 snapshot.forEach((doc) => {
                     bestProfile = chooseBetterStudent(bestProfile, doc.data() || {});
                 });
-                if (bestProfile) return bestProfile;
+                if (bestProfile) break;
             }
-            return null;
+            if (bestProfile) cacheStudentProfile(bestProfile);
+            return bestProfile;
         }
         function getAttendanceBulkRowObjects() {
             return [...document.querySelectorAll('#attendanceBulkStudentRows tr')].map((row, index) => {
@@ -2006,7 +2358,11 @@ function parseTimeToMinutes(value) {
         }
         async function syncClassStudentCount(targetClassId) {
             const snapshot = await db.collection('classes').doc(targetClassId).collection('students').get();
-            await db.collection('classes').doc(targetClassId).set({ studentCount: snapshot.size, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+            const activeCount = snapshot.docs.filter((doc) => {
+                const data = doc.data() || {};
+                return !data.excludeFromStudentDirectory;
+            }).length;
+            await db.collection('classes').doc(targetClassId).set({ studentCount: activeCount, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
         }
         async function findGlobalStudentMatches(formData, syncKey) {
             const byClass = {};
@@ -2055,6 +2411,13 @@ function parseTimeToMinutes(value) {
             return { byClass, bestProfile };
         }
         function buildMergedStudentProfile(formData, baseProfile, syncKey, linkedCodes) {
+            const mergedEnrollmentByClass = { ...(getEnrollmentDateByClass(baseProfile) || {}) };
+            const normalizedEnrollmentDate = formatDateInputValue(formData.enrollmentDate || (baseProfile && getStudentEnrollmentDateForCurrentClass(baseProfile)) || '');
+            if (normalizedEnrollmentDate) {
+                mergedEnrollmentByClass[classId] = normalizedEnrollmentDate;
+                const currentClassCode = getCurrentClassCode();
+                if (currentClassCode) mergedEnrollmentByClass[currentClassCode] = normalizedEnrollmentDate;
+            }
             return {
                 name: formData.name || (baseProfile && baseProfile.name) || '',
                 dob: formData.dob || (baseProfile && (baseProfile.dob || baseProfile.birthDate)) || '',
@@ -2066,7 +2429,8 @@ function parseTimeToMinutes(value) {
                 parentCccd: formData.parentCccd || (baseProfile && baseProfile.parentCccd) || '',
                 parentPhone: formData.parentPhone || (baseProfile && baseProfile.parentPhone) || '',
                 mode: formData.mode || (baseProfile && baseProfile.mode) || 'Trực tiếp',
-                enrollmentDate: formData.enrollmentDate || (baseProfile && (baseProfile.enrollmentDate || baseProfile.enrolledAt)) || '',
+                enrollmentDate: normalizedEnrollmentDate || formData.enrollmentDate || (baseProfile && (baseProfile.enrollmentDate || baseProfile.enrolledAt)) || '',
+                enrollmentDateByClass: mergedEnrollmentByClass,
                 note: formData.note || (baseProfile && baseProfile.note) || '',
                 linkedClassCodes: linkedCodes,
                 syncStudentKey: syncKey,
@@ -2111,7 +2475,7 @@ function parseTimeToMinutes(value) {
                 const targetRef = existingDoc
                     ? db.collection('classes').doc(cls.id).collection('students').doc(existingDoc.docId)
                     : db.collection('classes').doc(cls.id).collection('students').doc(getStudentManagedDocId(syncKey));
-                const payload = { ...mergedProfile, studentCccd: digitsOnly(mergedProfile.studentCccd || ''), parentCccd: digitsOnly(mergedProfile.parentCccd || '') };
+                const payload = { ...mergedProfile, studentCccd: digitsOnly(mergedProfile.studentCccd || ''), parentCccd: digitsOnly(mergedProfile.parentCccd || ''), excludeFromStudentDirectory: false, withdrawStatus: firebase.firestore.FieldValue.delete() };
                 if (!existingDoc) {
                     payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     payload.attendance = {};
@@ -2121,42 +2485,230 @@ function parseTimeToMinutes(value) {
                 touchedClassIds.add(cls.id);
             }
             await batch.commit();
+            await db.collection('classes').doc(classId).set({ [`withdrawnStudentStats.${currentMonthKey}.${syncKey}`]: firebase.firestore.FieldValue.delete() }, { merge: true });
             for (const touchedClassId of touchedClassIds) await syncClassStudentCount(touchedClassId);
         }
+        function buildWithdrawalBillingSnapshot(student) {
+            const safeStudent = student || {};
+            const attendedDays = [];
+            const countedStatuses = ['V', 'P', 'M', 'ĐB'];
+            document.querySelectorAll(`.day-select-${safeStudent.id}`).forEach((sel) => {
+                const day = Number(sel.dataset.day || 0);
+                if (!day || isDayOff(day) || isDayBeforeStudentEnrollment(safeStudent, day)) return;
+                if (countedStatuses.includes(sel.value)) attendedDays.push(day);
+            });
+            const tuitionInput = document.querySelector(`.tuition-${safeStudent.id}`);
+            const tuition = parseInt(tuitionInput ? tuitionInput.value : safeStudent.tuition, 10) || 0;
+            const sessionCount = attendedDays.length;
+            return {
+                name: normalizeText(safeStudent.name) || 'Chưa rõ',
+                studentCccd: digitsOnly(safeStudent.studentCccd || safeStudent.cccd),
+                tuition,
+                sessionCount,
+                attendedDays,
+                totalAmount: sessionCount * tuition
+            };
+        }
+        function getCommittedAttendanceDays(student) {
+            const attendanceRecord = student && student.attendance && typeof student.attendance === 'object'
+                ? student.attendance
+                : {};
+            return Object.keys(attendanceRecord)
+                .map((day) => Number(day))
+                .filter((day) => day > 0)
+                .filter((day) => normalizeText(attendanceRecord[day]) !== '');
+        }
+        function canDeleteStudentWithoutAttendance(student) {
+            return getCommittedAttendanceDays(student).length === 0;
+        }
+        function buildWithdrawalClassLinkedCodes(student, fallbackCodes = []) {
+            const codes = new Set((Array.isArray(student && student.linkedClassCodes) ? student.linkedClassCodes : []).map(code => normalizeCode(code)).filter(Boolean));
+            (Array.isArray(fallbackCodes) ? fallbackCodes : []).forEach(code => {
+                const normalized = normalizeCode(code);
+                if (normalized) codes.add(normalized);
+            });
+            const currentClassCode = getCurrentClassCode();
+            if (currentClassCode) codes.delete(currentClassCode);
+            return Array.from(codes).filter(Boolean).sort();
+        }
+        function removeCurrentClassEnrollmentMap(rawMap = {}) {
+            const nextMap = { ...(rawMap || {}) };
+            delete nextMap[classId];
+            const currentClassCode = getCurrentClassCode();
+            if (currentClassCode) delete nextMap[currentClassCode];
+            return nextMap;
+        }
+        window.markSelectedStudentsAsWithdrawn = async function() {
+            enforceManagerPermission('chuyển học sinh sang trạng thái thôi học');
+            const selected = [...document.querySelectorAll('.student-checkbox:checked')].filter((cb) => !cb.disabled);
+            if (!selected.length) {
+                alert('Vui lòng chọn học sinh cần chuyển sang trạng thái thôi học.');
+                return;
+            }
+            const confirmed = confirm(`Xác nhận chuyển ${selected.length} học sinh sang trạng thái thôi học? Dữ liệu điểm danh và học phí của tháng này vẫn được giữ nguyên, nhưng từ ngày 01 tháng sau các học sinh này sẽ không còn xuất hiện trên bảng điểm danh lớp.`);
+            if (!confirmed) return;
+            try {
+                const touchedClassIds = new Set([classId]);
+                const currentClassCode = getCurrentClassCode();
+                const nextMonthKey = getNextMonthKey(currentMonthKey);
+                for (const cb of selected) {
+                    const currentRef = db.collection('classes').doc(classId).collection('students').doc(cb.value);
+                    const student = studentsData.find(item => String(item.id) === cb.value);
+                    if (!student) continue;
+                    const syncKey = getStudentSyncKey(student);
+                    const globalSnapshot = syncKey
+                        ? await db.collectionGroup('students').where('syncStudentKey', '==', syncKey).get().catch(() => null)
+                        : null;
+                    const globalDocs = globalSnapshot ? globalSnapshot.docs : [];
+                    const discoveredOtherCodes = [];
+                    globalDocs.forEach((doc) => {
+                        const parent = doc.ref.parent && doc.ref.parent.parent;
+                        if (!parent || parent.id === classId) return;
+                        const data = doc.data() || {};
+                        if (data.excludeFromStudentDirectory) return;
+                        const classInfo = getClassInfoById(parent.id);
+                        const code = normalizeCode((classInfo && classInfo.classCode) || '');
+                        if (code) discoveredOtherCodes.push(code);
+                    });
+                    const remainingCodes = buildWithdrawalClassLinkedCodes(student, discoveredOtherCodes);
+                    const classBatch = db.batch();
+                    if (syncKey && globalDocs.length) {
+                        globalDocs.forEach((doc) => {
+                            const parent = doc.ref.parent && doc.ref.parent.parent;
+                            if (!parent || parent.id === classId) return;
+                            const classInfo = getClassInfoById(parent.id);
+                            const parentClassCode = normalizeCode((classInfo && classInfo.classCode) || '');
+                            if (!remainingCodes.length || (parentClassCode && !remainingCodes.includes(parentClassCode))) {
+                                classBatch.delete(doc.ref);
+                                touchedClassIds.add(parent.id);
+                                return;
+                            }
+                            const existingData = doc.data() || {};
+                            classBatch.set(doc.ref, {
+                                linkedClassCodes: remainingCodes,
+                                enrollmentDateByClass: removeCurrentClassEnrollmentMap(existingData.enrollmentDateByClass),
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                updatedBy: currentUserInfo.email || ''
+                            }, { merge: true });
+                            touchedClassIds.add(parent.id);
+                        });
+                    }
+                    classBatch.set(currentRef, {
+                        linkedClassCodes: remainingCodes,
+                        enrollmentDateByClass: removeCurrentClassEnrollmentMap(student.enrollmentDateByClass),
+                        excludeFromStudentDirectory: true,
+                        withdrawStatus: {
+                            isWithdrawn: true,
+                            withdrawnAtMonthKey: currentMonthKey,
+                            hideFromMonthKey: nextMonthKey,
+                            lockedByName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                            lockedByEmail: currentUserInfo.email || '',
+                            lockedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            removedFromClassCode: currentClassCode || '',
+                            remainingClassCodes: remainingCodes
+                        },
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedBy: currentUserInfo.email || ''
+                    }, { merge: true });
+                    await classBatch.commit();
+                }
+                for (const touchedClassId of touchedClassIds) await syncClassStudentCount(touchedClassId);
+                showToast('Đã chuyển sang thôi học', 'Dòng học sinh được khóa cứng trong tháng hiện tại; từ ngày 01 tháng sau sẽ tự ẩn khỏi bảng điểm danh lớp.');
+            } catch (error) {
+                alert(error.message || 'Không thể chuyển học sinh sang trạng thái thôi học.');
+            }
+        };
         window.deleteSelectedStudents = async function() {
             enforceManagerPermission('xóa học sinh');
             const selected = [...document.querySelectorAll('.student-checkbox:checked')];
             if (selected.length === 0) return alert('Vui lòng chọn ít nhất 1 học sinh để xóa khỏi lớp này.');
-            if (!confirm(`Chắc chắn gỡ ${selected.length} học sinh khỏi lớp hiện tại? Hệ thống sẽ đồng bộ lại số lớp đang học.`)) return;
+            const deletableItems = [];
+            const blockedItems = [];
+            selected.forEach((cb) => {
+                const student = studentsData.find(item => item.id === cb.value) || null;
+                const committedDays = getCommittedAttendanceDays(student);
+                if (committedDays.length) {
+                    blockedItems.push({
+                        name: normalizeText(student && student.name) || 'Chưa rõ',
+                        days: committedDays
+                    });
+                    return;
+                }
+                deletableItems.push({ cb, student });
+            });
+            if (!deletableItems.length) {
+                const blockedNames = blockedItems.map((item) => `${item.name} (${item.days.length} ngày đã chốt)`).join(', ');
+                return alert(`Không thể xóa học sinh đã có điểm danh từ 1 ngày trở lên. Vui lòng dùng nút "Thôi học" thay thế.
+
+Danh sách bị chặn: ${blockedNames}`);
+            }
+            let confirmMessage = `Chắc chắn xóa ${deletableItems.length} học sinh khỏi lớp hiện tại? Chức năng này chỉ dùng khi nhập nhầm lớp và chưa có ngày điểm danh nào được chốt.`;
+            if (blockedItems.length) confirmMessage += `
+
+${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa và cần xử lý bằng nút "Thôi học".`;
+            if (!confirm(confirmMessage)) return;
             try {
-                const currentClassCode = getCurrentClassCode();
                 const touchedClassIds = new Set([classId]);
-                for (const cb of selected) {
-                    const student = studentsData.find(item => item.id === cb.value);
+                for (const { cb, student } of deletableItems) {
                     const currentRef = db.collection('classes').doc(classId).collection('students').doc(cb.value);
                     const syncKey = getStudentSyncKey(student || {});
-                    const remainingCodes = Array.from(new Set((student && student.linkedClassCodes ? student.linkedClassCodes : []).map(code => normalizeCode(code)).filter(code => code && code !== currentClassCode)));
-                    await currentRef.delete();
+                    let globalDocs = [];
                     if (syncKey) {
                         const globalSnapshot = await db.collectionGroup('students').where('syncStudentKey', '==', syncKey).get().catch(() => null);
-                        if (globalSnapshot) {
-                            const batch = db.batch();
-                            globalSnapshot.forEach((doc) => {
-                                const parent = doc.ref.parent && doc.ref.parent.parent;
-                                if (!parent || parent.id === classId) return;
-                                batch.set(doc.ref, {
-                                    linkedClassCodes: remainingCodes,
-                                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                                    updatedBy: currentUserInfo.email || ''
-                                }, { merge: true });
-                                touchedClassIds.add(parent.id);
-                            });
-                            await batch.commit();
-                        }
+                        globalDocs = globalSnapshot ? globalSnapshot.docs : [];
                     }
+                    const discoveredOtherCodes = [];
+                    globalDocs.forEach((doc) => {
+                        const parent = doc.ref.parent && doc.ref.parent.parent;
+                        if (!parent || parent.id === classId) return;
+                        const classInfo = getClassInfoById(parent.id);
+                        const code = normalizeCode((classInfo && classInfo.classCode) || '');
+                        if (code) discoveredOtherCodes.push(code);
+                    });
+                    const remainingCodes = buildWithdrawalClassLinkedCodes(student, discoveredOtherCodes);
+                    const classBatch = db.batch();
+                    classBatch.delete(currentRef);
+                    if (syncKey && globalDocs.length) {
+                        globalDocs.forEach((doc) => {
+                            const parent = doc.ref.parent && doc.ref.parent.parent;
+                            if (!parent || parent.id === classId) return;
+                            const classInfo = getClassInfoById(parent.id);
+                            const parentClassCode = normalizeCode((classInfo && classInfo.classCode) || '');
+                            if (!remainingCodes.length || (parentClassCode && !remainingCodes.includes(parentClassCode))) {
+                                classBatch.delete(doc.ref);
+                                touchedClassIds.add(parent.id);
+                                return;
+                            }
+                            const existingData = doc.data() || {};
+                            classBatch.set(doc.ref, {
+                                linkedClassCodes: remainingCodes,
+                                enrollmentDateByClass: removeCurrentClassEnrollmentMap(existingData.enrollmentDateByClass),
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                updatedBy: currentUserInfo.email || ''
+                            }, { merge: true });
+                            touchedClassIds.add(parent.id);
+                        });
+                    }
+                    if (syncKey) {
+                        classBatch.set(db.collection('classes').doc(classId), {
+                            [`withdrawnStudentStats.${currentMonthKey}.${syncKey}`]: firebase.firestore.FieldValue.delete()
+                        }, { merge: true });
+                    }
+                    await classBatch.commit();
                 }
                 for (const touchedClassId of touchedClassIds) await syncClassStudentCount(touchedClassId);
-                showToast('Thành công!', 'Đã gỡ học sinh khỏi lớp hiện tại và đồng bộ lại danh sách học sinh.');
+                const successMessage = blockedItems.length
+                    ? `Đã xóa ${deletableItems.length} học sinh chưa có điểm danh. ${blockedItems.length} học sinh đã có điểm danh nên giữ nguyên và cần dùng nút Thôi học.`
+                    : `Đã xóa ${deletableItems.length} học sinh khỏi lớp hiện tại.`;
+                showToast('Thành công!', successMessage);
+                if (blockedItems.length) {
+                    const blockedPreview = blockedItems
+                        .slice(0, 8)
+                        .map((item) => `- ${item.name}: ${item.days.length} ngày đã chốt`)
+                        .join('\n');
+                    const extraText = blockedItems.length > 8 ? `\n- Và ${blockedItems.length - 8} học sinh khác` : '';
+                    alert(`Không thể xóa học sinh đã có điểm danh từ 1 ngày trở lên. Vui lòng dùng nút "Thôi học" cho các trường hợp sau:\n${blockedPreview}${extraText}`);
+                }
             } catch (error) {
                 alert(error.message || 'Không thể gỡ học sinh khỏi lớp.');
             }
@@ -2304,6 +2856,7 @@ function parseTimeToMinutes(value) {
             const data = doc.data() || {};
             currentClassInfo = data;
             teachingPayoutSettings = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo) };
+            withdrawnStudentStats = { ...getCurrentMonthWithdrawnStudentStats(currentClassInfo) };
             ensureAttendancePageAccess(currentClassInfo);
             currentScheduleDays = getMainStudyDaysForCurrentClass();
             await refreshAssignedTeachingRoster();
@@ -2402,14 +2955,26 @@ function parseTimeToMinutes(value) {
         document.getElementById('btnCancelAttendanceStudent').addEventListener('click', closeAttendanceStudentModal);
         document.getElementById('addStudentModal').addEventListener('click', (e) => { if (e.target.id === 'addStudentModal') closeAttendanceStudentModal(); });
 
-        document.addEventListener('input', (event) => {
+        document.addEventListener('input', async (event) => {
             if (event.target.matches('#attendanceBulkStudentRows [data-field="studentCccd"]')) {
                 event.target.value = digitsOnly(event.target.value).slice(0, 12);
+                await updateStudentCccdSuggestions(event.target.value);
+                if (digitsOnly(event.target.value).length === 12) {
+                    const matchedProfile = await findStudentProfileByCccd(event.target.value);
+                    if (matchedProfile) fillAttendanceBulkRowFromProfile(event.target.closest('tr'), matchedProfile);
+                }
+                return;
             }
             if (event.target.classList.contains('teacher-payout-percent-input')) {
                 updateTeachingPayoutPreview();
             }
         });
+        document.addEventListener('focusin', async (event) => {
+            if (event.target.matches('#attendanceBulkStudentRows [data-field="studentCccd"]')) {
+                await updateStudentCccdSuggestions(event.target.value || '');
+            }
+        });
+
         document.addEventListener('change', async (event) => {
             if (event.target.matches('#attendanceBulkStudentRows [data-field="studentCccd"]')) {
                 const cccdInput = event.target;
