@@ -481,6 +481,12 @@
         let classesCache = [];
         let classesByCode = {};
         let localDayOffState = {};
+        let currentAttendanceAccess = null;
+        let attendanceAccessTimer = null;
+
+        const CLASS_DURATION_MINUTES = 120;
+        const OPEN_BEFORE_MINUTES = 60;
+        const CLOSE_AFTER_MINUTES = 10;
 
         function normalizeText(value) { return String(value || '').trim(); }
         function normalizeTextLower(value) { return normalizeText(value).toLowerCase(); }
@@ -573,6 +579,147 @@
         function getMainStudyDaysForCurrentClass() {
             return getSortedScheduleDays((currentClassInfo && (currentClassInfo.scheduleDays || currentClassInfo.studyDays)) || []);
         }
+
+        function normalizePersonKey(person) {
+            const emailKey = normalizeEmail(person && person.email);
+            if (emailKey) return emailKey;
+            return normalizeTextLower(person && person.name);
+        }
+        function getPeopleArray(items) {
+            return (Array.isArray(items) ? items : [])
+                .map(item => ({
+                    name: normalizeText(item && item.name),
+                    email: normalizeEmail(item && item.email)
+                }))
+                .filter(item => item.name || item.email);
+        }
+        function getManagersFromClassData(data) {
+            const managers = [];
+            if (Array.isArray(data && data.managers)) managers.push(...data.managers);
+            if (data && data.manager && !Array.isArray(data.managers)) managers.push(data.manager);
+            if (data && !Array.isArray(data && data.managers) && data && data.managerNameDisplay && data.managerNameDisplay !== 'Chưa gán') {
+                managers.push({ name: data.managerNameDisplay, email: data.managerEmail || '' });
+            }
+            return getPeopleArray(managers);
+        }
+        function getTeachersFromClassData(data) {
+            const teachers = [];
+            if (Array.isArray(data && data.teachers)) teachers.push(...data.teachers);
+            if (data && data.teacherName && !Array.isArray(data.teachers)) teachers.push({ name: data.teacherName, email: data.teacherEmail || '' });
+            return getPeopleArray(teachers);
+        }
+        function parseTimeToMinutes(value) {
+            const parts = String(value || '').split(':');
+            if (parts.length !== 2) return NaN;
+            const hour = Number(parts[0]);
+            const minute = Number(parts[1]);
+            if (Number.isNaN(hour) || Number.isNaN(minute)) return NaN;
+            return hour * 60 + minute;
+        }
+        function getTodaySessionWindow(classData, now = new Date()) {
+            const scheduleDays = getSortedScheduleDays(classData && (classData.scheduleDays || classData.studyDays));
+            const startTime = classData && (classData.startTime || classData.studyStartTime);
+            const startMinutes = parseTimeToMinutes(startTime);
+            const duration = Number(classData && classData.classDurationMinutes) || CLASS_DURATION_MINUTES;
+            if (!scheduleDays.length || Number.isNaN(startMinutes)) return null;
+            if (!scheduleDays.includes(String(now.getDay()))) return null;
+            const start = new Date(now);
+            start.setHours(Math.floor(startMinutes / 60), startMinutes % 60, 0, 0);
+            const end = new Date(start.getTime() + duration * 60 * 1000);
+            const onlineAt = new Date(start.getTime() - OPEN_BEFORE_MINUTES * 60 * 1000);
+            const offlineAt = new Date(end.getTime() + CLOSE_AFTER_MINUTES * 60 * 1000);
+            return { start, end, onlineAt, offlineAt };
+        }
+        function getClassRealtimeState(classData, now = new Date()) {
+            const windowInfo = getTodaySessionWindow(classData, now);
+            if (windowInfo) {
+                if (now >= windowInfo.onlineAt && now <= windowInfo.offlineAt) {
+                    return { statusKey: 'online', canAttend: true };
+                }
+                return { statusKey: 'offline', canAttend: false };
+            }
+            const fallbackActive = classData && classData.status === 'active';
+            return { statusKey: fallbackActive ? 'online' : 'offline', canAttend: !!fallbackActive };
+        }
+        function getAttendanceAccessScope(classData, now = new Date()) {
+            const role = String((currentUserInfo && currentUserInfo.role) || 'teacher').trim().toLowerCase();
+            const currentEmail = normalizeEmail(currentUserInfo && currentUserInfo.email);
+            const currentNameKey = normalizeTextLower(currentUserInfo && currentUserInfo.displayName);
+            const currentKey = currentEmail || currentNameKey;
+            const managers = getManagersFromClassData(classData);
+            const teachers = getTeachersFromClassData(classData);
+            const managerKeys = managers.map(normalizePersonKey);
+            const teacherKeys = teachers.map(normalizePersonKey);
+            const isAdmin = role === 'admin';
+            const isAssignedManager = !!currentKey && managerKeys.includes(currentKey);
+            const isAssignedTeacher = !!currentKey && teacherKeys.includes(currentKey);
+            const realtimeState = getClassRealtimeState(classData, now);
+            const canManageAnytime = isAdmin || isAssignedManager;
+            const canManageAttendance = canManageAnytime || (isAssignedTeacher && realtimeState.canAttend);
+            return {
+                role,
+                isAdmin,
+                isAssignedManager,
+                isAssignedTeacher,
+                realtimeState,
+                canManageAnytime,
+                canManageAttendance,
+                canAccessPage: canManageAttendance,
+                denyMessage: isAssignedTeacher
+                    ? 'Bạn là giáo viên của lớp này nhưng chỉ được vào trang điểm danh khi lớp đang trong ca học. Quản lý được gán hoặc Admin mới được truy cập khi lớp offline.'
+                    : 'Bạn không có quyền truy cập trang điểm danh của lớp này. Chỉ Admin, quản lý được gán hoặc giáo viên được gán trong ca học mới được phép vào.'
+            };
+        }
+        function applyAttendancePermissionUi(access) {
+            const canManage = !!(access && access.canManageAttendance);
+            const actionButtons = [
+                document.getElementById('btnMarkTodayOff'),
+                document.getElementById('btnOpenAddStudentModal'),
+                document.querySelector('.btn-delete-hs'),
+                document.querySelector('.btn-save-att'),
+                document.getElementById('btnAddAttendanceStudentRow'),
+                document.getElementById('btnFillAttendanceCodes'),
+                document.getElementById('btnSaveStudent')
+            ].filter(Boolean);
+            actionButtons.forEach((button) => {
+                button.disabled = !canManage;
+                if (!canManage && !button.dataset.lockedTitle) button.dataset.lockedTitle = button.title || '';
+                button.title = canManage ? (button.dataset.lockedTitle || '') : 'Bạn không có quyền thao tác tại trang điểm danh của lớp này.';
+            });
+            document.querySelectorAll('.tuition-input').forEach((input) => {
+                input.disabled = !canManage;
+                input.title = canManage ? '' : 'Bạn không có quyền chỉnh sửa học phí tại trang điểm danh.';
+            });
+        }
+        function redirectAttendanceAccessDenied(message) {
+            alert(message);
+            window.location.href = 'classes.html';
+        }
+        function ensureAttendancePageAccess(classData, options = {}) {
+            const access = getAttendanceAccessScope(classData);
+            currentAttendanceAccess = access;
+            applyAttendancePermissionUi(access);
+            if (!access.canAccessPage) {
+                if (classRealtimeUnsubscribe) {
+                    classRealtimeUnsubscribe();
+                    classRealtimeUnsubscribe = null;
+                }
+                if (attendanceAccessTimer) {
+                    clearInterval(attendanceAccessTimer);
+                    attendanceAccessTimer = null;
+                }
+                if (options.silentRedirect === false) return access;
+                redirectAttendanceAccessDenied(access.denyMessage);
+            }
+            return access;
+        }
+        function enforceAttendanceManagePermission(actionLabel) {
+            const access = currentClassInfo ? ensureAttendancePageAccess(currentClassInfo) : currentAttendanceAccess;
+            if (!access || !access.canManageAttendance) {
+                throw new Error(`Bạn không có quyền ${actionLabel} cho lớp này.`);
+            }
+            return access;
+        }
         function syncAdminOnlyMenu(role) {
             const isAdmin = String(role || '').toLowerCase() === 'admin';
             document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
@@ -663,6 +810,13 @@
             const btn = document.getElementById('btnMarkTodayOff');
             if (!btn) return;
             const today = getTodayDay();
+            if (!(currentAttendanceAccess && currentAttendanceAccess.canManageAttendance)) {
+                btn.disabled = true;
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="fa-solid fa-bed"></i> Báo nghỉ hôm nay';
+                btn.title = 'Bạn không có quyền báo nghỉ trên lớp này.';
+                return;
+            }
             if (!today) {
                 btn.disabled = true;
                 btn.classList.remove('active');
@@ -713,7 +867,8 @@
                 const lockedByOther = !!record && !isCurrentUserAttendanceOwner(day);
                 const futureDay = isFutureDay(dayNumber);
                 const dayOff = isDayOff(day);
-                const disabled = lockedByOther || futureDay || dayOff;
+                const blockedByPermission = !(currentAttendanceAccess && currentAttendanceAccess.canManageAttendance);
+                const disabled = blockedByPermission || lockedByOther || futureDay || dayOff;
                 activeAttendanceLocks[day] = lockedByOther;
                 select.disabled = disabled;
                 select.classList.toggle('att-locked', lockedByOther);
@@ -876,6 +1031,7 @@
                 attendanceTeacherLog = (data.attendanceTeacherLog && data.attendanceTeacherLog[currentMonthKey]) || {};
                 attendanceDayOffLog = (data.attendanceDayOffLog && data.attendanceDayOffLog[currentMonthKey]) || {};
                 currentClassInfo = { ...(currentClassInfo || {}), ...data };
+                ensureAttendancePageAccess(currentClassInfo);
                 await ensureTeacherDirectoryLoaded();
                 renderAttendanceTeacherStats();
                 refreshAttendanceCellState();
@@ -1254,6 +1410,7 @@
             if (tbody) tbody.innerHTML = '';
         }
         function openAttendanceStudentModal() {
+            enforceAttendanceManagePermission('thêm học sinh');
             clearAttendanceBulkRows();
             createAttendanceBulkRow();
             document.getElementById('addStudentModal').classList.add('show');
@@ -1366,6 +1523,7 @@
             };
         }
         async function saveStudentAcrossClassesFromAttendance(formData) {
+            enforceAttendanceManagePermission('thêm học sinh');
             const currentClassCode = getCurrentClassCode();
             if (!currentClassCode) throw new Error('Không tìm thấy mã lớp hiện tại để đồng bộ học sinh.');
             const linkedCodes = parseLinkedClassCodes(formData.linkedCodesRaw || '', currentClassCode);
@@ -1405,6 +1563,7 @@
             for (const touchedClassId of touchedClassIds) await syncClassStudentCount(touchedClassId);
         }
         window.deleteSelectedStudents = async function() {
+            enforceAttendanceManagePermission('xóa học sinh');
             const selected = [...document.querySelectorAll('.student-checkbox:checked')];
             if (selected.length === 0) return alert('Vui lòng chọn ít nhất 1 học sinh để xóa khỏi lớp này.');
             if (!confirm(`Chắc chắn gỡ ${selected.length} học sinh khỏi lớp hiện tại? Hệ thống sẽ đồng bộ lại số lớp đang học.`)) return;
@@ -1442,6 +1601,7 @@
             }
         };
         function toggleTodayOff() {
+            enforceAttendanceManagePermission('báo nghỉ');
             const today = getTodayDay();
             if (!today) {
                 showToast('Không khả dụng', 'Chỉ có thể báo nghỉ trong tháng hiện tại.');
@@ -1459,6 +1619,7 @@
             calculateTotals();
         }
         window.saveAttendance = async function() {
+            enforceAttendanceManagePermission('lưu điểm danh');
             const btn = document.querySelector('.btn-save-att');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
             btn.disabled = true;
@@ -1536,6 +1697,7 @@
             }
             const data = doc.data() || {};
             currentClassInfo = data;
+            ensureAttendancePageAccess(currentClassInfo);
             currentScheduleDays = getMainStudyDaysForCurrentClass();
             document.getElementById('displayClassName').innerText = data.className || 'Chưa đặt tên';
             document.getElementById('displayClassTeacher').innerText = data.teacherNamesDisplay || data.teacherName || 'Chưa có';
@@ -1548,6 +1710,7 @@
         const addStudentForm = document.getElementById('addStudentForm');
         addStudentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            enforceAttendanceManagePermission('thêm học sinh');
             const btn = document.getElementById('btnSaveStudent');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
@@ -1601,6 +1764,10 @@
             try {
                 await loadClassesDirectory();
                 await loadClassInfo();
+                if (attendanceAccessTimer) clearInterval(attendanceAccessTimer);
+                attendanceAccessTimer = setInterval(() => {
+                    if (currentClassInfo) ensureAttendancePageAccess(currentClassInfo);
+                }, 30000);
             } catch (error) {
                 alert(error.message || 'Không thể tải dữ liệu lớp học.');
                 document.getElementById('page-loader').style.display = 'none';

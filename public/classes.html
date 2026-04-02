@@ -556,25 +556,22 @@
                 isAssignedManager,
                 isAssignedTeacher,
                 canManageClass: isAdmin || isAssignedManager || isAssignedTeacher,
-                canEditClass: isAdmin || isAssignedManager,
+                canEditClass: isAdmin,
                 canDeleteClass: isAdmin,
-                canCreateClass: isAdmin || role === 'manager',
+                canCreateClass: isAdmin,
                 canUseManagementAccessAnytime: isAdmin || isAssignedManager,
                 canViewOnly: !(isAdmin || isAssignedManager || isAssignedTeacher)
             };
         }
 
         function syncPermissionUi() {
-            const role = getCurrentUserRole();
-            const canCreate = role === 'admin' || role === 'manager';
-            const canEdit = canCreate;
-            const canDelete = role === 'admin';
+            const isAdmin = getCurrentUserRole() === 'admin';
 
-            btnOpenModal.style.display = canCreate ? 'inline-flex' : 'none';
-            btnEditSelected.style.display = canEdit ? 'inline-flex' : 'none';
-            btnDeleteSelected.style.display = canDelete ? 'inline-flex' : 'none';
-            document.getElementById('selectAll').disabled = !canEdit;
-            document.getElementById('selectAll').classList.toggle('checkbox-readonly', !canEdit);
+            btnOpenModal.style.display = isAdmin ? 'inline-flex' : 'none';
+            btnEditSelected.style.display = isAdmin ? 'inline-flex' : 'none';
+            btnDeleteSelected.style.display = isAdmin ? 'inline-flex' : 'none';
+            document.getElementById('selectAll').disabled = !isAdmin;
+            document.getElementById('selectAll').classList.toggle('checkbox-readonly', !isAdmin);
         }
 
         async function fetchCurrentUserProfile(user) {
@@ -854,8 +851,8 @@ function syncAdminOnlyMenu(role) {
 
         function openCreateModal() {
             const role = getCurrentUserRole();
-            if (!(role === 'admin' || role === 'manager')) {
-                alert('Bạn không có quyền tạo lớp mới. Chỉ Admin hoặc Quản lý mới được thêm lớp.');
+            if (role !== 'admin') {
+                alert('Bạn không có quyền tạo lớp mới. Chỉ Admin mới được thêm lớp.');
                 return;
             }
 
@@ -1101,10 +1098,10 @@ function syncAdminOnlyMenu(role) {
                 row.dataset.status = realtimeState.statusKey;
 
                 row.innerHTML = `
-                    <td class="col-center"><input type="checkbox" class="row-checkbox ${access.canEditClass || access.canDeleteClass ? '' : 'checkbox-readonly'}" value="${classData.id}" ${access.canEditClass || access.canDeleteClass ? '' : 'disabled title="Bạn không có quyền chỉnh sửa lớp này"'}></td>
+                    <td class="col-center"><input type="checkbox" class="row-checkbox ${access.isAdmin ? '' : 'checkbox-readonly'}" value="${classData.id}" ${access.isAdmin ? '' : 'disabled title="Chỉ Admin mới được chọn lớp để sửa hoặc xóa"'}></td>
                     <td class="col-center">${index++}</td>
                     <td><span class="class-code">${escapeHtml(classData.classCode || '')}</span></td>
-                    <td class="col-bold">${escapeHtml(classData.className || '')}<div class="permission-note">${access.isAdmin ? 'Admin toàn quyền lớp này.' : access.isAssignedManager ? 'Bạn là quản lý của lớp này.' : access.isAssignedTeacher ? 'Bạn là giáo viên được gán vào lớp này.' : 'Bạn chỉ có quyền xem thông tin lớp này.'}</div></td>
+                    <td class="col-bold">${escapeHtml(classData.className || '')}<div class="permission-note">${access.isAdmin ? 'Admin toàn quyền lớp này.' : access.isAssignedManager ? 'Bạn là quản lý của lớp này, được phép quản lý điểm danh cả khi lớp offline.' : access.isAssignedTeacher ? 'Bạn là giáo viên được gán vào lớp này, được phép vào điểm danh khi lớp online.' : 'Bạn chỉ có quyền xem thông tin lớp này.'}</div></td>
                     <td>${scheduleHtml}</td>
                     <td>${managerHtml}</td>
                     <td>${teachersHtml}<span class="hidden-teacher-search" style="display:none;">${escapeHtml(classData.teacherNamesDisplay || classData.teacherName || '')}</span></td>
@@ -1215,6 +1212,10 @@ function syncAdminOnlyMenu(role) {
             btnSaveData.disabled = true;
 
             try {
+                if (getCurrentUserRole() !== 'admin') {
+                    throw new Error('Chỉ Admin mới được phép thêm hoặc chỉnh sửa lớp học.');
+                }
+
                 const schedulePayload = getSchedulePayloadFromForm();
                 const teacherNamesString = currentSelectedTeachers.map(item => item.name).join(', ');
                 const editId = editClassIdInput.value.trim();
@@ -1277,8 +1278,8 @@ function syncAdminOnlyMenu(role) {
 
             const data = doc.data() || {};
             const access = getClassAccessScope(data);
-            if (!access.canEditClass) {
-                alert('Bạn không có quyền chỉnh sửa lớp này. Chỉ Admin hoặc Quản lý được gán vào lớp mới được sửa khi lớp offline.');
+            if (!access.isAdmin) {
+                alert('Bạn không có quyền chỉnh sửa lớp này. Chỉ Admin mới được sửa thông tin lớp.');
                 return;
             }
 

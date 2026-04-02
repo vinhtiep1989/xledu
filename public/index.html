@@ -171,57 +171,84 @@
             .important-alert-count { width: 100%; justify-content: center; }
         }
 
-
-        .schedule-dashboard { display: flex; flex-direction: column; gap: 20px; }
+        .schedule-dashboard { display: flex; flex-direction: column; gap: 18px; }
         .schedule-page-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 20px 22px; background: linear-gradient(135deg, #ffffff 0%, #f7fcf9 100%); }
-        .schedule-page-copy { max-width: 880px; }
+        .schedule-page-copy { max-width: 920px; }
         .schedule-page-kicker { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; background: rgba(46, 204, 113, 0.12); color: #1f9d57; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 10px; }
         .schedule-page-copy h2 { font-size: 1.65rem; line-height: 1.25; margin-bottom: 8px; color: #17324a; }
-        .schedule-page-copy p { font-size: 0.94rem; color: #637381; max-width: 820px; }
+        .schedule-page-copy p { font-size: 0.94rem; color: #637381; max-width: 860px; }
         .schedule-page-actions, .schedule-toolbar-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
         .action-btn { min-height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(13, 27, 42, 0.1); background: #fff; color: var(--text-dark); font-size: 0.82rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s ease; box-shadow: 0 8px 18px rgba(13, 27, 42, 0.04); }
         .action-btn:hover { transform: translateY(-1px); border-color: rgba(46, 204, 113, 0.35); color: #148f4b; }
         .action-btn.gold { background: linear-gradient(135deg, #f8ecc9 0%, #fff7e4 100%); border-color: rgba(224, 170, 62, 0.3); color: #8f6512; }
         .action-btn.danger { color: #b1453d; border-color: rgba(231, 76, 60, 0.18); }
-        .schedule-focus-layout { display: grid; grid-template-columns: minmax(0, 1.85fr) minmax(320px, 0.95fr); gap: 20px; align-items: start; }
+
         .schedule-center-panel { padding: 20px; min-width: 0; }
-        .schedule-toolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
-        .schedule-toolbar h3 { font-size: 1.18rem; margin-bottom: 4px; }
-        .schedule-board-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; }
-        .schedule-tab { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(13, 27, 42, 0.08); background: #fff; border-radius: 14px; padding: 10px 14px; font-size: 0.83rem; font-weight: 700; color: #51606f; cursor: pointer; white-space: nowrap; box-shadow: 0 6px 14px rgba(13, 27, 42, 0.03); }
+        .schedule-toolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+        .schedule-toolbar h3 { font-size: 1.2rem; margin-bottom: 4px; }
+        .schedule-permission-chip { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 14px; border-radius: 999px; background: rgba(13, 27, 42, 0.05); color: #445566; font-size: 0.78rem; font-weight: 800; }
+        .schedule-permission-chip.admin { background: rgba(46, 204, 113, 0.14); color: #148f4b; }
+        .schedule-permission-chip.viewer { background: rgba(224, 170, 62, 0.14); color: #8f6512; }
+
+        .schedule-board-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+        .schedule-tab { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(13, 27, 42, 0.08); background: #fff; border-radius: 14px; padding: 10px 14px; font-size: 0.83rem; font-weight: 700; color: #51606f; cursor: pointer; box-shadow: 0 6px 14px rgba(13, 27, 42, 0.03); }
         .schedule-tab.active { background: linear-gradient(135deg, rgba(46, 204, 113, 0.16) 0%, rgba(46, 204, 113, 0.05) 100%); color: #148f4b; border-color: rgba(46, 204, 113, 0.3); }
         .schedule-tab-delete { width: 24px; height: 24px; border: none; border-radius: 50%; background: rgba(13, 27, 42, 0.06); color: #6f7b85; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
         .schedule-tab.active .schedule-tab-delete { background: rgba(20, 143, 75, 0.12); color: #148f4b; }
-        .schedule-board-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+
+        .schedule-board-meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
         .schedule-meta-chip { border-radius: 14px; border: 1px solid var(--border-grey); padding: 12px 14px; background: linear-gradient(180deg, #fbfefc 0%, #ffffff 100%); }
         .schedule-meta-chip span { display: block; font-size: 0.72rem; font-weight: 700; color: #8a97a4; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 5px; }
         .schedule-meta-chip strong { display: block; font-size: 0.95rem; color: #16324a; }
-        .schedule-builder-scroller { overflow: auto; border-radius: 18px; border: 1px solid var(--border-grey); background: linear-gradient(180deg, #f7fbf8 0%, #ffffff 100%); padding: 12px; min-height: 360px; }
-        .schedule-table-shell { min-width: 1120px; }
+
+        .schedule-board-detail-grid { display: grid; grid-template-columns: 1.1fr 0.9fr 1.4fr; gap: 12px; margin-bottom: 14px; }
+        .schedule-detail-card, .schedule-color-toolbar { border: 1px solid var(--border-grey); border-radius: 16px; background: linear-gradient(180deg, #fbfefc 0%, #ffffff 100%); padding: 14px; }
+        .schedule-detail-field { display: flex; flex-direction: column; gap: 7px; }
+        .schedule-detail-field label { font-size: 0.74rem; font-weight: 800; color: #7a8793; text-transform: uppercase; letter-spacing: 0.04em; }
+        .schedule-detail-input { min-height: 42px; border-radius: 12px; border: 1px solid rgba(13, 27, 42, 0.1); background: #fff; padding: 0 12px; font-size: 0.92rem; font-weight: 700; color: #17324a; outline: none; }
+        .schedule-detail-input:focus { border-color: rgba(46, 204, 113, 0.38); box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.12); }
+        .schedule-detail-input[readonly] { background: #f7faf8; color: #4f5f70; cursor: default; }
+
+        .schedule-color-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+        .schedule-color-group { display: flex; align-items: center; gap: 10px; }
+        .schedule-color-group label { font-size: 0.76rem; font-weight: 800; color: #6d7a87; }
+        .schedule-color-input { width: 42px; height: 42px; border: none; border-radius: 12px; background: transparent; cursor: pointer; }
+        .schedule-selected-cell-label { min-width: 240px; font-size: 0.82rem; font-weight: 700; color: #51606f; }
+        .schedule-color-toolbar .action-btn { min-height: 36px; padding: 0 12px; font-size: 0.78rem; }
+
+        .schedule-builder-scroller { overflow: visible; border-radius: 18px; border: 1px solid var(--border-grey); background: linear-gradient(180deg, #f7fbf8 0%, #ffffff 100%); padding: 12px; }
+        .schedule-table-shell { width: 100%; }
         .schedule-grid-table { width: 100%; border-collapse: collapse; table-layout: fixed; background: #fff; border-radius: 18px; overflow: hidden; }
-        .schedule-grid-table thead th { background: #25d6dc; color: #11323b; font-weight: 800; font-size: 0.9rem; text-align: center; border: 1px solid rgba(17, 50, 59, 0.28); padding: 12px 8px; }
+        .schedule-grid-table thead th { background: #25d6dc; color: #11323b; font-weight: 800; font-size: clamp(0.66rem, 0.74vw, 0.88rem); text-align: center; border: 1px solid rgba(17, 50, 59, 0.28); padding: 9px 4px; }
         .schedule-grid-table tbody td { border: 1px solid rgba(17, 50, 59, 0.28); vertical-align: stretch; background: #fff; }
         .schedule-grid-table tbody tr.session-divider td { border-top-width: 6px; border-top-color: #0d0d0d; }
-        .schedule-time-cell { width: 86px; min-width: 86px; background: #f1f1f1 !important; font-weight: 800; color: #1e2b37; text-align: center; padding: 8px 6px; }
-        .schedule-time-cell .time-range { display: block; font-size: 1rem; line-height: 1.2; }
-        .schedule-time-cell .time-actions { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-        .schedule-inline-action { border: 1px solid rgba(13, 27, 42, 0.08); background: #fff; border-radius: 8px; font-size: 0.72rem; font-weight: 700; color: #51606f; padding: 5px 8px; cursor: pointer; }
+        .schedule-time-cell { background: #f1f1f1 !important; font-weight: 800; color: #1e2b37; text-align: center; padding: 6px 4px; }
+        .schedule-time-cell.right { background: #f4f7fa !important; }
+        .schedule-time-content { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 100%; }
+        .schedule-time-cell .time-range { display: block; font-size: clamp(0.68rem, 0.78vw, 0.92rem); line-height: 1.2; }
+        .schedule-time-cell .time-actions { display: flex; flex-direction: column; gap: 5px; width: 100%; }
+        .schedule-inline-action { border: 1px solid rgba(13, 27, 42, 0.08); background: #fff; border-radius: 8px; font-size: 0.68rem; font-weight: 700; color: #51606f; padding: 5px 4px; cursor: pointer; }
         .schedule-inline-action:hover { color: #148f4b; border-color: rgba(46, 204, 113, 0.32); }
-        .schedule-room-cell { width: 54px; min-width: 54px; background: #fff400 !important; text-align: center; font-weight: 800; color: #4a4500; }
-        .schedule-room-cell .room-chip { display: flex; align-items: center; justify-content: center; gap: 4px; min-height: 54px; }
-        .schedule-room-cell .remove-row-btn { border: none; background: transparent; color: #8d6a00; cursor: pointer; font-size: 0.7rem; }
-        .schedule-room-cell.right, .schedule-time-cell.right { background: #f4f7fa !important; }
-        .schedule-data-cell { padding: 0; min-width: 142px; }
-        .schedule-cell-editor { min-height: 54px; padding: 8px 10px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.9rem; font-weight: 700; line-height: 1.25; color: #1f2d3b; outline: none; background: #fff; transition: 0.2s ease; white-space: pre-wrap; word-break: break-word; }
+
+        .schedule-room-cell { background: #fff400 !important; text-align: center; font-weight: 800; color: #4a4500; padding: 4px; }
+        .schedule-room-cell.right { background: #f4f7fa !important; }
+        .schedule-row-chip { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 46px; }
+        .schedule-row-index { font-size: 0.86rem; line-height: 1; }
+        .remove-row-btn { border: none; background: rgba(141, 106, 0, 0.12); color: #8d6a00; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .remove-row-btn:hover { background: rgba(231, 76, 60, 0.12); color: #c0392b; }
+
+        .schedule-data-cell { padding: 0; }
+        .schedule-cell-editor { min-height: 46px; padding: 6px 6px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: clamp(0.66rem, 0.74vw, 0.88rem); font-weight: 700; line-height: 1.2; color: var(--cell-color, #1f2d3b); background: var(--cell-bg, #ffffff); outline: none; transition: 0.2s ease; white-space: pre-wrap; word-break: break-word; border-left: 4px solid var(--cell-accent, rgba(13, 27, 42, 0.08)); }
         .schedule-cell-editor.empty { color: #9aa6b2; font-weight: 600; }
-        .schedule-cell-editor.filled { background: linear-gradient(180deg, var(--cell-bg, #eff6ff) 0%, #ffffff 100%); border-left: 4px solid var(--cell-accent, #7ba4d9); box-shadow: inset 0 0 0 1px rgba(13, 27, 42, 0.05); }
-        .schedule-cell-editor:focus { background: #ffffff; box-shadow: inset 0 0 0 2px rgba(46, 204, 113, 0.28); }
-        .schedule-cell-editor.empty::before { content: 'Nhập lớp học'; opacity: 0.8; }
+        .schedule-cell-editor.empty::before { content: 'Trống'; opacity: 0.82; }
+        .schedule-cell-editor:focus { box-shadow: inset 0 0 0 2px rgba(46, 204, 113, 0.28); }
+        .schedule-cell-editor.selected { box-shadow: inset 0 0 0 2px rgba(46, 204, 113, 0.32), 0 0 0 2px rgba(46, 204, 113, 0.18); position: relative; z-index: 1; }
         .schedule-empty-board { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 46px 18px; color: #7f8c8d; text-align: center; }
         .schedule-empty-board i { width: 56px; height: 56px; border-radius: 50%; background: rgba(46, 204, 113, 0.12); color: #148f4b; display: inline-flex; align-items: center; justify-content: center; font-size: 1.35rem; }
-        .schedule-side-rail { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
+        .schedule-below-stack { display: flex; flex-direction: column; gap: 18px; }
         .compact-stat-panel, .compact-alert-panel, .compact-classes-panel { padding: 16px; }
-        .compact-stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; margin-bottom: 14px; }
+        .compact-stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 14px; margin-bottom: 14px; }
         .stat-card.compact { padding: 14px; min-height: 126px; }
         .stat-card.compact .stat-card-top { margin-bottom: 8px; gap: 10px; }
         .stat-card.compact .stat-card-icon { width: 40px; height: 40px; font-size: 1rem; }
@@ -240,39 +267,44 @@
         .compact-alert-panel .important-alert-pill-value { font-size: 1.15rem; }
         .compact-alert-panel .important-alert-pill-label { font-size: 0.75rem; }
         .compact-alert-panel .important-alert-pill-sub { font-size: 0.67rem; }
-        .compact-alert-panel .important-alert-list { display: grid; gap: 10px; max-height: 430px; overflow: auto; padding-right: 2px; }
+        .compact-alert-panel .important-alert-list { display: grid; gap: 10px; }
         .compact-alert-panel .important-alert-card { padding: 12px; border-radius: 12px; }
         .compact-alert-panel .important-alert-class-name { font-size: 0.92rem; }
         .compact-alert-panel .important-alert-card-head { margin-bottom: 8px; }
-        .compact-alert-panel .important-alert-meta { grid-template-columns: 1fr; gap: 8px; }
+        .compact-alert-panel .important-alert-meta { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
         .compact-alert-panel .important-alert-actions { margin-top: 10px; }
         .compact-alert-panel .important-alert-link { min-height: 34px; padding: 0 12px; font-size: 0.76rem; }
         .compact-featured-table { min-width: 100%; font-size: 0.79rem; }
-        .compact-featured-table th, .compact-featured-table td { white-space: normal; }
         .compact-featured-table td { padding: 10px 0; }
+
+        body.schedule-readonly-mode [data-schedule-admin-control] { display: none !important; }
+        body.schedule-readonly-mode .schedule-tab-delete,
+        body.schedule-readonly-mode .time-actions,
+        body.schedule-readonly-mode .remove-row-btn { display: none !important; }
+        body.schedule-readonly-mode .schedule-cell-editor { cursor: default; }
+
         @media (min-width: 1025px) {
             .dashboard-content { padding: 22px; }
-            .schedule-builder-scroller { max-height: calc(100vh - 250px); }
         }
-        @media (max-width: 1280px) {
-            .schedule-focus-layout { grid-template-columns: 1fr; }
-            .schedule-side-rail { order: 2; }
-            .schedule-center-panel { order: 1; }
-            .schedule-builder-scroller { max-height: none; }
+        @media (max-width: 1180px) {
+            .compact-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .schedule-board-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .compact-alert-panel .important-alert-meta { grid-template-columns: 1fr; }
         }
-        @media (max-width: 1024px) {
-            .schedule-page-header, .schedule-toolbar { flex-direction: column; align-items: stretch; }
+        @media (max-width: 900px) {
+            .schedule-page-header, .schedule-toolbar, .schedule-color-toolbar { flex-direction: column; align-items: stretch; }
             .schedule-page-actions, .schedule-toolbar-actions { justify-content: flex-start; }
-            .schedule-board-meta { grid-template-columns: 1fr; }
+            .schedule-board-detail-grid { grid-template-columns: 1fr; }
+            .schedule-grid-table thead th, .schedule-cell-editor, .schedule-time-cell .time-range { font-size: 0.64rem; }
+            .schedule-builder-scroller { padding: 8px; }
         }
         @media (max-width: 768px) {
-            .schedule-page-copy h2 { font-size: 1.35rem; }
-            .compact-stat-grid { grid-template-columns: 1fr; }
-            .schedule-grid-table { min-width: 920px; }
-            .schedule-builder-scroller { padding: 8px; }
-            .schedule-time-cell .time-actions { gap: 4px; }
-            .action-btn { width: 100%; justify-content: center; }
+            .schedule-page-copy h2 { font-size: 1.3rem; }
+            .schedule-board-meta, .compact-stat-grid { grid-template-columns: 1fr; }
+            .schedule-color-toolbar { gap: 10px; }
+            .schedule-selected-cell-label { min-width: 0; }
         }
+
 
     </style>
 </head>
@@ -318,152 +350,181 @@
             </nav>
         </aside>
 
+        
         <main class="dashboard-content">
             <section class="schedule-dashboard">
                 <div class="panel schedule-page-header">
                     <div class="schedule-page-copy">
                         <span class="schedule-page-kicker">Trung tâm thời khóa biểu</span>
-                        <h2>Không gian hiển thị thời khóa biểu trọng tâm, rộng và dễ tùy biến</h2>
-                        <p>Tạo thêm bảng độc lập, thêm cột ngày, thêm hàng trong từng ca học và chỉnh trực tiếp nội dung từng ô theo đúng kiểu bố cục thời khóa biểu trung tâm.</p>
+                        <h2>Thời khóa biểu luôn ở giữa, rõ ràng và là khu vực hiển thị chính</h2>
+                        <p>Khu vực bảng lịch học được ưu tiên toàn bộ chiều ngang. Các thống kê, cảnh báo và lớp đang hoạt động được chuyển xuống dưới để không còn nằm cùng hàng ngang với thời khóa biểu.</p>
                     </div>
-                    <div class="schedule-page-actions">
+                    <div class="schedule-page-actions" data-schedule-admin-control>
                         <button class="action-btn gold" id="addScheduleBoardBtn"><i class="fa-solid fa-table-cells-large"></i> Thêm bảng mới</button>
                         <button class="action-btn" id="duplicateScheduleBoardBtn"><i class="fa-solid fa-copy"></i> Nhân bảng hiện tại</button>
                     </div>
                 </div>
 
-                <div class="schedule-focus-layout">
-                    <section class="panel schedule-center-panel">
-                        <div class="schedule-toolbar">
-                            <div>
-                                <h3>Hiển thị thời khóa biểu trung tâm</h3>
-                                <p class="panel-header-subtitle">Bố cục được ưu tiên cho bảng lịch học, phần thống kê và cảnh báo đã thu gọn để tập trung quan sát lịch.</p>
-                            </div>
-                            <div class="schedule-toolbar-actions">
+                <section class="panel schedule-center-panel">
+                    <div class="schedule-toolbar">
+                        <div>
+                            <h3>Hiển thị thời khóa biểu trung tâm</h3>
+                            <p class="panel-header-subtitle">Mỗi bảng có thông tin trung tâm, cơ sở và địa chỉ riêng. Admin được chỉnh sửa toàn bộ, giáo viên chỉ xem.</p>
+                        </div>
+                        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                            <div class="schedule-permission-chip viewer" id="schedulePermissionChip"><i class="fa-solid fa-eye"></i> Chế độ xem giáo viên</div>
+                            <div class="schedule-toolbar-actions" data-schedule-admin-control>
                                 <button class="action-btn" id="renameScheduleBoardBtn"><i class="fa-solid fa-pen"></i> Đổi tên bảng</button>
-                                <button class="action-btn" id="addScheduleColumnBtn"><i class="fa-solid fa-table-columns"></i> Thêm cột</button>
                                 <button class="action-btn" id="addScheduleSessionBtn"><i class="fa-solid fa-layer-group"></i> Thêm ca học</button>
                                 <button class="action-btn danger" id="resetScheduleBoardBtn"><i class="fa-solid fa-rotate-left"></i> Khôi phục mẫu</button>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="schedule-board-tabs" id="scheduleBoardTabs"></div>
+                    <div class="schedule-board-tabs" id="scheduleBoardTabs"></div>
 
-                        <div class="schedule-board-meta">
-                            <div class="schedule-meta-chip"><span>Bảng đang chọn</span><strong id="activeScheduleBoardName">—</strong></div>
-                            <div class="schedule-meta-chip"><span>Số cột</span><strong id="activeScheduleBoardDayCount">0</strong></div>
-                            <div class="schedule-meta-chip"><span>Số ca</span><strong id="activeScheduleBoardSessionCount">0</strong></div>
+                    <div class="schedule-board-meta">
+                        <div class="schedule-meta-chip"><span>Bảng đang chọn</span><strong id="activeScheduleBoardName">—</strong></div>
+                        <div class="schedule-meta-chip"><span>Số ngày hiển thị</span><strong id="activeScheduleBoardDayCount">0</strong></div>
+                        <div class="schedule-meta-chip"><span>Số ca học</span><strong id="activeScheduleBoardSessionCount">0</strong></div>
+                        <div class="schedule-meta-chip"><span>Số hàng tổng</span><strong id="activeScheduleBoardRowCount">0</strong></div>
+                    </div>
+
+                    <div class="schedule-board-detail-grid">
+                        <div class="schedule-detail-card schedule-detail-field">
+                            <label for="scheduleCenterTitleInput">Tên trung tâm</label>
+                            <input id="scheduleCenterTitleInput" class="schedule-detail-input" data-schedule-readonly-field="centerTitle" type="text" placeholder="Nhập tên trung tâm">
                         </div>
-
-                        <div class="schedule-builder-scroller">
-                            <div id="scheduleBuilderRoot"></div>
+                        <div class="schedule-detail-card schedule-detail-field">
+                            <label for="scheduleBranchTitleInput">Cơ sở</label>
+                            <input id="scheduleBranchTitleInput" class="schedule-detail-input" data-schedule-readonly-field="branchTitle" type="text" placeholder="Nhập cơ sở">
                         </div>
-                    </section>
+                        <div class="schedule-detail-card schedule-detail-field">
+                            <label for="scheduleAddressInput">Địa chỉ</label>
+                            <input id="scheduleAddressInput" class="schedule-detail-input" data-schedule-readonly-field="address" type="text" placeholder="Nhập địa chỉ trung tâm">
+                        </div>
+                    </div>
 
-                    <aside class="schedule-side-rail">
-                        <div class="panel compact-stat-panel">
-                            <div class="compact-panel-heading">
-                                <div>
-                                    <h3>Tổng quan nhanh</h3>
-                                    <p class="panel-header-subtitle">Các số liệu vẫn hiển thị đầy đủ nhưng được thu gọn để nhường chỗ cho thời khóa biểu.</p>
-                                </div>
-                            </div>
+                    <div class="schedule-color-toolbar" data-schedule-admin-control>
+                        <div class="schedule-selected-cell-label" id="scheduleSelectedCellLabel">Chọn một ô để đổ màu hoặc đổi màu chữ.</div>
+                        <div class="schedule-color-group">
+                            <label for="scheduleBgColorPicker">Nền ô</label>
+                            <input id="scheduleBgColorPicker" class="schedule-color-input" type="color" value="#ffffff">
+                        </div>
+                        <div class="schedule-color-group">
+                            <label for="scheduleTextColorPicker">Màu chữ</label>
+                            <input id="scheduleTextColorPicker" class="schedule-color-input" type="color" value="#1f2d3b">
+                        </div>
+                        <button class="action-btn" id="clearScheduleCellContentBtn"><i class="fa-solid fa-eraser"></i> Xóa nội dung ô</button>
+                        <button class="action-btn" id="resetScheduleCellStyleBtn"><i class="fa-solid fa-fill-drip"></i> Xóa màu tùy chọn</button>
+                    </div>
 
-                            <div class="compact-stat-grid">
-                                <div class="stat-card compact">
-                                    <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-user-graduate"></i></div><div class="stat-card-title">Tổng học sinh</div></div>
-                                    <div class="stat-card-number" id="stat-students">0</div><div class="stat-card-subtitle">Đồng bộ từ Quản lý học sinh</div>
-                                </div>
-                                <div class="stat-card compact">
-                                    <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-chalkboard-user"></i></div><div class="stat-card-title">Tổng giáo viên</div></div>
-                                    <div class="stat-card-number" id="stat-teachers">0</div><div class="stat-card-subtitle">Lấy từ hồ sơ nhân sự</div>
-                                </div>
-                                <div class="stat-card compact">
-                                    <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-book-open-reader"></i></div><div class="stat-card-title">Lớp đang mở</div></div>
-                                    <div class="stat-card-number" id="stat-classes">0</div><div class="stat-card-subtitle">Điểm danh thời gian thật</div>
-                                </div>
-                                <div class="stat-card compact">
-                                    <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-briefcase"></i></div><div class="stat-card-title">Nhân sự nội bộ</div></div>
-                                    <div class="stat-card-number" id="stat-admins">0</div><div class="stat-card-subtitle">Không gồm giáo viên</div>
-                                </div>
-                            </div>
+                    <div class="schedule-builder-scroller">
+                        <div id="scheduleBuilderRoot"></div>
+                    </div>
+                </section>
 
-                            <div class="quick-updates-list compact-quick-stack">
-                                <div class="quick-update-item">
-                                    <div class="quick-update-icon"><i class="fa-solid fa-chalkboard"></i></div>
-                                    <div class="quick-update-info"><div class="quick-update-title">Tổng số lớp</div><div class="quick-update-subtitle">Đồng bộ từ quản lý lớp học</div></div>
-                                    <div class="quick-update-number" id="quick-total-classes">0</div>
-                                </div>
-                                <div class="quick-update-item">
-                                    <div class="quick-update-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                                    <div class="quick-update-info"><div class="quick-update-title">Lớp đã điểm danh / có ca học</div><div class="quick-update-subtitle">Tính theo dữ liệu điểm danh trong ngày</div></div>
-                                    <div class="quick-update-number" id="quick-attendance-classes">0/0</div>
-                                </div>
-                                <div class="quick-update-item">
-                                    <div class="quick-update-icon"><i class="fa-solid fa-users"></i></div>
-                                    <div class="quick-update-info"><div class="quick-update-title">Học sinh đang học / toàn công ty</div><div class="quick-update-subtitle">Đi học + muộn / tổng học sinh</div></div>
-                                    <div class="quick-update-number" id="quick-learning-students">0/0</div>
-                                </div>
+                <section class="schedule-below-stack">
+                    <div class="panel compact-stat-panel">
+                        <div class="compact-panel-heading">
+                            <div>
+                                <h3>Tổng quan nhanh</h3>
+                                <p class="panel-header-subtitle">Hiển thị dưới thời khóa biểu để khu vực lịch học luôn là trọng tâm.</p>
                             </div>
                         </div>
 
-                        <div class="panel important-alert-panel compact-alert-panel">
-                            <div class="panel-header">
-                                <div>
-                                    <h3 class="important-alert-header"><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo quan trọng</h3>
-                                    <p class="panel-header-subtitle">Thu gọn để tiện theo dõi nhanh trong lúc xem thời khóa biểu.</p>
-                                </div>
-                                <div class="important-alert-count" id="important-alert-count">0 lớp cần chú ý</div>
+                        <div class="compact-stat-grid">
+                            <div class="stat-card compact">
+                                <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-user-graduate"></i></div><div class="stat-card-title">Tổng học sinh</div></div>
+                                <div class="stat-card-number" id="stat-students">0</div><div class="stat-card-subtitle">Đồng bộ từ Quản lý học sinh</div>
                             </div>
-
-                            <div class="important-alert-summary">
-                                <div class="important-alert-pill">
-                                    <span class="important-alert-pill-value" id="important-alert-pending-count">0</span>
-                                    <span class="important-alert-pill-label">Cần điểm danh</span>
-                                    <span class="important-alert-pill-sub">Từ 30 phút trước ca đến 30 phút sau ca</span>
-                                </div>
-                                <div class="important-alert-pill">
-                                    <span class="important-alert-pill-value" id="important-alert-done-count">0</span>
-                                    <span class="important-alert-pill-label">Đã chốt</span>
-                                    <span class="important-alert-pill-sub">Đã ghi nhận sau ca</span>
-                                </div>
-                                <div class="important-alert-pill">
-                                    <span class="important-alert-pill-value" id="important-alert-missed-count">0</span>
-                                    <span class="important-alert-pill-label">Chưa chốt</span>
-                                    <span class="important-alert-pill-sub">Cần kiểm tra lại</span>
-                                </div>
+                            <div class="stat-card compact">
+                                <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-chalkboard-user"></i></div><div class="stat-card-title">Tổng giáo viên</div></div>
+                                <div class="stat-card-number" id="stat-teachers">0</div><div class="stat-card-subtitle">Lấy từ hồ sơ nhân sự</div>
                             </div>
-
-                            <div class="important-alert-list" id="important-alert-list">
-                                <div class="important-alert-empty">
-                                    <i class="fa-solid fa-spinner fa-spin"></i>
-                                    <div class="important-alert-empty-title">Đang tải cảnh báo quan trọng...</div>
-                                    <div class="important-alert-empty-subtitle">Hệ thống đang kiểm tra lịch học và dữ liệu điểm danh thời gian thực.</div>
-                                </div>
+                            <div class="stat-card compact">
+                                <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-book-open-reader"></i></div><div class="stat-card-title">Lớp đang mở</div></div>
+                                <div class="stat-card-number" id="stat-classes">0</div><div class="stat-card-subtitle">Điểm danh thời gian thật</div>
+                            </div>
+                            <div class="stat-card compact">
+                                <div class="stat-card-top"><div class="stat-card-icon"><i class="fa-solid fa-briefcase"></i></div><div class="stat-card-title">Nhân sự nội bộ</div></div>
+                                <div class="stat-card-number" id="stat-admins">0</div><div class="stat-card-subtitle">Không gồm giáo viên</div>
                             </div>
                         </div>
 
-                        <div class="panel compact-classes-panel">
-                            <div class="panel-header">
-                                <div>
-                                    <h3>Các lớp đang hoạt động</h3>
-                                    <p class="panel-header-subtitle">Lớp được tính là đang học khi có điểm danh hôm nay trong 130 phút gần nhất.</p>
-                                </div>
-                                <a href="classes.html" class="btn-view-details">Xem tất cả</a>
+                        <div class="quick-updates-list compact-quick-stack">
+                            <div class="quick-update-item">
+                                <div class="quick-update-icon"><i class="fa-solid fa-chalkboard"></i></div>
+                                <div class="quick-update-info"><div class="quick-update-title">Tổng số lớp</div><div class="quick-update-subtitle">Đồng bộ từ quản lý lớp học</div></div>
+                                <div class="quick-update-number" id="quick-total-classes">0</div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="featured-table compact-featured-table">
-                                    <thead><tr><th>Mã lớp</th><th>Tên lớp</th><th style="text-align:center;">Sĩ số</th><th>Giáo viên</th><th>Trạng thái</th></tr></thead>
-                                    <tbody id="dashboard-class-table">
-                                        <tr><td colspan="5" style="text-align: center; color: #888; padding: 20px;">Đang tải dữ liệu...</td></tr>
-                                    </tbody>
-                                </table>
+                            <div class="quick-update-item">
+                                <div class="quick-update-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                                <div class="quick-update-info"><div class="quick-update-title">Lớp đã điểm danh / có ca học</div><div class="quick-update-subtitle">Tính theo dữ liệu điểm danh trong ngày</div></div>
+                                <div class="quick-update-number" id="quick-attendance-classes">0/0</div>
+                            </div>
+                            <div class="quick-update-item">
+                                <div class="quick-update-icon"><i class="fa-solid fa-users"></i></div>
+                                <div class="quick-update-info"><div class="quick-update-title">Học sinh đang học / toàn công ty</div><div class="quick-update-subtitle">Đi học + muộn / tổng học sinh</div></div>
+                                <div class="quick-update-number" id="quick-learning-students">0/0</div>
                             </div>
                         </div>
-                    </aside>
-                </div>
+                    </div>
+
+                    <div class="panel important-alert-panel compact-alert-panel">
+                        <div class="panel-header">
+                            <div>
+                                <h3 class="important-alert-header"><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo quan trọng</h3>
+                                <p class="panel-header-subtitle">Nằm bên dưới thời khóa biểu để dễ theo dõi mà không chiếm vùng xem chính.</p>
+                            </div>
+                            <div class="important-alert-count" id="important-alert-count">0 lớp cần chú ý</div>
+                        </div>
+
+                        <div class="important-alert-summary">
+                            <div class="important-alert-pill">
+                                <span class="important-alert-pill-value" id="important-alert-pending-count">0</span>
+                                <span class="important-alert-pill-label">Cần điểm danh</span>
+                                <span class="important-alert-pill-sub">Từ 30 phút trước ca đến 30 phút sau ca</span>
+                            </div>
+                            <div class="important-alert-pill">
+                                <span class="important-alert-pill-value" id="important-alert-done-count">0</span>
+                                <span class="important-alert-pill-label">Đã điểm danh</span>
+                                <span class="important-alert-pill-sub">Hiển thị khi đã qua 30 phút sau giờ kết thúc</span>
+                            </div>
+                            <div class="important-alert-pill">
+                                <span class="important-alert-pill-value" id="important-alert-missed-count">0</span>
+                                <span class="important-alert-pill-label">Chưa điểm danh</span>
+                                <span class="important-alert-pill-sub">Cần kiểm tra lại các lớp đã qua ca</span>
+                            </div>
+                        </div>
+
+                        <div class="important-alert-list" id="important-alert-list">
+                            <div class="important-alert-empty">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                <div class="important-alert-empty-title">Đang tải cảnh báo quan trọng...</div>
+                                <div class="important-alert-empty-subtitle">Hệ thống đang kiểm tra lịch học và dữ liệu điểm danh thời gian thực.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel compact-classes-panel">
+                        <div class="panel-header">
+                            <div><h3>Các lớp đang hoạt động</h3><p class="panel-header-subtitle">Hiển thị bên dưới thời khóa biểu để giữ vùng xem lịch học luôn rộng và tập trung.</p></div>
+                            <a href="classes.html" class="btn-view-details">Xem tất cả</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="featured-table compact-featured-table">
+                                <thead><tr><th>Mã lớp</th><th>Tên lớp</th><th style="text-align:center;">Sĩ số</th><th>Giáo viên</th><th>Trạng thái</th></tr></thead>
+                                <tbody id="dashboard-class-table">
+                                    <tr><td colspan="5" style="text-align: center; color: #888; padding: 20px;">Đang tải dữ liệu...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
             </section>
         </main>
+
     </div>
 
     <script>
@@ -496,23 +557,34 @@
             users: []
         };
 
-
-        const SCHEDULE_STORAGE_KEY = 'xledu_schedule_boards_v2';
+        const SCHEDULE_STORAGE_KEY = 'xledu_schedule_boards_v3';
+        const LEGACY_SCHEDULE_STORAGE_KEYS = ['xledu_schedule_boards_v2'];
         const scheduleState = {
             boards: [],
             activeBoardId: null,
-            initialized: false
+            initialized: false,
+            eventsBound: false,
+            isAdmin: false,
+            selectedCellRef: null
         };
 
         function generateScheduleId(prefix = 'schedule') {
             return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         }
 
+        function createScheduleCell(text = '', options = {}) {
+            return {
+                text: String(text || '').trim(),
+                bgColor: String(options.bgColor || options.bg || '').trim(),
+                textColor: String(options.textColor || options.color || '').trim()
+            };
+        }
+
         function createScheduleRow(label, dayCount) {
             return {
                 id: generateScheduleId('row'),
                 label: String(label || '').trim() || '1',
-                cells: Array.from({ length: dayCount }, () => '')
+                cells: Array.from({ length: dayCount }, () => createScheduleCell())
             };
         }
 
@@ -525,24 +597,11 @@
             };
         }
 
-        function seedBoardPreview(board) {
-            const samples = [
-                [2, 0, 0, 'TA MG8,9,10 - C.Chi'],
-                [2, 2, 0, 'TOÁN 11 CH - C.Xuân'],
-                [2, 1, 4, 'TOÁN 11CB6 - C.Liên'],
-                [3, 0, 0, 'ANH 11.3 - C.Vân Anh'],
-                [3, 1, 0, 'TOÁN 12 CH - T.Tùng'],
-                [1, 3, 5, 'TOÁN 11CB1 - T.Tùng'],
-                [3, 0, 5, 'ANH 11.3 - C.Vân Anh']
-            ];
-
-            samples.forEach(([sessionIndex, rowIndex, dayIndex, value]) => {
-                const session = board.sessions[sessionIndex];
-                const row = session && session.rows[rowIndex];
-                if (!row || typeof row.cells[dayIndex] === 'undefined') return;
-                row.cells[dayIndex] = value;
-            });
-            return board;
+        function setBoardSampleCell(board, sessionIndex, rowIndex, dayIndex, value, options = {}) {
+            const session = board.sessions[sessionIndex];
+            const row = session && session.rows[rowIndex];
+            if (!row || !row.cells || !row.cells[dayIndex]) return;
+            row.cells[dayIndex] = createScheduleCell(value, options);
         }
 
         function createDefaultScheduleBoard(name = 'Thời khóa biểu trung tâm') {
@@ -550,6 +609,9 @@
             const board = {
                 id: generateScheduleId('board'),
                 name,
+                centerTitle: 'Xứ Lạng Education',
+                branchTitle: 'Cơ sở trung tâm',
+                address: 'Nhập địa chỉ trung tâm tại đây',
                 days,
                 sessions: [
                     createScheduleSession('7h30-9h30', days.length),
@@ -558,7 +620,26 @@
                     createScheduleSession('19h30-21h30', days.length)
                 ]
             };
-            return seedBoardPreview(board);
+
+            setBoardSampleCell(board, 2, 0, 0, 'TA MG8,9,10 - C.Chi');
+            setBoardSampleCell(board, 2, 2, 0, 'TOÁN 11 CH - C.Xuân');
+            setBoardSampleCell(board, 2, 1, 4, 'TOÁN 11CB6 - C.Liên');
+            setBoardSampleCell(board, 3, 0, 0, 'ANH 11.3 - C.Vân Anh');
+            setBoardSampleCell(board, 3, 1, 0, 'TOÁN 12 CH - T.Tùng');
+            setBoardSampleCell(board, 1, 3, 5, 'TOÁN 11CB1 - T.Tùng');
+            setBoardSampleCell(board, 3, 0, 5, 'ANH 11.3 - C.Vân Anh');
+
+            return board;
+        }
+
+        function normalizeScheduleCell(cellValue) {
+            if (cellValue && typeof cellValue === 'object' && !Array.isArray(cellValue)) {
+                return createScheduleCell(cellValue.text || cellValue.value || '', {
+                    bgColor: cellValue.bgColor || cellValue.bg || '',
+                    textColor: cellValue.textColor || cellValue.color || ''
+                });
+            }
+            return createScheduleCell(cellValue || '');
         }
 
         function normalizeScheduleBoards(rawBoards) {
@@ -573,7 +654,7 @@
                             ? session.rows.map((row, rowIndex) => ({
                                 id: row && row.id ? row.id : generateScheduleId('row'),
                                 label: String((row && row.label) || rowIndex + 1).trim() || String(rowIndex + 1),
-                                cells: Array.from({ length: days.length }, (_, dayIndex) => String((row && row.cells && row.cells[dayIndex]) || '').trim())
+                                cells: Array.from({ length: days.length }, (_, dayIndex) => normalizeScheduleCell(row && row.cells ? row.cells[dayIndex] : ''))
                             }))
                             : [createScheduleRow(1, days.length)];
                         return {
@@ -587,6 +668,9 @@
                 return {
                     id: board && board.id ? board.id : generateScheduleId('board'),
                     name: String((board && board.name) || `Bảng ${boardIndex + 1}`).trim() || `Bảng ${boardIndex + 1}`,
+                    centerTitle: String((board && (board.centerTitle || board.centerName)) || 'Xứ Lạng Education').trim(),
+                    branchTitle: String((board && (board.branchTitle || board.branchName || board.branch)) || 'Cơ sở trung tâm').trim(),
+                    address: String((board && board.address) || '').trim(),
                     days,
                     sessions
                 };
@@ -609,11 +693,22 @@
             scheduleState.initialized = true;
 
             try {
-                const raw = localStorage.getItem(SCHEDULE_STORAGE_KEY);
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    scheduleState.boards = normalizeScheduleBoards(parsed && parsed.boards);
-                    scheduleState.activeBoardId = parsed && parsed.activeBoardId;
+                let parsed = null;
+                const currentRaw = localStorage.getItem(SCHEDULE_STORAGE_KEY);
+                if (currentRaw) {
+                    parsed = JSON.parse(currentRaw);
+                } else {
+                    for (const legacyKey of LEGACY_SCHEDULE_STORAGE_KEYS) {
+                        const legacyRaw = localStorage.getItem(legacyKey);
+                        if (legacyRaw) {
+                            parsed = JSON.parse(legacyRaw);
+                            break;
+                        }
+                    }
+                }
+                if (parsed) {
+                    scheduleState.boards = normalizeScheduleBoards(parsed.boards);
+                    scheduleState.activeBoardId = parsed.activeBoardId;
                 }
             } catch (error) {
                 console.error('Không thể đọc thời khóa biểu đã lưu:', error);
@@ -656,6 +751,44 @@
             return palettes[hashScheduleText(value) % palettes.length];
         }
 
+        function getScheduleCellStyle(cell, fallbackSeed) {
+            const text = String((cell && cell.text) || '');
+            const palette = getScheduleCellPalette(text || fallbackSeed || 'schedule');
+            return {
+                bgColor: (cell && cell.bgColor) || (text ? palette.bg : '#ffffff'),
+                textColor: (cell && cell.textColor) || '#1f2d3b',
+                accent: palette.accent
+            };
+        }
+
+        function getScheduleBoardTotalRows(board) {
+            return (board && board.sessions || []).reduce((total, session) => total + ((session && session.rows && session.rows.length) || 0), 0);
+        }
+
+        function isSelectedCell(boardId, sessionId, rowId, dayIndex) {
+            const ref = scheduleState.selectedCellRef;
+            return !!ref && ref.boardId === boardId && ref.sessionId === sessionId && ref.rowId === rowId && Number(ref.dayIndex) === Number(dayIndex);
+        }
+
+        function clearSelectedCellIfNeeded() {
+            const activeBoard = getActiveScheduleBoard();
+            if (!scheduleState.selectedCellRef) return;
+            if (!activeBoard || scheduleState.selectedCellRef.boardId !== activeBoard.id) {
+                scheduleState.selectedCellRef = null;
+            }
+        }
+
+        function getSelectedCellRecord() {
+            const ref = scheduleState.selectedCellRef;
+            if (!ref) return null;
+            const board = scheduleState.boards.find((item) => item.id === ref.boardId);
+            const session = board && board.sessions.find((item) => item.id === ref.sessionId);
+            const row = session && session.rows.find((item) => item.id === ref.rowId);
+            const cell = row && row.cells && row.cells[Number(ref.dayIndex)];
+            if (!board || !session || !row || !cell) return null;
+            return { board, session, row, cell, dayIndex: Number(ref.dayIndex) };
+        }
+
         function renderScheduleTabs() {
             const tabsEl = document.getElementById('scheduleBoardTabs');
             if (!tabsEl) return;
@@ -665,10 +798,52 @@
                 return `
                     <div class="schedule-tab ${activeClass}" data-board-id="${board.id}">
                         <span>${escapeHtml(board.name)}</span>
-                        ${scheduleState.boards.length > 1 ? `<button type="button" class="schedule-tab-delete" data-delete-board-id="${board.id}" aria-label="Xóa bảng"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                        ${scheduleState.isAdmin && scheduleState.boards.length > 1 ? `<button type="button" class="schedule-tab-delete" data-delete-board-id="${board.id}" aria-label="Xóa bảng"><i class="fa-solid fa-xmark"></i></button>` : ''}
                     </div>
                 `;
             }).join('');
+        }
+
+        function renderScheduleBoardDetails(board) {
+            const centerInput = document.getElementById('scheduleCenterTitleInput');
+            const branchInput = document.getElementById('scheduleBranchTitleInput');
+            const addressInput = document.getElementById('scheduleAddressInput');
+            if (!centerInput || !branchInput || !addressInput) return;
+
+            centerInput.value = board ? (board.centerTitle || '') : '';
+            branchInput.value = board ? (board.branchTitle || '') : '';
+            addressInput.value = board ? (board.address || '') : '';
+
+            [centerInput, branchInput, addressInput].forEach((input) => {
+                input.readOnly = !scheduleState.isAdmin;
+            });
+        }
+
+        function renderSelectedCellToolbar() {
+            const labelEl = document.getElementById('scheduleSelectedCellLabel');
+            const bgPicker = document.getElementById('scheduleBgColorPicker');
+            const textPicker = document.getElementById('scheduleTextColorPicker');
+            if (!labelEl || !bgPicker || !textPicker) return;
+
+            const selected = getSelectedCellRecord();
+            if (!selected) {
+                labelEl.textContent = 'Chọn một ô để đổ màu hoặc đổi màu chữ.';
+                bgPicker.value = '#ffffff';
+                textPicker.value = '#1f2d3b';
+                return;
+            }
+
+            const dayLabel = selected.board.days[selected.dayIndex] || `Cột ${selected.dayIndex + 1}`;
+            const cellStyle = getScheduleCellStyle(selected.cell, `${selected.session.label}-${selected.row.label}-${selected.dayIndex}`);
+            labelEl.textContent = `Ô đang chọn: ${dayLabel} · ${selected.session.label} · Phòng ${selected.row.label}`;
+            bgPicker.value = normalizeColorValue(cellStyle.bgColor, '#ffffff');
+            textPicker.value = normalizeColorValue(cellStyle.textColor, '#1f2d3b');
+        }
+
+        function normalizeColorValue(value, fallback) {
+            const text = String(value || '').trim();
+            if (/^#[0-9a-fA-F]{6}$/.test(text)) return text;
+            return fallback;
         }
 
         function buildScheduleBoardHtml(board) {
@@ -682,26 +857,38 @@
                 `;
             }
 
+            const sideWidth = 84 + 50 + 50 + 84;
+            const dayWidth = `calc((100% - ${sideWidth}px) / ${board.days.length})`;
+            const colGroup = `
+                <colgroup>
+                    <col style="width:84px;">
+                    <col style="width:50px;">
+                    ${board.days.map(() => `<col style="width:${dayWidth};">`).join('')}
+                    <col style="width:50px;">
+                    <col style="width:84px;">
+                </colgroup>
+            `;
             const headerCells = board.days.map((day) => `<th>${escapeHtml(day)}</th>`).join('');
             const bodyRows = board.sessions.map((session, sessionIndex) => {
                 const rowsHtml = session.rows.map((row, rowIndex) => {
                     const dayCells = board.days.map((_, dayIndex) => {
-                        const cellValue = String((row.cells && row.cells[dayIndex]) || '');
-                        const filledClass = cellValue.trim() ? 'filled' : 'empty';
-                        const palette = getScheduleCellPalette(cellValue || `${session.label}-${row.label}-${dayIndex}`);
-                        const style = cellValue.trim() ? `style="--cell-bg:${palette.bg}; --cell-accent:${palette.accent};"` : '';
+                        const cell = normalizeScheduleCell(row.cells && row.cells[dayIndex]);
+                        const cellText = String(cell.text || '');
+                        const filledClass = cellText.trim() ? 'filled' : 'empty';
+                        const styleData = getScheduleCellStyle(cell, `${session.label}-${row.label}-${dayIndex}`);
+                        const selectedClass = isSelectedCell(board.id, session.id, row.id, dayIndex) ? 'selected' : '';
                         return `
                             <td class="schedule-data-cell">
                                 <div
-                                    class="schedule-cell-editor ${filledClass}"
-                                    contenteditable="true"
-                                    ${style}
+                                    class="schedule-cell-editor ${filledClass} ${selectedClass}"
+                                    contenteditable="${scheduleState.isAdmin ? 'true' : 'false'}"
+                                    style="--cell-bg:${styleData.bgColor}; --cell-color:${styleData.textColor}; --cell-accent:${styleData.accent};"
                                     data-board-id="${board.id}"
                                     data-session-id="${session.id}"
                                     data-row-id="${row.id}"
                                     data-day-index="${dayIndex}"
                                     spellcheck="false"
-                                >${cellValue.trim() ? escapeScheduleText(cellValue) : ''}</div>
+                                >${cellText.trim() ? escapeScheduleText(cellText) : ''}</div>
                             </td>
                         `;
                     }).join('');
@@ -710,23 +897,27 @@
                         <tr class="${rowIndex === 0 && sessionIndex > 0 ? 'session-divider' : ''}">
                             ${rowIndex === 0 ? `
                                 <td class="schedule-time-cell" rowspan="${session.rows.length}">
-                                    <span class="time-range">${escapeHtml(session.label)}</span>
-                                    <div class="time-actions">
-                                        <button type="button" class="schedule-inline-action" data-schedule-action="rename-session" data-session-id="${session.id}">Tên ca</button>
-                                        <button type="button" class="schedule-inline-action" data-schedule-action="add-row" data-session-id="${session.id}">+ Hàng</button>
-                                        <button type="button" class="schedule-inline-action" data-schedule-action="delete-session" data-session-id="${session.id}">Xóa ca</button>
+                                    <div class="schedule-time-content">
+                                        <span class="time-range">${escapeHtml(session.label)}</span>
+                                        ${scheduleState.isAdmin ? `
+                                            <div class="time-actions">
+                                                <button type="button" class="schedule-inline-action" data-schedule-action="rename-session" data-session-id="${session.id}">Tên ca</button>
+                                                <button type="button" class="schedule-inline-action" data-schedule-action="add-row" data-session-id="${session.id}">+ Hàng</button>
+                                                <button type="button" class="schedule-inline-action" data-schedule-action="delete-session" data-session-id="${session.id}">Xóa ca</button>
+                                            </div>
+                                        ` : ''}
                                     </div>
                                 </td>
                             ` : ''}
                             <td class="schedule-room-cell">
-                                <div class="room-chip">
-                                    <span>${escapeHtml(row.label)}</span>
-                                    ${session.rows.length > 1 ? `<button type="button" class="remove-row-btn" data-schedule-action="remove-row" data-session-id="${session.id}" data-row-id="${row.id}" title="Xóa hàng"><i class="fa-solid fa-minus"></i></button>` : ''}
+                                <div class="schedule-row-chip">
+                                    <span class="schedule-row-index">${escapeHtml(row.label)}</span>
+                                    ${scheduleState.isAdmin && session.rows.length > 1 ? `<button type="button" class="remove-row-btn" data-schedule-action="remove-row" data-session-id="${session.id}" data-row-id="${row.id}" title="Xóa hàng"><i class="fa-solid fa-minus"></i></button>` : ''}
                                 </div>
                             </td>
                             ${dayCells}
-                            <td class="schedule-room-cell right"><div class="room-chip"><span>${escapeHtml(row.label)}</span></div></td>
-                            ${rowIndex === 0 ? `<td class="schedule-time-cell right" rowspan="${session.rows.length}"><span class="time-range">${escapeHtml(session.label)}</span></td>` : ''}
+                            <td class="schedule-room-cell right"><div class="schedule-row-chip"><span class="schedule-row-index">${escapeHtml(row.label)}</span></div></td>
+                            ${rowIndex === 0 ? `<td class="schedule-time-cell right" rowspan="${session.rows.length}"><div class="schedule-time-content"><span class="time-range">${escapeHtml(session.label)}</span></div></td>` : ''}
                         </tr>
                     `;
                 }).join('');
@@ -736,6 +927,7 @@
             return `
                 <div class="schedule-table-shell">
                     <table class="schedule-grid-table">
+                        ${colGroup}
                         <thead>
                             <tr>
                                 <th>Giờ học</th>
@@ -753,33 +945,48 @@
             `;
         }
 
+        function updateSchedulePermissionChip() {
+            const chip = document.getElementById('schedulePermissionChip');
+            if (!chip) return;
+            chip.className = `schedule-permission-chip ${scheduleState.isAdmin ? 'admin' : 'viewer'}`;
+            chip.innerHTML = scheduleState.isAdmin
+                ? '<i class="fa-solid fa-pen-to-square"></i> Chế độ Admin: toàn quyền chỉnh sửa'
+                : '<i class="fa-solid fa-eye"></i> Chế độ giáo viên: chỉ xem';
+        }
+
         function renderScheduleBuilder() {
             ensureScheduleState();
+            clearSelectedCellIfNeeded();
             renderScheduleTabs();
+            updateSchedulePermissionChip();
+
             const board = getActiveScheduleBoard();
             const root = document.getElementById('scheduleBuilderRoot');
             if (root) root.innerHTML = buildScheduleBoardHtml(board);
+
             setTextValue('activeScheduleBoardName', board ? board.name : '—');
             setTextValue('activeScheduleBoardDayCount', board ? board.days.length : 0);
             setTextValue('activeScheduleBoardSessionCount', board ? board.sessions.length : 0);
+            setTextValue('activeScheduleBoardRowCount', board ? getScheduleBoardTotalRows(board) : 0);
+            renderScheduleBoardDetails(board);
+            renderSelectedCellToolbar();
         }
 
         function updateScheduleState(mutator) {
             ensureScheduleState();
             mutator(scheduleState);
-            if (!scheduleState.boards.length) {
-                const defaultBoard = createDefaultScheduleBoard();
-                scheduleState.boards = [defaultBoard];
-                scheduleState.activeBoardId = defaultBoard.id;
-            }
-            if (!scheduleState.boards.some((board) => board.id === scheduleState.activeBoardId)) {
-                scheduleState.activeBoardId = scheduleState.boards[0].id;
-            }
             persistScheduleState();
             renderScheduleBuilder();
         }
 
+        function setSchedulePermission(role) {
+            scheduleState.isAdmin = String(role || '').toLowerCase() === 'admin';
+            document.body.classList.toggle('schedule-readonly-mode', !scheduleState.isAdmin);
+            renderScheduleBuilder();
+        }
+
         function addScheduleBoard() {
+            if (!scheduleState.isAdmin) return;
             const input = prompt('Tên bảng thời khóa biểu mới:', `Bảng mới ${scheduleState.boards.length + 1}`);
             if (input === null) return;
             const boardName = input.trim() || `Bảng mới ${scheduleState.boards.length + 1}`;
@@ -787,10 +994,12 @@
                 const board = createDefaultScheduleBoard(boardName);
                 state.boards.push(board);
                 state.activeBoardId = board.id;
+                state.selectedCellRef = null;
             });
         }
 
         function duplicateActiveScheduleBoard() {
+            if (!scheduleState.isAdmin) return;
             const activeBoard = getActiveScheduleBoard();
             if (!activeBoard) return;
             updateScheduleState((state) => {
@@ -800,14 +1009,20 @@
                 clonedBoard.sessions = clonedBoard.sessions.map((session) => ({
                     ...session,
                     id: generateScheduleId('session'),
-                    rows: (session.rows || []).map((row) => ({ ...row, id: generateScheduleId('row') }))
+                    rows: (session.rows || []).map((row) => ({
+                        ...row,
+                        id: generateScheduleId('row'),
+                        cells: (row.cells || []).map((cell) => normalizeScheduleCell(cell))
+                    }))
                 }));
                 state.boards.push(clonedBoard);
                 state.activeBoardId = clonedBoard.id;
+                state.selectedCellRef = null;
             });
         }
 
         function renameActiveScheduleBoard() {
+            if (!scheduleState.isAdmin) return;
             const activeBoard = getActiveScheduleBoard();
             if (!activeBoard) return;
             const input = prompt('Đổi tên bảng thời khóa biểu:', activeBoard.name);
@@ -820,6 +1035,7 @@
         }
 
         function deleteScheduleBoard(boardId) {
+            if (!scheduleState.isAdmin) return;
             const board = scheduleState.boards.find((item) => item.id === boardId);
             if (!board) return;
             if (!confirm(`Bạn có chắc muốn xóa bảng "${board.name}"?`)) return;
@@ -830,26 +1046,17 @@
                     state.boards = [fallback];
                     state.activeBoardId = fallback.id;
                 }
-            });
-        }
-
-        function addDayColumnToActiveBoard() {
-            const activeBoard = getActiveScheduleBoard();
-            if (!activeBoard) return;
-            const input = prompt('Tên cột mới (ví dụ: THỨ 8 / ONLINE / GHI CHÚ):', `CỘT ${activeBoard.days.length + 1}`);
-            if (input === null) return;
-            const dayLabel = input.trim() || `CỘT ${activeBoard.days.length + 1}`;
-            updateScheduleState((state) => {
-                const board = state.boards.find((item) => item.id === state.activeBoardId);
-                if (!board) return;
-                board.days.push(dayLabel);
-                board.sessions.forEach((session) => {
-                    session.rows.forEach((row) => row.cells.push(''));
-                });
+                if (!state.boards.some((item) => item.id === state.activeBoardId)) {
+                    state.activeBoardId = state.boards[0].id;
+                }
+                if (state.selectedCellRef && state.selectedCellRef.boardId === boardId) {
+                    state.selectedCellRef = null;
+                }
             });
         }
 
         function addSessionToActiveBoard() {
+            if (!scheduleState.isAdmin) return;
             const activeBoard = getActiveScheduleBoard();
             if (!activeBoard) return;
             const input = prompt('Tên ca học mới (ví dụ: 14h00-16h00):', '14h00-16h00');
@@ -865,6 +1072,7 @@
         }
 
         function resetActiveScheduleBoard() {
+            if (!scheduleState.isAdmin) return;
             const activeBoard = getActiveScheduleBoard();
             if (!activeBoard) return;
             if (!confirm('Khôi phục bảng hiện tại về mẫu mặc định? Các chỉnh sửa của bảng này sẽ bị thay thế.')) return;
@@ -873,11 +1081,16 @@
                 if (index === -1) return;
                 const replacement = createDefaultScheduleBoard(activeBoard.name);
                 replacement.id = activeBoard.id;
+                replacement.centerTitle = activeBoard.centerTitle;
+                replacement.branchTitle = activeBoard.branchTitle;
+                replacement.address = activeBoard.address;
                 state.boards[index] = replacement;
+                state.selectedCellRef = null;
             });
         }
 
         function renameSession(sessionId) {
+            if (!scheduleState.isAdmin) return;
             const board = getActiveScheduleBoard();
             const session = board && board.sessions.find((item) => item.id === sessionId);
             if (!session) return;
@@ -891,6 +1104,7 @@
         }
 
         function addRowToSession(sessionId) {
+            if (!scheduleState.isAdmin) return;
             const board = getActiveScheduleBoard();
             const session = board && board.sessions.find((item) => item.id === sessionId);
             if (!session) return;
@@ -905,40 +1119,121 @@
         }
 
         function removeRowFromSession(sessionId, rowId) {
+            if (!scheduleState.isAdmin) return;
             updateScheduleState((state) => {
                 const active = state.boards.find((item) => item.id === state.activeBoardId);
                 const target = active && active.sessions.find((item) => item.id === sessionId);
                 if (!target || target.rows.length <= 1) return;
                 target.rows = target.rows.filter((row) => row.id !== rowId);
+                if (state.selectedCellRef && state.selectedCellRef.sessionId === sessionId && state.selectedCellRef.rowId === rowId) {
+                    state.selectedCellRef = null;
+                }
             });
         }
 
         function deleteSession(sessionId) {
+            if (!scheduleState.isAdmin) return;
             if (!confirm('Xóa toàn bộ ca học này khỏi bảng hiện tại?')) return;
             updateScheduleState((state) => {
                 const active = state.boards.find((item) => item.id === state.activeBoardId);
                 if (!active || active.sessions.length <= 1) return;
                 active.sessions = active.sessions.filter((session) => session.id !== sessionId);
+                if (state.selectedCellRef && state.selectedCellRef.sessionId === sessionId) {
+                    state.selectedCellRef = null;
+                }
             });
         }
 
-        function updateScheduleCell(boardId, sessionId, rowId, dayIndex, value) {
+        function updateScheduleCellText(boardId, sessionId, rowId, dayIndex, value) {
+            if (!scheduleState.isAdmin) return;
             updateScheduleState((state) => {
                 const board = state.boards.find((item) => item.id === boardId);
                 const session = board && board.sessions.find((item) => item.id === sessionId);
                 const row = session && session.rows.find((item) => item.id === rowId);
-                if (!row || typeof row.cells[dayIndex] === 'undefined') return;
-                row.cells[dayIndex] = String(value || '').trim();
+                const cell = row && row.cells && row.cells[Number(dayIndex)];
+                if (!cell) return;
+                cell.text = String(value || '').trim();
+            });
+        }
+
+        function updateActiveBoardField(field, value) {
+            if (!scheduleState.isAdmin) return;
+            updateScheduleState((state) => {
+                const board = state.boards.find((item) => item.id === state.activeBoardId);
+                if (!board) return;
+                board[field] = String(value || '').trim();
+            });
+        }
+
+        function selectScheduleCell(boardId, sessionId, rowId, dayIndex) {
+            if (!scheduleState.isAdmin) return;
+            scheduleState.selectedCellRef = { boardId, sessionId, rowId, dayIndex: Number(dayIndex) };
+            renderScheduleBuilder();
+        }
+
+        function updateSelectedCellColors(bgColor, textColor) {
+            if (!scheduleState.isAdmin || !scheduleState.selectedCellRef) return;
+            updateScheduleState((state) => {
+                const ref = state.selectedCellRef;
+                const board = state.boards.find((item) => item.id === ref.boardId);
+                const session = board && board.sessions.find((item) => item.id === ref.sessionId);
+                const row = session && session.rows.find((item) => item.id === ref.rowId);
+                const cell = row && row.cells && row.cells[Number(ref.dayIndex)];
+                if (!cell) return;
+                if (typeof bgColor === 'string') cell.bgColor = bgColor;
+                if (typeof textColor === 'string') cell.textColor = textColor;
+            });
+        }
+
+        function clearSelectedCellContent() {
+            if (!scheduleState.isAdmin || !scheduleState.selectedCellRef) return;
+            updateScheduleState((state) => {
+                const ref = state.selectedCellRef;
+                const board = state.boards.find((item) => item.id === ref.boardId);
+                const session = board && board.sessions.find((item) => item.id === ref.sessionId);
+                const row = session && session.rows.find((item) => item.id === ref.rowId);
+                const cell = row && row.cells && row.cells[Number(ref.dayIndex)];
+                if (!cell) return;
+                cell.text = '';
+            });
+        }
+
+        function resetSelectedCellStyle() {
+            if (!scheduleState.isAdmin || !scheduleState.selectedCellRef) return;
+            updateScheduleState((state) => {
+                const ref = state.selectedCellRef;
+                const board = state.boards.find((item) => item.id === ref.boardId);
+                const session = board && board.sessions.find((item) => item.id === ref.sessionId);
+                const row = session && session.rows.find((item) => item.id === ref.rowId);
+                const cell = row && row.cells && row.cells[Number(ref.dayIndex)];
+                if (!cell) return;
+                cell.bgColor = '';
+                cell.textColor = '';
             });
         }
 
         function bindScheduleWorkspaceEvents() {
+            if (scheduleState.eventsBound) return;
+            scheduleState.eventsBound = true;
+
             document.getElementById('addScheduleBoardBtn')?.addEventListener('click', addScheduleBoard);
             document.getElementById('duplicateScheduleBoardBtn')?.addEventListener('click', duplicateActiveScheduleBoard);
             document.getElementById('renameScheduleBoardBtn')?.addEventListener('click', renameActiveScheduleBoard);
-            document.getElementById('addScheduleColumnBtn')?.addEventListener('click', addDayColumnToActiveBoard);
             document.getElementById('addScheduleSessionBtn')?.addEventListener('click', addSessionToActiveBoard);
             document.getElementById('resetScheduleBoardBtn')?.addEventListener('click', resetActiveScheduleBoard);
+            document.getElementById('resetScheduleCellStyleBtn')?.addEventListener('click', resetSelectedCellStyle);
+            document.getElementById('clearScheduleCellContentBtn')?.addEventListener('click', clearSelectedCellContent);
+
+            document.getElementById('scheduleBgColorPicker')?.addEventListener('input', (event) => {
+                updateSelectedCellColors(event.target.value, undefined);
+            });
+            document.getElementById('scheduleTextColorPicker')?.addEventListener('input', (event) => {
+                updateSelectedCellColors(undefined, event.target.value);
+            });
+
+            document.getElementById('scheduleCenterTitleInput')?.addEventListener('change', (event) => updateActiveBoardField('centerTitle', event.target.value));
+            document.getElementById('scheduleBranchTitleInput')?.addEventListener('change', (event) => updateActiveBoardField('branchTitle', event.target.value));
+            document.getElementById('scheduleAddressInput')?.addEventListener('change', (event) => updateActiveBoardField('address', event.target.value));
 
             document.getElementById('scheduleBoardTabs')?.addEventListener('click', (event) => {
                 const deleteButton = event.target.closest('[data-delete-board-id]');
@@ -951,26 +1246,34 @@
                 if (!tab) return;
                 updateScheduleState((state) => {
                     state.activeBoardId = tab.dataset.boardId;
+                    if (state.selectedCellRef && state.selectedCellRef.boardId !== state.activeBoardId) {
+                        state.selectedCellRef = null;
+                    }
                 });
             });
 
             document.getElementById('scheduleBuilderRoot')?.addEventListener('click', (event) => {
                 const actionButton = event.target.closest('[data-schedule-action]');
-                if (!actionButton) return;
-                const action = actionButton.dataset.scheduleAction;
-                const sessionId = actionButton.dataset.sessionId;
-                const rowId = actionButton.dataset.rowId;
+                if (actionButton) {
+                    const action = actionButton.dataset.scheduleAction;
+                    const sessionId = actionButton.dataset.sessionId;
+                    const rowId = actionButton.dataset.rowId;
+                    if (action === 'rename-session') renameSession(sessionId);
+                    if (action === 'add-row') addRowToSession(sessionId);
+                    if (action === 'delete-session') deleteSession(sessionId);
+                    if (action === 'remove-row') removeRowFromSession(sessionId, rowId);
+                    return;
+                }
 
-                if (action === 'rename-session') renameSession(sessionId);
-                if (action === 'add-row') addRowToSession(sessionId);
-                if (action === 'delete-session') deleteSession(sessionId);
-                if (action === 'remove-row') removeRowFromSession(sessionId, rowId);
+                const editor = event.target.closest('.schedule-cell-editor');
+                if (!editor || !scheduleState.isAdmin) return;
+                selectScheduleCell(editor.dataset.boardId, editor.dataset.sessionId, editor.dataset.rowId, editor.dataset.dayIndex);
             });
 
             document.getElementById('scheduleBuilderRoot')?.addEventListener('blur', (event) => {
                 const editor = event.target.closest('.schedule-cell-editor');
-                if (!editor) return;
-                updateScheduleCell(
+                if (!editor || !scheduleState.isAdmin) return;
+                updateScheduleCellText(
                     editor.dataset.boardId,
                     editor.dataset.sessionId,
                     editor.dataset.rowId,
@@ -985,6 +1288,8 @@
             bindScheduleWorkspaceEvents();
             renderScheduleBuilder();
         }
+
+
 
         const classStudentUnsubs = {};
         let classesUnsub = null;
@@ -1059,19 +1364,22 @@
         function renderCurrentUserHeader(user, profile) {
             const email = user && user.email ? user.email : '';
             const displayName = getUserDisplayName(profile, user);
+            const role = (profile && profile.role) || 'teacher';
 
             document.getElementById('userEmailDisplay').textContent = email;
             document.getElementById('currentUserName').textContent = displayName;
-            syncAdminOnlyMenu((profile && profile.role) || 'teacher');
+            syncAdminOnlyMenu(role);
+            setSchedulePermission(role);
+            initializeScheduleWorkspace();
         }
 
 
-function syncAdminOnlyMenu(role) {
-    const isAdmin = String(role || '').toLowerCase() === 'admin';
-    document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
-        item.style.display = isAdmin ? 'flex' : 'none';
-    });
-}
+        function syncAdminOnlyMenu(role) {
+            const isAdmin = String(role || '').toLowerCase() === 'admin';
+            document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
+                item.style.display = isAdmin ? 'flex' : 'none';
+            });
+        }
 
         function buildMonthKey(date = new Date()) {
             return `${date.getFullYear()}_${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -1614,7 +1922,6 @@ function syncAdminOnlyMenu(role) {
             subscribeUsersFallback();
         }
 
-        initializeScheduleWorkspace();
 
         auth.onAuthStateChanged(async (user) => {
             if (user) {
