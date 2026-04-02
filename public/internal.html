@@ -350,6 +350,9 @@
     const ARCHIVE_INDEX_KEY = 'internal_archive_index';
     const ARCHIVE_INDEX_COLLECTION = 'internal_archives';
     const ARCHIVE_INDEX_DOC = 'registry';
+    const TEACHING_BUDGET_FOLDER_ID = 'kinh-phi-giang-day';
+    const TEACHING_BUDGET_SALARY_FILE_ID = 'teaching_budget_salary';
+    const TEACHING_BUDGET_SUMMARY_FILE_ID = 'teaching_budget_summary';
 
     const INTERNAL_FOLDERS = [
       {
@@ -358,6 +361,13 @@
         icon: 'fa-wallet',
         tag: 'Vận hành',
         description: 'Theo dõi toàn bộ chi phí hoạt động, thanh toán và phát sinh của công ty.'
+      },
+      {
+        id: TEACHING_BUDGET_FOLDER_ID,
+        name: 'Kinh phí giảng dạy',
+        icon: 'fa-money-check-dollar',
+        tag: 'Giảng dạy',
+        description: 'Tự động tổng hợp bảng chi tiền lương giáo viên và bảng tổng thu, chi từ Staff, Classes và Attendance.'
       },
       {
         id: ARCHIVE_FOLDER_ID,
@@ -532,6 +542,11 @@
       return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
     }
 
+    function formatCurrencyVnd(value) {
+      const safeValue = Number(value) || 0;
+      return `${Math.round(safeValue).toLocaleString('vi-VN')} ₫`;
+    }
+
     function getBlankLuckysheetData() {
       return [{
         name: 'Sheet1',
@@ -541,6 +556,68 @@
         config: {},
         index: 0
       }];
+    }
+
+
+    function stripVietnamese(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D');
+    }
+
+    function normalizeSearchText(value) {
+      return stripVietnamese(value).trim().toLowerCase();
+    }
+
+    function isTeachingBudgetFolder(folderId = state.currentFolderId) {
+      return folderId === TEACHING_BUDGET_FOLDER_ID;
+    }
+
+    function isTeachingRolePosition(position) {
+      const normalized = normalizeSearchText(position);
+      return normalized.includes('giao vien') || normalized.includes('giaovien') || normalized.includes('teacher');
+    }
+
+    function splitEmailList(rawValue) {
+      return String(rawValue || '')
+        .split(/[;,\n]+/)
+        .map(item => normalizeEmail(item))
+        .filter(Boolean);
+    }
+
+    function getPrimaryEmail(rawValue) {
+      return splitEmailList(rawValue)[0] || '';
+    }
+
+    function getCurrentTeachingBudgetMonthContext(now = new Date()) {
+      const d = new Date(now);
+      const year = d.getFullYear();
+      const month = d.getMonth() + 1;
+      return {
+        year,
+        month,
+        monthKey: `${year}_${String(month).padStart(2, '0')}`,
+        monthLabel: `${String(month).padStart(2, '0')}/${year}`,
+        daysInMonth: new Date(year, month, 0).getDate(),
+        generatedAt: new Date().toISOString()
+      };
+    }
+
+    function getTeachingBudgetFileDefinitions() {
+      return [
+        {
+          id: TEACHING_BUDGET_SALARY_FILE_ID,
+          templateKey: 'salary',
+          fileName: 'Bang-Chi-tien-luong.xlsx'
+        },
+        {
+          id: TEACHING_BUDGET_SUMMARY_FILE_ID,
+          templateKey: 'summary',
+          fileName: 'Bang-Tong-thu-chi.xlsx'
+        }
+      ];
     }
 
     function generateInternalFileId() {
@@ -759,6 +836,7 @@
     function renderFolderFileList(files) {
       const grid = document.getElementById('fileListGrid');
       if (!grid) return;
+      const allowDelete = !isTeachingBudgetFolder();
 
       if (!files || files.length === 0) {
         grid.innerHTML = `
@@ -787,7 +865,7 @@
           <div class="file-card-actions">
             <button class="btn-action btn-primary" onclick="openInternalExcelFile('${file.id}')"><i class="fa-solid fa-table"></i> Mở file</button>
             <button class="btn-action btn-neutral" onclick="downloadInternalExcelFile('${file.id}')"><i class="fa-solid fa-download"></i> Tải về</button>
-            <button class="btn-action btn-danger" onclick="deleteInternalExcelFile('${file.id}')"><i class="fa-solid fa-trash"></i> Xóa file</button>
+            ${allowDelete ? `<button class="btn-action btn-danger" onclick="deleteInternalExcelFile('${file.id}')"><i class="fa-solid fa-trash"></i> Xóa file</button>` : ''}
           </div>
         </div>
       `).join('');
@@ -806,7 +884,9 @@
         try { luckysheet.destroy(); } catch (error) {}
       }
 
-      const files = await migrateLegacyFolderDataIfNeeded(folderId);
+      const files = isTeachingBudgetFolder(folderId)
+        ? await ensureTeachingBudgetFolderFiles()
+        : await migrateLegacyFolderDataIfNeeded(folderId);
 
       document.getElementById('folderPanel').style.display = 'none';
       document.getElementById('modernArchiveUI').style.display = 'none';
@@ -816,7 +896,10 @@
       document.body.classList.remove('workspace-compact');
 
       document.getElementById('fileBrowserTitle').textContent = folder.name;
-      document.getElementById('fileBrowserSubtitle').textContent = 'Mỗi file Excel được hiển thị riêng biệt. Chọn file để mở và chỉnh sửa.';
+      document.getElementById('fileBrowserSubtitle').textContent = isTeachingBudgetFolder(folderId)
+        ? 'Hệ thống tự tạo 2 bảng thống kê và đồng bộ dữ liệu theo tháng hiện tại. Bạn chỉ cần mở file để kiểm tra, tích thanh toán và ghi chú.'
+        : 'Mỗi file Excel được hiển thị riêng biệt. Chọn file để mở và chỉnh sửa.';
+      updateFileBrowserActionState(folderId);
       renderFolderFileList(files);
       updateWorkspaceControls();
     }
@@ -845,7 +928,9 @@
         document.body.classList.add('workspace-compact');
 
         document.getElementById('currentSheetTitle').textContent = fileMeta.fileName;
-        document.getElementById('currentSheetSubtitle').textContent = 'Đang chỉnh sửa file riêng trong folder: ' + (state.currentFolder ? state.currentFolder.name : '');
+        document.getElementById('currentSheetSubtitle').textContent = isTeachingBudgetFolder()
+          ? 'Bảng này được đồng bộ tự động từ Staff, Classes và Attendance. Bạn có thể cập nhật dấu tích thanh toán, ngày chuyển khoản và ghi chú.'
+          : 'Đang chỉnh sửa file riêng trong folder: ' + (state.currentFolder ? state.currentFolder.name : '');
 
         updateWorkspaceControls();
         await waitForLuckysheetContainerReady();
@@ -1195,6 +1280,465 @@
       return cell;
     }
 
+
+    function buildLuckysheetCell(value, options = {}) {
+      const safeValue = value === null || typeof value === 'undefined' ? '' : value;
+      const cell = {
+        v: safeValue,
+        m: typeof safeValue === 'number' ? String(safeValue) : String(safeValue)
+      };
+      return { ...cell, ...options };
+    }
+
+    function createLuckysheetSheetFromRows(name, rows, options = {}) {
+      const safeRows = Array.isArray(rows) ? rows : [];
+      const columnCount = Math.max(...safeRows.map(row => Array.isArray(row) ? row.length : 0), 0);
+      const normalizedRows = safeRows.map((row) => {
+        const baseRow = Array.isArray(row) ? [...row] : [];
+        while (baseRow.length < columnCount) baseRow.push(buildLuckysheetCell(''));
+        return baseRow;
+      });
+      const rowlen = {};
+      normalizedRows.forEach((_, index) => {
+        rowlen[index] = index <= 1 ? 26 : 24;
+      });
+      return {
+        name,
+        status: '1',
+        order: String(options.order || 0),
+        index: options.index || 0,
+        row: normalizedRows.length,
+        column: columnCount,
+        data: normalizedRows,
+        config: {
+          columnlen: options.columnlen || {},
+          rowlen,
+          merge: options.merge || {}
+        },
+        scrollLeft: 0,
+        scrollTop: 0
+      };
+    }
+
+    function getFirstSheetAoA(payload) {
+      const firstSheet = Array.isArray(payload && payload.luckysheetData) ? payload.luckysheetData[0] : null;
+      const matrix = Array.isArray(firstSheet && firstSheet.data) ? firstSheet.data : [];
+      return matrix.map(row => Array.isArray(row) ? row.map(cellToPlainValue) : []);
+    }
+
+    function normalizePaymentMark(value) {
+      const normalized = normalizeSearchText(value);
+      return normalized === '✓' || normalized === '✔' || normalized === 'x' || normalized === 'da' || normalized === 'co';
+    }
+
+    function extractTeachingBudgetManualState(payload) {
+      const manualMap = new Map();
+      const rows = getFirstSheetAoA(payload);
+      rows.forEach((row) => {
+        if (!Array.isArray(row) || row.length < 10) return;
+        const name = normalizeSearchText(row[1]);
+        const loginId = normalizeEmail(row[2]);
+        if (!name && !loginId) return;
+        const paid = normalizePaymentMark(row[6]);
+        const unpaid = normalizePaymentMark(row[7]);
+        const key = loginId || name;
+        manualMap.set(key, {
+          paid,
+          unpaid,
+          transferDate: String(row[8] || '').trim(),
+          note: String(row[9] || '').trim()
+        });
+      });
+      return manualMap;
+    }
+
+    function normalizeTeachingBudgetPaymentState(manualState) {
+      const paid = !!(manualState && manualState.paid);
+      const unpaid = !!(manualState && manualState.unpaid);
+      if (paid && !unpaid) return { paid: '✓', unpaid: '' };
+      if (!paid && unpaid) return { paid: '', unpaid: '✓' };
+      if (paid && unpaid) return { paid: '✓', unpaid: '' };
+      return { paid: '', unpaid: '✓' };
+    }
+
+    function parseBudgetDateOnly(value) {
+      const raw = String(value || '').trim();
+      if (!raw) return null;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        const [year, month, day] = raw.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        date.setHours(0, 0, 0, 0);
+        return Number.isNaN(date.getTime()) ? null : date;
+      }
+      const parsed = new Date(raw);
+      if (Number.isNaN(parsed.getTime())) return null;
+      parsed.setHours(0, 0, 0, 0);
+      return parsed;
+    }
+
+    function getTeachingBudgetEnrollmentDate(student, classId, classCode) {
+      const byClass = student && student.enrollmentDateByClass && typeof student.enrollmentDateByClass === 'object'
+        ? student.enrollmentDateByClass
+        : {};
+      return String(
+        byClass[classId]
+        || (classCode ? byClass[classCode] : '')
+        || (student && (student.enrollmentDate || student.enrolledAt || student.startDate))
+        || ''
+      ).trim();
+    }
+
+    function isTeachingBudgetBeforeEnrollment(student, day, monthContext, classId, classCode) {
+      const enrollmentDate = parseBudgetDateOnly(getTeachingBudgetEnrollmentDate(student, classId, classCode));
+      if (!enrollmentDate) return false;
+      const cellDate = new Date(monthContext.year, monthContext.month - 1, Number(day));
+      cellDate.setHours(0, 0, 0, 0);
+      return cellDate < enrollmentDate;
+    }
+
+    function getTeachingBudgetMonthlyEntries(sourceData, rootKey, monthKey) {
+      const data = sourceData || {};
+      const nested = data && data[rootKey] && data[rootKey][monthKey];
+      if (nested && typeof nested === 'object' && !Array.isArray(nested)) return nested;
+      const prefix = `${rootKey}.${monthKey}.`;
+      const flat = {};
+      Object.keys(data || {}).forEach((key) => {
+        if (!key.startsWith(prefix)) return;
+        const dayKey = key.slice(prefix.length);
+        if (!dayKey) return;
+        flat[dayKey] = data[key];
+      });
+      return flat;
+    }
+
+    function getTeachingBudgetPeopleArray(items) {
+      return (Array.isArray(items) ? items : [])
+        .map(item => ({
+          name: String(item && item.name || '').trim(),
+          email: normalizeEmail(item && item.email)
+        }))
+        .filter(item => item.name || item.email);
+    }
+
+    function getTeachingBudgetTeachersFromClassData(data) {
+      const teachers = [];
+      if (Array.isArray(data && data.teachers)) teachers.push(...data.teachers);
+      if (data && data.teacherName && !Array.isArray(data.teachers)) {
+        teachers.push({ name: data.teacherName, email: data.teacherEmail || '' });
+      }
+      return getTeachingBudgetPeopleArray(teachers);
+    }
+
+    function buildTeachingBudgetTeacherLookup(teachers) {
+      const lookup = new Map();
+      (teachers || []).forEach((teacher) => {
+        const emailKey = normalizeEmail(teacher && teacher.loginId);
+        const nameKey = normalizeSearchText(teacher && teacher.name);
+        if (emailKey && !lookup.has(emailKey)) lookup.set(emailKey, teacher);
+        if (nameKey && !lookup.has(nameKey)) lookup.set(nameKey, teacher);
+      });
+      return lookup;
+    }
+
+    function resolveTeachingBudgetTeacherRecord(classTeacher, teacherLookup) {
+      const emailKey = normalizeEmail(classTeacher && classTeacher.email);
+      const nameKey = normalizeSearchText(classTeacher && classTeacher.name);
+      return teacherLookup.get(emailKey) || teacherLookup.get(nameKey) || null;
+    }
+
+    function getTeachingBudgetTeacherSessionCount(classTeacher, attendanceTeacherLog, dayActivityMap, dayOffLog) {
+      const teacherEmail = normalizeEmail(classTeacher && classTeacher.email);
+      const teacherName = normalizeSearchText(classTeacher && classTeacher.name);
+      return Object.keys(attendanceTeacherLog || {}).reduce((count, dayKey) => {
+        const day = Number(dayKey);
+        const record = attendanceTeacherLog[dayKey];
+        if (!record || !day || dayOffLog[String(day)] || !dayActivityMap[String(day)]) return count;
+        const recordEmail = normalizeEmail(record.teacherEmail || record.reportedByEmail || record.editorEmail);
+        const recordName = normalizeSearchText(record.teacherName || record.reportedByName || record.editorName || record.teacherEmail || record.reportedByEmail);
+        const emailMatched = teacherEmail && recordEmail && teacherEmail === recordEmail;
+        const nameMatched = teacherName && recordName && teacherName === recordName;
+        return (emailMatched || (!teacherEmail && nameMatched) || (teacherEmail && !recordEmail && nameMatched)) ? count + 1 : count;
+      }, 0);
+    }
+
+    function getTeachingBudgetClassMetrics(classData, students, monthContext, dayOffLog, withdrawnStudentStats, classId) {
+      const classCode = String(classData && classData.classCode || '').trim();
+      const metrics = {
+        grandTotal: 0,
+        activeStudyDays: 0,
+        revenuePerStudyDay: 0,
+        dayActivityMap: {}
+      };
+      (students || []).forEach((student) => {
+        const attendanceRecord = student && student.attendance && typeof student.attendance === 'object' ? student.attendance : {};
+        const tuition = Number(student && student.tuition) || 0;
+        let sessionCount = 0;
+        for (let day = 1; day <= monthContext.daysInMonth; day++) {
+          const code = String(attendanceRecord[day] || attendanceRecord[String(day)] || '').trim();
+          if (dayOffLog[String(day)]) continue;
+          if (isTeachingBudgetBeforeEnrollment(student, day, monthContext, classId, classCode)) continue;
+          if (['V', 'P', 'M', 'ĐB'].includes(code)) {
+            sessionCount += 1;
+            metrics.dayActivityMap[String(day)] = true;
+          }
+        }
+        metrics.grandTotal += sessionCount * tuition;
+      });
+
+      Object.values(withdrawnStudentStats || {}).forEach((entry) => {
+        const totalAmount = Number(entry && entry.totalAmount) || 0;
+        metrics.grandTotal += totalAmount;
+        (Array.isArray(entry && entry.attendedDays) ? entry.attendedDays : []).forEach((dayValue) => {
+          const day = Number(dayValue);
+          if (day >= 1 && day <= monthContext.daysInMonth) metrics.dayActivityMap[String(day)] = true;
+        });
+      });
+
+      metrics.activeStudyDays = Object.keys(metrics.dayActivityMap).length;
+      metrics.revenuePerStudyDay = metrics.activeStudyDays ? (metrics.grandTotal / metrics.activeStudyDays) : 0;
+      return metrics;
+    }
+
+    function getTeachingBudgetPayoutPercent(payoutSettings, teacher) {
+      const teacherKey = getTeacherPayoutKey(teacher);
+      return clampTeachingPercent(payoutSettings && payoutSettings[teacherKey]);
+    }
+
+    async function collectTeachingBudgetReport() {
+      if (!db) throw new Error('Không thể kết nối dữ liệu Firebase để tổng hợp kinh phí giảng dạy.');
+
+      const monthContext = getCurrentTeachingBudgetMonthContext();
+      const [staffSnapshot, classSnapshot] = await Promise.all([
+        db.collection('staff').orderBy('name').get(),
+        db.collection('classes').get()
+      ]);
+
+      const staffTeachers = staffSnapshot.docs
+        .map((doc) => {
+          const data = doc.data() || {};
+          const loginId = getPrimaryEmail(data.email);
+          return {
+            rowKey: loginId || normalizeSearchText(data.name) || doc.id,
+            docId: doc.id,
+            name: String(data.name || '').trim(),
+            loginId,
+            bank: String(data.bank || '').trim(),
+            position: String(data.position || '').trim()
+          };
+        })
+        .filter((teacher) => teacher.name && isTeachingRolePosition(teacher.position))
+        .sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+
+      const teacherLookup = buildTeachingBudgetTeacherLookup(staffTeachers);
+      const summaryByTeacher = new Map(
+        staffTeachers.map((teacher) => [teacher.rowKey, {
+          ...teacher,
+          classIds: new Set(),
+          totalAmount: 0,
+          sessionCount: 0
+        }])
+      );
+
+      const classDocs = classSnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() || {} }));
+      const studentSnapshots = await Promise.all(
+        classDocs.map((item) => db.collection('classes').doc(item.id).collection('students').get().catch(() => null))
+      );
+
+      let totalRevenue = 0;
+
+      classDocs.forEach((classItem, index) => {
+        const classData = classItem.data || {};
+        const classTeachers = getTeachingBudgetTeachersFromClassData(classData);
+        if (!classTeachers.length) return;
+
+        const students = studentSnapshots[index]
+          ? studentSnapshots[index].docs.map((doc) => ({ id: doc.id, ...(doc.data() || {}) }))
+          : [];
+
+        const attendanceTeacherLog = getTeachingBudgetMonthlyEntries(classData, 'attendanceTeacherLog', monthContext.monthKey);
+        const dayOffLog = getTeachingBudgetMonthlyEntries(classData, 'attendanceDayOffLog', monthContext.monthKey);
+        const withdrawnStudentStats = classData && classData.withdrawnStudentStats && classData.withdrawnStudentStats[monthContext.monthKey]
+          ? classData.withdrawnStudentStats[monthContext.monthKey]
+          : {};
+        const payoutSettings = classData && classData.teachingPayoutSettings && classData.teachingPayoutSettings[monthContext.monthKey]
+          ? classData.teachingPayoutSettings[monthContext.monthKey]
+          : {};
+
+        const metrics = getTeachingBudgetClassMetrics(classData, students, monthContext, dayOffLog, withdrawnStudentStats, classItem.id);
+        totalRevenue += metrics.grandTotal;
+
+        classTeachers.forEach((classTeacher) => {
+          const matchedTeacher = resolveTeachingBudgetTeacherRecord(classTeacher, teacherLookup);
+          if (!matchedTeacher) return;
+          const summary = summaryByTeacher.get(matchedTeacher.rowKey);
+          if (!summary) return;
+          summary.classIds.add(classItem.id);
+          const sessionCount = getTeachingBudgetTeacherSessionCount(classTeacher, attendanceTeacherLog, metrics.dayActivityMap, dayOffLog);
+          const payoutAmount = metrics.revenuePerStudyDay * sessionCount * getTeachingBudgetPayoutPercent(payoutSettings, classTeacher) / 100;
+          summary.sessionCount += sessionCount;
+          summary.totalAmount += payoutAmount;
+        });
+      });
+
+      const teacherRows = staffTeachers.map((teacher, index) => {
+        const summary = summaryByTeacher.get(teacher.rowKey) || { classIds: new Set(), totalAmount: 0, sessionCount: 0 };
+        return {
+          stt: index + 1,
+          key: teacher.rowKey,
+          name: teacher.name,
+          loginId: teacher.loginId,
+          bank: teacher.bank,
+          classCount: summary.classIds.size,
+          sessionCount: summary.sessionCount,
+          totalAmount: Math.round(summary.totalAmount || 0)
+        };
+      });
+
+      const totalPayout = teacherRows.reduce((sum, row) => sum + (Number(row.totalAmount) || 0), 0);
+
+      return {
+        monthContext,
+        teacherRows,
+        totalRevenue: Math.round(totalRevenue),
+        totalPayout: Math.round(totalPayout),
+        remainingRevenue: Math.round(totalRevenue - totalPayout)
+      };
+    }
+
+    function buildTeachingBudgetSalarySheetData(report, existingPayload) {
+      const manualMap = extractTeachingBudgetManualState(existingPayload);
+      const title = `BẢNG CHI TIỀN LƯƠNG GIẢNG DẠY - ${report.monthContext.monthLabel}`;
+      const generatedLabel = `Tự động tổng hợp từ Staff, Classes và Attendance vào ${formatDateForDisplay(report.monthContext.generatedAt)}.`;
+      const rows = [
+        [buildLuckysheetCell(title, { bl: 1, fs: 14, fc: '#0d1b2a', bg: '#f6fbf8' })],
+        [buildLuckysheetCell(generatedLabel, { fc: '#607080', fs: 10 })],
+        [
+          buildLuckysheetCell('TT', { bl: 1, bg: '#eef5f1', ht: 0 }),
+          buildLuckysheetCell('Họ và tên', { bl: 1, bg: '#eef5f1' }),
+          buildLuckysheetCell('ID (mail đăng nhập)', { bl: 1, bg: '#eef5f1' }),
+          buildLuckysheetCell('Số lớp dạy', { bl: 1, bg: '#eef5f1', ht: 0 }),
+          buildLuckysheetCell('Tổng số tiền', { bl: 1, bg: '#eef5f1', ht: 0 }),
+          buildLuckysheetCell('Số tài khoản trả lương', { bl: 1, bg: '#eef5f1' }),
+          buildLuckysheetCell('Đã thanh toán', { bl: 1, bg: '#eef5f1', ht: 0 }),
+          buildLuckysheetCell('Chưa thanh toán', { bl: 1, bg: '#eef5f1', ht: 0 }),
+          buildLuckysheetCell('Ngày chuyển khoản', { bl: 1, bg: '#eef5f1', ht: 0 }),
+          buildLuckysheetCell('Ghi chú', { bl: 1, bg: '#eef5f1' })
+        ]
+      ];
+
+      if (!report.teacherRows.length) {
+        rows.push([buildLuckysheetCell('1'), buildLuckysheetCell('Chưa có giáo viên phù hợp trong file Staff.', { fc: '#d35400' })]);
+      } else {
+        report.teacherRows.forEach((teacher) => {
+          const manualState = manualMap.get(teacher.loginId || normalizeSearchText(teacher.name)) || {};
+          const paymentState = normalizeTeachingBudgetPaymentState(manualState);
+          rows.push([
+            buildLuckysheetCell(teacher.stt, { ht: 0 }),
+            buildLuckysheetCell(teacher.name),
+            buildLuckysheetCell(teacher.loginId),
+            buildLuckysheetCell(teacher.classCount, { ht: 0 }),
+            buildLuckysheetCell(formatCurrencyVnd(teacher.totalAmount), { fc: '#0b8f4d', bl: 1, ht: 2 }),
+            buildLuckysheetCell(teacher.bank),
+            buildLuckysheetCell(paymentState.paid, { ht: 0 }),
+            buildLuckysheetCell(paymentState.unpaid, { ht: 0 }),
+            buildLuckysheetCell(manualState.transferDate || ''),
+            buildLuckysheetCell(manualState.note || '')
+          ]);
+        });
+      }
+
+      rows.push([
+        buildLuckysheetCell(''),
+        buildLuckysheetCell('TỔNG CHI LƯƠNG', { bl: 1, bg: '#f8faf9' }),
+        buildLuckysheetCell(''),
+        buildLuckysheetCell(report.teacherRows.reduce((sum, row) => sum + (Number(row.classCount) || 0), 0), { bl: 1, ht: 0, bg: '#f8faf9' }),
+        buildLuckysheetCell(formatCurrencyVnd(report.totalPayout), { bl: 1, fc: '#0b8f4d', ht: 2, bg: '#f8faf9' }),
+        buildLuckysheetCell(''),
+        buildLuckysheetCell(''),
+        buildLuckysheetCell(''),
+        buildLuckysheetCell(''),
+        buildLuckysheetCell('')
+      ]);
+
+      return [createLuckysheetSheetFromRows('Bảng Chi tiền lương', rows, {
+        index: 0,
+        order: 0,
+        columnlen: {
+          0: 50,
+          1: 190,
+          2: 220,
+          3: 90,
+          4: 135,
+          5: 220,
+          6: 95,
+          7: 105,
+          8: 130,
+          9: 220
+        }
+      })];
+    }
+
+    function buildTeachingBudgetSummarySheetData(report) {
+      const title = `BẢNG TỔNG THU, CHI - ${report.monthContext.monthLabel}`;
+      const generatedLabel = `Tổng thu lấy từ dữ liệu điểm danh tháng hiện tại; tổng chi lấy từ bảng chi tiền lương giáo viên.`;
+      const rows = [
+        [buildLuckysheetCell(title, { bl: 1, fs: 14, fc: '#0d1b2a', bg: '#f6fbf8' })],
+        [buildLuckysheetCell(generatedLabel, { fc: '#607080', fs: 10 })],
+        [
+          buildLuckysheetCell('Chỉ tiêu', { bl: 1, bg: '#eef5f1' }),
+          buildLuckysheetCell('Giá trị', { bl: 1, bg: '#eef5f1', ht: 0 })
+        ],
+        [buildLuckysheetCell('Tổng thu'), buildLuckysheetCell(formatCurrencyVnd(report.totalRevenue), { fc: '#0b8f4d', bl: 1, ht: 2 })],
+        [buildLuckysheetCell('Tổng chi'), buildLuckysheetCell(formatCurrencyVnd(report.totalPayout), { fc: '#b35c00', bl: 1, ht: 2 })],
+        [buildLuckysheetCell('Doanh thu còn lại'), buildLuckysheetCell(formatCurrencyVnd(report.remainingRevenue), { fc: '#1a365d', bl: 1, ht: 2, bg: '#f8faf9' })]
+      ];
+
+      return [createLuckysheetSheetFromRows('Bảng thu, chi', rows, {
+        index: 0,
+        order: 0,
+        columnlen: { 0: 240, 1: 180 }
+      })];
+    }
+
+    async function ensureTeachingBudgetFolderFiles() {
+      const nowIso = new Date().toISOString();
+      const existingFiles = await loadFolderFiles(TEACHING_BUDGET_FOLDER_ID);
+      const fileDefs = getTeachingBudgetFileDefinitions();
+      const report = await collectTeachingBudgetReport();
+      const nextFiles = [];
+
+      for (const fileDef of fileDefs) {
+        const existingMeta = existingFiles.find(item => item && (item.id === fileDef.id || item.templateKey === fileDef.templateKey));
+        const existingPayload = existingMeta ? await loadFolderFileData(existingMeta.id) : null;
+        const luckysheetData = fileDef.templateKey === 'salary'
+          ? buildTeachingBudgetSalarySheetData(report, existingPayload)
+          : buildTeachingBudgetSummarySheetData(report);
+        const meta = {
+          id: fileDef.id,
+          templateKey: fileDef.templateKey,
+          folderId: TEACHING_BUDGET_FOLDER_ID,
+          fileName: fileDef.fileName,
+          createdAt: (existingMeta && existingMeta.createdAt) || nowIso,
+          updatedAt: nowIso,
+          createdBy: (existingMeta && existingMeta.createdBy) || normalizeEmail(state.currentAuthUser && state.currentAuthUser.email),
+          updatedBy: normalizeEmail(state.currentAuthUser && state.currentAuthUser.email)
+        };
+        await persistFolderFileData(meta, luckysheetData);
+        nextFiles.push(meta);
+      }
+
+      await persistFolderFiles(TEACHING_BUDGET_FOLDER_ID, nextFiles);
+      return nextFiles;
+    }
+
+    function updateFileBrowserActionState(folderId = state.currentFolderId) {
+      const isBudgetFolder = isTeachingBudgetFolder(folderId);
+      const createButton = document.getElementById('btnCreateExcelFile');
+      const importButton = document.getElementById('btnImportExcel');
+      if (createButton) createButton.style.display = isBudgetFolder ? 'none' : 'inline-flex';
+      if (importButton) importButton.style.display = isBudgetFolder ? 'none' : 'inline-flex';
+    }
+
     function getCurrentLuckysheetSheets() {
       if (!window.luckysheet) return [];
       if (typeof luckysheet.getAllSheets === 'function') return luckysheet.getAllSheets();
@@ -1308,7 +1852,7 @@
     async function archiveCurrentSheet() {
       if (!ensureAdminAccess()) { redirectNonAdmin(); return; }
       if (!state.currentFolderId || isArchiveFolder()) {
-        alert('Chỉ có thể đưa dữ liệu từ folder chi của công ty vào kho lưu trữ.');
+        alert('Chỉ có thể đưa dữ liệu từ folder hiện tại vào kho lưu trữ.');
         return;
       }
       if (!window.luckysheet) {
@@ -1427,6 +1971,8 @@
       if (subtitle) {
         if (isArchiveView) {
           subtitle.textContent = 'Đang xem dữ liệu lịch sử ở chế độ chỉ đọc.';
+        } else if (isTeachingBudgetFolder()) {
+          subtitle.textContent = 'Tự động tổng hợp lương giảng dạy, tổng thu và tổng chi từ dữ liệu vận hành hiện tại.';
         } else {
           subtitle.textContent = activeLang === LUCKYSHEET_FALLBACK_LANG
             ? 'Quản lý chi phí công ty. Giao diện bảng tính đang dùng English để tương thích.'
@@ -1580,7 +2126,7 @@
     async function importExcelFile(file) {
       if (!file) return;
       if (!state.currentFolderId || isArchiveFolder()) {
-        alert('Vui lòng mở folder chi của công ty trước khi nhập file.');
+        alert('Vui lòng mở một folder làm việc hợp lệ trước khi nhập file.');
         return;
       }
 
