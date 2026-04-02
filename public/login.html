@@ -14,14 +14,14 @@
     <style>
         :root { --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --input-bg: #f8faf9; --border-grey: #e8f1ec; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        html { -webkit-text-size-adjust: 100%; }
         
         /* Thêm padding cho body để trên mobile form không chạm viền */
         body { display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; background-color: var(--bg-dark); overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; position: relative; padding: 20px; }
         
-        .bg-glow { position: absolute; border-radius: 50%; filter: blur(100px); z-index: 0; animation: float 10s infinite ease-in-out alternate; }
-        .glow-1 { width: 400px; height: 400px; background: rgba(46, 204, 113, 0.15); top: -100px; left: -100px; }
-        .glow-2 { width: 500px; height: 500px; background: rgba(224, 170, 62, 0.1); bottom: -150px; right: -100px; animation-delay: -5s; }
-        @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(30px, 50px); } }
+        .bg-glow { position: absolute; border-radius: 50%; filter: blur(72px); z-index: 0; opacity: 0.88; pointer-events: none; }
+        .glow-1 { width: 360px; height: 360px; background: rgba(46, 204, 113, 0.13); top: -90px; left: -90px; }
+        .glow-2 { width: 420px; height: 420px; background: rgba(224, 170, 62, 0.09); bottom: -130px; right: -90px; }
         
         .login-card { background-color: var(--bg-card-white); width: 100%; max-width: 420px; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); position: relative; z-index: 10; border: 1px solid rgba(255, 255, 255, 0.1); }
         .card-header { text-align: center; margin-bottom: 35px; }
@@ -31,7 +31,7 @@
         .login-form { display: flex; flex-direction: column; gap: 20px; }
         .input-group { position: relative; }
         .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1.1rem; transition: color 0.3s; }
-        .input-group input { width: 100%; padding: 15px 15px 15px 45px; border: 2px solid var(--border-grey); border-radius: 12px; background-color: var(--input-bg); font-size: 0.95rem; color: var(--text-dark); outline: none; transition: all 0.3s ease; font-weight: 500; }
+        .input-group input { width: 100%; padding: 15px 15px 15px 45px; border: 2px solid var(--border-grey); border-radius: 12px; background-color: var(--input-bg); font-size: 0.95rem; color: var(--text-dark); outline: none; transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease; font-weight: 500; }
         .input-group input::placeholder { color: #aaa; font-weight: 400; }
         .input-group input:focus { border-color: var(--accent-gold); background-color: var(--bg-card-white); box-shadow: 0 0 0 4px rgba(224, 170, 62, 0.1); }
         .input-group input:focus + i, .input-group input:focus ~ i { color: var(--accent-gold); }
@@ -46,7 +46,7 @@
         .forgot-password:hover { color: var(--accent-gold); text-decoration: underline; }
         .forgot-password.secondary-link { font-size: 0.8rem; opacity: 0.92; }
         
-        .btn-login { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent-gold), #c99327); color: var(--bg-card-white); border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 15px rgba(224, 170, 62, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
+        .btn-login { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent-gold), #c99327); color: var(--bg-card-white); border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, opacity 0.18s ease; box-shadow: 0 5px 15px rgba(224, 170, 62, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(224, 170, 62, 0.4); background: linear-gradient(135deg, #eec05c, var(--accent-gold)); }
         
         .error-message { color: #e74c3c; font-size: 0.85rem; text-align: center; display: none; font-weight: 600; margin-top: -10px; }
@@ -58,9 +58,9 @@
         .register-link a:hover { text-decoration: underline; }
 
         /* Popup Liên Hệ */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 20px;}
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; padding: 20px;}
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--bg-card-white); width: 100%; max-width: 450px; padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: all 0.3s ease; text-align: center; border-top: 5px solid var(--accent-gold); }
+        .modal-content { background: var(--bg-card-white); width: 100%; max-width: 450px; padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: transform 0.2s ease, box-shadow 0.2s ease; text-align: center; border-top: 5px solid var(--accent-gold); }
         .modal-overlay.show .modal-content { transform: translateY(0); }
         .modal-icon { font-size: 3rem; color: var(--accent-gold); margin-bottom: 15px; }
         .modal-title { font-size: 1.3rem; font-weight: 800; color: var(--text-dark); margin-bottom: 20px; text-transform: uppercase; }
@@ -73,10 +73,16 @@
         .modal-help { font-size: 0.8rem; color: #6c7a89; text-align: left; line-height: 1.5; margin-top: -2px; }
         .modal-actions { display: flex; gap: 10px; margin-top: 6px; }
         .modal-actions .btn-login { margin-top: 0; flex: 1; }
-        .btn-secondary-modal { flex: 1; background: #eef2f5; color: var(--text-dark); border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.3s; padding: 15px; }
+        .btn-secondary-modal { flex: 1; background: #eef2f5; color: var(--text-dark); border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: background 0.18s ease, opacity 0.18s ease; padding: 15px; }
         .btn-secondary-modal:hover { background: #e3e9ee; }
         .btn-close-modal { background: var(--bg-dark); color: white; border: none; padding: 10px 30px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
         .btn-close-modal:hover { background: #1a365d; }
+        .login-card, .modal-content { backface-visibility: hidden; -webkit-font-smoothing: antialiased; transform: translateZ(0); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+            .bg-glow { display: none !important; }
+        }
 
         /* TỐI ƯU GIAO DIỆN MOBILE (Dưới 768px) */
         @media (max-width: 768px) {
@@ -147,11 +153,34 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="resetPasswordModal">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+            <h2 class="modal-title">Quên mật khẩu</h2>
+            <p class="modal-note">Nhập email tài khoản để nhận link đặt lại mật khẩu. Đây là cách an toàn khi người dùng không còn nhớ mật khẩu hiện tại.</p>
+            <form class="login-form modal-form" id="resetPasswordForm">
+                <div class="error-message modal-error" id="resetPasswordError"></div>
+                <div class="input-group">
+                    <input type="email" id="resetPasswordEmail" placeholder="Nhập email tài khoản" required autocomplete="email">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div class="modal-help">Link đặt lại mật khẩu sẽ được gửi tới email đăng nhập nếu tài khoản đang hoạt động trên hệ thống.</div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary-modal" id="closeResetPasswordModal">Hủy</button>
+                    <button type="submit" class="btn-login" id="resetPasswordSubmitBtn">
+                        <span id="resetPasswordBtnText">Gửi link đặt lại</span>
+                        <i class="fa-solid fa-spinner" id="resetPasswordLoadingIcon"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="changePasswordModal">
         <div class="modal-content">
             <div class="modal-icon"><i class="fa-solid fa-key"></i></div>
             <h2 class="modal-title">Đổi mật khẩu</h2>
-            <p class="modal-note">Nhập đúng mật khẩu cũ, sau đó xác nhận mật khẩu mới. Sau khi đổi xong, hệ thống sẽ tự cập nhật mật khẩu mới vào hồ sơ tài khoản trong trang quản lý hệ thống.</p>
+            <p class="modal-note">Nhập đúng mật khẩu cũ, sau đó xác nhận mật khẩu mới. Sau khi đổi xong, hệ thống chỉ cập nhật mốc đổi mật khẩu vào hồ sơ tài khoản, không lưu mật khẩu thô.</p>
             <form class="login-form modal-form" id="changePasswordForm">
                 <div class="error-message modal-error" id="changePasswordError"></div>
                 <div class="input-group">
@@ -204,8 +233,10 @@
         const forgotBtn = document.getElementById('openForgotModal');
         const changePasswordBtn = document.getElementById('openChangePasswordModal');
         const contactModal = document.getElementById('contactModal');
+        const resetPasswordModal = document.getElementById('resetPasswordModal');
         const changePasswordModal = document.getElementById('changePasswordModal');
         const closeContactBtn = document.getElementById('closeContactModal');
+        const closeResetPasswordBtn = document.getElementById('closeResetPasswordModal');
         const closeChangePasswordBtn = document.getElementById('closeChangePasswordModal');
         const emailInput = document.getElementById('email');
         const rememberMeCheckbox = document.getElementById('rememberMe');
@@ -219,17 +250,25 @@
         const btnText = document.getElementById('btnText');
         const loadingIcon = document.getElementById('loadingIcon');
         const errorMessage = document.getElementById('errorMessage');
+        const resetPasswordForm = document.getElementById('resetPasswordForm');
+        const resetPasswordEmailInput = document.getElementById('resetPasswordEmail');
         const changePasswordForm = document.getElementById('changePasswordForm');
         const changePasswordEmailInput = document.getElementById('changePasswordEmail');
         const oldPasswordInput = document.getElementById('oldPassword');
         const newPasswordInput = document.getElementById('newPassword');
         const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+        const resetPasswordError = document.getElementById('resetPasswordError');
+        const resetPasswordSubmitBtn = document.getElementById('resetPasswordSubmitBtn');
+        const resetPasswordBtnText = document.getElementById('resetPasswordBtnText');
+        const resetPasswordLoadingIcon = document.getElementById('resetPasswordLoadingIcon');
         const changePasswordError = document.getElementById('changePasswordError');
         const changePasswordSubmitBtn = document.getElementById('changePasswordSubmitBtn');
         const changePasswordBtnText = document.getElementById('changePasswordBtnText');
         const changePasswordLoadingIcon = document.getElementById('changePasswordLoadingIcon');
         let authCheckInProgress = false;
         let passwordChangeFlow = false;
+        let redirectInProgress = false;
+        let loginRequestInFlight = false;
 
         function normalizeEmail(email) {
             return String(email || '').trim().toLowerCase();
@@ -238,6 +277,22 @@
         function showModal(e) {
             e.preventDefault();
             contactModal.classList.add('show');
+        }
+
+        function openResetPasswordModal(e) {
+            e.preventDefault();
+            resetPasswordForm.reset();
+            hideResetPasswordError();
+            const seededEmail = normalizeEmail(emailInput.value || localStorage.getItem('xl_saved_email') || '');
+            if (seededEmail) resetPasswordEmailInput.value = seededEmail;
+            resetPasswordModal.classList.add('show');
+        }
+
+        function closeResetPasswordModal() {
+            resetPasswordModal.classList.remove('show');
+            resetPasswordForm.reset();
+            hideResetPasswordError();
+            setResetPasswordLoading(false);
         }
 
         function openChangePasswordModal(e) {
@@ -271,6 +326,25 @@
 
         function hideError() {
             errorMessage.style.display = 'none';
+        }
+
+        function setResetPasswordLoading(isLoading) {
+            resetPasswordBtnText.textContent = isLoading ? 'Đang gửi link...' : 'Gửi link đặt lại';
+            resetPasswordLoadingIcon.style.display = isLoading ? 'inline-block' : 'none';
+            resetPasswordSubmitBtn.style.opacity = isLoading ? '0.8' : '1';
+            resetPasswordSubmitBtn.disabled = isLoading;
+        }
+
+        function showResetPasswordError(message, isSuccess = false) {
+            resetPasswordError.style.display = 'block';
+            resetPasswordError.style.color = isSuccess ? '#1f8f55' : '#e74c3c';
+            resetPasswordError.innerHTML = '<i class="fa-solid ' + (isSuccess ? 'fa-circle-check' : 'fa-circle-exclamation') + '"></i> ' + message;
+        }
+
+        function hideResetPasswordError() {
+            resetPasswordError.style.display = 'none';
+            resetPasswordError.innerHTML = '';
+            resetPasswordError.style.color = '#e74c3c';
         }
 
         function setChangePasswordLoading(isLoading) {
@@ -368,7 +442,7 @@
         }
 
         async function validateSignedInUser(user) {
-            if (!user || authCheckInProgress) return;
+            if (!user || authCheckInProgress || redirectInProgress) return;
             authCheckInProgress = true;
 
             try {
@@ -386,8 +460,10 @@
                     return;
                 }
 
-                window.location.href = 'index.html';
+                redirectInProgress = true;
+                window.location.replace('index.html');
             } catch (error) {
+                redirectInProgress = false;
                 console.error(error);
                 try { await auth.signOut(); } catch (_) {}
                 showError('Không kiểm tra được trạng thái tài khoản. Vui lòng thử lại sau.');
@@ -402,11 +478,13 @@
         });
 
         contactBtn.addEventListener('click', showModal);
-        forgotBtn.addEventListener('click', showModal);
+        forgotBtn.addEventListener('click', openResetPasswordModal);
         changePasswordBtn.addEventListener('click', openChangePasswordModal);
         closeContactBtn.addEventListener('click', () => contactModal.classList.remove('show'));
+        closeResetPasswordBtn.addEventListener('click', closeResetPasswordModal);
         closeChangePasswordBtn.addEventListener('click', closeChangePasswordModal);
         contactModal.addEventListener('click', (e) => { if (e.target === contactModal) contactModal.classList.remove('show'); });
+        resetPasswordModal.addEventListener('click', (e) => { if (e.target === resetPasswordModal) closeResetPasswordModal(); });
         changePasswordModal.addEventListener('click', (e) => { if (e.target === changePasswordModal) closeChangePasswordModal(); });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -428,6 +506,53 @@
         });
         toggleConfirmNewPassword.addEventListener('click', function () {
             togglePasswordVisibility(confirmNewPasswordInput, this);
+        });
+
+        resetPasswordForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = normalizeEmail(resetPasswordEmailInput.value);
+            hideResetPasswordError();
+
+            if (!email) {
+                showResetPasswordError('Vui lòng nhập email tài khoản.');
+                return;
+            }
+
+            setResetPasswordLoading(true);
+            try {
+                const profile = await getUserProfileByEmail(email);
+                if (!profile) {
+                    throw new Error('Tài khoản chưa được cấp quyền trên hệ thống.');
+                }
+                if (isAccountClosed(profile)) {
+                    throw new Error('Tài khoản đang bị khóa. Vui lòng liên hệ Admin để được mở khóa trước khi đặt lại mật khẩu.');
+                }
+
+                await auth.sendPasswordResetEmail(email);
+                showResetPasswordError('Đã gửi link đặt lại mật khẩu tới email đăng nhập. Vui lòng kiểm tra cả hộp thư rác/spam.', true);
+                setTimeout(() => {
+                    if (resetPasswordModal.classList.contains('show')) closeResetPasswordModal();
+                }, 1400);
+            } catch (error) {
+                const code = String((error && error.code) || (error && error.message) || '').toLowerCase();
+                if (code.includes('auth/user-not-found')) {
+                    showResetPasswordError('Không tìm thấy tài khoản với email đã nhập.');
+                } else if (code.includes('auth/invalid-email')) {
+                    showResetPasswordError('Email không hợp lệ.');
+                } else if (code.includes('auth/too-many-requests')) {
+                    showResetPasswordError('Bạn đã thao tác quá nhiều lần. Vui lòng thử lại sau.');
+                } else if (code.includes('chưa được cấp quyền trên hệ thống')) {
+                    showResetPasswordError('Tài khoản chưa được cấp quyền trên hệ thống. Vui lòng liên hệ Admin.');
+                } else if (code.includes('đang bị khóa')) {
+                    showResetPasswordError('Tài khoản đang bị khóa. Vui lòng liên hệ Admin.');
+                } else {
+                    console.error(error);
+                    showResetPasswordError('Không thể gửi link đặt lại mật khẩu lúc này. Vui lòng thử lại sau.');
+                }
+            } finally {
+                setResetPasswordLoading(false);
+            }
         });
 
         changePasswordForm.addEventListener('submit', async function (e) {
@@ -512,11 +637,14 @@
 
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            if (loginRequestInFlight || redirectInProgress) return;
+
             const email = normalizeEmail(emailInput.value);
             const password = passwordInput.value;
 
             hideError();
             setLoadingState(true);
+            loginRequestInFlight = true;
 
             try {
                 await auth.setPersistence(rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION);
@@ -532,6 +660,9 @@
                     console.error(error);
                     showError('Lỗi hệ thống, vui lòng thử lại!');
                 }
+            } finally {
+                loginRequestInFlight = false;
+                if (!redirectInProgress) setLoadingState(false);
             }
         });
     </script>
