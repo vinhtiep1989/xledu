@@ -480,7 +480,7 @@
                                 <th style="width:180px;">Họ và tên *</th>
                                 <th style="width:135px;">Ngày sinh</th>
                                 <th style="width:180px;">Địa chỉ</th>
-                                <th style="width:130px;">CCCD HS</th>
+                                <th style="width:130px;">CCCD HS *</th>
                                 <th style="width:90px;">Lớp</th>
                                 <th style="width:150px;">Trường</th>
                                 <th style="width:180px;">Phụ huynh</th>
@@ -489,6 +489,7 @@
                                 <th style="width:135px;">Mã lớp hiện tại</th>
                                 <th style="width:220px;">Bổ sung thêm mã lớp</th>
                                 <th style="width:130px;">Hình thức học</th>
+                                <th style="width:130px;">Ngày nhập học</th>
                                 <th style="width:200px;">Ghi chú</th>
                                 <th style="width:54px;">Xóa</th>
                             </tr>
@@ -496,7 +497,7 @@
                         <tbody id="attendanceBulkStudentRows"></tbody>
                     </table>
                 </div>
-                <div class="helper-text" id="attendanceClassCodeHint">Mã lớp hiện tại được khóa sẵn. Có thể nhập thêm các mã lớp khác, ngăn cách bằng dấu phẩy để hệ thống tự đồng bộ sang trang học sinh và lớp tương ứng.</div>
+                <div class="helper-text" id="attendanceClassCodeHint">Mã lớp hiện tại được khóa sẵn. CCCD học sinh là trường bắt buộc. Nếu CCCD đã tồn tại trong hệ thống, nhập vào sẽ tự điền thông tin; nếu chưa có, hệ thống sẽ lưu mới và đồng bộ sang danh sách học sinh.</div>
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" id="btnCancelAttendanceStudent">Hủy</button>
                     <button type="submit" class="btn-save" id="btnSaveStudent">Lưu học sinh</button>
@@ -646,7 +647,7 @@
             return Array.from(new Set(parts));
         }
         function studentFilledScore(student) {
-            const keys = ['name','dob','address','studentCccd','gradeClass','school','parentName','parentCccd','parentPhone','note','mode'];
+            const keys = ['name','dob','address','studentCccd','gradeClass','school','parentName','parentCccd','parentPhone','note','mode','enrollmentDate'];
             return keys.reduce((sum, key) => sum + (normalizeText(student && student[key]) ? 1 : 0), 0);
         }
         function chooseBetterStudent(primary, candidate) {
@@ -1877,7 +1878,7 @@ function parseTimeToMinutes(value) {
                 <td><input type="text" class="bulk-input" data-field="name" value="${escapeHtml(student.name || '')}" placeholder="Họ và tên"></td>
                 <td><input type="date" class="bulk-input" data-field="dob" value="${escapeHtml(formatDateInputValue(student.dob || ''))}"></td>
                 <td><input type="text" class="bulk-input" data-field="address" value="${escapeHtml(student.address || '')}" placeholder="Địa chỉ"></td>
-                <td><input type="text" class="bulk-input" data-field="studentCccd" value="${escapeHtml(student.studentCccd || '')}" placeholder="CCCD học sinh"></td>
+                <td><input type="text" class="bulk-input" data-field="studentCccd" value="${escapeHtml(student.studentCccd || '')}" placeholder="CCCD học sinh *" inputmode="numeric" maxlength="12" required></td>
                 <td><input type="text" class="bulk-input" data-field="gradeClass" value="${escapeHtml(student.gradeClass || '')}" placeholder="VD: 8A"></td>
                 <td><input type="text" class="bulk-input" data-field="school" value="${escapeHtml(student.school || '')}" placeholder="Trường"></td>
                 <td><input type="text" class="bulk-input" data-field="parentName" value="${escapeHtml(student.parentName || '')}" placeholder="Phụ huynh"></td>
@@ -1886,6 +1887,7 @@ function parseTimeToMinutes(value) {
                 <td><input type="text" class="bulk-input bulk-readonly" data-field="currentClassCode" value="${escapeHtml(currentClassCode)}" readonly></td>
                 <td><input type="text" class="bulk-input" data-field="linkedCodes" list="classCodeSuggestions" autocomplete="off" value="${escapeHtml(extraCodes)}" placeholder="VD: VAN-8B, TOAN-6A"></td>
                 <td><select class="bulk-select" data-field="mode"><option value="Trực tiếp" ${(student.mode || 'Trực tiếp') === 'Trực tiếp' ? 'selected' : ''}>Trực tiếp</option><option value="Trực tuyến" ${(student.mode || '') === 'Trực tuyến' ? 'selected' : ''}>Trực tuyến</option></select></td>
+                <td><input type="date" class="bulk-input" data-field="enrollmentDate" value="${escapeHtml(formatDateInputValue(student.enrollmentDate || student.enrolledAt || ''))}"></td>
                 <td><input type="text" class="bulk-input" data-field="note" value="${escapeHtml(student.note || '')}" placeholder="Ghi chú"></td>
                 <td class="col-center"><button type="button" class="bulk-remove-btn" title="Xóa dòng"><i class="fa-solid fa-trash"></i></button></td>
             `;
@@ -1922,34 +1924,81 @@ function parseTimeToMinutes(value) {
         function closeAttendanceStudentModal() {
             document.getElementById('addStudentModal').classList.remove('show');
         }
+        function fillAttendanceBulkRowFromProfile(row, profile = {}) {
+            if (!row || !profile) return;
+            const fieldMap = {
+                name: profile.name || '',
+                dob: formatDateInputValue(profile.dob || profile.birthDate || ''),
+                address: profile.address || '',
+                studentCccd: digitsOnly(profile.studentCccd || profile.cccd || ''),
+                gradeClass: profile.gradeClass || profile.grade || '',
+                school: profile.school || '',
+                parentName: profile.parentName || '',
+                parentCccd: digitsOnly(profile.parentCccd || ''),
+                parentPhone: profile.parentPhone || '',
+                mode: profile.mode || 'Trực tiếp',
+                enrollmentDate: formatDateInputValue(profile.enrollmentDate || profile.enrolledAt || ''),
+                note: profile.note || ''
+            };
+            Object.entries(fieldMap).forEach(([field, value]) => {
+                const input = row.querySelector(`[data-field="${field}"]`);
+                if (!input) return;
+                if (input.tagName === 'SELECT') input.value = value || input.value || 'Trực tiếp';
+                else input.value = value || '';
+            });
+        }
+        async function findStudentProfileByCccd(studentCccd) {
+            const normalizedCccd = digitsOnly(studentCccd);
+            if (!normalizedCccd) return null;
+            let bestProfile = null;
+            studentsData.forEach((student) => {
+                if (digitsOnly(student.studentCccd || student.cccd) === normalizedCccd) {
+                    bestProfile = chooseBetterStudent(bestProfile, student);
+                }
+            });
+            if (bestProfile) return bestProfile;
+            const lookupValues = Array.from(new Set([normalizedCccd, normalizeText(studentCccd)].filter(Boolean)));
+            for (const value of lookupValues) {
+                const snapshot = await db.collectionGroup('students').where('studentCccd', '==', value).limit(10).get().catch(() => null);
+                if (!snapshot || snapshot.empty) continue;
+                snapshot.forEach((doc) => {
+                    bestProfile = chooseBetterStudent(bestProfile, doc.data() || {});
+                });
+                if (bestProfile) return bestProfile;
+            }
+            return null;
+        }
         function getAttendanceBulkRowObjects() {
             return [...document.querySelectorAll('#attendanceBulkStudentRows tr')].map((row, index) => {
                 const data = { _rowNumber: index + 1 };
                 row.querySelectorAll('[data-field]').forEach(input => { data[input.dataset.field] = normalizeText(input.value); });
                 data.dob = formatDateInputValue(row.querySelector('[data-field="dob"]').value);
+                data.enrollmentDate = formatDateInputValue(row.querySelector('[data-field="enrollmentDate"]').value);
                 return data;
             });
         }
         function rowHasAnyAttendanceStudentValue(data) {
-            return ['name','dob','address','studentCccd','gradeClass','school','parentName','parentCccd','parentPhone','linkedCodes','mode','note'].some(key => normalizeText(data[key]));
+            return ['name','dob','address','studentCccd','gradeClass','school','parentName','parentCccd','parentPhone','linkedCodes','mode','enrollmentDate','note'].some(key => normalizeText(data[key]));
         }
         function collectStudentsFromAttendanceModal() {
             const rows = getAttendanceBulkRowObjects();
             const activeRows = rows.filter(rowHasAnyAttendanceStudentValue);
             if (activeRows.length === 0) throw new Error('Vui lòng nhập ít nhất 1 học sinh.');
             return activeRows.map(item => {
-                if (!item.name) throw new Error(`Dòng ${item._rowNumber}: vui lòng nhập họ và tên học sinh.`);
+                const normalizedStudentCccd = digitsOnly(item.studentCccd);
+                if (!normalizedStudentCccd) throw new Error(`Dòng ${item._rowNumber}: vui lòng nhập CCCD học sinh.`);
                 return {
-                    name: item.name,
+                    name: item.name || '',
                     dob: item.dob || '',
                     address: item.address || '',
-                    studentCccd: item.studentCccd || '',
+                    studentCccd: normalizedStudentCccd,
                     gradeClass: item.gradeClass || '',
                     school: item.school || '',
                     parentName: item.parentName || '',
-                    parentCccd: item.parentCccd || '',
+                    parentCccd: digitsOnly(item.parentCccd),
                     parentPhone: item.parentPhone || '',
                     mode: item.mode || 'Trực tiếp',
+                    enrollmentDate: item.enrollmentDate || '',
                     note: item.note || '',
                     linkedCodesRaw: item.linkedCodes || ''
                 };
@@ -2017,6 +2066,7 @@ function parseTimeToMinutes(value) {
                 parentCccd: formData.parentCccd || (baseProfile && baseProfile.parentCccd) || '',
                 parentPhone: formData.parentPhone || (baseProfile && baseProfile.parentPhone) || '',
                 mode: formData.mode || (baseProfile && baseProfile.mode) || 'Trực tiếp',
+                enrollmentDate: formData.enrollmentDate || (baseProfile && (baseProfile.enrollmentDate || baseProfile.enrolledAt)) || '',
                 note: formData.note || (baseProfile && baseProfile.note) || '',
                 linkedClassCodes: linkedCodes,
                 syncStudentKey: syncKey,
@@ -2029,11 +2079,18 @@ function parseTimeToMinutes(value) {
             enforceManagerPermission('thêm học sinh');
             const currentClassCode = getCurrentClassCode();
             if (!currentClassCode) throw new Error('Không tìm thấy mã lớp hiện tại để đồng bộ học sinh.');
-            const linkedCodes = parseLinkedClassCodes(formData.linkedCodesRaw || '', currentClassCode);
+            const normalizedFormData = {
+                ...formData,
+                studentCccd: digitsOnly(formData.studentCccd),
+                parentCccd: digitsOnly(formData.parentCccd),
+                enrollmentDate: formatDateInputValue(formData.enrollmentDate)
+            };
+            if (!normalizedFormData.studentCccd) throw new Error('Vui lòng nhập CCCD học sinh.');
+            const linkedCodes = parseLinkedClassCodes(normalizedFormData.linkedCodesRaw || '', currentClassCode);
             const missingCodes = linkedCodes.filter(code => !classesByCode[code]);
             if (missingCodes.length) throw new Error(`Không tìm thấy mã lớp: ${missingCodes.join(', ')}`);
-            const syncKey = getStudentSyncKey(formData);
-            const globalMatches = await findGlobalStudentMatches(formData, syncKey);
+            const syncKey = getStudentSyncKey(normalizedFormData);
+            const globalMatches = await findGlobalStudentMatches(normalizedFormData, syncKey);
             const existingCodes = new Set();
             Object.values(globalMatches.byClass).forEach(item => {
                 const data = item.data || {};
@@ -2043,7 +2100,8 @@ function parseTimeToMinutes(value) {
             });
             linkedCodes.forEach(code => existingCodes.add(code));
             const finalLinkedCodes = Array.from(existingCodes).filter(Boolean).sort();
-            const mergedProfile = buildMergedStudentProfile(formData, globalMatches.bestProfile, syncKey, finalLinkedCodes);
+            const mergedProfile = buildMergedStudentProfile(normalizedFormData, globalMatches.bestProfile, syncKey, finalLinkedCodes);
+            if (!normalizeText(mergedProfile.name)) throw new Error('Vui lòng nhập họ và tên học sinh hoặc dùng CCCD đã tồn tại để hệ thống tự điền thông tin.');
             const batch = db.batch();
             const touchedClassIds = new Set();
             for (const code of finalLinkedCodes) {
@@ -2053,7 +2111,7 @@ function parseTimeToMinutes(value) {
                 const targetRef = existingDoc
                     ? db.collection('classes').doc(cls.id).collection('students').doc(existingDoc.docId)
                     : db.collection('classes').doc(cls.id).collection('students').doc(getStudentManagedDocId(syncKey));
-                const payload = { ...mergedProfile };
+                const payload = { ...mergedProfile, studentCccd: digitsOnly(mergedProfile.studentCccd || ''), parentCccd: digitsOnly(mergedProfile.parentCccd || '') };
                 if (!existingDoc) {
                     payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     payload.attendance = {};
@@ -2345,11 +2403,28 @@ function parseTimeToMinutes(value) {
         document.getElementById('addStudentModal').addEventListener('click', (e) => { if (e.target.id === 'addStudentModal') closeAttendanceStudentModal(); });
 
         document.addEventListener('input', (event) => {
+            if (event.target.matches('#attendanceBulkStudentRows [data-field="studentCccd"]')) {
+                event.target.value = digitsOnly(event.target.value).slice(0, 12);
+            }
             if (event.target.classList.contains('teacher-payout-percent-input')) {
                 updateTeachingPayoutPreview();
             }
         });
         document.addEventListener('change', async (event) => {
+            if (event.target.matches('#attendanceBulkStudentRows [data-field="studentCccd"]')) {
+                const cccdInput = event.target;
+                const row = cccdInput.closest('tr');
+                const normalizedCccd = digitsOnly(cccdInput.value);
+                cccdInput.value = normalizedCccd;
+                if (row && normalizedCccd) {
+                    const matchedProfile = await findStudentProfileByCccd(normalizedCccd);
+                    if (matchedProfile) {
+                        fillAttendanceBulkRowFromProfile(row, matchedProfile);
+                        showToast('Đã tự điền dữ liệu', 'CCCD đã có trong hệ thống, các thông tin còn lại đã được điền tự động.');
+                    }
+                }
+                return;
+            }
             if (event.target.classList.contains('teacher-payout-percent-input')) {
                 try {
                     await persistTeachingPayoutPercent(event.target.dataset.teacherKey, event.target.value);
