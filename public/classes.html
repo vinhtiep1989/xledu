@@ -16,7 +16,7 @@
             --bg-body: #f4fbf7; --bg-dark: #0d1b2a; --bg-card-white: #ffffff; 
             --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; 
             --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6; 
-            --border-grey: #e8f1ec; --danger-red: #e74c3c; --edit-blue: #3498db; --header-height: 90px; --sidebar-width: 270px; 
+            --border-grey: #e8f1ec; --danger-red: #e74c3c; --edit-blue: #3498db; --header-height: 90px; --sidebar-width: 250px; 
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
@@ -40,11 +40,13 @@
         .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; white-space: nowrap; padding: 8px 15px; font-size: 0.85rem;}
         .btn-logout:hover { background: rgba(224, 170, 62, 0.15); }
         
-        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; z-index: 2; }
-        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255, 255, 255, 0.02); transition: all 0.3s; border: 1px solid transparent;}
-        .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
-        .sidebar-nav-item:hover { color: var(--white); transform: translateX(5px); background: rgba(255, 255, 255, 0.08); }
-        .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46, 204, 113, 0.15), rgba(46, 204, 113, 0.05)); border: 1px solid rgba(46, 204, 113, 0.3); transform: translateX(4px); }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 7px; z-index: 2; }
+        .sidebar-nav-item { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.76); text-decoration: none; padding: 10px 14px; border-radius: 18px; font-size: 0.84rem; line-height: 1.15; font-weight: 600; background: rgba(255,255,255,0.025); transition: all 0.22s ease; border: 1px solid transparent; min-height: 40px; width: 100%; }
+        .sidebar-nav-item i { width: 18px; min-width: 18px; text-align: center; font-size: 1rem; flex-shrink: 0; }
+        .sidebar-nav-item .nav-label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sidebar-nav-item:hover { color: #fff; transform: translateX(4px); background: rgba(255,255,255,0.08); }
+        .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46,204,113,0.14), rgba(46,204,113,0.04)); border: 1px solid rgba(46,204,113,0.28); transform: translateX(3px); }
+        .admin-badge { margin-left: 8px; flex-shrink: 0; font-size: 0.56rem; letter-spacing: 0.03em; text-transform: uppercase; font-weight: 800; background: rgba(224,170,62,0.14); color: var(--accent-gold); padding: 2px 6px; border-radius: 999px; line-height: 1.2; white-space: nowrap; }
 
         /* GIAO DIỆN CHÍNH */
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
@@ -158,7 +160,7 @@
         @media (min-width: 1025px) {
             body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
             .main-wrapper { display: flex; flex: 1; overflow: hidden; position: relative; }
-            .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 15px; }
+            .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); padding: 24px 12px; }
             .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; }
             .sidebar-overlay { display: none !important; }
         }
@@ -173,7 +175,7 @@
             .user-info { display: none; }
             .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
 
-            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto;}
+            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 248px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 18px 12px; overflow-y: auto;}
             .sidebar.open { left: 0; }
             .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
             .sidebar-overlay.open { display: block; }
@@ -218,12 +220,12 @@
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <aside class="sidebar" id="sidebar">
             <nav class="sidebar-nav">
-                <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
-                <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
-                <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
-                <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
-                <a href="internal.html" class="sidebar-nav-item" data-admin-only-nav="internal" style="display:none;"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
-                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
+                <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i><span class="nav-label">Trang chủ</span></a>
+                <a href="classes.html" class="sidebar-nav-item active"><i class="fa-solid fa-chalkboard"></i><span class="nav-label">Quản lý lớp học</span></a>
+                <a href="students.html" class="sidebar-nav-item"><i class="fa-solid fa-user-graduate"></i><span class="nav-label">Quản lý học sinh</span></a>
+                <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i><span class="nav-label">Hồ sơ nhân sự</span></a>
+                <a href="internal.html" class="sidebar-nav-item" data-admin-only-nav="internal" style="display:none;"><i class="fa-solid fa-sitemap"></i><span class="nav-label">Quản lý nội bộ</span><span class="admin-badge">Admin</span></a>
+                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i><span class="nav-label">Quản lý hệ thống</span><span class="admin-badge">Admin</span></a>
             </nav>
         </aside>
 
@@ -322,10 +324,10 @@
                 </div>
 
                 <div class="form-group autocomplete-container">
-                    <label>Quản Lý Lớp (Có thể chọn nhiều)</label>
+                    <label>Quản Lý Lớp</label>
                     <input type="text" id="classManagerInput" class="form-control" placeholder="Nhập tên quản lý để tìm và chọn..." autocomplete="off">
                     <div id="managerSuggestions" class="suggestions-box"></div>
-                    <div id="selectedManagerContainer" class="tags-container"></div>
+                    <div id="selectedManagerContainer" class="selected-single-tag"></div>
                 </div>
 
                 <div class="form-group autocomplete-container">
@@ -400,7 +402,7 @@
         let teacherList = [];
         let managerList = [];
         let currentSelectedTeachers = [];
-        let currentSelectedManagers = [];
+        let currentSelectedManager = null;
         let currentAuthUser = null;
         let currentUserProfile = null;
         let classesCache = [];
@@ -424,66 +426,6 @@
         const managerInput = document.getElementById('classManagerInput');
         const managerSuggestionsBox = document.getElementById('managerSuggestions');
         const selectedManagerContainer = document.getElementById('selectedManagerContainer');
-
-        function normalizeRoles(data) {
-            const roles = [];
-            const source = data && data.roles;
-            if (Array.isArray(source)) {
-                source.forEach(role => {
-                    const normalized = String(role || '').trim().toLowerCase();
-                    if (normalized && !roles.includes(normalized)) roles.push(normalized);
-                });
-            }
-            const legacyRole = String(data && data.role || '').trim().toLowerCase();
-            if (legacyRole && !roles.includes(legacyRole)) roles.push(legacyRole);
-            return roles;
-        }
-
-        function hasAnyRole(data, expectedRoles) {
-            const normalizedRoles = normalizeRoles(data);
-            return expectedRoles.some(role => normalizedRoles.includes(String(role || '').trim().toLowerCase()));
-        }
-
-        function getPrimaryRole(data) {
-            const normalizedRoles = normalizeRoles(data);
-            if (normalizedRoles.includes('admin')) return 'admin';
-            if (normalizedRoles.includes('manager')) return 'manager';
-            if (normalizedRoles.includes('teacher')) return 'teacher';
-            return String(data && data.role || '').trim().toLowerCase() || 'teacher';
-        }
-
-        function getUniquePeople(items) {
-            const seen = new Set();
-            const results = [];
-            (items || []).forEach((item) => {
-                const email = normalizeEmail(item && item.email);
-                const name = getDisplayName(item || {}, email) || email || 'Chưa rõ';
-                const key = email || name.toLowerCase();
-                if (!key || seen.has(key)) return;
-                seen.add(key);
-                results.push({ name, email });
-            });
-            return results;
-        }
-
-        function getClassManagers(classData) {
-            if (Array.isArray(classData && classData.managers) && classData.managers.length) {
-                return getUniquePeople(classData.managers);
-            }
-            if (classData && classData.manager) {
-                return getUniquePeople([{ name: classData.manager.name || classData.managerNameDisplay || 'Chưa gán', email: classData.manager.email || classData.managerEmail || '' }]);
-            }
-            if (classData && classData.managerNameDisplay && classData.managerNameDisplay !== 'Chưa gán') {
-                return getUniquePeople([{ name: classData.managerNameDisplay, email: classData.managerEmail || '' }]);
-            }
-            return [];
-        }
-
-        function getManagerDisplayText(classData) {
-            const managers = getClassManagers(classData);
-            return managers.length ? managers.map(item => item.name || item.email || '').join(', ') : 'Chưa gán';
-        }
-
 
         function normalizeEmail(email) {
             return String(email || '').trim().toLowerCase();
@@ -525,8 +467,8 @@
 
         function renderCurrentUserHeader(user, profile) {
             document.getElementById('userEmailDisplay').textContent = user.email || '';
-            document.getElementById('currentUserName').textContent = getDisplayName(profile, user.email) || getRoleLabel(getPrimaryRole(profile));
-            syncAdminOnlyMenu(getPrimaryRole(profile));
+            document.getElementById('currentUserName').textContent = getDisplayName(profile, user.email) || getRoleLabel(profile && profile.role);
+            syncAdminOnlyMenu((profile && profile.role) || 'teacher');
         }
 
 
@@ -628,17 +570,14 @@ function syncAdminOnlyMenu(role) {
         }
 
         async function fetchTeachers() {
-            const snap = await db.collection('users').get().catch(() => null);
+            const snap = await db.collection('users').where('role', '==', 'teacher').get().catch(() => null);
             teacherList = [];
             if (snap) {
                 snap.forEach(doc => {
-                    const data = doc.data() || {};
-                    if (!hasAnyRole(data, ['teacher'])) return;
-                    const person = sanitizePersonData(data);
+                    const person = sanitizePersonData(doc.data() || {});
                     if (person.name || person.email) teacherList.push(person);
                 });
             }
-            teacherList = getUniquePeople(teacherList);
             if (teacherList.length === 0) {
                 teacherList = [
                     { name: 'Nguyễn Phượng Ngân', email: 'ngannguyen@gmail.com' },
@@ -651,16 +590,13 @@ function syncAdminOnlyMenu(role) {
 
         async function fetchManagers() {
             managerList = [];
-            const snap = await db.collection('users').get().catch(() => null);
+            const snap = await db.collection('users').where('role', 'in', ['manager', 'admin']).get().catch(() => null);
             if (snap) {
                 snap.forEach(doc => {
-                    const data = doc.data() || {};
-                    if (!hasAnyRole(data, ['manager', 'admin'])) return;
-                    const person = sanitizePersonData(data);
+                    const person = sanitizePersonData(doc.data() || {});
                     if (person.name || person.email) managerList.push(person);
                 });
             }
-            managerList = getUniquePeople(managerList);
             if (managerList.length === 0 && currentUserProfile) {
                 managerList.push({ name: getDisplayName(currentUserProfile, currentAuthUser && currentAuthUser.email), email: normalizeEmail(currentAuthUser && currentAuthUser.email) });
             }
@@ -676,14 +612,13 @@ function syncAdminOnlyMenu(role) {
             });
         }
 
-        function renderManagerTags() {
+        function renderManagerTag() {
             selectedManagerContainer.innerHTML = '';
-            currentSelectedManagers.forEach((manager, index) => {
-                const badge = document.createElement('span');
-                badge.className = 'teacher-tag';
-                badge.innerHTML = `<i class="fa-solid fa-user-tie"></i> ${escapeHtml(manager.name)} <i class="fa-solid fa-circle-xmark" onclick="removeManager(${index})"></i>`;
-                selectedManagerContainer.appendChild(badge);
-            });
+            if (!currentSelectedManager) return;
+            const badge = document.createElement('span');
+            badge.className = 'manager-badge';
+            badge.innerHTML = `<i class="fa-solid fa-user-tie"></i> ${escapeHtml(currentSelectedManager.name)} <i class="fa-solid fa-circle-xmark" style="cursor:pointer;" onclick="removeManager()"></i>`;
+            selectedManagerContainer.appendChild(badge);
         }
 
         window.removeTeacher = function(index) {
@@ -691,9 +626,9 @@ function syncAdminOnlyMenu(role) {
             renderTeacherTags();
         };
 
-        window.removeManager = function(index) {
-            currentSelectedManagers.splice(index, 1);
-            renderManagerTags();
+        window.removeManager = function() {
+            currentSelectedManager = null;
+            renderManagerTag();
         };
 
         function renderSuggestions(targetBox, items, onSelect) {
@@ -742,12 +677,8 @@ function syncAdminOnlyMenu(role) {
 
             const filtered = managerList.filter(item => item.name.toLowerCase().includes(keyword) || item.email.toLowerCase().includes(keyword));
             renderSuggestions(managerSuggestionsBox, filtered, (item) => {
-                const exists = currentSelectedManagers.some(manager => normalizeEmail(manager.email) === normalizeEmail(item.email) || (manager.name || '').toLowerCase() === (item.name || '').toLowerCase());
-                if (!exists) {
-                    currentSelectedManagers.push({ name: item.name, email: item.email });
-                    currentSelectedManagers = getUniquePeople(currentSelectedManagers);
-                    renderManagerTags();
-                }
+                currentSelectedManager = { name: item.name, email: item.email };
+                renderManagerTag();
                 managerInput.value = '';
                 managerSuggestionsBox.style.display = 'none';
             });
@@ -767,9 +698,9 @@ function syncAdminOnlyMenu(role) {
             addForm.reset();
             editClassIdInput.value = '';
             currentSelectedTeachers = [];
-            currentSelectedManagers = [];
+            currentSelectedManager = null;
             renderTeacherTags();
-            renderManagerTags();
+            renderManagerTag();
             resetScheduleForm();
             modalTitleText.innerText = 'Thêm Lớp Học Mới';
             addModal.classList.add('show');
@@ -872,9 +803,8 @@ function syncAdminOnlyMenu(role) {
                 const stats = classAttendanceStats[classData.id] || { present: 0, total: classData.studentCount || 0 };
                 const realtimeState = getClassRealtimeState(classData, now);
                 const scheduleLabel = classData.scheduleLabel || buildScheduleLabel(classData.scheduleDays, classData.startTime);
-                const managerItems = getClassManagers(classData);
-                const managerName = managerItems.length ? managerItems.map(item => item.name || item.email || '').join(', ') : 'Chưa gán';
-                const managerEmail = managerItems.map(item => item.email || '').filter(Boolean).join(', ');
+                const managerName = (classData.manager && classData.manager.name) || classData.managerNameDisplay || 'Chưa gán';
+                const managerEmail = (classData.manager && classData.manager.email) || classData.managerEmail || '';
                 const teacherSearchText = (classData.teacherNamesDisplay || classData.teacherName || '').toLowerCase();
 
                 let teachersHtml = 'Chưa phân công';
@@ -888,8 +818,8 @@ function syncAdminOnlyMenu(role) {
                     ? `<span class="schedule-badge"><i class="fa-regular fa-clock"></i> ${escapeHtml(scheduleLabel)}</span>`
                     : '<span class="schedule-empty">Chưa cài lịch</span>';
 
-                const managerHtml = managerItems.length
-                    ? managerItems.map(item => `<span class="manager-badge"><i class="fa-solid fa-user-tie"></i> ${escapeHtml(item.name || item.email || '')}</span>`).join('')
+                const managerHtml = managerName !== 'Chưa gán'
+                    ? `<span class="manager-badge"><i class="fa-solid fa-user-tie"></i> ${escapeHtml(managerName)}</span>`
                     : '<span class="manager-badge empty"><i class="fa-solid fa-user-slash"></i> Chưa gán</span>';
 
                 const row = document.createElement('tr');
@@ -1017,19 +947,14 @@ function syncAdminOnlyMenu(role) {
             try {
                 const schedulePayload = getSchedulePayloadFromForm();
                 const teacherNamesString = currentSelectedTeachers.map(item => item.name).join(', ');
-                const selectedManagers = getUniquePeople(currentSelectedManagers);
-                const managerNamesString = selectedManagers.map(item => item.name).join(', ');
-                const managerEmailsString = selectedManagers.map(item => item.email).filter(Boolean).join(', ');
                 const editId = editClassIdInput.value.trim();
 
                 const classData = {
                     classCode: document.getElementById('classCode').value.trim(),
                     className: document.getElementById('className').value.trim(),
-                    managers: selectedManagers,
-                    manager: selectedManagers[0] ? { name: selectedManagers[0].name, email: selectedManagers[0].email } : null,
-                    managerNameDisplay: managerNamesString || 'Chưa gán',
-                    managerEmail: selectedManagers[0] ? selectedManagers[0].email : '',
-                    managerEmailsDisplay: managerEmailsString,
+                    manager: currentSelectedManager ? { name: currentSelectedManager.name, email: currentSelectedManager.email } : null,
+                    managerNameDisplay: currentSelectedManager ? currentSelectedManager.name : 'Chưa gán',
+                    managerEmail: currentSelectedManager ? currentSelectedManager.email : '',
                     teachers: currentSelectedTeachers,
                     teacherNamesDisplay: teacherNamesString || 'Chưa phân công',
                     scheduleDays: schedulePayload.scheduleDays,
@@ -1088,8 +1013,12 @@ function syncAdminOnlyMenu(role) {
             }
             renderTeacherTags();
 
-            currentSelectedManagers = getClassManagers(data);
-            renderManagerTags();
+            currentSelectedManager = data.manager
+                ? { name: data.manager.name || data.managerNameDisplay || 'Chưa gán', email: data.manager.email || data.managerEmail || '' }
+                : (data.managerNameDisplay && data.managerNameDisplay !== 'Chưa gán'
+                    ? { name: data.managerNameDisplay, email: data.managerEmail || '' }
+                    : null);
+            renderManagerTag();
 
             setScheduleForm(data);
 
