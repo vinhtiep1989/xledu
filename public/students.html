@@ -17,7 +17,7 @@
             --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71;
             --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --grey-light: #f4f7f6;
             --border-grey: #e8f1ec; --danger-red: #e74c3c; --edit-blue: #3498db;
-            --header-height: 90px; --sidebar-width: 270px;
+            --header-height: 90px; --sidebar-width: 250px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-body); color: var(--text-dark); }
@@ -38,12 +38,13 @@
         .btn-logout { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; white-space: nowrap; padding: 8px 15px; font-size: 0.85rem; }
         .btn-logout:hover { background: rgba(224,170,62,0.15); }
 
-        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; z-index: 2; }
-        .sidebar-nav-item { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.7); text-decoration: none; padding: 12px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: 500; background: rgba(255,255,255,0.02); transition: all 0.3s; border: 1px solid transparent; }
-        .sidebar-nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
-        .sidebar-nav-item:hover { color: #fff; transform: translateX(5px); background: rgba(255,255,255,0.08); }
-        .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46,204,113,0.15), rgba(46,204,113,0.05)); border: 1px solid rgba(46,204,113,0.3); transform: translateX(4px); }
-        .admin-badge { margin-left: auto; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; background: rgba(224,170,62,0.15); color: var(--accent-gold); padding: 3px 8px; border-radius: 12px; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 7px; z-index: 2; }
+        .sidebar-nav-item { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.76); text-decoration: none; padding: 10px 14px; border-radius: 18px; font-size: 0.84rem; line-height: 1.15; font-weight: 600; background: rgba(255,255,255,0.025); transition: all 0.22s ease; border: 1px solid transparent; min-height: 40px; width: 100%; }
+        .sidebar-nav-item i { width: 18px; min-width: 18px; text-align: center; font-size: 1rem; flex-shrink: 0; }
+        .sidebar-nav-item .nav-label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sidebar-nav-item:hover { color: #fff; transform: translateX(4px); background: rgba(255,255,255,0.08); }
+        .sidebar-nav-item.active { color: var(--primary-green); font-weight: 700; background: linear-gradient(90deg, rgba(46,204,113,0.14), rgba(46,204,113,0.04)); border: 1px solid rgba(46,204,113,0.28); transform: translateX(3px); }
+        .admin-badge { margin-left: 8px; flex-shrink: 0; font-size: 0.56rem; letter-spacing: 0.03em; text-transform: uppercase; font-weight: 800; background: rgba(224,170,62,0.14); color: var(--accent-gold); padding: 2px 6px; border-radius: 999px; line-height: 1.2; white-space: nowrap; }
 
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 15px; }
         .page-title { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
@@ -346,7 +347,7 @@
         @media (min-width: 1025px) {
             body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
             .main-wrapper { display: flex; flex: 1; overflow: hidden; position: relative; }
-            .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); padding: 30px 15px; }
+            .sidebar { width: var(--sidebar-width); background-color: var(--bg-dark); flex-shrink: 0; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); padding: 24px 12px; }
             .dashboard-content { flex: 1; padding: 30px; overflow-y: auto; }
             .sidebar-overlay { display: none !important; }
         }
@@ -360,7 +361,7 @@
             .header-subtitle { display: none; }
             .user-info { display: none; }
             .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
-            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 260px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 20px 15px; overflow-y: auto; }
+            .sidebar { position: fixed; left: -100%; top: var(--header-height); width: 248px; height: calc(100vh - var(--header-height)); background: var(--bg-dark); z-index: 1000; transition: 0.3s; padding: 18px 12px; overflow-y: auto; }
             .sidebar.open { left: 0; }
             .sidebar-overlay { display: none; position: fixed; top: var(--header-height); left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999; }
             .sidebar-overlay.open { display: block; }
@@ -1251,12 +1252,12 @@
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <aside class="sidebar" id="sidebar">
             <nav class="sidebar-nav">
-                <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i> Trang chủ</a>
-                <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i> Quản lý lớp học</a>
-                <a href="students.html" class="sidebar-nav-item active"><i class="fa-solid fa-user-graduate"></i> Quản lý học sinh</a>
-                <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i> Hồ sơ nhân sự</a>
-                <a href="internal.html" class="sidebar-nav-item" data-admin-only-nav="internal" style="display:none;"><i class="fa-solid fa-sitemap"></i> Quản lý nội bộ<span class="admin-badge">Admin</span></a>
-                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i> Quản lý hệ thống<span class="admin-badge">Admin</span></a>
+                <a href="index.html" class="sidebar-nav-item"><i class="fa-solid fa-house"></i><span class="nav-label">Trang chủ</span></a>
+                <a href="classes.html" class="sidebar-nav-item"><i class="fa-solid fa-chalkboard"></i><span class="nav-label">Quản lý lớp học</span></a>
+                <a href="students.html" class="sidebar-nav-item active"><i class="fa-solid fa-user-graduate"></i><span class="nav-label">Quản lý học sinh</span></a>
+                <a href="staff.html" class="sidebar-nav-item"><i class="fa-solid fa-address-book"></i><span class="nav-label">Hồ sơ nhân sự</span></a>
+                <a href="internal.html" class="sidebar-nav-item" data-admin-only-nav="internal" style="display:none;"><i class="fa-solid fa-sitemap"></i><span class="nav-label">Quản lý nội bộ</span><span class="admin-badge">Admin</span></a>
+                <a href="system.html" class="sidebar-nav-item"><i class="fa-solid fa-gear"></i><span class="nav-label">Quản lý hệ thống</span><span class="admin-badge">Admin</span></a>
             </nav>
         </aside>
 
@@ -1351,10 +1352,11 @@
                                 <th style="width:122px;"><span class="th-title">SĐT PH</span><input type="text" class="filter-sm column-filter" data-key="parentPhone" placeholder="Lọc SĐT PH"></th>
                                 <th style="width:150px;"><span class="th-title">Số lớp / mã lớp</span><input type="text" class="filter-sm column-filter" data-key="centerClassInfo" placeholder="Số lớp hoặc mã lớp"></th>
                                 <th style="width:96px;"><span class="th-title">Hình thức</span><select class="filter-sm column-filter" data-key="mode"><option value="">Tất cả</option><option value="Trực tiếp">Trực tiếp</option><option value="Trực tuyến">Trực tuyến</option></select></th>
+                                <th style="width:120px;"><span class="th-title">Ngày nhập học</span><input type="text" class="filter-sm column-filter" data-key="enrollmentDate" placeholder="dd/mm/yyyy"></th>
                                 <th style="width:170px;"><span class="th-title">Ghi chú</span><input type="text" class="filter-sm column-filter" data-key="note" placeholder="Lọc ghi chú"></th>
                             </tr>
                         </thead>
-                        <tbody id="studentTableBody"><tr><td colspan="14" class="empty-state"><i class="fa-solid fa-table-list"></i>Đang tải dữ liệu học sinh...</td></tr></tbody>
+                        <tbody id="studentTableBody"><tr><td colspan="15" class="empty-state"><i class="fa-solid fa-table-list"></i>Đang tải dữ liệu học sinh...</td></tr></tbody>
                     </table>
                 </div>
                 <div class="table-pagination-wrap">
@@ -1394,6 +1396,7 @@
                                 <th style="width:145px;">SĐT PH</th>
                                 <th style="width:220px;">Mã lớp đang học *</th>
                                 <th style="width:130px;">Hình thức học</th>
+                                <th style="width:130px;">Ngày nhập học</th>
                                 <th style="width:200px;">Ghi chú</th>
                                 <th style="width:54px;">Xóa</th>
                             </tr>
@@ -1811,7 +1814,7 @@ function getUserDisplayName(userDocData, user) {
             return Array.from(new Set(parts));
         }
         function studentFilledScore(student) {
-            const keys = ['name','dob','address','studentCccd','gradeClass','school','parentName','parentCccd','parentPhone','note','mode'];
+            const keys = ['name','dob','address','studentCccd','gradeClass','school','parentName','parentCccd','parentPhone','note','mode','enrollmentDate'];
             return keys.reduce((sum, key) => sum + (normalizeText(student[key]) ? 1 : 0), 0);
         }
         function getStudentIdentityKey(student) {
@@ -1841,7 +1844,7 @@ function getUserDisplayName(userDocData, user) {
         }
         function getStudentManagedDocId(syncKey) { return `stu_${hashString(syncKey)}`; }
         function buildStudentRowSearchText(student, classCodes) {
-            return [student.name, student.school, student.gradeClass, student.parentName, student.parentPhone, student.studentCccd, student.parentCccd, student.note, classCodes.join(' ')].map(normalizeTextLower).join(' ');
+            return [student.name, student.school, student.gradeClass, student.parentName, student.parentPhone, student.studentCccd, student.parentCccd, student.enrollmentDate, student.note, classCodes.join(' ')].map(normalizeTextLower).join(' ');
         }
         function chooseBetterStudent(primary, candidate) {
             if (!primary) return candidate;
@@ -1872,7 +1875,7 @@ function getUserDisplayName(userDocData, user) {
                 _syncKey: syncKey, _centerClassCodes: classCodes, _centerClassCount: classCodes.length, _docs: entry.docs || [], _profile: profile,
                 name: profile.name || '', dob: profile.dob || profile.birthDate || '', address: profile.address || '', studentCccd: profile.studentCccd || profile.cccd || '',
                 gradeClass: profile.gradeClass || profile.grade || '', school: profile.school || '', parentName: profile.parentName || '', parentCccd: profile.parentCccd || '',
-                parentPhone: profile.parentPhone || '', mode: profile.mode || 'Trực tiếp', note: profile.note || '', _searchText: buildStudentRowSearchText(profile, classCodes)
+                parentPhone: profile.parentPhone || '', mode: profile.mode || 'Trực tiếp', enrollmentDate: profile.enrollmentDate || profile.enrolledAt || '', note: profile.note || '', _searchText: buildStudentRowSearchText(profile, classCodes)
             };
         }
         function getSelectedStudentsAggregates() {
@@ -1994,6 +1997,7 @@ function getStudentPaginationMeta(totalItems) {
             if (filters.parentName && !normalizeTextLower(student.parentName).includes(filters.parentName)) return false;
             if (filters.parentCccd && !normalizeTextLower(student.parentCccd).includes(filters.parentCccd)) return false;
             if (filters.parentPhone && !normalizeTextLower(student.parentPhone).includes(filters.parentPhone)) return false;
+            if (filters.enrollmentDate && !normalizeTextLower(formatDateDisplay(student.enrollmentDate)).includes(filters.enrollmentDate)) return false;
             if (filters.note && !normalizeTextLower(student.note).includes(filters.note)) return false;
             if (filters.mode && normalizeTextLower(student.mode) !== filters.mode) return false;
             if (filters.centerClassInfo) {
@@ -2027,7 +2031,7 @@ function renderStudentTable() {
             renderStudentPagination(allStudents.length, paginationMeta);
 
             if (allStudents.length === 0) {
-                studentTableBody.innerHTML = '<tr><td colspan="14" class="empty-state"><i class="fa-solid fa-user-slash"></i>Chưa có dữ liệu học sinh hoặc không khớp bộ lọc tìm kiếm.</td></tr>';
+                studentTableBody.innerHTML = '<tr><td colspan="15" class="empty-state"><i class="fa-solid fa-user-slash"></i>Chưa có dữ liệu học sinh hoặc không khớp bộ lọc tìm kiếm.</td></tr>';
                 return;
             }
 
@@ -2045,6 +2049,7 @@ function renderStudentTable() {
                 const displayParentName = student.parentName || '—';
                 const displayParentCccd = student.parentCccd || '—';
                 const displayParentPhone = student.parentPhone || '—';
+                const displayEnrollmentDate = formatDateDisplay(student.enrollmentDate) || '—';
                 const displayNote = student.note || '—';
                 const displayCodes = classCodesText || 'Chưa gắn mã lớp';
                 const rowNumber = paginationMeta.startIndex + index + 1;
@@ -2069,6 +2074,7 @@ function renderStudentTable() {
                     <td class="col-center"><div class="mono-text">${escapeHtml(displayParentPhone)}</div></td>
                     <td class="col-center" title="${escapeHtml(displayCodes)}"><div class="class-summary-cell"><span class="class-count-badge">${student._centerClassCount}</span><div class="linked-codes-text">${escapeHtml(displayCodes)}</div></div></td>
                     <td class="col-center"><span class="mode-badge ${modeClass}"><i class="fa-solid ${mode === 'Trực tuyến' ? 'fa-wifi' : 'fa-school'}"></i>${escapeHtml(mode)}</span></td>
+                    <td class="col-center"><span class="table-chip">${escapeHtml(displayEnrollmentDate)}</span></td>
                     <td><div class="cell-note" title="${escapeHtml(displayNote)}">${escapeHtml(displayNote)}</div></td>
                 </tr>`;
             }).join('');
@@ -2101,7 +2107,7 @@ function renderStudentTable() {
         }
         function createBulkRow(student = {}, options = {}) {
             const row = document.createElement('tr');
-            row.innerHTML = `<td class="col-center row-index">1</td><td><input type="text" class="bulk-input" data-field="name" value="${escapeHtml(student.name || '')}" placeholder="Họ và tên"></td><td><input type="date" class="bulk-input" data-field="dob" value="${escapeHtml(formatDateInputValue(student.dob || ''))}"></td><td><input type="text" class="bulk-input" data-field="address" value="${escapeHtml(student.address || '')}" placeholder="Địa chỉ"></td><td><input type="text" class="bulk-input" data-field="studentCccd" value="${escapeHtml(student.studentCccd || '')}" placeholder="CCCD học sinh"></td><td><input type="text" class="bulk-input" data-field="gradeClass" value="${escapeHtml(student.gradeClass || '')}" placeholder="VD: 8A"></td><td><input type="text" class="bulk-input" data-field="school" value="${escapeHtml(student.school || '')}" placeholder="Trường"></td><td><input type="text" class="bulk-input" data-field="parentName" value="${escapeHtml(student.parentName || '')}" placeholder="Phụ huynh"></td><td><input type="text" class="bulk-input" data-field="parentCccd" value="${escapeHtml(student.parentCccd || '')}" placeholder="CCCD PH"></td><td><input type="text" class="bulk-input" data-field="parentPhone" value="${escapeHtml(student.parentPhone || '')}" placeholder="SĐT PH"></td><td><input type="text" class="bulk-input" data-field="linkedCodes" list="classCodeSuggestions" autocomplete="off" value="${escapeHtml((student._centerClassCodes || student.linkedClassCodes || []).join(', '))}" placeholder="TOAN-6A, VAN-8B"></td><td><select class="bulk-select" data-field="mode"><option value="Trực tiếp" ${(student.mode || 'Trực tiếp') === 'Trực tiếp' ? 'selected' : ''}>Trực tiếp</option><option value="Trực tuyến" ${(student.mode || '') === 'Trực tuyến' ? 'selected' : ''}>Trực tuyến</option></select></td><td><input type="text" class="bulk-input" data-field="note" value="${escapeHtml(student.note || '')}" placeholder="Ghi chú"></td><td class="col-center"><button type="button" class="bulk-remove-btn" title="Xóa dòng"><i class="fa-solid fa-trash"></i></button></td>`;
+            row.innerHTML = `<td class="col-center row-index">1</td><td><input type="text" class="bulk-input" data-field="name" value="${escapeHtml(student.name || '')}" placeholder="Họ và tên"></td><td><input type="date" class="bulk-input" data-field="dob" value="${escapeHtml(formatDateInputValue(student.dob || ''))}"></td><td><input type="text" class="bulk-input" data-field="address" value="${escapeHtml(student.address || '')}" placeholder="Địa chỉ"></td><td><input type="text" class="bulk-input" data-field="studentCccd" value="${escapeHtml(student.studentCccd || '')}" placeholder="CCCD học sinh *" inputmode="numeric" maxlength="12" required></td><td><input type="text" class="bulk-input" data-field="gradeClass" value="${escapeHtml(student.gradeClass || '')}" placeholder="VD: 8A"></td><td><input type="text" class="bulk-input" data-field="school" value="${escapeHtml(student.school || '')}" placeholder="Trường"></td><td><input type="text" class="bulk-input" data-field="parentName" value="${escapeHtml(student.parentName || '')}" placeholder="Phụ huynh"></td><td><input type="text" class="bulk-input" data-field="parentCccd" value="${escapeHtml(student.parentCccd || '')}" placeholder="CCCD PH"></td><td><input type="text" class="bulk-input" data-field="parentPhone" value="${escapeHtml(student.parentPhone || '')}" placeholder="SĐT PH"></td><td><input type="text" class="bulk-input" data-field="linkedCodes" list="classCodeSuggestions" autocomplete="off" value="${escapeHtml((student._centerClassCodes || student.linkedClassCodes || []).join(', '))}" placeholder="TOAN-6A, VAN-8B"></td><td><select class="bulk-select" data-field="mode"><option value="Trực tiếp" ${(student.mode || 'Trực tiếp') === 'Trực tiếp' ? 'selected' : ''}>Trực tiếp</option><option value="Trực tuyến" ${(student.mode || '') === 'Trực tuyến' ? 'selected' : ''}>Trực tuyến</option></select></td><td><input type="date" class="bulk-input" data-field="enrollmentDate" value="${escapeHtml(formatDateInputValue(student.enrollmentDate || student.enrolledAt || ''))}"></td><td><input type="text" class="bulk-input" data-field="note" value="${escapeHtml(student.note || '')}" placeholder="Ghi chú"></td><td class="col-center"><button type="button" class="bulk-remove-btn" title="Xóa dòng"><i class="fa-solid fa-trash"></i></button></td>`;
             if (options.disableRemove) {
                 const btn = row.querySelector('.bulk-remove-btn');
                 btn.disabled = true; btn.style.opacity = '0.35'; btn.style.cursor = 'not-allowed';
@@ -2152,11 +2158,12 @@ function renderStudentTable() {
                 const data = { _rowNumber: index + 1 };
                 row.querySelectorAll('[data-field]').forEach(input => data[input.dataset.field] = normalizeText(input.value));
                 data.dob = formatDateInputValue(row.querySelector('[data-field="dob"]').value);
+                data.enrollmentDate = formatDateInputValue(row.querySelector('[data-field="enrollmentDate"]').value);
                 return data;
             });
         }
         function rowHasAnyValue(data) {
-            return ['name','dob','address','studentCccd','gradeClass','school','parentName','parentCccd','parentPhone','linkedCodes','mode','note'].some(key => normalizeText(data[key]));
+            return ['name','dob','address','studentCccd','gradeClass','school','parentName','parentCccd','parentPhone','linkedCodes','mode','enrollmentDate','note'].some(key => normalizeText(data[key]));
         }
         function collectStudentsFromModal() {
             const rows = getBulkRowObjects();
@@ -2164,8 +2171,9 @@ function renderStudentTable() {
             if (activeRows.length === 0) throw new Error('Vui lòng nhập ít nhất 1 học sinh.');
             return activeRows.map(item => {
                 if (!item.name) throw new Error(`Dòng ${item._rowNumber}: vui lòng nhập họ và tên học sinh.`);
+                if (!digitsOnly(item.studentCccd)) throw new Error(`Dòng ${item._rowNumber}: vui lòng nhập CCCD học sinh.`);
                 if (!item.linkedCodes) throw new Error(`Dòng ${item._rowNumber}: vui lòng nhập ít nhất 1 mã lớp.`);
-                return { name: item.name, dob: item.dob || '', address: item.address || '', studentCccd: item.studentCccd || '', gradeClass: item.gradeClass || '', school: item.school || '', parentName: item.parentName || '', parentCccd: item.parentCccd || '', parentPhone: item.parentPhone || '', mode: item.mode || 'Trực tiếp', note: item.note || '', linkedCodesRaw: item.linkedCodes || '' };
+                return { name: item.name, dob: item.dob || '', address: item.address || '', studentCccd: digitsOnly(item.studentCccd), gradeClass: item.gradeClass || '', school: item.school || '', parentName: item.parentName || '', parentCccd: digitsOnly(item.parentCccd), parentPhone: item.parentPhone || '', mode: item.mode || 'Trực tiếp', enrollmentDate: item.enrollmentDate || '', note: item.note || '', linkedCodesRaw: item.linkedCodes || '' };
             });
         }
         function findExistingStudentDocInClass(classId, syncKey) {
@@ -2195,7 +2203,7 @@ function renderStudentTable() {
                 let existingDoc = findExistingStudentDocInClass(cls.id, lookupSyncKey);
                 if (!existingDoc && lookupSyncKey !== newSyncKey) existingDoc = findExistingStudentDocInClass(cls.id, newSyncKey);
                 const targetRef = existingDoc ? db.collection('classes').doc(cls.id).collection('students').doc(existingDoc.id) : db.collection('classes').doc(cls.id).collection('students').doc(getStudentManagedDocId(newSyncKey));
-                const payload = { name: formData.name, dob: formData.dob || '', address: formData.address || '', studentCccd: formData.studentCccd || '', gradeClass: formData.gradeClass || '', school: formData.school || '', parentName: formData.parentName || '', parentCccd: formData.parentCccd || '', parentPhone: formData.parentPhone || '', mode: formData.mode || 'Trực tiếp', note: formData.note || '', linkedClassCodes: linkedCodes, syncStudentKey: newSyncKey, updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: currentUserInfo.email || '', managedByStudentPage: true };
+                const payload = { name: formData.name, dob: formData.dob || '', address: formData.address || '', studentCccd: digitsOnly(formData.studentCccd) || '', gradeClass: formData.gradeClass || '', school: formData.school || '', parentName: formData.parentName || '', parentCccd: digitsOnly(formData.parentCccd) || '', parentPhone: formData.parentPhone || '', mode: formData.mode || 'Trực tiếp', enrollmentDate: formData.enrollmentDate || '', note: formData.note || '', linkedClassCodes: linkedCodes, syncStudentKey: newSyncKey, updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: currentUserInfo.email || '', managedByStudentPage: true };
                 if (!existingDoc) payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                 batch.set(targetRef, payload, { merge: true });
                 touchedClassIds.add(cls.id);
