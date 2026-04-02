@@ -1224,6 +1224,164 @@
             .class-stat-row > :nth-child(2) { left: 76px; }
         }
 
+    
+        /* ===== COMPACT HEADER + FULL MENU LABELS (patched) ===== */
+        :root { --header-height: 76px; --sidebar-width: 224px; }
+        .header {
+            display: grid !important;
+            grid-template-columns: minmax(42px, auto) minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 12px;
+            height: var(--header-height);
+            padding: 0 18px !important;
+        }
+        .header-left { min-width: 42px; gap: 10px !important; }
+        .header-center {
+            position: static !important;
+            left: auto !important;
+            top: auto !important;
+            transform: none !important;
+            min-width: 0;
+            max-width: min(100%, 560px);
+            margin: 0 auto;
+            padding: 0 10px;
+            text-align: center;
+            white-space: normal !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+        .header-title {
+            font-size: 1.5rem !important;
+            line-height: 1.08;
+            letter-spacing: 1.1px !important;
+            text-wrap: balance;
+        }
+        .header-subtitle {
+            font-size: 0.76rem !important;
+            line-height: 1.2;
+            max-width: 100%;
+        }
+        .header-user {
+            min-width: 0;
+            max-width: min(36vw, 320px);
+            gap: 10px !important;
+            justify-content: flex-end;
+        }
+        .user-info {
+            min-width: 0;
+            max-width: 210px;
+            overflow: hidden;
+            font-size: 0.8rem;
+            line-height: 1.15;
+        }
+        .user-info > span:first-of-type,
+        #currentUserName,
+        #userRoleDisplay,
+        #currentRoleLabel {
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: bottom;
+            white-space: nowrap;
+        }
+        .user-id,
+        .user-email {
+            max-width: 100%;
+            font-size: 0.74rem !important;
+            gap: 6px !important;
+        }
+        .user-id span,
+        .user-email,
+        #userEmailDisplay {
+            display: inline-block;
+            max-width: 172px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: bottom;
+        }
+        .btn-logout {
+            padding: 6px 11px !important;
+            font-size: 0.76rem !important;
+            border-radius: 16px !important;
+        }
+        .sidebar {
+            width: var(--sidebar-width) !important;
+            padding: 16px 10px !important;
+        }
+        .sidebar-nav { gap: 6px !important; }
+        .sidebar-nav-item {
+            align-items: flex-start !important;
+            gap: 9px !important;
+            padding: 8px 10px !important;
+            min-height: unset !important;
+            border-radius: 14px !important;
+            font-size: 0.78rem !important;
+        }
+        .sidebar-nav-item i { margin-top: 2px; }
+        .sidebar-nav-item .nav-label {
+            display: block;
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            line-height: 1.25 !important;
+        }
+        .admin-badge {
+            margin-left: 6px !important;
+            margin-top: 1px;
+        }
+        @media (max-width: 1024px) {
+            :root { --header-height: 66px; --sidebar-width: 232px; }
+            .header {
+                grid-template-columns: auto minmax(0, 1fr) auto;
+                gap: 8px;
+                padding: 0 12px !important;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+                font-size: 1.35rem !important;
+            }
+            .header-title {
+                font-size: 1.05rem !important;
+                letter-spacing: 0.7px !important;
+            }
+            .header-subtitle { font-size: 0.66rem !important; }
+            .header-user {
+                max-width: 42vw;
+                gap: 8px !important;
+            }
+            .user-info { max-width: 140px; }
+            .btn-logout {
+                padding: 5px 9px !important;
+                font-size: 0.72rem !important;
+            }
+            .sidebar {
+                position: fixed !important;
+                left: -100%;
+                top: var(--header-height);
+                width: var(--sidebar-width) !important;
+                height: calc(100dvh - var(--header-height));
+                padding: 16px 10px !important;
+            }
+        }
+        @media (max-width: 640px) {
+            .header-title {
+                font-size: 0.92rem !important;
+                letter-spacing: 0.45px !important;
+            }
+            .header-subtitle { font-size: 0.58rem !important; }
+            .header-center { padding: 0 4px; }
+            .user-info { display: none !important; }
+            .btn-logout {
+                min-width: 36px;
+                padding: 5px 8px !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1240,7 +1398,7 @@
 </div>
         <div class="header-center">
             <div class="header-title">XỨ LẠNG EDUCATION</div>
-            <div class="header-subtitle">Chắp cánh ước mơ</div>
+            <div class="header-subtitle">Chắp cánh tri thức - Dẫn lối thành công</div>
         </div>
         <div class="header-user">
             <div class="user-info">Chào, <span id="userRoleDisplay">...</span><div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>
@@ -2185,6 +2343,30 @@ function renderStudentTable() {
             const snapshot = await db.collection('classes').doc(classId).collection('students').get();
             await db.collection('classes').doc(classId).set({ studentCount: snapshot.size, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
         }
+        function pushClassStudentDelta(deltaMap, classId, delta) {
+            if (!classId || !delta) return;
+            deltaMap[classId] = (deltaMap[classId] || 0) + delta;
+        }
+        function applyClassStudentCountDeltas(batch, deltaMap) {
+            Object.keys(deltaMap || {}).forEach(classId => {
+                const delta = Number(deltaMap[classId]) || 0;
+                if (!delta) return;
+                batch.set(db.collection('classes').doc(classId), {
+                    studentCount: firebase.firestore.FieldValue.increment(delta),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+            });
+        }
+        async function reconcileClassStudentCounts(deltaMap) {
+            const changedClassIds = Object.keys(deltaMap || {}).filter(classId => Number(deltaMap[classId]) !== 0);
+            for (const classId of changedClassIds) {
+                try {
+                    await syncClassStudentCount(classId);
+                } catch (error) {
+                    console.warn('Không thể đối soát lại sĩ số lớp sau khi lưu.', classId, error);
+                }
+            }
+        }
         async function saveStudentAcrossClasses(formData, existingStudent = null) {
             if (!formData.name) throw new Error('Vui lòng nhập họ và tên học sinh.');
             const linkedCodes = parseLinkedClassCodes(formData.linkedCodesRaw || '', '');
@@ -2198,24 +2380,30 @@ function renderStudentTable() {
             const desiredCodeSet = new Set(linkedCodes);
             const removedCodes = Array.from(previousCodes).filter(code => code && !desiredCodeSet.has(code));
             const batch = db.batch();
-            const touchedClassIds = new Set();
+            const classCountDeltas = {};
             for (const cls of desiredClasses) {
                 let existingDoc = findExistingStudentDocInClass(cls.id, lookupSyncKey);
                 if (!existingDoc && lookupSyncKey !== newSyncKey) existingDoc = findExistingStudentDocInClass(cls.id, newSyncKey);
                 const targetRef = existingDoc ? db.collection('classes').doc(cls.id).collection('students').doc(existingDoc.id) : db.collection('classes').doc(cls.id).collection('students').doc(getStudentManagedDocId(newSyncKey));
                 const payload = { name: formData.name, dob: formData.dob || '', address: formData.address || '', studentCccd: digitsOnly(formData.studentCccd) || '', gradeClass: formData.gradeClass || '', school: formData.school || '', parentName: formData.parentName || '', parentCccd: digitsOnly(formData.parentCccd) || '', parentPhone: formData.parentPhone || '', mode: formData.mode || 'Trực tiếp', enrollmentDate: formData.enrollmentDate || '', note: formData.note || '', linkedClassCodes: linkedCodes, syncStudentKey: newSyncKey, updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: currentUserInfo.email || '', managedByStudentPage: true };
-                if (!existingDoc) payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                if (!existingDoc) {
+                    payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    pushClassStudentDelta(classCountDeltas, cls.id, 1);
+                }
                 batch.set(targetRef, payload, { merge: true });
-                touchedClassIds.add(cls.id);
             }
             for (const removedCode of removedCodes) {
                 const removedClass = classesByCode[removedCode];
                 if (!removedClass) continue;
                 const existingDoc = findExistingStudentDocInClass(removedClass.id, lookupSyncKey) || findExistingStudentDocInClass(removedClass.id, newSyncKey);
-                if (existingDoc) { batch.delete(db.collection('classes').doc(removedClass.id).collection('students').doc(existingDoc.id)); touchedClassIds.add(removedClass.id); }
+                if (existingDoc) {
+                    batch.delete(db.collection('classes').doc(removedClass.id).collection('students').doc(existingDoc.id));
+                    pushClassStudentDelta(classCountDeltas, removedClass.id, -1);
+                }
             }
+            applyClassStudentCountDeltas(batch, classCountDeltas);
             await batch.commit();
-            for (const classId of touchedClassIds) await syncClassStudentCount(classId);
+            await reconcileClassStudentCounts(classCountDeltas);
             selectedStudentSyncKey = newSyncKey;
         }
         async function removeSelectedStudentEverywhere() {
@@ -2226,15 +2414,16 @@ function renderStudentTable() {
             const label = targets.length === 1 ? `${targets[0].name || ''} khỏi toàn bộ các lớp đang liên kết` : `${targets.length} học sinh đã tích khỏi toàn bộ các lớp đang liên kết`;
             if (!confirm(`Xóa ${label}?`)) return;
             const batch = db.batch();
-            const touchedClassIds = new Set();
+            const classCountDeltas = {};
             targets.forEach(student => {
                 student._docs.forEach(docEntry => {
                     batch.delete(db.collection('classes').doc(docEntry.classId).collection('students').doc(docEntry.docId));
-                    touchedClassIds.add(docEntry.classId);
+                    pushClassStudentDelta(classCountDeltas, docEntry.classId, -1);
                 });
             });
+            applyClassStudentCountDeltas(batch, classCountDeltas);
             await batch.commit();
-            for (const classId of touchedClassIds) await syncClassStudentCount(classId);
+            await reconcileClassStudentCounts(classCountDeltas);
             selectedStudentSyncKey = '';
             selectedStudentSyncKeys.clear();
             showToast('Thành công!', targets.length === 1 ? 'Đã xóa học sinh khỏi toàn bộ các lớp liên kết.' : `Đã xóa ${targets.length} học sinh khỏi toàn bộ các lớp liên kết.`);

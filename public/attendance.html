@@ -330,6 +330,164 @@
                 .dashboard-content { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
             }
         }
+    
+        /* ===== COMPACT HEADER + FULL MENU LABELS (patched) ===== */
+        :root { --header-height: 76px; --sidebar-width: 224px; }
+        .header {
+            display: grid !important;
+            grid-template-columns: minmax(42px, auto) minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 12px;
+            height: var(--header-height);
+            padding: 0 18px !important;
+        }
+        .header-left { min-width: 42px; gap: 10px !important; }
+        .header-center {
+            position: static !important;
+            left: auto !important;
+            top: auto !important;
+            transform: none !important;
+            min-width: 0;
+            max-width: min(100%, 560px);
+            margin: 0 auto;
+            padding: 0 10px;
+            text-align: center;
+            white-space: normal !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+        .header-title {
+            font-size: 1.5rem !important;
+            line-height: 1.08;
+            letter-spacing: 1.1px !important;
+            text-wrap: balance;
+        }
+        .header-subtitle {
+            font-size: 0.76rem !important;
+            line-height: 1.2;
+            max-width: 100%;
+        }
+        .header-user {
+            min-width: 0;
+            max-width: min(36vw, 320px);
+            gap: 10px !important;
+            justify-content: flex-end;
+        }
+        .user-info {
+            min-width: 0;
+            max-width: 210px;
+            overflow: hidden;
+            font-size: 0.8rem;
+            line-height: 1.15;
+        }
+        .user-info > span:first-of-type,
+        #currentUserName,
+        #userRoleDisplay,
+        #currentRoleLabel {
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: bottom;
+            white-space: nowrap;
+        }
+        .user-id,
+        .user-email {
+            max-width: 100%;
+            font-size: 0.74rem !important;
+            gap: 6px !important;
+        }
+        .user-id span,
+        .user-email,
+        #userEmailDisplay {
+            display: inline-block;
+            max-width: 172px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: bottom;
+        }
+        .btn-logout {
+            padding: 6px 11px !important;
+            font-size: 0.76rem !important;
+            border-radius: 16px !important;
+        }
+        .sidebar {
+            width: var(--sidebar-width) !important;
+            padding: 16px 10px !important;
+        }
+        .sidebar-nav { gap: 6px !important; }
+        .sidebar-nav-item {
+            align-items: flex-start !important;
+            gap: 9px !important;
+            padding: 8px 10px !important;
+            min-height: unset !important;
+            border-radius: 14px !important;
+            font-size: 0.78rem !important;
+        }
+        .sidebar-nav-item i { margin-top: 2px; }
+        .sidebar-nav-item .nav-label {
+            display: block;
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            line-height: 1.25 !important;
+        }
+        .admin-badge {
+            margin-left: 6px !important;
+            margin-top: 1px;
+        }
+        @media (max-width: 1024px) {
+            :root { --header-height: 66px; --sidebar-width: 232px; }
+            .header {
+                grid-template-columns: auto minmax(0, 1fr) auto;
+                gap: 8px;
+                padding: 0 12px !important;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+                font-size: 1.35rem !important;
+            }
+            .header-title {
+                font-size: 1.05rem !important;
+                letter-spacing: 0.7px !important;
+            }
+            .header-subtitle { font-size: 0.66rem !important; }
+            .header-user {
+                max-width: 42vw;
+                gap: 8px !important;
+            }
+            .user-info { max-width: 140px; }
+            .btn-logout {
+                padding: 5px 9px !important;
+                font-size: 0.72rem !important;
+            }
+            .sidebar {
+                position: fixed !important;
+                left: -100%;
+                top: var(--header-height);
+                width: var(--sidebar-width) !important;
+                height: calc(100dvh - var(--header-height));
+                padding: 16px 10px !important;
+            }
+        }
+        @media (max-width: 640px) {
+            .header-title {
+                font-size: 0.92rem !important;
+                letter-spacing: 0.45px !important;
+            }
+            .header-subtitle { font-size: 0.58rem !important; }
+            .header-center { padding: 0 4px; }
+            .user-info { display: none !important; }
+            .btn-logout {
+                min-width: 36px;
+                padding: 5px 8px !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -346,7 +504,7 @@
 </div>
         <div class="header-center">
             <div class="header-title">XỨ LẠNG EDUCATION</div>
-            <div class="header-subtitle">Chắp cánh ước mơ</div>
+            <div class="header-subtitle">Chắp cánh tri thức - Dẫn lối thành công</div>
         </div>
         <div class="header-user">
             <div class="user-info">Chào, <span id="userRoleDisplay">...</span><div class="user-id"><span id="userEmailDisplay">...</span></div></div>
@@ -975,7 +1133,7 @@
                 metrics.grandTotal += countForTuition * tuitionVal;
             });
             if (includeWithdrawn) {
-                Object.values(withdrawnStudentStats || {}).forEach((entry) => {
+                Object.values(getEffectiveWithdrawnStudentStats()).forEach((entry) => {
                     const sessionCount = Number(entry && entry.sessionCount) || 0;
                     const totalAmount = Number(entry && entry.totalAmount) || 0;
                     const attendedDays = Array.isArray(entry && entry.attendedDays) ? entry.attendedDays : [];
@@ -1133,7 +1291,7 @@
                 return;
             }
             section.style.display = 'block';
-            const items = Object.values(withdrawnStudentStats || {})
+            const items = Object.values(getEffectiveWithdrawnStudentStats())
                 .filter(item => item && (normalizeText(item.name) || Number(item.totalAmount) || Number(item.sessionCount)))
                 .sort((a, b) => {
                     const timeA = a && a.removedAt && typeof a.removedAt.toMillis === 'function' ? a.removedAt.toMillis() : 0;
@@ -2509,6 +2667,37 @@ function parseTimeToMinutes(value) {
                 totalAmount: sessionCount * tuition
             };
         }
+        function buildDerivedWithdrawnStudentStats() {
+            const derived = {};
+            studentsData.forEach((student) => {
+                if (!isStudentWithdrawnLockedThisMonth(student)) return;
+                const syncKey = getStudentSyncKey(student) || String(student.id || '');
+                if (!syncKey) return;
+                const status = getStudentWithdrawStatus(student);
+                derived[syncKey] = {
+                    ...buildWithdrawalBillingSnapshot(student),
+                    syncKey,
+                    classId,
+                    classCode: getCurrentClassCode() || '',
+                    removedAt: (status && status.lockedAt) || null,
+                    removedByName: normalizeText(status.lockedByName || status.removedByName || ''),
+                    removedByEmail: normalizeEmail(status.lockedByEmail || status.removedByEmail || '')
+                };
+            });
+            return derived;
+        }
+        function getEffectiveWithdrawnStudentStats() {
+            const stored = withdrawnStudentStats && typeof withdrawnStudentStats === 'object' ? withdrawnStudentStats : {};
+            const derived = buildDerivedWithdrawnStudentStats();
+            const merged = { ...stored };
+            Object.entries(derived).forEach(([key, value]) => {
+                merged[key] = {
+                    ...value,
+                    ...(stored[key] || {})
+                };
+            });
+            return merged;
+        }
         function getCommittedAttendanceDays(student) {
             const attendanceRecord = student && student.attendance && typeof student.attendance === 'object'
                 ? student.attendance
@@ -2571,6 +2760,9 @@ function parseTimeToMinutes(value) {
                         if (code) discoveredOtherCodes.push(code);
                     });
                     const remainingCodes = buildWithdrawalClassLinkedCodes(student, discoveredOtherCodes);
+                    const billingSnapshot = buildWithdrawalBillingSnapshot(student);
+                    const withdrawnStatsKey = syncKey || String(student.id || cb.value || Date.now());
+                    const removedAt = firebase.firestore.FieldValue.serverTimestamp();
                     const classBatch = db.batch();
                     if (syncKey && globalDocs.length) {
                         globalDocs.forEach((doc) => {
@@ -2603,14 +2795,36 @@ function parseTimeToMinutes(value) {
                             hideFromMonthKey: nextMonthKey,
                             lockedByName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
                             lockedByEmail: currentUserInfo.email || '',
-                            lockedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            lockedAt: removedAt,
                             removedFromClassCode: currentClassCode || '',
                             remainingClassCodes: remainingCodes
                         },
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: removedAt,
                         updatedBy: currentUserInfo.email || ''
                     }, { merge: true });
+                    classBatch.set(db.collection('classes').doc(classId), {
+                        [`withdrawnStudentStats.${currentMonthKey}.${withdrawnStatsKey}`]: {
+                            ...billingSnapshot,
+                            syncKey: withdrawnStatsKey,
+                            classId,
+                            classCode: currentClassCode || '',
+                            removedAt,
+                            removedByName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                            removedByEmail: currentUserInfo.email || ''
+                        }
+                    }, { merge: true });
                     await classBatch.commit();
+                    withdrawnStudentStats = {
+                        ...withdrawnStudentStats,
+                        [withdrawnStatsKey]: {
+                            ...billingSnapshot,
+                            syncKey: withdrawnStatsKey,
+                            classId,
+                            classCode: currentClassCode || '',
+                            removedByName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
+                            removedByEmail: currentUserInfo.email || ''
+                        }
+                    };
                 }
                 for (const touchedClassId of touchedClassIds) await syncClassStudentCount(touchedClassId);
                 showToast('Đã chuyển sang thôi học', 'Dòng học sinh được khóa cứng trong tháng hiện tại; từ ngày 01 tháng sau sẽ tự ẩn khỏi bảng điểm danh lớp.');

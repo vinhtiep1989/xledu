@@ -216,6 +216,164 @@
             .class-info-grid { grid-template-columns: 1fr; }
             .students-table { min-width: 620px; }
         }
+    
+        /* ===== COMPACT HEADER + FULL MENU LABELS (patched) ===== */
+        :root { --header-height: 76px; --sidebar-width: 224px; }
+        .header {
+            display: grid !important;
+            grid-template-columns: minmax(42px, auto) minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 12px;
+            height: var(--header-height);
+            padding: 0 18px !important;
+        }
+        .header-left { min-width: 42px; gap: 10px !important; }
+        .header-center {
+            position: static !important;
+            left: auto !important;
+            top: auto !important;
+            transform: none !important;
+            min-width: 0;
+            max-width: min(100%, 560px);
+            margin: 0 auto;
+            padding: 0 10px;
+            text-align: center;
+            white-space: normal !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+        .header-title {
+            font-size: 1.5rem !important;
+            line-height: 1.08;
+            letter-spacing: 1.1px !important;
+            text-wrap: balance;
+        }
+        .header-subtitle {
+            font-size: 0.76rem !important;
+            line-height: 1.2;
+            max-width: 100%;
+        }
+        .header-user {
+            min-width: 0;
+            max-width: min(36vw, 320px);
+            gap: 10px !important;
+            justify-content: flex-end;
+        }
+        .user-info {
+            min-width: 0;
+            max-width: 210px;
+            overflow: hidden;
+            font-size: 0.8rem;
+            line-height: 1.15;
+        }
+        .user-info > span:first-of-type,
+        #currentUserName,
+        #userRoleDisplay,
+        #currentRoleLabel {
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: bottom;
+            white-space: nowrap;
+        }
+        .user-id,
+        .user-email {
+            max-width: 100%;
+            font-size: 0.74rem !important;
+            gap: 6px !important;
+        }
+        .user-id span,
+        .user-email,
+        #userEmailDisplay {
+            display: inline-block;
+            max-width: 172px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: bottom;
+        }
+        .btn-logout {
+            padding: 6px 11px !important;
+            font-size: 0.76rem !important;
+            border-radius: 16px !important;
+        }
+        .sidebar {
+            width: var(--sidebar-width) !important;
+            padding: 16px 10px !important;
+        }
+        .sidebar-nav { gap: 6px !important; }
+        .sidebar-nav-item {
+            align-items: flex-start !important;
+            gap: 9px !important;
+            padding: 8px 10px !important;
+            min-height: unset !important;
+            border-radius: 14px !important;
+            font-size: 0.78rem !important;
+        }
+        .sidebar-nav-item i { margin-top: 2px; }
+        .sidebar-nav-item .nav-label {
+            display: block;
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            line-height: 1.25 !important;
+        }
+        .admin-badge {
+            margin-left: 6px !important;
+            margin-top: 1px;
+        }
+        @media (max-width: 1024px) {
+            :root { --header-height: 66px; --sidebar-width: 232px; }
+            .header {
+                grid-template-columns: auto minmax(0, 1fr) auto;
+                gap: 8px;
+                padding: 0 12px !important;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+                font-size: 1.35rem !important;
+            }
+            .header-title {
+                font-size: 1.05rem !important;
+                letter-spacing: 0.7px !important;
+            }
+            .header-subtitle { font-size: 0.66rem !important; }
+            .header-user {
+                max-width: 42vw;
+                gap: 8px !important;
+            }
+            .user-info { max-width: 140px; }
+            .btn-logout {
+                padding: 5px 9px !important;
+                font-size: 0.72rem !important;
+            }
+            .sidebar {
+                position: fixed !important;
+                left: -100%;
+                top: var(--header-height);
+                width: var(--sidebar-width) !important;
+                height: calc(100dvh - var(--header-height));
+                padding: 16px 10px !important;
+            }
+        }
+        @media (max-width: 640px) {
+            .header-title {
+                font-size: 0.92rem !important;
+                letter-spacing: 0.45px !important;
+            }
+            .header-subtitle { font-size: 0.58rem !important; }
+            .header-center { padding: 0 4px; }
+            .user-info { display: none !important; }
+            .btn-logout {
+                min-width: 36px;
+                padding: 5px 8px !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -232,7 +390,7 @@
 </div>
         <div class="header-center">
             <div class="header-title">XỨ LẠNG EDUCATION</div>
-            <div class="header-subtitle">Chắp cánh ước mơ</div>
+            <div class="header-subtitle">Chắp cánh tri thức - Dẫn lối thành công</div>
         </div>
         <div class="header-user">
             <div class="user-info">Chào, <span id="currentUserName">...</span><div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>

@@ -96,7 +96,7 @@
     <div class="login-card">
         <div class="card-header">
 <h1 class="brand-title">XỨ LẠNG<br>EDUCATION</h1>
-            <p class="brand-subtitle">Chắp cánh ước mơ</p>
+            <p class="brand-subtitle">Chắp cánh tri thức - Dẫn lối thành công</p>
         </div>
 
         <form class="login-form" id="loginForm">
@@ -312,13 +312,15 @@
             return 'Không thể đổi mật khẩu lúc này. Vui lòng thử lại.';
         }
 
-        async function syncPasswordToSystemRecord(email, newPassword, uid) {
+        async function syncPasswordMetaToSystemRecord(email, uid) {
             const normalizedEmail = normalizeEmail(email);
             const payload = {
                 email: normalizedEmail,
-                password: newPassword,
                 passwordUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                passwordStorageVersion: 'none',
+                passwordRemovedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                password: firebase.firestore.FieldValue.delete()
             };
 
             if (uid) {
@@ -479,7 +481,7 @@
                 await signedInUser.updatePassword(newPassword);
                 passwordUpdated = true;
 
-                syncedToSystem = await syncPasswordToSystemRecord(email, newPassword, signedInUser.uid);
+                syncedToSystem = await syncPasswordMetaToSystemRecord(email, signedInUser.uid);
                 await auth.signOut();
                 closeChangePasswordModal();
                 emailInput.value = email;
@@ -491,14 +493,14 @@
 
                 alert(
                     syncedToSystem
-                        ? 'Đổi mật khẩu thành công. Mật khẩu mới đã được cập nhật vào hồ sơ tài khoản trong Quản lý hệ thống. Vui lòng đăng nhập lại bằng mật khẩu mới.'
-                        : 'Đổi mật khẩu thành công. Tuy nhiên chưa tìm thấy hồ sơ tài khoản trong Quản lý hệ thống để cập nhật mật khẩu lưu trữ.'
+                        ? 'Đổi mật khẩu thành công. Hệ thống đã cập nhật mốc đổi mật khẩu vào hồ sơ tài khoản mà không lưu mật khẩu thô. Vui lòng đăng nhập lại bằng mật khẩu mới.'
+                        : 'Đổi mật khẩu thành công. Tuy nhiên chưa tìm thấy hồ sơ tài khoản trong Quản lý hệ thống để cập nhật mốc đổi mật khẩu.'
                 );
             } catch (error) {
                 console.error(error);
                 try { if (auth.currentUser) await auth.signOut(); } catch (_) {}
                 if (passwordUpdated) {
-                    showChangePasswordError('Mật khẩu đã được đổi thành công nhưng chưa đồng bộ được vào hồ sơ hệ thống. Vui lòng đăng nhập bằng mật khẩu mới và kiểm tra lại trong mục Quản lý hệ thống.');
+                    showChangePasswordError('Mật khẩu đã được đổi thành công nhưng chưa đồng bộ được mốc đổi mật khẩu vào hồ sơ hệ thống. Vui lòng đăng nhập bằng mật khẩu mới và kiểm tra lại trong mục Quản lý hệ thống.');
                 } else {
                     showChangePasswordError(translatePasswordChangeError(error));
                 }

@@ -224,7 +224,201 @@
       grid-column: 1 / -1; min-height: 220px; border: 1px dashed var(--border); border-radius: 16px; background: #fcfefd;
       display: flex; align-items: center; justify-content: center; text-align: center; color: var(--text-soft); padding: 24px;
     }
-  </style>
+  
+    /* ===== COMPACT HEADER + FULL MENU LABELS (patched) ===== */
+    :root { --header-height: 76px; --sidebar-width: 224px; }
+    .header {
+      display: grid !important;
+      grid-template-columns: minmax(42px, auto) minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      height: var(--header-height);
+      padding: 0 18px !important;
+    }
+    .header-left { min-width: 42px; gap: 10px !important; }
+    .header-center {
+      position: static !important;
+      left: auto !important;
+      top: auto !important;
+      transform: none !important;
+      min-width: 0;
+      max-width: min(100%, 560px);
+      margin: 0 auto;
+      padding: 0 10px;
+      text-align: center;
+      white-space: normal !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+    .header-title { font-size: 1.45rem !important; line-height: 1.08; letter-spacing: 1px !important; text-wrap: balance; }
+    .header-subtitle { font-size: 0.74rem !important; line-height: 1.2; }
+    .header-user { min-width: 0; max-width: min(36vw, 320px); gap: 10px !important; justify-content: flex-end; }
+    .user-info { min-width: 0; max-width: 210px; overflow: hidden; font-size: 0.8rem; line-height: 1.15; }
+    #currentUserName, .user-email, #userEmailDisplay {
+      display: inline-block;
+      max-width: 172px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: bottom;
+    }
+    .btn-logout { padding: 6px 11px !important; font-size: 0.76rem !important; border-radius: 16px !important; }
+    .sidebar { width: var(--sidebar-width) !important; padding: 16px 10px !important; }
+    .sidebar-nav { gap: 6px !important; }
+    .sidebar-nav-item {
+      align-items: flex-start !important;
+      gap: 9px !important;
+      padding: 8px 10px !important;
+      min-height: unset !important;
+      border-radius: 14px !important;
+      font-size: 0.78rem !important;
+    }
+    .sidebar-nav-item i { margin-top: 2px; }
+    .sidebar-nav-item .nav-label {
+      display: block;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      line-height: 1.25 !important;
+    }
+    .admin-badge { margin-left: 6px !important; margin-top: 1px; }
+    body.workspace-compact { --header-height: 46px; }
+    body.workspace-compact .header { padding: 0 10px !important; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; }
+    body.workspace-compact .header-title { font-size: 1rem !important; letter-spacing: 0.8px !important; }
+    body.workspace-compact .header-subtitle, body.workspace-compact .user-info { display: none !important; }
+    body.workspace-compact .btn-logout { padding: 5px 9px !important; font-size: 0.72rem !important; }
+    @media (max-width: 1024px) {
+      :root { --header-height: 66px; --sidebar-width: 232px; }
+      .header { grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; padding: 0 12px !important; }
+      .mobile-menu-btn { display: block !important; font-size: 1.35rem !important; }
+      .header-title { font-size: 1.02rem !important; letter-spacing: 0.7px !important; }
+      .header-subtitle { font-size: 0.64rem !important; }
+      .header-user { max-width: 42vw; gap: 8px !important; }
+      .user-info { max-width: 140px; }
+      .btn-logout { padding: 5px 9px !important; font-size: 0.72rem !important; }
+      .sidebar {
+        position: fixed !important;
+        left: -100%;
+        top: var(--header-height);
+        width: var(--sidebar-width) !important;
+        height: calc(100dvh - var(--header-height));
+        padding: 16px 10px !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .header-title { font-size: 0.9rem !important; letter-spacing: 0.45px !important; }
+      .header-subtitle { font-size: 0.56rem !important; }
+      .header-center { padding: 0 4px; }
+      .user-info { display: none !important; }
+      .btn-logout { min-width: 36px; padding: 5px 8px !important; }
+    }
+
+
+    /* ===== MOBILE LANDSCAPE WORKSPACE + SHEET FOCUS MODE ===== */
+    .workspace-card { min-height: 0; }
+    .sheet-focus-toggle { min-width: 42px; }
+    .sheet-focus-exit {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 40;
+      display: none;
+      box-shadow: 0 8px 18px rgba(13,27,42,0.18);
+    }
+    body.sheet-focus-mode .sheet-focus-exit { display: inline-flex; }
+    body.sheet-focus-mode {
+      overflow: hidden;
+      background: #fff;
+      --header-height: 0px;
+    }
+    body.sheet-focus-mode .header,
+    body.sheet-focus-mode .sidebar,
+    body.sheet-focus-mode .sidebar-overlay,
+    body.sheet-focus-mode .page-header,
+    body.sheet-focus-mode .workspace-top {
+      display: none !important;
+    }
+    body.sheet-focus-mode .main-wrapper {
+      height: 100dvh !important;
+    }
+    body.sheet-focus-mode .dashboard-content {
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+    body.sheet-focus-mode #securedArea,
+    body.sheet-focus-mode #workspacePanel,
+    body.sheet-focus-mode .workspace-card,
+    body.sheet-focus-mode #luckysheet-wrap {
+      height: 100dvh !important;
+      min-height: 100dvh !important;
+    }
+    body.sheet-focus-mode .workspace-panel {
+      display: flex !important;
+      flex: 1;
+      min-height: 0;
+    }
+    body.sheet-focus-mode .workspace-card {
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+    body.sheet-focus-mode #luckysheet {
+      height: 100% !important;
+    }
+
+    @media (max-width: 1024px) and (orientation: landscape) {
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) {
+        --header-height: 0px;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .header,
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .sidebar,
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .sidebar-overlay,
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .page-header {
+        display: none !important;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .main-wrapper {
+        height: 100dvh !important;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .dashboard-content {
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) #securedArea,
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) #workspacePanel,
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .workspace-card,
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) #luckysheet-wrap {
+        min-height: 100dvh;
+        height: 100dvh;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .workspace-card {
+        border: none !important;
+        border-radius: 0 !important;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .workspace-top {
+        padding: 6px 8px !important;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .workspace-title h3 {
+        font-size: 0.86rem !important;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .workspace-title p {
+        font-size: 0.66rem !important;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .workspace-actions {
+        gap: 4px !important;
+      }
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .workspace-actions .btn-action,
+      body.mobile-landscape-workspace:not(.sheet-focus-mode) .workspace-actions .status-badge {
+        min-height: 28px;
+        font-size: 0.68rem !important;
+        padding-left: 9px !important;
+        padding-right: 9px !important;
+      }
+    }
+
+    </style>
 </head>
 <body>
   <div id="page-loader"><i class="fa-solid fa-spinner fa-spin"></i><p>Đang kiểm tra dữ liệu...</p></div>
@@ -235,7 +429,7 @@
     </div>
     <div class="header-center">
       <div class="header-title">XỨ LẠNG EDUCATION</div>
-      <div class="header-subtitle">Chắp cánh ước mơ</div>
+      <div class="header-subtitle">Chắp cánh tri thức - Dẫn lối thành công</div>
     </div>
     <div class="header-user">
       <div class="user-info">
@@ -296,6 +490,7 @@
 
         <div class="workspace-panel" id="workspacePanel" style="display:none;">
           <div class="workspace-card">
+            <button class="btn-action btn-neutral sheet-focus-exit" id="btnExitSheetFocus"><i class="fa-solid fa-compress"></i> Thu nhỏ giao diện</button>
             <div class="workspace-top">
               <div class="workspace-title">
                 <h3><i class="fa-solid fa-table" style="color: var(--primary);"></i> <span id="currentSheetTitle">Bảng tính</span></h3>
@@ -303,6 +498,7 @@
               </div>
               <div class="workspace-actions">
                 <span id="saveStatusIndicator" class="status-badge saved"><i class="fa-solid fa-cloud-check"></i> Sẵn sàng</span>
+                <button class="btn-action btn-neutral sheet-focus-toggle" id="btnToggleSheetFocus"><i class="fa-solid fa-expand"></i> Phóng toàn màn hình</button>
                 <button class="btn-action btn-secondary" id="btnArchiveNow"><i class="fa-solid fa-box-archive"></i> Đưa vào kho lưu trữ</button>
                 <input type="file" id="excelFileInput" accept=".xlsx" style="display:none;">
                 <button class="btn-action btn-primary" id="btnSaveNow"><i class="fa-solid fa-floppy-disk"></i> Lưu và quay lại danh sách</button>
@@ -535,11 +731,49 @@
       return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
     }
 
+    function normalizeDateValue(dateValue) {
+      if (!dateValue) return null;
+      if (dateValue instanceof Date) return Number.isNaN(dateValue.getTime()) ? null : dateValue;
+      if (typeof dateValue.toDate === 'function') {
+        const converted = dateValue.toDate();
+        return Number.isNaN(converted.getTime()) ? null : converted;
+      }
+      if (typeof dateValue === 'object' && typeof dateValue.seconds === 'number') {
+        const millis = (dateValue.seconds * 1000) + Math.round((Number(dateValue.nanoseconds) || 0) / 1000000);
+        const converted = new Date(millis);
+        return Number.isNaN(converted.getTime()) ? null : converted;
+      }
+      const converted = new Date(dateValue);
+      return Number.isNaN(converted.getTime()) ? null : converted;
+    }
+
+    function getComparableTime(dateValue) {
+      const normalized = normalizeDateValue(dateValue);
+      return normalized ? normalized.getTime() : 0;
+    }
+
     function formatDateForDisplay(dateValue) {
-      const d = new Date(dateValue || Date.now());
-      if (Number.isNaN(d.getTime())) return '';
+      const d = normalizeDateValue(dateValue || Date.now());
+      if (!d) return '';
       const pad = (num) => String(num).padStart(2, '0');
       return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+    }
+
+    function getFreshnessWinner(localPayload, remotePayload) {
+      const localTime = getComparableTime(localPayload && (localPayload.updatedAt || localPayload.createdAt));
+      const remoteTime = getComparableTime(remotePayload && (remotePayload.updatedAt || remotePayload.createdAt));
+      return remoteTime >= localTime ? remotePayload : localPayload;
+    }
+
+    function mergeFolderFilesByFreshness(localFiles, remoteFiles) {
+      const mergedMap = {};
+      [...(Array.isArray(localFiles) ? localFiles : []), ...(Array.isArray(remoteFiles) ? remoteFiles : [])].forEach(file => {
+        if (!file || !file.id) return;
+        mergedMap[file.id] = mergedMap[file.id]
+          ? getFreshnessWinner(mergedMap[file.id], file)
+          : file;
+      });
+      return sortFolderFiles(Object.values(mergedMap));
     }
 
     function formatCurrencyVnd(value) {
@@ -631,7 +865,7 @@
 
     function sortFolderFiles(files) {
       return [...(Array.isArray(files) ? files : [])].sort((a, b) => {
-        return new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime();
+        return getComparableTime(b && (b.updatedAt || b.createdAt || 0)) - getComparableTime(a && (a.updatedAt || a.createdAt || 0));
       });
     }
 
@@ -693,10 +927,8 @@
           const snap = await withTimeout(db.collection(FILE_INDEX_COLLECTION).doc(folderId).get(), 3000);
           if (snap.exists) {
             const remoteFiles = Array.isArray((snap.data() || {}).files) ? snap.data().files : [];
-            if (remoteFiles.length >= files.length) {
-              files = sortFolderFiles(remoteFiles);
-              saveFolderFilesToLocal(folderId, files);
-            }
+            files = mergeFolderFilesByFreshness(files, remoteFiles);
+            saveFolderFilesToLocal(folderId, files);
           }
         } catch (error) {
           console.warn('Không đồng bộ được danh sách file từ Cloud, dùng local.', error);
@@ -735,7 +967,9 @@
           if (snap.exists) {
             const remotePayload = snap.data() || {};
             if (remotePayload && remotePayload.luckysheetData) {
-              payload = remotePayload;
+              payload = payload && payload.luckysheetData
+                ? getFreshnessWinner(payload, remotePayload)
+                : remotePayload;
               saveFileDataToLocal(fileId, payload);
             }
           }
@@ -894,6 +1128,8 @@
       document.getElementById('fileBrowserPanel').style.display = 'flex';
       document.getElementById('pageHeader').style.display = 'none';
       document.body.classList.remove('workspace-compact');
+      exitSheetFocusMode();
+      applyAdaptiveWorkspaceMode();
 
       document.getElementById('fileBrowserTitle').textContent = folder.name;
       document.getElementById('fileBrowserSubtitle').textContent = isTeachingBudgetFolder(folderId)
@@ -926,6 +1162,7 @@
         document.getElementById('workspacePanel').style.display = 'flex';
         document.getElementById('pageHeader').style.display = 'none';
         document.body.classList.add('workspace-compact');
+        applyAdaptiveWorkspaceMode();
 
         document.getElementById('currentSheetTitle').textContent = fileMeta.fileName;
         document.getElementById('currentSheetSubtitle').textContent = isTeachingBudgetFolder()
@@ -999,6 +1236,8 @@
         document.getElementById('folderPanel').style.display = 'none';
         document.getElementById('pageHeader').style.display = 'none';
         document.body.classList.remove('workspace-compact');
+        exitSheetFocusMode();
+        applyAdaptiveWorkspaceMode();
         updateWorkspaceControls();
         return;
       }
@@ -1907,6 +2146,66 @@
       }
     }
 
+
+    function isMobileLandscapeViewport() {
+      return window.innerWidth <= 1024 && window.innerWidth > window.innerHeight;
+    }
+
+    function isWorkspaceVisible() {
+      const panel = document.getElementById('workspacePanel');
+      return !!panel && panel.style.display === 'flex';
+    }
+
+    function closeMobileSidebarIfNeeded() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (sidebar) sidebar.classList.remove('open');
+      if (overlay) overlay.classList.remove('open');
+    }
+
+    function refreshSheetFocusToggleButton() {
+      const btn = document.getElementById('btnToggleSheetFocus');
+      if (!btn) return;
+      const isFocused = document.body.classList.contains('sheet-focus-mode');
+      btn.innerHTML = isFocused
+        ? '<i class="fa-solid fa-compress"></i> Thu nhỏ giao diện'
+        : '<i class="fa-solid fa-expand"></i> Phóng toàn màn hình';
+      btn.setAttribute('aria-pressed', isFocused ? 'true' : 'false');
+      btn.title = isFocused ? 'Thu nhỏ về giao diện bình thường' : 'Chỉ hiển thị khu vực bảng tính';
+    }
+
+    function relayoutLuckysheetSoon() {
+      window.setTimeout(() => {
+        try {
+          if (window.luckysheet && typeof luckysheet.resize === 'function') {
+            luckysheet.resize();
+          }
+        } catch (error) {}
+      }, 80);
+    }
+
+    function applyAdaptiveWorkspaceMode() {
+      const shouldUseLandscapeMode = isWorkspaceVisible() && isMobileLandscapeViewport();
+      document.body.classList.toggle('mobile-landscape-workspace', shouldUseLandscapeMode);
+      if (shouldUseLandscapeMode) closeMobileSidebarIfNeeded();
+      refreshSheetFocusToggleButton();
+      relayoutLuckysheetSoon();
+    }
+
+    function setSheetFocusMode(forceState) {
+      const nextState = typeof forceState === 'boolean'
+        ? forceState
+        : !document.body.classList.contains('sheet-focus-mode');
+      document.body.classList.toggle('sheet-focus-mode', nextState);
+      if (nextState) closeMobileSidebarIfNeeded();
+      refreshSheetFocusToggleButton();
+      relayoutLuckysheetSoon();
+    }
+
+    function exitSheetFocusMode() {
+      setSheetFocusMode(false);
+    }
+
     // ----------------------------------------------------------------------
     // 4. QUẢN LÝ THƯ MỤC
     // ----------------------------------------------------------------------
@@ -2002,6 +2301,8 @@
           document.getElementById('modernArchiveUI').style.display = 'block';
           document.getElementById('workspacePanel').style.display = 'none';
           document.body.classList.remove('workspace-compact');
+          exitSheetFocusMode();
+          applyAdaptiveWorkspaceMode();
 
           renderModernArchiveUI(archiveEntries);
           updateWorkspaceControls();
@@ -2090,6 +2391,8 @@
       document.getElementById('folderPanel').style.display = 'block';
       document.getElementById('pageHeader').style.display = 'block';
       document.body.classList.remove('workspace-compact');
+      exitSheetFocusMode();
+      applyAdaptiveWorkspaceMode();
 
       const archiveButton = document.getElementById('btnArchiveNow');
       const saveButton = document.getElementById('btnSaveNow');
@@ -2168,6 +2471,8 @@
       btnMenu.addEventListener('click', () => { sidebar.classList.add('open'); overlay.classList.add('open'); });
       overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); });
 
+      document.getElementById('btnToggleSheetFocus').addEventListener('click', () => setSheetFocusMode());
+      document.getElementById('btnExitSheetFocus').addEventListener('click', exitSheetFocusMode);
       document.getElementById('btnBackToFolders').addEventListener('click', backToFileBrowser);
       document.getElementById('btnBackToFolderHome').addEventListener('click', backToFolders);
       document.getElementById('btnSaveNow').addEventListener('click', () => saveCurrentSheet({ silent: false, returnToList: true }));
@@ -2188,6 +2493,9 @@
         if (!confirm('Bạn muốn đăng xuất?')) return;
         if (auth) auth.signOut();
       });
+
+      window.addEventListener('resize', applyAdaptiveWorkspaceMode, { passive: true });
+      window.addEventListener('orientationchange', () => window.setTimeout(applyAdaptiveWorkspaceMode, 120), { passive: true });
     }
 
     // ----------------------------------------------------------------------
@@ -2196,6 +2504,8 @@
     // 8. KHỞI CHẠY (AUTH & OFFLINE FIX)
     // ----------------------------------------------------------------------
     bindEvents();
+    applyAdaptiveWorkspaceMode();
+    refreshSheetFocusToggleButton();
 
     if (auth) {
       auth.onAuthStateChanged(async (user) => {
