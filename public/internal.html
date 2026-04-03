@@ -317,6 +317,57 @@
     }
 
 
+
+
+    /* ===== LUU FILE DIEM DANH ===== */
+    .backup-section-note {
+      margin-top: 6px;
+      color: var(--text-soft);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+    .backup-breadcrumb {
+      display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      margin-top: 8px; font-size: 0.74rem; color: var(--text-soft);
+    }
+    .backup-breadcrumb strong { color: var(--text-dark); }
+    .backup-month-stats,
+    .backup-file-stats {
+      margin-top: 8px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+    }
+    .backup-stat-chip {
+      background: #f8faf9; border: 1px solid var(--border); border-radius: 10px;
+      padding: 8px 10px; font-size: 0.74rem; color: var(--text-soft); line-height: 1.4;
+    }
+    .backup-stat-chip strong { display: block; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 2px; }
+    .backup-card-label {
+      margin-top: 10px; width: fit-content; padding: 4px 9px; border-radius: 999px;
+      background: rgba(224,170,62,0.12); color: #9a6c0a; font-size: 0.7rem; font-weight: 800;
+    }
+    .backup-card-title {
+      margin-top: 10px; font-size: 0.95rem; font-weight: 800; line-height: 1.35; color: var(--text-dark);
+    }
+    .backup-card-meta {
+      margin-top: 8px; color: var(--text-soft); font-size: 0.78rem; line-height: 1.55; flex-grow: 1;
+    }
+    .backup-card-meta p { margin-bottom: 4px; }
+    .backup-summary-bar {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 14px;
+    }
+    .backup-summary-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+    .backup-summary-card strong { display: block; font-size: 1rem; color: var(--text-dark); }
+    .backup-summary-card span { display: block; margin-top: 4px; color: var(--text-soft); font-size: 0.74rem; }
+    .backup-dayoff-note {
+      margin-top: 10px; padding: 10px 12px; border-radius: 10px;
+      background: #f8faf9; border: 1px dashed var(--border); color: #607080; font-size: 0.76rem;
+    }
+    @media (max-width: 640px) {
+      .backup-month-stats, .backup-file-stats { grid-template-columns: 1fr; }
+    }
+
     /* ===== MOBILE LANDSCAPE WORKSPACE + SHEET FOCUS MODE ===== */
     .workspace-card { min-height: 0; }
     .sheet-focus-toggle { min-width: 42px; }
@@ -418,7 +469,20 @@
       }
     }
 
-    </style>
+    
+/* ===== FINAL UX TUNE-UP 2026-04 ===== */
+.folder-card { min-height: 164px !important; padding: 14px !important; }
+.folder-name { font-size: 0.92rem !important; }
+.folder-desc { font-size: 0.75rem !important; }
+.archive-file-card, .file-card { padding: 14px !important; }
+.workspace-actions .btn-action { min-height: 34px; padding: 0 10px !important; font-size: 0.74rem !important; }
+.file-list-grid, .archive-files-grid { gap: 14px !important; }
+@media (max-width: 640px) {
+  .workspace-actions { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+  .workspace-actions .btn-action { width: 100%; }
+}
+
+</style>
 </head>
 <body>
   <div id="page-loader"><i class="fa-solid fa-spinner fa-spin"></i><p>Đang kiểm tra dữ liệu...</p></div>
@@ -488,6 +552,23 @@
 
         <div id="modernArchiveUI"></div>
 
+        <div class="panel" id="attendanceBackupPanel" style="display:none; flex: 1; flex-direction: column;">
+          <div class="panel-header file-browser-top">
+            <div>
+              <h3 id="attendanceBackupTitle">Lưu file điểm danh</h3>
+              <p id="attendanceBackupSubtitle">Mỗi tháng hệ thống tự tạo một folder con để chứa toàn bộ file điểm danh của các lớp.</p>
+              <div class="backup-breadcrumb" id="attendanceBackupBreadcrumb"></div>
+            </div>
+            <div class="file-browser-actions">
+              <button class="btn-action btn-secondary" id="btnRefreshAttendanceBackups"><i class="fa-solid fa-rotate"></i> Làm mới</button>
+              <button class="btn-action btn-neutral" id="btnBackAttendanceMonths" style="display:none;"><i class="fa-solid fa-arrow-left"></i> Quay lại tháng</button>
+              <button class="btn-action btn-neutral" id="btnBackAttendanceToFolders"><i class="fa-solid fa-arrow-left"></i> Quay lại folder</button>
+            </div>
+          </div>
+          <div class="backup-summary-bar" id="attendanceBackupSummary"></div>
+          <div class="file-list-grid" id="attendanceBackupGrid"></div>
+        </div>
+
         <div class="workspace-panel" id="workspacePanel" style="display:none;">
           <div class="workspace-card">
             <button class="btn-action btn-neutral sheet-focus-exit" id="btnExitSheetFocus"><i class="fa-solid fa-compress"></i> Thu nhỏ giao diện</button>
@@ -543,6 +624,10 @@
     const FILE_DATA_LOCAL_PREFIX = 'internal_file_data_';
     const USERS_COLLECTION = 'users';
     const ARCHIVE_FOLDER_ID = 'luu-tru';
+    const ATTENDANCE_BACKUP_FOLDER_ID = 'luu-file-diem-danh';
+    const ATTENDANCE_BACKUP_ROOT_COLLECTION = 'internal_management';
+    const ATTENDANCE_BACKUP_ROOT_ID = 'attendance_files_archive';
+    const ATTENDANCE_BACKUP_ROOT_LABEL = 'Lưu file điểm danh';
     const ARCHIVE_INDEX_KEY = 'internal_archive_index';
     const ARCHIVE_INDEX_COLLECTION = 'internal_archives';
     const ARCHIVE_INDEX_DOC = 'registry';
@@ -571,6 +656,13 @@
         icon: 'fa-box-archive',
         tag: 'Kho lưu',
         description: 'Danh sách các file Excel đã được đưa vào kho lưu trữ riêng.'
+      },
+      {
+        id: ATTENDANCE_BACKUP_FOLDER_ID,
+        name: ATTENDANCE_BACKUP_ROOT_LABEL,
+        icon: 'fa-folder-tree',
+        tag: 'Điểm danh',
+        description: 'Tự động tạo folder tháng và lưu toàn bộ file điểm danh của tất cả lớp sau khi kết thúc tháng.'
       }
     ];
 
@@ -585,7 +677,10 @@
       saveInFlight: false,
       archiveDirectoryHandle: null,
       archiveEntries: [],
-      folderFilesCache: {}
+      folderFilesCache: {},
+      attendanceBackupMonths: [],
+      attendanceBackupCurrentMonth: null,
+      attendanceBackupFiles: []
     };
 
 
@@ -663,6 +758,16 @@
       return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error('TIMEOUT_OFFLINE')), ms))]);
     }
     function normalizeEmail(email) { return String(email || '').trim().toLowerCase(); }
+    function normalizeText(value) { return String(value || '').trim(); }
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    function padNumber(value) { return String(value).padStart(2, '0'); }
 
     // UI Phân quyền
     function ensureAdminAccess() {
@@ -1124,6 +1229,7 @@
 
       document.getElementById('folderPanel').style.display = 'none';
       document.getElementById('modernArchiveUI').style.display = 'none';
+      document.getElementById('attendanceBackupPanel').style.display = 'none';
       document.getElementById('workspacePanel').style.display = 'none';
       document.getElementById('fileBrowserPanel').style.display = 'flex';
       document.getElementById('pageHeader').style.display = 'none';
@@ -1231,6 +1337,7 @@
           if (window.luckysheet && typeof luckysheet.destroy === 'function') luckysheet.destroy();
         } catch (error) {}
         document.getElementById('workspacePanel').style.display = 'none';
+        document.getElementById('attendanceBackupPanel').style.display = 'none';
         document.getElementById('modernArchiveUI').style.display = 'block';
         document.getElementById('fileBrowserPanel').style.display = 'none';
         document.getElementById('folderPanel').style.display = 'none';
@@ -1238,6 +1345,27 @@
         document.body.classList.remove('workspace-compact');
         exitSheetFocusMode();
         applyAdaptiveWorkspaceMode();
+        updateWorkspaceControls();
+        return;
+      }
+
+      if (isAttendanceBackupFolder()) {
+        state.currentFileId = null;
+        state.currentFileMeta = null;
+        try {
+          if (window.luckysheet && typeof luckysheet.destroy === 'function') luckysheet.destroy();
+        } catch (error) {}
+        document.getElementById('workspacePanel').style.display = 'none';
+        document.getElementById('modernArchiveUI').style.display = 'none';
+        document.getElementById('fileBrowserPanel').style.display = 'none';
+        document.getElementById('folderPanel').style.display = 'none';
+        document.getElementById('attendanceBackupPanel').style.display = 'flex';
+        document.getElementById('pageHeader').style.display = 'none';
+        document.body.classList.remove('workspace-compact');
+        exitSheetFocusMode();
+        applyAdaptiveWorkspaceMode();
+        if (state.attendanceBackupCurrentMonth && (state.attendanceBackupFiles || []).length) renderAttendanceBackupFiles(state.attendanceBackupCurrentMonth, state.attendanceBackupFiles);
+        else renderAttendanceBackupMonths(state.attendanceBackupMonths || []);
         updateWorkspaceControls();
         return;
       }
@@ -1397,6 +1525,7 @@
       }
 
       document.getElementById('modernArchiveUI').style.display = 'none';
+      document.getElementById('attendanceBackupPanel').style.display = 'none';
       document.getElementById('workspacePanel').style.display = 'flex';
       
       document.getElementById('currentSheetTitle').textContent = "Đang xem: " + entry.fileName;
@@ -2065,6 +2194,7 @@
 
     function updateWorkspaceControls() {
       const isArchiveView = isArchiveFolder();
+      const isAttendanceReadOnly = isAttendanceBackupFolder() || !!(state.currentFileMeta && state.currentFileMeta.readOnly);
       const archiveButton = document.getElementById('btnArchiveNow');
       const saveButton = document.getElementById('btnSaveNow');
       const backButton = document.getElementById('btnBackToFolders');
@@ -2074,15 +2204,15 @@
         fileBrowserPanel.style.display = fileBrowserPanel.style.display === 'flex' ? 'flex' : fileBrowserPanel.style.display;
       }
       if (archiveButton) {
-        archiveButton.disabled = isArchiveView;
-        archiveButton.style.display = isArchiveView ? 'none' : 'inline-flex';
+        archiveButton.disabled = isArchiveView || isAttendanceReadOnly;
+        archiveButton.style.display = (isArchiveView || isAttendanceReadOnly) ? 'none' : 'inline-flex';
       }
       if (saveButton) {
-        saveButton.disabled = isArchiveView;
-        saveButton.style.display = isArchiveView ? 'none' : 'inline-flex';
+        saveButton.disabled = isArchiveView || isAttendanceReadOnly;
+        saveButton.style.display = (isArchiveView || isAttendanceReadOnly) ? 'none' : 'inline-flex';
       }
       if (backButton) {
-        backButton.innerHTML = isArchiveView
+        backButton.innerHTML = (isArchiveView || isAttendanceReadOnly)
           ? '<i class="fa-solid fa-arrow-left"></i> Quay lại'
           : '<i class="fa-solid fa-arrow-left"></i> Danh sách file';
       }
@@ -2206,6 +2336,413 @@
       setSheetFocusMode(false);
     }
 
+
+    function isAttendanceBackupFolder(folderId = state.currentFolderId) {
+      return folderId === ATTENDANCE_BACKUP_FOLDER_ID;
+    }
+
+    function getAttendanceBackupRootRef() {
+      return db.collection(ATTENDANCE_BACKUP_ROOT_COLLECTION).doc(ATTENDANCE_BACKUP_ROOT_ID);
+    }
+
+    function getAttendanceBackupMonthRef(monthKey) {
+      return getAttendanceBackupRootRef().collection('folders').doc(monthKey);
+    }
+
+    function getAttendanceBackupFileRef(monthKey, classId) {
+      return getAttendanceBackupMonthRef(monthKey).collection('files').doc(classId);
+    }
+
+    function parseAttendanceMonthKey(monthKey) {
+      const match = String(monthKey || '').match(/^(\d{4})_(\d{2})$/);
+      if (!match) return null;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      return {
+        year,
+        month,
+        key: `${year}_${padNumber(month)}`,
+        label: `${padNumber(month)}/${year}`,
+        folderLabel: `Tháng ${padNumber(month)}-${year}`,
+        daysInMonth: new Date(year, month, 0).getDate()
+      };
+    }
+
+    function buildAttendanceBackupBreadcrumb(mode = 'months', monthInfo = null, fileMeta = null) {
+      const parts = [`<span><i class="fa-solid fa-folder-tree"></i> <strong>${escapeHtml(ATTENDANCE_BACKUP_ROOT_LABEL)}</strong></span>`];
+      if (mode === 'files' || mode === 'viewer') {
+        parts.push(`<span><i class="fa-solid fa-angle-right"></i> ${escapeHtml((monthInfo && (monthInfo.folderLabel || monthInfo.name)) || '')}</span>`);
+      }
+      if (mode === 'viewer' && fileMeta) {
+        parts.push(`<span><i class="fa-solid fa-angle-right"></i> ${escapeHtml(fileMeta.className || fileMeta.fileName || 'File điểm danh')}</span>`);
+      }
+      return parts.join('');
+    }
+
+    function setAttendanceBackupSummaryCards(cards = []) {
+      const wrap = document.getElementById('attendanceBackupSummary');
+      if (!wrap) return;
+      if (!cards.length) {
+        wrap.innerHTML = '';
+        wrap.style.display = 'none';
+        return;
+      }
+      wrap.style.display = 'grid';
+      wrap.innerHTML = cards.map(card => `
+        <div class="backup-summary-card">
+          <strong>${escapeHtml(card.value || '')}</strong>
+          <span>${escapeHtml(card.label || '')}</span>
+        </div>
+      `).join('');
+    }
+
+    async function loadAttendanceBackupMonths() {
+      if (!db) throw new Error('Không thể kết nối Firebase để đọc kho lưu file điểm danh.');
+      const rootSnap = await withTimeout(getAttendanceBackupRootRef().get(), 4000);
+      if (!rootSnap.exists) {
+        state.attendanceBackupMonths = [];
+        return [];
+      }
+      const folderSnap = await withTimeout(getAttendanceBackupRootRef().collection('folders').get(), 4000);
+      const months = folderSnap.docs.map((doc) => {
+        const data = doc.data() || {};
+        const parsed = parseAttendanceMonthKey(data.monthKey || doc.id) || {};
+        return {
+          id: doc.id,
+          ...parsed,
+          ...data,
+          fileCount: Number(data.classCount || data.totalClassesScanned || 0),
+          updatedLabel: formatDateForDisplay(data.completedAt || data.updatedAt || null)
+        };
+      }).sort((a, b) => String(b.monthKey || b.id || '').localeCompare(String(a.monthKey || a.id || '')));
+      state.attendanceBackupMonths = months;
+      return months;
+    }
+
+    async function loadAttendanceBackupFiles(monthKey) {
+      if (!db) throw new Error('Không thể kết nối Firebase để đọc file điểm danh đã sao lưu.');
+      const monthRef = getAttendanceBackupMonthRef(monthKey);
+      const [monthSnap, fileSnap] = await Promise.all([
+        withTimeout(monthRef.get(), 4000),
+        withTimeout(monthRef.collection('files').get(), 4000)
+      ]);
+      if (!monthSnap.exists) throw new Error('Không tìm thấy folder tháng trong kho lưu file điểm danh.');
+      const monthData = monthSnap.data() || {};
+      const monthInfo = {
+        ...(parseAttendanceMonthKey(monthData.monthKey || monthKey) || {}),
+        ...monthData,
+        id: monthKey
+      };
+      const files = fileSnap.docs.map((doc) => {
+        const data = doc.data() || {};
+        const summary = data.summary || {};
+        return {
+          id: doc.id,
+          ...data,
+          summary,
+          updatedLabel: formatDateForDisplay(data.updatedAt || null),
+          totalStudents: Number(summary.totalStudents || 0),
+          totalSessions: Number(summary.totalSessions || 0),
+          totalRevenue: Number(summary.totalRevenue || 0)
+        };
+      }).sort((a, b) => {
+        const codeCompare = String(a.classCode || '').localeCompare(String(b.classCode || ''), 'vi');
+        if (codeCompare !== 0) return codeCompare;
+        return String(a.className || '').localeCompare(String(b.className || ''), 'vi');
+      });
+      state.attendanceBackupCurrentMonth = monthInfo;
+      state.attendanceBackupFiles = files;
+      return { monthInfo, files };
+    }
+
+    function renderAttendanceBackupMonths(months) {
+      const title = document.getElementById('attendanceBackupTitle');
+      const subtitle = document.getElementById('attendanceBackupSubtitle');
+      const breadcrumb = document.getElementById('attendanceBackupBreadcrumb');
+      const grid = document.getElementById('attendanceBackupGrid');
+      const backBtn = document.getElementById('btnBackAttendanceMonths');
+      if (title) title.textContent = ATTENDANCE_BACKUP_ROOT_LABEL;
+      if (subtitle) subtitle.textContent = 'Mỗi tháng hệ thống tự tạo một folder con để chứa toàn bộ file điểm danh của các lớp.';
+      if (breadcrumb) breadcrumb.innerHTML = buildAttendanceBackupBreadcrumb('months');
+      if (backBtn) backBtn.style.display = 'none';
+      setAttendanceBackupSummaryCards([
+        { value: String(months.length), label: 'Folder tháng đã tạo' },
+        { value: String(months.reduce((sum, item) => sum + (Number(item.fileCount) || 0), 0)), label: 'Tổng file điểm danh đã lưu' }
+      ]);
+      if (!grid) return;
+      if (!months.length) {
+        grid.innerHTML = `
+          <div class="empty-file-list">
+            <div>
+              <i class="fa-solid fa-folder-open" style="font-size:2.4rem; color:#d9e2ea; margin-bottom:14px;"></i>
+              <div style="font-weight:800; color:var(--text-dark); margin-bottom:8px;">Chưa có folder tháng nào</div>
+              <div>Folder này sẽ tự xuất hiện sau khi hệ thống chạy sao lưu điểm danh cuối tháng.</div>
+            </div>
+          </div>`;
+        return;
+      }
+      grid.innerHTML = months.map((month, index) => `
+        <div class="file-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+            <div class="file-card-icon"><i class="fa-solid fa-folder-open"></i></div>
+            <div class="folder-order">${index + 1}</div>
+          </div>
+          <div class="backup-card-label">Folder tháng</div>
+          <div class="backup-card-title">${escapeHtml(month.folderLabel || month.name || month.label || month.id)}</div>
+          <div class="backup-card-meta">
+            <p><i class="fa-solid fa-file-lines"></i> ${Number(month.fileCount || 0)} file điểm danh</p>
+            <p><i class="fa-regular fa-clock"></i> Hoàn tất: ${escapeHtml(month.updatedLabel || 'Chưa rõ')}</p>
+            <p><i class="fa-solid fa-route"></i> ${escapeHtml(month.path || '')}</p>
+          </div>
+          <div class="file-card-actions">
+            <button class="btn-action btn-primary" onclick="openAttendanceBackupMonth('${month.monthKey || month.id}')"><i class="fa-solid fa-folder-tree"></i> Mở tháng</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function renderAttendanceBackupFiles(monthInfo, files) {
+      const title = document.getElementById('attendanceBackupTitle');
+      const subtitle = document.getElementById('attendanceBackupSubtitle');
+      const breadcrumb = document.getElementById('attendanceBackupBreadcrumb');
+      const grid = document.getElementById('attendanceBackupGrid');
+      const backBtn = document.getElementById('btnBackAttendanceMonths');
+      if (title) title.textContent = (monthInfo && (monthInfo.folderLabel || monthInfo.name)) || ATTENDANCE_BACKUP_ROOT_LABEL;
+      if (subtitle) subtitle.textContent = 'Mỗi file tương ứng 1 lớp trong tháng đã chọn. Có thể xem trực tiếp hoặc tải ra Excel.';
+      if (breadcrumb) breadcrumb.innerHTML = buildAttendanceBackupBreadcrumb('files', monthInfo);
+      if (backBtn) backBtn.style.display = 'inline-flex';
+      const totalRevenue = files.reduce((sum, item) => sum + (Number(item.totalRevenue) || 0), 0);
+      const totalSessions = files.reduce((sum, item) => sum + (Number(item.totalSessions) || 0), 0);
+      setAttendanceBackupSummaryCards([
+        { value: String(files.length), label: 'File điểm danh trong tháng' },
+        { value: String(totalSessions), label: 'Tổng số buổi đã lưu' },
+        { value: formatCurrencyVnd(totalRevenue), label: 'Tổng doanh thu điểm danh' }
+      ]);
+      if (!grid) return;
+      if (!files.length) {
+        grid.innerHTML = `
+          <div class="empty-file-list">
+            <div>
+              <i class="fa-solid fa-file-circle-xmark" style="font-size:2.4rem; color:#d9e2ea; margin-bottom:14px;"></i>
+              <div style="font-weight:800; color:var(--text-dark); margin-bottom:8px;">Tháng này chưa có file điểm danh</div>
+              <div>Hệ thống chưa ghi nhận snapshot nào cho tháng ${escapeHtml((monthInfo && monthInfo.label) || '')}.</div>
+            </div>
+          </div>`;
+        return;
+      }
+      grid.innerHTML = files.map((file, index) => `
+        <div class="file-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+            <div class="file-card-icon"><i class="fa-solid fa-file-waveform"></i></div>
+            <div class="folder-order">${index + 1}</div>
+          </div>
+          <div class="backup-card-label">${escapeHtml(file.classCode || 'Lớp')}</div>
+          <div class="backup-card-title">${escapeHtml(file.className || file.fileName || 'File điểm danh')}</div>
+          <div class="backup-card-meta">
+            <p><i class="fa-solid fa-chalkboard-user"></i> GV: ${escapeHtml(file.teacherNamesDisplay || 'Chưa rõ')}</p>
+            <p><i class="fa-solid fa-user-tie"></i> QL: ${escapeHtml(file.managerNameDisplay || 'Chưa rõ')}</p>
+            <p><i class="fa-solid fa-users"></i> ${file.totalStudents} học sinh · ${file.totalSessions} buổi</p>
+            <p><i class="fa-solid fa-sack-dollar"></i> ${formatCurrencyVnd(file.totalRevenue)}</p>
+            <p><i class="fa-regular fa-clock"></i> ${escapeHtml(file.updatedLabel || 'Chưa rõ')}</p>
+          </div>
+          <div class="file-card-actions">
+            <button class="btn-action btn-primary" onclick="viewAttendanceBackupFile('${monthInfo.monthKey || monthInfo.id}','${file.id}')"><i class="fa-solid fa-eye"></i> Xem trực tiếp</button>
+            <button class="btn-action btn-neutral" onclick="downloadAttendanceBackupFile('${monthInfo.monthKey || monthInfo.id}','${file.id}')"><i class="fa-solid fa-download"></i> Tải Excel</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function buildAttendanceBackupWorkbookData(fileMeta, students, monthInfo) {
+      const safeMonth = monthInfo || parseAttendanceMonthKey(fileMeta && fileMeta.backupMonthKey) || { daysInMonth: 31, label: '', folderLabel: '' };
+      const summary = fileMeta && fileMeta.summary && typeof fileMeta.summary === 'object' ? fileMeta.summary : {};
+      const dayOffDays = Array.isArray(summary.dayOffDays) ? summary.dayOffDays.map(day => String(day)) : [];
+      const rows = [];
+      rows.push([`BẢNG ĐIỂM DANH - ${(fileMeta && fileMeta.className) || ''} - ${(safeMonth && safeMonth.label) || ''}`]);
+      rows.push([`Mã lớp: ${(fileMeta && fileMeta.classCode) || ''} | Giáo viên: ${(fileMeta && fileMeta.teacherNamesDisplay) || 'Chưa rõ'} | Quản lý: ${(fileMeta && fileMeta.managerNameDisplay) || 'Chưa rõ'}`]);
+      rows.push([`Tổng học sinh: ${Number(summary.totalStudents || students.length || 0)} | Tổng buổi: ${Number(summary.totalSessions || 0)} | Tổng thu: ${formatCurrencyVnd(summary.totalRevenue || 0)}`]);
+      rows.push([`Ngày nghỉ toàn buổi: ${dayOffDays.length ? dayOffDays.map(day => padNumber(day)).join(', ') : 'Không có'}`]);
+      rows.push([]);
+      const header = ['STT', 'Họ và tên', 'Trường', 'Hình thức', 'Học phí'];
+      for (let day = 1; day <= Number(safeMonth.daysInMonth || 31); day++) {
+        header.push(dayOffDays.includes(String(day)) ? `${day} (Nghỉ)` : String(day));
+      }
+      header.push('Số buổi', 'Tổng thu', 'Ghi chú');
+      rows.push(header);
+      (students || []).forEach((student, index) => {
+        const attendance = student && student.attendance && typeof student.attendance === 'object' ? student.attendance : {};
+        const row = [
+          index + 1,
+          student && student.name || '',
+          student && student.school || '',
+          student && student.mode || '',
+          Number(student && student.tuition) || 0
+        ];
+        for (let day = 1; day <= Number(safeMonth.daysInMonth || 31); day++) {
+          row.push(attendance[String(day)] || '');
+        }
+        row.push(Number(student && student.sessionCount) || 0, Number(student && student.totalAmount) || 0, student && student.note || '');
+        rows.push(row);
+      });
+      return rows;
+    }
+
+    function buildAttendanceBackupSheetData(fileMeta, students, monthInfo) {
+      const rows = buildAttendanceBackupWorkbookData(fileMeta, students, monthInfo);
+      const styledRows = rows.map((row, rowIndex) => row.map((cell, colIndex) => {
+        const base = buildLuckysheetCell(cell, rowIndex >= 5 && colIndex >= 4 ? { ht: 0 } : {});
+        if (rowIndex === 0) return { ...base, bl: 1, fs: 14, fc: '#0d1b2a', bg: '#f6fbf8' };
+        if (rowIndex === 1 || rowIndex === 2 || rowIndex === 3) return { ...base, fc: '#607080', fs: 10 };
+        if (rowIndex === 5) return { ...base, bl: 1, bg: '#eef5f1' };
+        if (colIndex === rows[5].length - 2 && rowIndex > 5) return { ...base, fc: '#0b8f4d', bl: 1, ht: 2 };
+        return base;
+      }));
+      const columnlen = { 0: 55, 1: 180, 2: 150, 3: 100, 4: 90 };
+      const startDayCol = 5;
+      const month = monthInfo || parseAttendanceMonthKey(fileMeta && fileMeta.backupMonthKey) || { daysInMonth: 31 };
+      for (let day = 1; day <= Number(month.daysInMonth || 31); day++) columnlen[startDayCol + day - 1] = 48;
+      const endBase = startDayCol + Number(month.daysInMonth || 31);
+      columnlen[endBase] = 80;
+      columnlen[endBase + 1] = 110;
+      columnlen[endBase + 2] = 180;
+      return [createLuckysheetSheetFromRows('Điểm danh', styledRows, { index: 0, order: 0, columnlen })];
+    }
+
+    async function viewAttendanceBackupFile(monthKey, classId) {
+      if (!ensureAdminAccess()) { redirectNonAdmin(); return; }
+      showLoader('Đang tải file điểm danh đã sao lưu...');
+      try {
+        const payload = await loadAttendanceBackupFilePayload(monthKey, classId);
+        state.currentFileId = classId;
+        state.currentFileMeta = {
+          id: classId,
+          folderId: ATTENDANCE_BACKUP_FOLDER_ID,
+          fileName: payload.fileMeta.fileName || payload.fileMeta.className || 'File điểm danh',
+          readOnly: true,
+          viewerType: 'attendance-backup'
+        };
+        document.getElementById('attendanceBackupPanel').style.display = 'none';
+        document.getElementById('workspacePanel').style.display = 'flex';
+        document.getElementById('modernArchiveUI').style.display = 'none';
+        document.getElementById('fileBrowserPanel').style.display = 'none';
+        document.getElementById('folderPanel').style.display = 'none';
+        document.getElementById('pageHeader').style.display = 'none';
+        document.body.classList.add('workspace-compact');
+        applyAdaptiveWorkspaceMode();
+        document.getElementById('currentSheetTitle').textContent = payload.fileMeta.className || payload.fileMeta.fileName || 'File điểm danh';
+        document.getElementById('currentSheetSubtitle').innerHTML = `Đang xem snapshot ${escapeHtml((payload.monthInfo && payload.monthInfo.label) || '')} · ${escapeHtml(payload.fileMeta.classCode || '')} · ${escapeHtml(payload.fileMeta.teacherNamesDisplay || 'Chưa rõ giáo viên')}`;
+        updateWorkspaceControls();
+        await waitForLuckysheetContainerReady();
+        initLuckysheet(buildAttendanceBackupSheetData(payload.fileMeta, payload.students, payload.monthInfo), payload.fileMeta.fileName, { isArchiveView: true });
+        setSaveStatus('saved', 'Đang xem file sao lưu', true);
+      } catch (error) {
+        console.error('Lỗi mở file điểm danh sao lưu:', error);
+        alert('Không thể mở file điểm danh: ' + error.message);
+      } finally {
+        hideLoader();
+      }
+    }
+
+    async function downloadAttendanceBackupFile(monthKey, classId) {
+      showLoader('Đang tạo file Excel...');
+      try {
+        const payload = await loadAttendanceBackupFilePayload(monthKey, classId);
+        const workbookRows = buildAttendanceBackupWorkbookData(payload.fileMeta, payload.students, payload.monthInfo);
+        const workbook = XLSX.utils.book_new();
+        const sheet = XLSX.utils.aoa_to_sheet(workbookRows);
+        XLSX.utils.book_append_sheet(workbook, sheet, sanitizeSheetName(payload.fileMeta.classCode || 'DiemDanh'));
+        const workbookData = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const fallbackName = `${sanitizeFileNamePart(payload.fileMeta.classCode || 'lop')}-${sanitizeFileNamePart(payload.fileMeta.className || 'diem-danh')}-${sanitizeFileNamePart((payload.monthInfo && payload.monthInfo.label) || '')}.xlsx`;
+        downloadArrayBufferAsFile(workbookData, (payload.fileMeta.fileName || fallbackName).replace(/\.json$/i, '.xlsx'));
+      } catch (error) {
+        console.error('Lỗi tải file điểm danh sao lưu:', error);
+        alert('Không thể tải file điểm danh: ' + error.message);
+      } finally {
+        hideLoader();
+      }
+    }
+
+    async function loadAttendanceBackupFilePayload(monthKey, classId) {
+      if (!db) throw new Error('Không thể kết nối Firebase để đọc file điểm danh.');
+      const monthInfo = state.attendanceBackupCurrentMonth && String(state.attendanceBackupCurrentMonth.monthKey || state.attendanceBackupCurrentMonth.id) === String(monthKey)
+        ? state.attendanceBackupCurrentMonth
+        : ((parseAttendanceMonthKey(monthKey) || { id: monthKey }));
+      const fileRef = getAttendanceBackupFileRef(monthKey, classId);
+      const [fileSnap, studentSnap] = await Promise.all([
+        withTimeout(fileRef.get(), 4000),
+        withTimeout(fileRef.collection('students').get(), 4000)
+      ]);
+      if (!fileSnap.exists) throw new Error('Không tìm thấy file điểm danh đã sao lưu.');
+      const fileMeta = { id: classId, ...(fileSnap.data() || {}) };
+      const students = studentSnap.docs.map((doc) => ({ id: doc.id, ...(doc.data() || {}) }))
+        .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'vi'));
+      return { monthInfo, fileMeta, students };
+    }
+
+    async function openAttendanceBackupFolder() {
+      showLoader('Đang tải folder lưu file điểm danh...');
+      try {
+        state.currentFolderId = ATTENDANCE_BACKUP_FOLDER_ID;
+        state.currentFolder = INTERNAL_FOLDERS.find(item => item.id === ATTENDANCE_BACKUP_FOLDER_ID) || null;
+        state.currentFileId = null;
+        state.currentFileMeta = null;
+        const months = await loadAttendanceBackupMonths();
+        document.getElementById('folderPanel').style.display = 'none';
+        document.getElementById('fileBrowserPanel').style.display = 'none';
+        document.getElementById('workspacePanel').style.display = 'none';
+        document.getElementById('modernArchiveUI').style.display = 'none';
+        document.getElementById('attendanceBackupPanel').style.display = 'flex';
+        document.getElementById('pageHeader').style.display = 'none';
+        document.body.classList.remove('workspace-compact');
+        exitSheetFocusMode();
+        applyAdaptiveWorkspaceMode();
+        renderAttendanceBackupMonths(months);
+        updateWorkspaceControls();
+      } catch (error) {
+        console.error('Lỗi mở folder lưu file điểm danh:', error);
+        alert('Không thể mở folder lưu file điểm danh: ' + error.message);
+      } finally {
+        hideLoader();
+      }
+    }
+
+    async function openAttendanceBackupMonth(monthKey) {
+      showLoader('Đang tải file điểm danh của tháng...');
+      try {
+        const { monthInfo, files } = await loadAttendanceBackupFiles(monthKey);
+        renderAttendanceBackupFiles(monthInfo, files);
+      } catch (error) {
+        console.error('Lỗi mở tháng lưu file điểm danh:', error);
+        alert('Không thể mở tháng đã chọn: ' + error.message);
+      } finally {
+        hideLoader();
+      }
+    }
+
+    async function backToAttendanceBackupMonths() {
+      if (!ensureAdminAccess()) { redirectNonAdmin(); return; }
+      showLoader('Đang quay lại danh sách tháng...');
+      try {
+        const months = state.attendanceBackupMonths && state.attendanceBackupMonths.length
+          ? state.attendanceBackupMonths
+          : await loadAttendanceBackupMonths();
+        document.getElementById('attendanceBackupPanel').style.display = 'flex';
+        document.getElementById('workspacePanel').style.display = 'none';
+        renderAttendanceBackupMonths(months);
+        state.currentFileId = null;
+        state.currentFileMeta = null;
+        document.body.classList.remove('workspace-compact');
+        exitSheetFocusMode();
+        applyAdaptiveWorkspaceMode();
+        updateWorkspaceControls();
+      } finally {
+        hideLoader();
+      }
+    }
+
+    window.openAttendanceBackupMonth = openAttendanceBackupMonth;
+    window.viewAttendanceBackupFile = viewAttendanceBackupFile;
+    window.downloadAttendanceBackupFile = downloadAttendanceBackupFile;
+
+
     // ----------------------------------------------------------------------
     // 4. QUẢN LÝ THƯ MỤC
     // ----------------------------------------------------------------------
@@ -2297,6 +2834,7 @@
           const archiveEntries = await loadArchiveEntries();
           document.getElementById('folderPanel').style.display = 'none';
           document.getElementById('fileBrowserPanel').style.display = 'none';
+          document.getElementById('attendanceBackupPanel').style.display = 'none';
           document.getElementById('pageHeader').style.display = 'none';
           document.getElementById('modernArchiveUI').style.display = 'block';
           document.getElementById('workspacePanel').style.display = 'none';
@@ -2306,6 +2844,12 @@
 
           renderModernArchiveUI(archiveEntries);
           updateWorkspaceControls();
+          hideLoader();
+          return;
+        }
+
+        if (isAttendanceBackupFolder(folderId)) {
+          await openAttendanceBackupFolder();
           hideLoader();
           return;
         }
@@ -2331,8 +2875,8 @@
         : { silent: false, returnToList: false, ...options };
 
       if (!state.currentFolderId || !state.currentFileId || state.saveInFlight || !ensureAdminAccess()) return false;
-      if (isArchiveFolder()) {
-        setSaveStatus('saved', 'Kho lưu trữ', true);
+      if (isArchiveFolder() || isAttendanceBackupFolder()) {
+        setSaveStatus('saved', 'Chế độ chỉ đọc', true);
         return false;
       }
       if (!window.luckysheet) return false;
@@ -2386,6 +2930,7 @@
       state.currentFileMeta = null;
 
       document.getElementById('modernArchiveUI').style.display = 'none';
+      document.getElementById('attendanceBackupPanel').style.display = 'none';
       document.getElementById('workspacePanel').style.display = 'none';
       document.getElementById('fileBrowserPanel').style.display = 'none';
       document.getElementById('folderPanel').style.display = 'block';
@@ -2475,6 +3020,12 @@
       document.getElementById('btnExitSheetFocus').addEventListener('click', exitSheetFocusMode);
       document.getElementById('btnBackToFolders').addEventListener('click', backToFileBrowser);
       document.getElementById('btnBackToFolderHome').addEventListener('click', backToFolders);
+      document.getElementById('btnBackAttendanceToFolders').addEventListener('click', backToFolders);
+      document.getElementById('btnBackAttendanceMonths').addEventListener('click', backToAttendanceBackupMonths);
+      document.getElementById('btnRefreshAttendanceBackups').addEventListener('click', () => {
+        if (state.attendanceBackupCurrentMonth && (state.attendanceBackupCurrentMonth.monthKey || state.attendanceBackupCurrentMonth.id)) openAttendanceBackupMonth(state.attendanceBackupCurrentMonth.monthKey || state.attendanceBackupCurrentMonth.id);
+        else openAttendanceBackupFolder();
+      });
       document.getElementById('btnSaveNow').addEventListener('click', () => saveCurrentSheet({ silent: false, returnToList: true }));
       document.getElementById('btnArchiveNow').addEventListener('click', archiveCurrentSheet);
       document.getElementById('btnCreateExcelFile').addEventListener('click', createNewExcelFile);

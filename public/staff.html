@@ -334,7 +334,30 @@
             }
         }
 
-    </style>
+    
+/* ===== FINAL UX TUNE-UP 2026-04 ===== */
+:root { --ux-btn-h: 36px; --ux-btn-px: 11px; --ux-btn-fs: 0.76rem; --ux-table-fs: 0.72rem; }
+.header-actions { gap: 8px !important; align-items: stretch !important; }
+.header-actions .search-box { flex: 1 1 240px; }
+.header-actions .search-box input { height: var(--ux-btn-h); padding-top: 0; padding-bottom: 0; font-size: 0.8rem; }
+.btn-action-top, .btn-add-new, .btn-edit-top, .btn-delete-top { min-height: var(--ux-btn-h); padding: 0 var(--ux-btn-px) !important; border-radius: 9px !important; font-size: var(--ux-btn-fs) !important; gap: 6px !important; white-space: nowrap; }
+.table-wrapper { overflow: auto; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; overscroll-behavior: contain; }
+.excel-table { font-size: var(--ux-table-fs) !important; }
+.excel-table th, .excel-table td { padding: 6px 7px !important; }
+.page-permission-chip { font-size: 0.76rem !important; }
+@media (max-width: 1024px) {
+  .header-actions { display: grid !important; grid-template-columns: minmax(0, 1fr) repeat(3, auto); gap: 7px; }
+  .header-actions .search-box { grid-column: 1 / -1; order: -1; }
+  .header-actions .search-box input { width: 100% !important; }
+}
+@media (max-width: 640px) {
+  .btn-action-top span, .btn-add-new span, .btn-edit-top span, .btn-delete-top span { display: none; }
+  .btn-action-top, .btn-add-new, .btn-edit-top, .btn-delete-top { padding: 0 10px !important; min-width: 36px; }
+  .excel-table { min-width: 1480px !important; font-size: 0.68rem !important; }
+  .excel-table th, .excel-table td { padding: 4px 5px !important; }
+}
+
+</style>
 </head>
 <body>
     <div id="page-loader"><i class="fa-solid fa-spinner fa-spin"></i><p>Đang tải dữ liệu nhân sự...</p></div>
@@ -524,7 +547,7 @@
             messagingSenderId: "56988683349",
             appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 

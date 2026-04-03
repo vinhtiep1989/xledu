@@ -21,7 +21,7 @@
         .header { background-color: var(--bg-dark); display: flex; justify-content: space-between; align-items: center; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); width: 100%; position: relative; height: var(--header-height); padding: 0 40px; }
         .header-left { display: flex; align-items: center; gap: 15px; z-index: 10; }
         .mobile-menu-btn { display: none; background: transparent; border: none; color: var(--accent-gold); font-size: 1.8rem; cursor: pointer; outline: none; }
-.header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; z-index: 5; }
+        .header-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; z-index: 5; }
         .header-title { font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; background: linear-gradient(to bottom, #fff8d6, #e0aa3e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0px 5px 20px rgba(224, 170, 62, 0.5); }
         .header-subtitle { font-size: 1rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 500; }
         .header-user { display: flex; align-items: center; justify-content: flex-end; gap: 20px; z-index: 10; }
@@ -44,7 +44,7 @@
 
         .panel { background-color: var(--bg-card-white); border-radius: 12px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-grey); }
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
-        .panel-subtitle { color: #6c7a89; font-size: 0.83rem; margin-top: 6px; }
+        .panel-subtitle { color: #6c7a89; font-size: 0.83rem; margin-top: 6px; line-height: 1.55; max-width: 980px; }
         .btn-add-account { background: var(--primary-green); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
         .btn-add-account:hover { background: #27ae60; }
         .btn-add-account[disabled] { opacity: 0.55; cursor: not-allowed; }
@@ -54,12 +54,12 @@
         .permission-note.teacher { background: rgba(231,76,60,0.12); color: #a23328; }
 
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .system-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 980px; }
+        .system-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 1120px; }
         .system-table th { text-align: left; padding: 12px; color: #888; border-bottom: 2px solid var(--grey-light); }
         .system-table td { padding: 12px; border-bottom: 1px solid var(--border-grey); vertical-align: middle; }
         .empty-row { text-align: center; color: #888; padding: 30px !important; }
 
-        .role-badge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 10px; border-radius: 14px; font-size: 0.74rem; font-weight: 800; text-transform: uppercase; }
+        .role-badge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 10px; border-radius: 14px; font-size: 0.74rem; font-weight: 800; text-transform: uppercase; margin-right: 4px; margin-bottom: 4px; }
         .role-admin { background: rgba(224,170,62,0.15); color: var(--accent-gold); }
         .role-manager { background: rgba(52,152,219,0.12); color: var(--manager-blue); }
         .role-teacher { background: rgba(46,204,113,0.12); color: var(--primary-green); }
@@ -68,14 +68,16 @@
         .status-closed { background: rgba(231,76,60,0.12); color: var(--danger-red); }
         .secure-text { color: #7f8c8d; font-weight: 700; }
 
-        .action-btn { border: none; background: var(--grey-light); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; color: var(--text-dark); transition: 0.2s; }
+        .action-btn { border: none; background: var(--grey-light); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; color: var(--text-dark); transition: 0.2s; margin-left: 4px; }
         .action-btn:hover { background: #e9efec; }
         .btn-del { color: var(--danger-red); }
         .btn-edit { color: var(--manager-blue); }
+        .btn-key { color: #8e44ad; }
+        .btn-link-copy { color: #16a085; }
+        .action-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
 
         .form-help { margin-top: -4px; margin-bottom: 12px; color: #6b7c93; font-size: 0.78rem; line-height: 1.5; }
         .readonly-input { background: #eef3f7 !important; color: #5d6d7e; cursor: not-allowed; }
-        .action-btn[disabled] { opacity: 0.45; cursor: not-allowed; }
 
         .modal { display: none; position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 20px; overflow: hidden; }
         .modal-content { background: white; padding: 24px; border-radius: 12px; width: 100%; max-width: 480px; max-height: min(88vh, 760px); overflow: hidden; display: flex; flex-direction: column; }
@@ -90,7 +92,6 @@
         .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; background: #fff; padding-top: 14px; border-top: 1px solid var(--border-grey); flex-shrink: 0; }
         .btn-cancel { border: none; background: #eee; color: #555; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 700; }
         #userForm { display: flex; flex-direction: column; min-height: 0; flex: 1; }
-        .form-help { font-size: 0.78rem; color: #7f8c8d; margin-top: 6px; line-height: 1.45; }
 
         @media (min-width: 1025px) {
             body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -104,7 +105,7 @@
             html, body { height: auto; min-height: 100%; overflow: auto; -webkit-overflow-scrolling: touch; display: block !important; }
             .header { position: sticky; top: 0; padding: 0 15px; }
             .mobile-menu-btn { display: block; }
-.header-title { font-size: 1.25rem; letter-spacing: 1px; }
+            .header-title { font-size: 1.25rem; letter-spacing: 1px; }
             .header-subtitle { display: none; }
             .user-info { display: none; }
             .btn-logout { padding: 6px 12px; font-size: 0.75rem; }
@@ -119,11 +120,11 @@
             .form-actions { flex-direction: column-reverse; }
             .form-actions button { width: 100%; }
         }
+
         @media (max-width: 640px) {
             .roles-grid { grid-template-columns: 1fr; }
         }
-    
-        /* ===== COMPACT HEADER + FULL MENU LABELS (patched) ===== */
+
         :root { --header-height: 76px; --sidebar-width: 224px; }
         .header {
             display: grid !important;
@@ -280,6 +281,17 @@
             }
         }
 
+        :root { --ux-btn-h: 36px; --ux-btn-px: 11px; --ux-btn-fs: 0.76rem; }
+        .btn-add-account { min-height: var(--ux-btn-h); padding: 0 var(--ux-btn-px) !important; border-radius: 9px !important; font-size: var(--ux-btn-fs) !important; gap: 6px !important; white-space: nowrap; }
+        .table-responsive { overflow: auto; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; overscroll-behavior: contain; }
+        .system-table { font-size: 0.8rem !important; }
+        .system-table th, .system-table td { padding: 10px 10px !important; }
+        .permission-note { font-size: 0.78rem !important; }
+        @media (max-width: 640px) {
+            .btn-add-account { min-width: 36px; padding: 0 10px !important; }
+            .system-table { min-width: 1060px !important; font-size: 0.74rem !important; }
+            .system-table th, .system-table td { padding: 8px 9px !important; }
+        }
     </style>
 </head>
 <body>
@@ -288,13 +300,16 @@
     <header class="header">
         <div class="header-left">
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
-</div>
+        </div>
         <div class="header-center">
             <div class="header-title">XỨ LẠNG EDUCATION</div>
             <div class="header-subtitle">Chắp cánh tri thức - Dẫn lối thành công</div>
         </div>
         <div class="header-user">
-            <div class="user-info">Chào, <span id="currentRoleLabel">...</span><div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div></div>
+            <div class="user-info">
+                Chào, <span id="currentRoleLabel">...</span>
+                <div class="user-id"><div class="live-dot"></div><span id="userEmailDisplay">...</span></div>
+            </div>
             <button class="btn-logout" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
         </div>
     </header>
@@ -317,7 +332,10 @@
                 <div class="panel-header">
                     <div>
                         <h3>Quản trị tài khoản hệ thống</h3>
-                        <div class="panel-subtitle">Tạo tài khoản trên app sẽ tự đồng bộ lên Firebase Authentication và Firestore. Mỗi tài khoản có thể mang nhiều quyền cùng lúc. Khi người dùng tự đổi mật khẩu ở màn hình đăng nhập, mật khẩu lưu trong hồ sơ hệ thống cũng sẽ được tự cập nhật.</div>
+                        <div class="panel-subtitle">
+                            Tất cả thao tác tạo tài khoản, đổi mật khẩu trực tiếp, khóa/mở khóa và xóa user đều đi qua backend Firebase Admin SDK.
+                            Firestore không lưu mật khẩu thô. Admin có thể đặt mật khẩu mới ngay trong form chỉnh sửa mà không cần mật khẩu cũ.
+                        </div>
                     </div>
                     <button class="btn-add-account" id="btnOpenModal"><i class="fa-solid fa-user-plus"></i> Thêm tài khoản</button>
                 </div>
@@ -331,7 +349,7 @@
                                 <th>TT</th>
                                 <th>Họ và tên</th>
                                 <th>Tài khoản hệ thống</th>
-                                <th>Mật khẩu</th>
+                                <th>Bảo mật</th>
                                 <th>Số điện thoại</th>
                                 <th>Phân quyền</th>
                                 <th>Trạng thái</th>
@@ -356,13 +374,20 @@
                     <input type="hidden" id="u_edit_id" value="">
                     <div class="form-group"><label>Họ tên</label><input type="text" id="u_name" required></div>
                     <div class="form-group"><label>Email đăng nhập</label><input type="email" id="u_email" required></div>
-                    <div class="form-group" id="currentPasswordGroup" style="display:none;">
-                        <label>Mật khẩu hiện tại của tài khoản</label>
-                        <input type="password" id="u_current_pass" autocomplete="current-password" autocapitalize="off" spellcheck="false">
-                    </div>
                     <div class="form-group" id="passwordGroup">
                         <label id="passwordLabel">Mật khẩu khởi tạo</label>
-                        <input type="password" id="u_pass" required minlength="6" autocomplete="new-password" autocapitalize="off" spellcheck="false">
+                        <input type="password" id="u_pass" minlength="6" autocomplete="new-password" autocapitalize="off" spellcheck="false">
+                    </div>
+                    <div class="form-group" id="adminResetPasswordGroup" style="display:none;">
+                        <label class="role-option" style="display:flex; align-items:center; gap:8px;">
+                            <input type="checkbox" id="u_reset_password">
+                            Cấp lại mật khẩu trực tiếp
+                        </label>
+                        <div class="roles-help">Admin có thể đặt mật khẩu mới trực tiếp cho người dùng. Không cần nhập mật khẩu cũ và không gửi email reset.</div>
+                    </div>
+                    <div class="form-group" id="newPasswordGroup" style="display:none;">
+                        <label>Mật khẩu mới do Admin đặt</label>
+                        <input type="password" id="u_new_password" minlength="6" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="Nhập mật khẩu mới">
                     </div>
                     <div class="form-group"><label>SĐT</label><input type="tel" id="u_phone"></div>
                     <div class="form-group">
@@ -381,7 +406,7 @@
                             <option value="closed">Đã khóa</option>
                         </select>
                     </div>
-                    <div class="form-help" id="userFormHelp">Mật khẩu khởi tạo sẽ được dùng để tạo Firebase Auth và lưu đồng bộ trong hồ sơ người dùng để Admin có thể cấp lại mật khẩu sau này. Hệ thống cho phép gán nhiều quyền trên cùng một tài khoản.</div>
+                    <div class="form-help" id="userFormHelp">Mật khẩu khởi tạo chỉ dùng để tạo user trong Firebase Authentication. Hệ thống không lưu mật khẩu thô vào Firestore.</div>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn-cancel" id="btnCancelModal">Hủy</button>
@@ -400,9 +425,12 @@
             messagingSenderId: "56988683349",
             appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
         };
-        firebase.initializeApp(firebaseConfig);
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+
+        const ADMIN_API_BASE = '/api/admin';
 
         let currentAuthUser = null;
         let currentUserProfile = null;
@@ -420,12 +448,14 @@
         const inputEditId = document.getElementById('u_edit_id');
         const inputName = document.getElementById('u_name');
         const inputEmail = document.getElementById('u_email');
-        const inputCurrentPassword = document.getElementById('u_current_pass');
         const inputPassword = document.getElementById('u_pass');
+        const adminResetPasswordCheckbox = document.getElementById('u_reset_password');
+        const inputNewPassword = document.getElementById('u_new_password');
+        const adminResetPasswordGroup = document.getElementById('adminResetPasswordGroup');
+        const newPasswordGroup = document.getElementById('newPasswordGroup');
         const inputPhone = document.getElementById('u_phone');
         const roleCheckboxes = document.querySelectorAll('.u_role_check');
         const inputStatus = document.getElementById('u_status');
-        const currentPasswordGroup = document.getElementById('currentPasswordGroup');
         const passwordGroup = document.getElementById('passwordGroup');
         const passwordLabel = document.getElementById('passwordLabel');
         const userFormHelp = document.getElementById('userFormHelp');
@@ -468,13 +498,12 @@
             return Array.from(document.querySelectorAll('.u_role_check:checked')).map((item) => item.value);
         }
 
-
-function syncAdminOnlyMenu(role) {
-    const isAdmin = String(role || '').toLowerCase() === 'admin';
-    document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
-        item.style.display = isAdmin ? 'flex' : 'none';
-    });
-}
+        function syncAdminOnlyMenu(role) {
+            const isAdmin = String(role || '').toLowerCase() === 'admin';
+            document.querySelectorAll('[data-admin-only-nav="internal"]').forEach((item) => {
+                item.style.display = isAdmin ? 'flex' : 'none';
+            });
+        }
 
         function getRoleLabel(role) {
             if (role === 'admin') return 'Admin';
@@ -483,8 +512,7 @@ function syncAdminOnlyMenu(role) {
         }
 
         function formatRolesText(data) {
-            const roles = normalizeRoles(data);
-            return roles.map((role) => getRoleLabel(role)).join(' · ');
+            return normalizeRoles(data).map((role) => getRoleLabel(role)).join(' · ');
         }
 
         function getDisplayName(data, fallbackEmail) {
@@ -506,7 +534,9 @@ function syncAdminOnlyMenu(role) {
         }
 
         function getStatusBadge(status) {
-            if ((status || 'active') === 'closed') return '<span class="status-pill status-closed"><i class="fa-solid fa-lock"></i> Đã khóa</span>';
+            if ((status || 'active') === 'closed') {
+                return '<span class="status-pill status-closed"><i class="fa-solid fa-lock"></i> Đã khóa</span>';
+            }
             return '<span class="status-pill status-active"><i class="fa-solid fa-circle-check"></i> Hoạt động</span>';
         }
 
@@ -523,16 +553,116 @@ function syncAdminOnlyMenu(role) {
             alert(message);
         }
 
+        async function copyTextToClipboard(text) {
+            const safeText = String(text || '');
+            if (!safeText) return false;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(safeText);
+                    return true;
+                } catch (_) {}
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = safeText;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+
+            let copied = false;
+            try {
+                copied = document.execCommand('copy');
+            } catch (_) {
+                copied = false;
+            }
+
+            document.body.removeChild(textarea);
+            return copied;
+        }
+
+        async function callAdminApi(path, payload = {}) {
+            if (!auth.currentUser) {
+                throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            }
+
+            const idToken = await auth.currentUser.getIdToken(true);
+            const response = await fetch(ADMIN_API_BASE + path, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + idToken
+                },
+                body: JSON.stringify(payload || {})
+            });
+
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || data.message || 'API_ERROR');
+            }
+
+            return data;
+        }
+
+        function translateApiError(error) {
+            const code = String((error && error.message) || error || '').toUpperCase();
+            if (code.includes('FORBIDDEN')) return 'Bạn không có quyền thực hiện thao tác này.';
+            if (code.includes('NO_TOKEN') || code.includes('INVALID_TOKEN')) return 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+            if (code.includes('EMAIL_REQUIRED')) return 'Thiếu email tài khoản.';
+            if (code.includes('NAME_REQUIRED')) return 'Vui lòng nhập họ tên.';
+            if (code.includes('WEAK_PASSWORD')) return 'Mật khẩu phải có ít nhất 6 ký tự.';
+            if (code.includes('EMAIL_EXISTS')) return 'Email này đã tồn tại trong Firebase Authentication hoặc Firestore.';
+            if (code.includes('USER_NOT_FOUND')) return 'Không tìm thấy tài khoản cần thao tác.';
+            if (code.includes('CANNOT_LOCK_SELF')) return 'Không thể tự khóa chính tài khoản đang đăng nhập.';
+            if (code.includes('CANNOT_DELETE_SELF')) return 'Không thể tự xóa chính tài khoản đang đăng nhập.';
+            if (code.includes('CANNOT_REMOVE_SELF_ADMIN')) return 'Không thể tự bỏ quyền admin của chính tài khoản đang đăng nhập.';
+            if (code.includes('INVALID_STATUS')) return 'Trạng thái tài khoản không hợp lệ.';
+            if (code.includes('LAST_ADMIN_PROTECTION')) return 'Không thể hạ quyền hoặc khóa admin cuối cùng.';
+            if (code.includes('PASSWORD_NOT_CONFIRMED') || code.includes('RESET_PASSWORD_NOT_CONFIRMED') || code.includes('SET_PASSWORD_FAILED')) {
+                return 'Backend chưa xác nhận đã đổi mật khẩu trên Firebase Authentication. Chưa thể coi thao tác là thành công. Hãy kiểm tra endpoint /api/admin/set-temp-password hoặc dùng nút gửi email đặt lại mật khẩu.';
+            }
+            if (code.includes('AUTH/USER-NOT-FOUND')) return 'Không tìm thấy tài khoản trên Firebase Authentication.';
+            if (code.includes('AUTH/INVALID-EMAIL')) return 'Email tài khoản không hợp lệ.';
+            if (code.includes('AUTH/TOO-MANY-REQUESTS')) return 'Thao tác quá nhiều lần. Vui lòng thử lại sau.';
+            return 'Không thể xử lý thao tác: ' + String((error && error.message) || error || 'Lỗi không xác định.');
+        }
+
+        function isPlainObject(value) {
+            return !!value && typeof value === 'object' && !Array.isArray(value);
+        }
+
+        function isPasswordResetConfirmed(result, expectedEmail) {
+            if (!isPlainObject(result)) return false;
+            if (result.authUpdated === true || result.passwordUpdated === true || result.updated === true) return true;
+
+            const normalizedExpectedEmail = normalizeEmail(expectedEmail);
+            const normalizedResultEmail = normalizeEmail(result.email || (result.user && result.user.email) || '');
+            if (result.success === true && normalizedExpectedEmail && normalizedResultEmail && normalizedResultEmail === normalizedExpectedEmail) {
+                return true;
+            }
+
+            if (result.success === true && (result.uid || (result.user && result.user.uid))) {
+                return true;
+            }
+
+            return false;
+        }
+
         function updatePermissionUI() {
             const primaryRole = getPrimaryRole(currentUserProfile);
-            document.getElementById('currentRoleLabel').textContent = getDisplayName(currentUserProfile, currentAuthUser && currentAuthUser.email) + ' (' + formatRolesText(currentUserProfile) + ')';
+            document.getElementById('currentRoleLabel').textContent =
+                getDisplayName(currentUserProfile, currentAuthUser && currentAuthUser.email) +
+                ' (' + formatRolesText(currentUserProfile) + ')';
+
             syncAdminOnlyMenu(primaryRole);
 
             const note = document.getElementById('permissionNote');
             note.className = 'permission-note ' + primaryRole;
 
             if (hasRole(currentUserProfile, 'admin')) {
-                note.innerHTML = '<strong>Admin:</strong> Toàn quyền tạo tài khoản, khóa/mở khóa và xóa hồ sơ người dùng trên app. Tài khoản có thể mang nhiều quyền cùng lúc.';
+                note.innerHTML = '<strong>Admin:</strong> Toàn quyền tạo tài khoản, đặt mật khẩu mới trực tiếp, khóa/mở khóa và xóa người dùng. Mật khẩu thô không được lưu trong Firestore.';
                 btnOpenModal.disabled = false;
                 return;
             }
@@ -559,125 +689,46 @@ function syncAdminOnlyMenu(role) {
             const snap = await db.collection('users').where('email', '==', email).limit(1).get();
             if (!snap.empty) return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
 
-            return { id: user.uid, uid: user.uid, email: email, name: user.email, role: 'admin', roles: ['admin'], status: 'active', accountStatus: 'active' };
-        }
-
-        async function createAuthUserDirect(email, password) {
-            const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + encodeURIComponent(firebaseConfig.apiKey), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, password: password, returnSecureToken: true })
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                const code = data && data.error && data.error.message ? data.error.message : 'UNKNOWN_ERROR';
-                const err = new Error(code);
-                err.code = code;
-                throw err;
-            }
-            return data;
-        }
-
-        async function signInWithPasswordDirect(email, password) {
-            const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + encodeURIComponent(firebaseConfig.apiKey), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, password: password, returnSecureToken: true })
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                const code = data && data.error && data.error.message ? data.error.message : 'UNKNOWN_ERROR';
-                const err = new Error(code);
-                err.code = code;
-                throw err;
-            }
-            return data;
-        }
-
-        async function updateAuthPasswordDirect(idToken, newPassword) {
-            const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=' + encodeURIComponent(firebaseConfig.apiKey), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ idToken: idToken, password: newPassword, returnSecureToken: false })
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                const code = data && data.error && data.error.message ? data.error.message : 'UNKNOWN_ERROR';
-                const err = new Error(code);
-                err.code = code;
-                throw err;
-            }
-            return data;
-        }
-
-        async function deleteAuthUserDirect(idToken) {
-            const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:delete?key=' + encodeURIComponent(firebaseConfig.apiKey), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ idToken: idToken })
-            });
-
-            const data = await response.json().catch(() => ({}));
-            if (!response.ok) {
-                const code = data && data.error && data.error.message ? data.error.message : 'UNKNOWN_ERROR';
-                const err = new Error(code);
-                err.code = code;
-                throw err;
-            }
-            return data;
-        }
-
-        function buildPasswordSafeUserPayload(basePayload = {}, options = {}) {
-            const passwordTimestamp = options.passwordChanged ? firebase.firestore.FieldValue.serverTimestamp() : (options.existingPasswordUpdatedAt || null);
             return {
-                ...basePayload,
-                password: firebase.firestore.FieldValue.delete(),
-                passwordStorageVersion: 'none',
-                passwordRemovedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                passwordUpdatedAt: passwordTimestamp,
-                requirePasswordReset: !!options.requirePasswordReset
+                id: user.uid,
+                uid: user.uid,
+                email: email,
+                name: user.email,
+                role: 'admin',
+                roles: ['admin'],
+                status: 'active',
+                accountStatus: 'active'
             };
         }
 
-        function translateAuthCreateError(error) {
-            const code = (error && error.code) || (error && error.message) || 'UNKNOWN_ERROR';
-            if (code.includes('EMAIL_EXISTS')) return 'Email này đã tồn tại trong Firebase Authentication. Hệ thống sẽ chỉ đồng bộ hồ sơ Firestore nếu cần.';
-            if (code.includes('INVALID_EMAIL')) return 'Email không hợp lệ.';
-            if (code.includes('WEAK_PASSWORD')) return 'Mật khẩu phải có ít nhất 6 ký tự.';
-            if (code.includes('INVALID_LOGIN_CREDENTIALS') || code.includes('INVALID_PASSWORD')) return 'Mật khẩu hiện tại không khớp với Firebase Authentication.';
-            if (code.includes('EMAIL_NOT_FOUND') || code.includes('USER_NOT_FOUND')) return 'Không tìm thấy tài khoản này trong Firebase Authentication.';
-            if (code.includes('USER_DISABLED')) return 'Tài khoản này đang bị vô hiệu hóa trong Firebase Authentication.';
-            if (code.includes('OPERATION_NOT_ALLOWED')) return 'Firebase Email/Password chưa được bật trong Authentication.';
-            if (code.includes('TOO_MANY_ATTEMPTS_TRY_LATER')) return 'Firebase đang chặn tạm thời vì thao tác quá nhiều. Vui lòng thử lại sau.';
-            return 'Không thể xử lý Firebase Auth: ' + code;
+        function toggleAdminPasswordFields(isEnabled = false) {
+            const shouldShow = inputMode.value === 'edit' && !!isEnabled;
+            newPasswordGroup.style.display = shouldShow ? '' : 'none';
+            inputNewPassword.required = shouldShow;
+            if (!shouldShow) inputNewPassword.value = '';
         }
-
 
         function setUserFormMode(mode, data = {}, docId = '') {
             inputMode.value = mode;
             inputEditId.value = docId;
-            inputName.value = data.name || '';
+            inputName.value = data.name || data.fullName || '';
             inputEmail.value = data.email || '';
             inputPhone.value = data.phone || '';
             setRoleSelections(normalizeRoles(data));
             inputStatus.value = data.status || data.accountStatus || 'active';
-            inputCurrentPassword.value = '';
             inputPassword.value = '';
+            inputNewPassword.value = '';
+            adminResetPasswordCheckbox.checked = false;
+            toggleAdminPasswordFields(false);
 
             if (mode === 'edit') {
                 userModalTitle.textContent = 'Chỉnh sửa tài khoản';
                 inputEmail.readOnly = true;
                 inputEmail.classList.add('readonly-input');
-                currentPasswordGroup.style.display = '';
-                passwordGroup.style.display = '';
-                passwordLabel.textContent = 'Cấp lại mật khẩu mới';
+                passwordGroup.style.display = 'none';
+                adminResetPasswordGroup.style.display = '';
                 inputPassword.required = false;
-                inputPassword.placeholder = 'Để trống nếu chưa đổi mật khẩu';
-                inputCurrentPassword.placeholder = 'Nhập mật khẩu hiện tại nếu muốn cấp lại mật khẩu trực tiếp';
-                userFormHelp.textContent = 'Admin được sửa họ tên, SĐT, một hoặc nhiều quyền và trạng thái. Email đăng nhập được giữ nguyên. Hệ thống không lưu mật khẩu thô trong Firestore; nếu muốn cấp lại mật khẩu trực tiếp thì cần nhập đúng mật khẩu hiện tại của tài khoản để đồng bộ với Firebase Authentication.';
+                userFormHelp.textContent = 'Admin được sửa họ tên, SĐT, nhiều quyền và trạng thái. Nếu cần đổi mật khẩu, chỉ cần tích “Cấp lại mật khẩu trực tiếp”, nhập mật khẩu mới rồi lưu. Nếu backend chưa xác nhận đổi mật khẩu, hãy dùng biểu tượng phong bì để gửi email đặt lại mật khẩu cho người dùng.';
                 return;
             }
 
@@ -685,13 +736,12 @@ function syncAdminOnlyMenu(role) {
             inputEditId.value = '';
             inputEmail.readOnly = false;
             inputEmail.classList.remove('readonly-input');
-            currentPasswordGroup.style.display = 'none';
             passwordGroup.style.display = '';
+            adminResetPasswordGroup.style.display = 'none';
             passwordLabel.textContent = 'Mật khẩu khởi tạo';
             inputPassword.required = true;
-            inputPassword.placeholder = '';
             inputStatus.value = 'active';
-            userFormHelp.textContent = 'Mật khẩu khởi tạo chỉ được dùng để tạo Firebase Authentication. Hệ thống không lưu mật khẩu thô trong Firestore. Nếu email đã tồn tại sẵn trong Firebase Authentication, vui lòng dùng luồng đổi/quên mật khẩu thay vì nhập lại mật khẩu tại đây.';
+            userFormHelp.textContent = 'Mật khẩu khởi tạo chỉ dùng để tạo Firebase Authentication. Firestore không lưu mật khẩu thô.';
         }
 
         function resetUserForm() {
@@ -700,7 +750,7 @@ function syncAdminOnlyMenu(role) {
             setRoleSelections(['teacher']);
         }
 
-        async function openEditModal(id) {
+        async function openEditModal(id, options = {}) {
             if (!canManageAccounts()) {
                 showAlert('Chỉ Admin mới được chỉnh sửa tài khoản hệ thống.');
                 return;
@@ -715,6 +765,11 @@ function syncAdminOnlyMenu(role) {
 
                 const data = docSnap.data() || {};
                 setUserFormMode('edit', data, docSnap.id);
+                if (options && options.passwordMode) {
+                    adminResetPasswordCheckbox.checked = true;
+                    toggleAdminPasswordFields(true);
+                    setTimeout(() => inputNewPassword.focus(), 30);
+                }
                 userModal.style.display = 'flex';
             } catch (error) {
                 console.error(error);
@@ -771,24 +826,28 @@ function syncAdminOnlyMenu(role) {
                     const status = d.status || d.accountStatus || 'active';
                     const disableActions = !canManageAccounts();
                     const selfDoc = isCurrentUserDoc(d, d.id);
-                    const lockTitle = status === 'closed' ? 'Mở khóa' : 'Khóa tài khoản';
                     const editDisabled = disableActions ? 'disabled' : '';
-                    const deleteDisabled = disableActions || selfDoc ? 'disabled' : '';
                     const lockDisabled = disableActions || selfDoc ? 'disabled' : '';
+                    const deleteDisabled = disableActions || selfDoc ? 'disabled' : '';
+                    const passwordDisabled = disableActions || selfDoc ? 'disabled' : '';
+                    const emailResetDisabled = disableActions ? 'disabled' : '';
+                    const lockTitle = status === 'closed' ? 'Mở khóa tài khoản' : 'Khóa tài khoản';
 
                     userList.innerHTML += `
                         <tr style="${status === 'closed' ? 'opacity:0.55;' : ''}">
                             <td>${index + 1}</td>
-                            <td><strong>${escapeHtml(d.name || '')}</strong></td>
+                            <td><strong>${escapeHtml(d.name || d.fullName || '')}</strong></td>
                             <td>${escapeHtml(d.email || '')}</td>
-                            <td><span class="secure-text">Đã bảo mật</span></td>
+                            <td><span class="secure-text">Không lưu mật khẩu</span></td>
                             <td>${escapeHtml(d.phone || '---')}</td>
                             <td>${getRoleBadges(d)}</td>
                             <td>${getStatusBadge(status)}</td>
                             <td style="text-align: right; white-space: nowrap;">
-                                <button type="button" class="action-btn btn-edit js-user-action" data-action="edit" data-user-id="${escapeHtml(String(d.id || ''))}" title="Chỉnh sửa" ${editDisabled}><i class="fa-solid fa-pen"></i></button>
+                                <button type="button" class="action-btn btn-edit js-user-action" data-action="edit" data-user-id="${escapeHtml(String(d.id || ''))}" title="Chỉnh sửa hồ sơ" ${editDisabled}><i class="fa-solid fa-pen"></i></button>
+                                <button type="button" class="action-btn btn-key js-user-action" data-action="password" data-user-id="${escapeHtml(String(d.id || ''))}" title="Đặt mật khẩu mới" ${passwordDisabled}><i class="fa-solid fa-key"></i></button>
+                                <button type="button" class="action-btn btn-link-copy js-user-action" data-action="email-reset" data-user-id="${escapeHtml(String(d.id || ''))}" title="Gửi email đặt lại mật khẩu" ${emailResetDisabled}><i class="fa-solid fa-envelope"></i></button>
                                 <button type="button" class="action-btn js-user-action" data-action="toggle" data-user-id="${escapeHtml(String(d.id || ''))}" data-status="${escapeHtml(String(status || 'active'))}" title="${lockTitle}" ${lockDisabled}><i class="fa-solid ${status === 'closed' ? 'fa-unlock' : 'fa-lock'}"></i></button>
-                                <button type="button" class="action-btn btn-del js-user-action" data-action="delete" data-user-id="${escapeHtml(String(d.id || ''))}" title="Xóa hồ sơ" ${deleteDisabled}><i class="fa-solid fa-trash"></i></button>
+                                <button type="button" class="action-btn btn-del js-user-action" data-action="delete" data-user-id="${escapeHtml(String(d.id || ''))}" title="Xóa tài khoản" ${deleteDisabled}><i class="fa-solid fa-trash"></i></button>
                             </td>
                         </tr>`;
                 });
@@ -796,6 +855,106 @@ function syncAdminOnlyMenu(role) {
                 userList.innerHTML = '<tr><td colspan="8" class="empty-row">Không tải được danh sách tài khoản.</td></tr>';
                 console.error(error);
             });
+        }
+
+        async function getUserDocById(id) {
+            const docSnap = await db.collection('users').doc(id).get();
+            if (!docSnap.exists) return null;
+            return { id: docSnap.id, ...(docSnap.data() || {}) };
+        }
+
+        async function getUserProfileByEmail(email) {
+            const normalizedEmail = normalizeEmail(email);
+            if (!normalizedEmail) return null;
+
+            const directDoc = await db.collection('users').doc(normalizedEmail).get().catch(() => null);
+            if (directDoc && directDoc.exists) {
+                return { id: directDoc.id, ...(directDoc.data() || {}) };
+            }
+
+            const snap = await db.collection('users').where('email', '==', normalizedEmail).limit(1).get();
+            if (!snap.empty) {
+                return { id: snap.docs[0].id, ...(snap.docs[0].data() || {}) };
+            }
+
+            return null;
+        }
+
+        function isAccountClosed(profile) {
+            if (!profile) return false;
+            const status = String(profile.status || profile.accountStatus || 'active').toLowerCase();
+            return status === 'closed' || status === 'inactive' || status === 'disabled' || status === 'locked';
+        }
+
+        async function sendResetPasswordEmailToUser(email) {
+            const normalizedEmail = normalizeEmail(email);
+            if (!normalizedEmail) {
+                throw new Error('EMAIL_REQUIRED');
+            }
+
+            const profile = await getUserProfileByEmail(normalizedEmail);
+            if (!profile) {
+                throw new Error('USER_NOT_FOUND');
+            }
+            if (isAccountClosed(profile)) {
+                throw new Error('INVALID_STATUS');
+            }
+
+            await auth.sendPasswordResetEmail(normalizedEmail);
+            return true;
+        }
+
+        async function syncPasswordMetaToSystemRecord(email, uid) {
+            const normalizedEmail = normalizeEmail(email);
+            const payload = {
+                email: normalizedEmail,
+                passwordUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                passwordStorageVersion: 'none',
+                passwordRemovedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedBy: normalizeEmail(currentAuthUser && currentAuthUser.email),
+                password: firebase.firestore.FieldValue.delete()
+            };
+
+            if (uid) {
+                payload.uid = uid;
+                payload.authUid = uid;
+            }
+
+            const directRef = db.collection('users').doc(normalizedEmail);
+            const directDoc = await directRef.get().catch(() => null);
+            if (directDoc && directDoc.exists) {
+                await directRef.set(payload, { merge: true });
+                return true;
+            }
+
+            const snap = await db.collection('users').where('email', '==', normalizedEmail).limit(1).get();
+            if (!snap.empty) {
+                await snap.docs[0].ref.set(payload, { merge: true });
+                return true;
+            }
+
+            return false;
+        }
+
+        async function handleDeleteAccount(userEmail) {
+            if (!confirm('Xác nhận xóa hoàn toàn tài khoản này khỏi Firebase Authentication và Firestore?')) return;
+            await callAdminApi('/delete-user', { email: userEmail });
+            showAlert('Đã xóa tài khoản thành công.');
+        }
+
+        async function handleToggleStatus(userEmail, currentStatus) {
+            const nextStatus = currentStatus === 'closed' ? 'active' : 'closed';
+            if (!confirm('Xác nhận ' + (nextStatus === 'closed' ? 'khóa' : 'mở khóa') + ' tài khoản này?')) return;
+
+            await callAdminApi('/set-status', { email: userEmail, status: nextStatus });
+            showAlert(nextStatus === 'closed' ? 'Đã khóa tài khoản.' : 'Đã mở khóa tài khoản.');
+        }
+
+        async function handleSendResetEmail(userEmail) {
+            if (!confirm('Gửi email đặt lại mật khẩu cho tài khoản này? Người dùng sẽ tự tạo mật khẩu mới qua email.')) return;
+            await sendResetPasswordEmailToUser(userEmail);
+            showAlert('Đã gửi email đặt lại mật khẩu cho ' + userEmail + '. Hãy nhắc người dùng kiểm tra cả hộp thư rác/spam.');
         }
 
         userForm.onsubmit = async (e) => {
@@ -815,8 +974,9 @@ function syncAdminOnlyMenu(role) {
             const password = inputPassword.value.trim();
             const phone = inputPhone.value.trim();
             const roles = getSelectedRoles();
-            const primaryRole = roles.includes('admin') ? 'admin' : (roles.includes('manager') ? 'manager' : 'teacher');
             const status = inputStatus.value || 'active';
+            const shouldResetPassword = mode === 'edit' && adminResetPasswordCheckbox.checked;
+            const adminSetPassword = inputNewPassword.value.trim();
 
             if (!name || !email) {
                 showAlert('Vui lòng nhập đầy đủ họ tên và email.');
@@ -839,6 +999,17 @@ function syncAdminOnlyMenu(role) {
                 }
             }
 
+            if (shouldResetPassword) {
+                if (!adminSetPassword) {
+                    showAlert('Vui lòng nhập mật khẩu mới mà Admin muốn đặt.');
+                    return;
+                }
+                if (adminSetPassword.length < 6) {
+                    showAlert('Mật khẩu mới phải có ít nhất 6 ký tự.');
+                    return;
+                }
+            }
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = mode === 'edit'
                 ? '<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật...'
@@ -846,200 +1017,58 @@ function syncAdminOnlyMenu(role) {
 
             try {
                 if (mode === 'edit') {
-                    const docRef = db.collection('users').doc(editId || email);
-                    const existingDoc = await docRef.get();
-                    if (!existingDoc.exists) {
-                        showAlert('Không tìm thấy hồ sơ tài khoản cần chỉnh sửa.');
-                        return;
-                    }
-
-                    const existingData = existingDoc.data() || {};
-                    const fixedEmail = normalizeEmail(existingData.email || email);
-                    const newPassword = inputPassword.value.trim();
-                    const currentKnownPassword = inputCurrentPassword.value.trim();
-                    let passwordChanged = false;
-
-                    if (isCurrentUserDoc(existingData, docRef.id) && (!roles.includes('admin') || status === 'closed')) {
-                        showAlert('Không thể tự hạ quyền hoặc tự khóa chính tài khoản đang đăng nhập.');
-                        return;
-                    }
-
-                    if (newPassword) {
-                        if (newPassword.length < 6) {
-                            showAlert('Mật khẩu mới phải có ít nhất 6 ký tự.');
-                            return;
-                        }
-
-                        if (!currentKnownPassword) {
-                            showAlert('Hệ thống không còn lưu mật khẩu thô trong Firestore. Muốn cấp lại mật khẩu trực tiếp, vui lòng nhập mật khẩu hiện tại của tài khoản.');
-                            return;
-                        }
-
-                        try {
-                            const signInData = await signInWithPasswordDirect(fixedEmail, currentKnownPassword);
-                            await updateAuthPasswordDirect(signInData.idToken, newPassword);
-                            passwordChanged = true;
-                        } catch (authError) {
-                            throw new Error(translateAuthCreateError(authError));
-                        }
-                    }
-
-                    const nextPayload = buildPasswordSafeUserPayload({
-                        uid: existingData.uid || existingData.authUid || '',
-                        authUid: existingData.authUid || existingData.uid || '',
-                        name: name,
-                        fullName: name,
-                        displayName: name,
-                        email: fixedEmail,
-                        phone: phone,
-                        role: primaryRole,
-                        roles: roles,
-                        status: status,
-                        accountStatus: status,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }, {
-                        passwordChanged: passwordChanged,
-                        existingPasswordUpdatedAt: existingData.passwordUpdatedAt || null,
-                        requirePasswordReset: existingData.requirePasswordReset || false
+                    await callAdminApi('/update-user', {
+                        email: email || editId,
+                        name,
+                        phone,
+                        roles,
+                        status
                     });
 
-                    await docRef.set(nextPayload, { merge: true });
+                    let passwordMetaSynced = false;
+
+                    if (shouldResetPassword) {
+                        const passwordResult = await callAdminApi('/set-temp-password', {
+                            email: email || editId,
+                            newPassword: adminSetPassword
+                        });
+
+                        if (!isPasswordResetConfirmed(passwordResult, email || editId)) {
+                            throw new Error('PASSWORD_NOT_CONFIRMED');
+                        }
+
+                        passwordMetaSynced = await syncPasswordMetaToSystemRecord(
+                            email || editId,
+                            passwordResult.uid || (passwordResult.user && passwordResult.user.uid) || ''
+                        );
+                    }
 
                     closeModal();
-                    showAlert(passwordChanged ? 'Đã cập nhật tài khoản và đồng bộ mật khẩu mới lên Firebase Authentication. Firestore chỉ lưu mốc thay đổi mật khẩu, không lưu mật khẩu thô.' : 'Đã cập nhật tài khoản thành công.');
+                    showAlert(shouldResetPassword
+                        ? 'Đã đổi mật khẩu thành công.'
+                        : 'Đã cập nhật tài khoản thành công.');
                     return;
                 }
 
-                let authUid = '';
-                let authCreated = false;
-
-                try {
-                    const authData = await createAuthUserDirect(email, password);
-                    authUid = authData.localId || '';
-                    authCreated = true;
-                } catch (authError) {
-                    if (String(authError.code || authError.message || '').includes('EMAIL_EXISTS')) {
-                        authCreated = false;
-                    } else {
-                        throw authError;
-                    }
-                }
-
-                const docRef = db.collection('users').doc(email);
-                const existingDoc = await docRef.get();
-                const existingData = existingDoc.exists ? (existingDoc.data() || {}) : {};
-
-                const payload = buildPasswordSafeUserPayload({
-                    uid: existingData.uid || authUid || existingData.authUid || '',
-                    authUid: authUid || existingData.authUid || existingData.uid || '',
-                    name: name,
-                    fullName: name,
-                    displayName: name,
-                    email: email,
-                    phone: phone,
-                    role: primaryRole,
-                    roles: roles,
-                    status: status,
-                    accountStatus: status,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, {
-                    passwordChanged: authCreated,
-                    existingPasswordUpdatedAt: existingData.passwordUpdatedAt || null,
-                    requirePasswordReset: !authCreated
+                await callAdminApi('/create-user', {
+                    email,
+                    password,
+                    name,
+                    phone,
+                    roles,
+                    status
                 });
 
-                if (!existingDoc.exists) payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-
-                await docRef.set(payload, { merge: true });
                 closeModal();
-                userForm.reset();
-
-                if (authCreated) {
-                    showAlert('Đã tạo tài khoản thành công. User đã được đẩy lên Firebase Authentication và Firestore. Firestore không lưu mật khẩu thô.');
-                } else {
-                    showAlert('Email này đã tồn tại trong Firebase Authentication. Hệ thống chỉ cập nhật hồ sơ Firestore và không lưu mật khẩu nhập tay. Nếu cần cấp lại quyền truy cập, hãy dùng đổi mật khẩu với mật khẩu hiện tại hoặc gửi luồng quên mật khẩu.');
-                }
+                showAlert('Đã tạo tài khoản thành công. Firestore không lưu mật khẩu thô.');
             } catch (error) {
                 console.error(error);
-                if (mode === 'edit') {
-                    showAlert('Lỗi cập nhật tài khoản: ' + (error && error.message ? error.message : 'Không xác định.'));
-                } else {
-                    showAlert(translateAuthCreateError(error));
-                }
+                showAlert(translateApiError(error));
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalLabel;
             }
         };
-
-        window.deleteAcc = async function(id) {
-            if (!canManageAccounts()) {
-                showAlert('Chỉ Admin mới được xóa hồ sơ tài khoản.');
-                return;
-            }
-
-            const docSnap = await db.collection('users').doc(id).get();
-            const docData = docSnap.exists ? (docSnap.data() || {}) : {};
-            if (isCurrentUserDoc(docData, id)) {
-                showAlert('Không thể xóa chính tài khoản đang đăng nhập.');
-                return;
-            }
-
-            const targetEmail = normalizeEmail(docData.email || id);
-            if (!confirm('Xác nhận xóa hoàn toàn tài khoản này khỏi Firebase Authentication và Firestore?\nHệ thống sẽ chỉ tiếp tục nếu xóa được phần Authentication trước để tránh tạo tài khoản mồ côi.')) return;
-
-            try {
-                if (targetEmail) {
-                    const currentPassword = window.prompt('Nhập mật khẩu hiện tại của tài khoản cần xóa để xác nhận xóa hoàn toàn. Nếu không có mật khẩu này, hãy hủy và dùng luồng quên mật khẩu trước.');
-                    if (currentPassword === null) return;
-                    if (!currentPassword.trim()) {
-                        showAlert('Chưa nhập mật khẩu hiện tại của tài khoản. Hệ thống đã hủy để tránh tạo tài khoản mồ côi trên Firebase Authentication.');
-                        return;
-                    }
-
-                    try {
-                        const signInData = await signInWithPasswordDirect(targetEmail, currentPassword.trim());
-                        await deleteAuthUserDirect(signInData.idToken);
-                    } catch (authError) {
-                        const authMessage = translateAuthCreateError(authError);
-                        if (String((authError && authError.code) || (authError && authError.message) || '').includes('EMAIL_NOT_FOUND') || String((authError && authError.code) || (authError && authError.message) || '').includes('USER_NOT_FOUND')) {
-                            // Tài khoản Auth đã không còn tồn tại, vẫn cho phép dọn Firestore.
-                        } else {
-                            throw new Error(authMessage);
-                        }
-                    }
-                }
-
-                await db.collection('users').doc(id).delete();
-                showAlert('Đã xóa hoàn toàn hồ sơ tài khoản. Firestore chỉ được xóa sau khi Authentication đã được xử lý an toàn.');
-            } catch (error) {
-                console.error(error);
-                showAlert('Không thể xóa tài khoản: ' + (error && error.message ? error.message : 'Không xác định.'));
-            }
-        }
-
-        window.toggleStatus = async function(id, status) {
-            if (!canManageAccounts()) {
-                showAlert('Chỉ Admin mới được khóa/mở khóa tài khoản.');
-                return;
-            }
-
-            const docSnap = await db.collection('users').doc(id).get();
-            const docData = docSnap.exists ? (docSnap.data() || {}) : {};
-            if (isCurrentUserDoc(docData, id)) {
-                showAlert('Không thể tự khóa hoặc mở khóa chính tài khoản đang đăng nhập.');
-                return;
-            }
-
-            const nextStatus = status === 'closed' ? 'active' : 'closed';
-            if (!confirm('Xác nhận ' + (nextStatus === 'closed' ? 'khóa' : 'mở khóa') + ' tài khoản này?')) return;
-
-            await db.collection('users').doc(id).set({
-                status: nextStatus,
-                accountStatus: nextStatus,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-        }
 
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
@@ -1071,6 +1100,10 @@ function syncAdminOnlyMenu(role) {
             });
         });
 
+        adminResetPasswordCheckbox.addEventListener('change', () => {
+            toggleAdminPasswordFields(adminResetPasswordCheckbox.checked);
+        });
+
         document.getElementById('btnLogout').onclick = () => auth.signOut();
         window.openEditModal = openEditModal;
         btnOpenModal.addEventListener('click', openModal);
@@ -1086,20 +1119,37 @@ function syncAdminOnlyMenu(role) {
             if (!action || !id) return;
 
             try {
+                const docData = await getUserDocById(id);
+                if (!docData) {
+                    showAlert('Không tìm thấy tài khoản cần thao tác.');
+                    return;
+                }
+
+                const userEmail = normalizeEmail(docData.email || id);
+
                 if (action === 'edit') {
                     await openEditModal(id);
                     return;
                 }
+                if (action === 'password') {
+                    await openEditModal(id, { passwordMode: true });
+                    return;
+                }
+                if (action === 'email-reset') {
+                    await handleSendResetEmail(userEmail);
+                    return;
+                }
                 if (action === 'toggle') {
-                    await window.toggleStatus(id, button.dataset.status || 'active');
+                    await handleToggleStatus(userEmail, button.dataset.status || 'active');
                     return;
                 }
                 if (action === 'delete') {
-                    await window.deleteAcc(id);
+                    await handleDeleteAccount(userEmail);
+                    return;
                 }
             } catch (error) {
                 console.error(error);
-                showAlert('Không thực hiện được thao tác tài khoản.');
+                showAlert(translateApiError(error));
             }
         });
 

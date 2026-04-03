@@ -6,7 +6,7 @@
     <title>Đăng nhập - Xứ Lạng Education</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
-    
+
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -15,19 +15,16 @@
         :root { --bg-dark: #0d1b2a; --bg-card-white: #ffffff; --text-dark: #2c3e50; --text-light: #e0e0e0; --primary-green: #2ecc71; --accent-gold: #e0aa3e; --accent-gold-plated: #a18c66; --input-bg: #f8faf9; --border-grey: #e8f1ec; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         html { -webkit-text-size-adjust: 100%; }
-        
-        /* Thêm padding cho body để trên mobile form không chạm viền */
         body { display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; background-color: var(--bg-dark); overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; position: relative; padding: 20px; }
-        
         .bg-glow { position: absolute; border-radius: 50%; filter: blur(72px); z-index: 0; opacity: 0.88; pointer-events: none; }
         .glow-1 { width: 360px; height: 360px; background: rgba(46, 204, 113, 0.13); top: -90px; left: -90px; }
         .glow-2 { width: 420px; height: 420px; background: rgba(224, 170, 62, 0.09); bottom: -130px; right: -90px; }
-        
+
         .login-card { background-color: var(--bg-card-white); width: 100%; max-width: 420px; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); position: relative; z-index: 10; border: 1px solid rgba(255, 255, 255, 0.1); }
         .card-header { text-align: center; margin-bottom: 35px; }
-.brand-title { font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; background: linear-gradient(to bottom, #112031, var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2; margin-bottom: 5px; }
+        .brand-title { font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; background: linear-gradient(to bottom, #112031, var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2; margin-bottom: 5px; }
         .brand-subtitle { font-size: 0.9rem; font-style: italic; color: var(--accent-gold-plated); font-weight: 600; letter-spacing: 1px; }
-        
+
         .login-form { display: flex; flex-direction: column; gap: 20px; }
         .input-group { position: relative; }
         .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1.1rem; transition: color 0.3s; }
@@ -37,7 +34,7 @@
         .input-group input:focus + i, .input-group input:focus ~ i { color: var(--accent-gold); }
         .toggle-password { position: absolute; right: 15px; left: auto !important; cursor: pointer; color: #aaa !important; }
         .toggle-password:hover { color: var(--text-dark) !important; }
-        
+
         .form-options { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
         .remember-me { display: flex; align-items: center; gap: 8px; color: #555; cursor: pointer; }
         .remember-me input[type="checkbox"] { accent-color: var(--accent-gold); width: 16px; height: 16px; cursor: pointer; }
@@ -45,20 +42,19 @@
         .forgot-password { color: var(--accent-gold-plated); text-decoration: none; font-weight: 600; transition: color 0.3s; cursor: pointer; }
         .forgot-password:hover { color: var(--accent-gold); text-decoration: underline; }
         .forgot-password.secondary-link { font-size: 0.8rem; opacity: 0.92; }
-        
+
         .btn-login { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent-gold), #c99327); color: var(--bg-card-white); border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, opacity 0.18s ease; box-shadow: 0 5px 15px rgba(224, 170, 62, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(224, 170, 62, 0.4); background: linear-gradient(135deg, #eec05c, var(--accent-gold)); }
-        
+
         .error-message { color: #e74c3c; font-size: 0.85rem; text-align: center; display: none; font-weight: 600; margin-top: -10px; }
         .fa-spinner { display: none; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        
+
         .register-link { text-align: center; margin-top: 25px; font-size: 0.85rem; color: #666; }
         .register-link a { color: var(--bg-dark); font-weight: 700; text-decoration: none; cursor: pointer; }
         .register-link a:hover { text-decoration: underline; }
 
-        /* Popup Liên Hệ */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; padding: 20px;}
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 27, 42, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; padding: 20px; }
         .modal-overlay.show { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--bg-card-white); width: 100%; max-width: 450px; padding: 30px; border-radius: 15px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); transform: translateY(20px); transition: transform 0.2s ease, box-shadow 0.2s ease; text-align: center; border-top: 5px solid var(--accent-gold); }
         .modal-overlay.show .modal-content { transform: translateY(0); }
@@ -84,24 +80,38 @@
             .bg-glow { display: none !important; }
         }
 
-        /* TỐI ƯU GIAO DIỆN MOBILE (Dưới 768px) */
         @media (max-width: 768px) {
             .login-card { padding: 30px 20px; }
             .brand-title { font-size: 1.6rem; }
             .modal-content { padding: 20px; }
             .modal-actions { flex-direction: column-reverse; }
-            .bg-glow { display: none; } /* Tắt bóng sáng trên mobile cho mượt */
+            .bg-glow { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 0 10px !important; }
+            .header-title { font-size: 0.98rem !important; letter-spacing: 0.5px !important; }
+            .page-title { font-size: 0.94rem !important; }
+            .page-subtitle, .panel-header-subtitle, .table-subtitle { font-size: 0.74rem !important; line-height: 1.45 !important; }
+            .panel, .stat-card, .mini-chart-card, .workspace-card, .folder-card, .summary-card, .important-alert-card { padding: 10px !important; border-radius: 10px !important; }
+            .btn-logout, .btn-add-new, .btn-edit-top, .btn-delete-top, .btn-view-details, .btn-action, .btn-action-top, .btn-add-account, .btn-login, .btn-secondary-modal { min-height: 32px !important; padding: 0 9px !important; font-size: 0.69rem !important; border-radius: 8px !important; }
+            .search-box input { min-height: 32px !important; font-size: 0.72rem !important; width: min(100%, 100vw - 26px) !important; }
+        }
+        @media (max-width: 430px) {
+            .dashboard-content { padding: 10px !important; }
+            .page-header { gap: 8px !important; margin-bottom: 10px !important; }
+            .header-actions { gap: 6px !important; }
+            .header-actions > * { flex: 1 1 auto; }
         }
     </style>
 </head>
 <body>
-
     <div class="bg-glow glow-1"></div>
     <div class="bg-glow glow-2"></div>
 
     <div class="login-card">
         <div class="card-header">
-<h1 class="brand-title">XỨ LẠNG<br>EDUCATION</h1>
+            <h1 class="brand-title">XỨ LẠNG<br>EDUCATION</h1>
             <p class="brand-subtitle">Chắp cánh tri thức - Dẫn lối thành công</p>
         </div>
 
@@ -110,11 +120,11 @@
                 <i class="fa-solid fa-circle-exclamation"></i> Tài khoản hoặc mật khẩu không đúng!
             </div>
             <div class="input-group">
-                <input type="email" id="email" placeholder="Nhập Email đăng nhập" required>
+                <input type="email" id="email" placeholder="Nhập Email đăng nhập" required autocomplete="email">
                 <i class="fa-solid fa-envelope"></i>
             </div>
             <div class="input-group">
-                <input type="password" id="password" placeholder="Nhập mật khẩu" required>
+                <input type="password" id="password" placeholder="Nhập mật khẩu" required autocomplete="current-password">
                 <i class="fa-solid fa-lock"></i>
                 <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
             </div>
@@ -125,7 +135,7 @@
                     <a class="forgot-password secondary-link" id="openForgotModal">Quên mật khẩu?</a>
                 </div>
             </div>
-            
+
             <button type="submit" class="btn-login" id="loginBtn">
                 <span id="btnText">Đăng nhập ngay</span>
                 <i class="fa-solid fa-spinner" id="loadingIcon"></i>
@@ -157,14 +167,14 @@
         <div class="modal-content">
             <div class="modal-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
             <h2 class="modal-title">Quên mật khẩu</h2>
-            <p class="modal-note">Nhập email tài khoản để nhận link đặt lại mật khẩu. Đây là cách an toàn khi người dùng không còn nhớ mật khẩu hiện tại.</p>
+            <p class="modal-note">Nhập email tài khoản để nhận email đặt lại mật khẩu từ Firebase Authentication. Hệ thống không lưu và không hiển thị mật khẩu thô của người dùng.</p>
             <form class="login-form modal-form" id="resetPasswordForm">
                 <div class="error-message modal-error" id="resetPasswordError"></div>
                 <div class="input-group">
                     <input type="email" id="resetPasswordEmail" placeholder="Nhập email tài khoản" required autocomplete="email">
                     <i class="fa-solid fa-envelope"></i>
                 </div>
-                <div class="modal-help">Link đặt lại mật khẩu sẽ được gửi tới email đăng nhập nếu tài khoản đang hoạt động trên hệ thống.</div>
+                <div class="modal-help">Nếu không thấy email, hãy kiểm tra cả mục Spam/Junk. Admin cũng có thể hỗ trợ cấp mật khẩu tạm trong trang Quản lý hệ thống.</div>
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary-modal" id="closeResetPasswordModal">Hủy</button>
                     <button type="submit" class="btn-login" id="resetPasswordSubmitBtn">
@@ -180,11 +190,11 @@
         <div class="modal-content">
             <div class="modal-icon"><i class="fa-solid fa-key"></i></div>
             <h2 class="modal-title">Đổi mật khẩu</h2>
-            <p class="modal-note">Nhập đúng mật khẩu cũ, sau đó xác nhận mật khẩu mới. Sau khi đổi xong, hệ thống chỉ cập nhật mốc đổi mật khẩu vào hồ sơ tài khoản, không lưu mật khẩu thô.</p>
+            <p class="modal-note">Dùng khi bạn còn nhớ mật khẩu cũ. Sau khi đổi xong, hồ sơ hệ thống chỉ cập nhật mốc đổi mật khẩu, không lưu mật khẩu thô.</p>
             <form class="login-form modal-form" id="changePasswordForm">
                 <div class="error-message modal-error" id="changePasswordError"></div>
                 <div class="input-group">
-                    <input type="email" id="changePasswordEmail" placeholder="Nhập email tài khoản" required>
+                    <input type="email" id="changePasswordEmail" placeholder="Nhập email tài khoản" required autocomplete="email">
                     <i class="fa-solid fa-envelope"></i>
                 </div>
                 <div class="input-group">
@@ -224,11 +234,11 @@
             appId: "1:56988683349:web:7502807eebf8862ed0d8dc",
             measurementId: "G-BWV1GD3WS1"
         };
-        firebase.initializeApp(firebaseConfig);
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // --- XỬ LÝ POPUP LIÊN HỆ & QUÊN MẬT KHẨU ---
         const contactBtn = document.getElementById('openContactModal');
         const forgotBtn = document.getElementById('openForgotModal');
         const changePasswordBtn = document.getElementById('openChangePasswordModal');
@@ -265,6 +275,7 @@
         const changePasswordSubmitBtn = document.getElementById('changePasswordSubmitBtn');
         const changePasswordBtnText = document.getElementById('changePasswordBtnText');
         const changePasswordLoadingIcon = document.getElementById('changePasswordLoadingIcon');
+
         let authCheckInProgress = false;
         let passwordChangeFlow = false;
         let redirectInProgress = false;
@@ -299,7 +310,7 @@
             e.preventDefault();
             hideChangePasswordError();
             changePasswordForm.reset();
-            const seededEmail = normalizeEmail(emailInput.value || localStorage.getItem('xl_saved_email'));
+            const seededEmail = normalizeEmail(emailInput.value || localStorage.getItem('xl_saved_email') || '');
             if (seededEmail) changePasswordEmailInput.value = seededEmail;
             changePasswordModal.classList.add('show');
         }
@@ -378,6 +389,7 @@
                 return 'Mật khẩu cũ không đúng. Vui lòng kiểm tra lại.';
             }
             if (code.includes('auth/user-not-found')) return 'Không tìm thấy tài khoản với email đã nhập.';
+            if (code.includes('auth/user-disabled')) return 'Tài khoản đang bị khóa. Vui lòng liên hệ Admin.';
             if (code.includes('auth/weak-password')) return 'Mật khẩu mới phải có ít nhất 6 ký tự.';
             if (code.includes('auth/too-many-requests')) return 'Bạn đã thao tác quá nhiều lần. Vui lòng thử lại sau.';
             if (code.includes('auth/requires-recent-login')) return 'Phiên xác thực đã cũ. Vui lòng thử lại bằng cách nhập đúng mật khẩu cũ.';
@@ -447,7 +459,6 @@
 
             try {
                 const profile = await getUserProfileByEmail(user.email);
-
                 if (!profile) {
                     await auth.signOut();
                     showError('Tài khoản chưa được cấp quyền trên hệ thống. Vui lòng liên hệ Admin.');
@@ -522,15 +533,12 @@
             setResetPasswordLoading(true);
             try {
                 const profile = await getUserProfileByEmail(email);
-                if (!profile) {
-                    throw new Error('Tài khoản chưa được cấp quyền trên hệ thống.');
-                }
-                if (isAccountClosed(profile)) {
-                    throw new Error('Tài khoản đang bị khóa. Vui lòng liên hệ Admin để được mở khóa trước khi đặt lại mật khẩu.');
-                }
+                if (!profile) throw new Error('Tài khoản chưa được cấp quyền trên hệ thống.');
+                if (isAccountClosed(profile)) throw new Error('Tài khoản đang bị khóa. Vui lòng liên hệ Admin để được mở khóa trước khi đặt lại mật khẩu.');
 
                 await auth.sendPasswordResetEmail(email);
-                showResetPasswordError('Đã gửi link đặt lại mật khẩu tới email đăng nhập. Vui lòng kiểm tra cả hộp thư rác/spam.', true);
+                showResetPasswordError('Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra cả hộp thư rác/spam.', true);
+
                 setTimeout(() => {
                     if (resetPasswordModal.classList.contains('show')) closeResetPasswordModal();
                 }, 1400);
@@ -548,7 +556,7 @@
                     showResetPasswordError('Tài khoản đang bị khóa. Vui lòng liên hệ Admin.');
                 } else {
                     console.error(error);
-                    showResetPasswordError('Không thể gửi link đặt lại mật khẩu lúc này. Vui lòng thử lại sau.');
+                    showResetPasswordError('Không thể gửi email đặt lại mật khẩu lúc này. Vui lòng thử lại sau.');
                 }
             } finally {
                 setResetPasswordLoading(false);
@@ -635,7 +643,7 @@
             }
         });
 
-        loginForm.addEventListener('submit', async function(e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             if (loginRequestInFlight || redirectInProgress) return;
 
@@ -647,14 +655,22 @@
             loginRequestInFlight = true;
 
             try {
-                await auth.setPersistence(rememberMeCheckbox.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION);
+                await auth.setPersistence(
+                    rememberMeCheckbox.checked
+                        ? firebase.auth.Auth.Persistence.LOCAL
+                        : firebase.auth.Auth.Persistence.SESSION
+                );
                 await auth.signInWithEmailAndPassword(email, password);
+
                 if (rememberMeCheckbox.checked) localStorage.setItem('xl_saved_email', email);
                 else localStorage.removeItem('xl_saved_email');
             } catch (error) {
-                if (['auth/invalid-login-credentials', 'auth/user-not-found', 'auth/wrong-password', 'auth/invalid-credential'].includes(error.code)) {
+                const code = error && error.code;
+                if (['auth/invalid-login-credentials', 'auth/user-not-found', 'auth/wrong-password', 'auth/invalid-credential'].includes(code)) {
                     showError('Tài khoản hoặc mật khẩu không đúng!');
-                } else if (error.code === 'auth/too-many-requests') {
+                } else if (code === 'auth/user-disabled') {
+                    showError('Tài khoản đang bị khóa. Vui lòng liên hệ Admin.');
+                } else if (code === 'auth/too-many-requests') {
                     showError('Bạn đã thử quá nhiều lần. Vui lòng thử lại sau!');
                 } else {
                     console.error(error);

@@ -374,7 +374,30 @@
             }
         }
 
-    </style>
+    
+/* ===== FINAL UX TUNE-UP 2026-04 ===== */
+:root { --ux-btn-h: 36px; --ux-btn-px: 11px; --ux-btn-fs: 0.76rem; --ux-table-fs: 0.72rem; }
+.header-actions { gap: 8px !important; align-items: stretch !important; }
+.header-actions .search-box { flex: 1 1 240px; }
+.header-actions .search-box input { height: var(--ux-btn-h); padding-top: 0; padding-bottom: 0; font-size: 0.8rem; }
+.btn-add-new, .btn-edit-top, .btn-delete-top { min-height: var(--ux-btn-h); padding: 0 var(--ux-btn-px) !important; border-radius: 9px !important; font-size: var(--ux-btn-fs) !important; gap: 6px !important; white-space: nowrap; }
+.table-wrapper { overflow: auto; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; overscroll-behavior: contain; }
+.excel-table { font-size: var(--ux-table-fs) !important; }
+.excel-table th, .excel-table td { padding: 6px 7px !important; }
+.schedule-badge, .manager-badge, .status-badge, .class-code { font-size: 0.68rem !important; }
+@media (max-width: 1024px) {
+  .header-actions { display: grid !important; grid-template-columns: minmax(0, 1fr) repeat(3, auto); gap: 7px; }
+  .header-actions .search-box { grid-column: 1 / -1; order: -1; }
+  .header-actions .search-box input { width: 100% !important; }
+}
+@media (max-width: 640px) {
+  .btn-add-new span, .btn-edit-top span, .btn-delete-top span { display: none; }
+  .btn-add-new, .btn-edit-top, .btn-delete-top { padding: 0 10px !important; min-width: 36px; }
+  .excel-table { min-width: 920px !important; font-size: 0.69rem !important; }
+  .excel-table th, .excel-table td { padding: 4px 5px !important; }
+}
+
+</style>
 </head>
 <body>
 
@@ -591,7 +614,7 @@
             messagingSenderId: "56988683349",
             appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
@@ -1125,7 +1148,7 @@ function syncAdminOnlyMenu(roleSource) {
             try {
                 let studentsSnap = null;
                 try {
-                    studentsSnap = await db.collection('classes').doc(classId).collection('students').orderBy('fullName').get();
+                    studentsSnap = await db.collection('classes').doc(classId).collection('students').orderBy('name').get();
                 } catch (innerError) {
                     studentsSnap = await db.collection('classes').doc(classId).collection('students').get();
                 }
@@ -1522,33 +1545,62 @@ function syncAdminOnlyMenu(roleSource) {
             });
         });
 
+
+        async function deleteClassDeep(classId) {
+            const classRef = db.collection('classes').doc(classId);
+            const studentSnapshot = await classRef.collection('students').get().catch(() => null);
+            if (studentSnapshot && !studentSnapshot.empty) {
+                let batch = db.batch();
+                let opCount = 0;
+                for (const studentDoc of studentSnapshot.docs) {
+                    batch.delete(studentDoc.ref);
+                    opCount += 1;
+                    if (opCount >= 400) {
+                        await batch.commit();
+                        batch = db.batch();
+                        opCount = 0;
+                    }
+                }
+                if (opCount > 0) await batch.commit();
+            }
+            await classRef.delete();
+        }
+
         btnDeleteSelected.addEventListener('click', async function() {
             if (getCurrentUserRole() !== 'admin') {
                 alert('Chỉ Admin mới có quyền xóa lớp.');
                 return;
             }
 
-            const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+            const selectedCheckboxes = Array.from(document.querySelectorAll('.row-checkbox:checked'));
             if (!selectedCheckboxes.length) {
                 alert('Vui lòng chọn ít nhất 1 lớp để xóa!');
                 return;
             }
 
-            if (!confirm(`Chắc chắn xóa vĩnh viễn ${selectedCheckboxes.length} lớp đã chọn?`)) return;
+            if (!confirm(`Chắc chắn xóa vĩnh viễn ${selectedCheckboxes.length} lớp đã chọn? Dữ liệu học sinh bên trong lớp cũng sẽ bị xóa.`)) return;
 
-            const batch = db.batch();
-            selectedCheckboxes.forEach(checkbox => {
-                batch.delete(db.collection('classes').doc(checkbox.value));
-                if (studentListeners[checkbox.value]) {
-                    studentListeners[checkbox.value]();
-                    delete studentListeners[checkbox.value];
-                    delete classAttendanceStats[checkbox.value];
+            btnDeleteSelected.disabled = true;
+            const originalLabel = btnDeleteSelected.innerHTML;
+            btnDeleteSelected.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xóa';
+            try {
+                for (const checkbox of selectedCheckboxes) {
+                    await deleteClassDeep(checkbox.value);
+                    if (studentListeners[checkbox.value]) {
+                        studentListeners[checkbox.value]();
+                        delete studentListeners[checkbox.value];
+                        delete classAttendanceStats[checkbox.value];
+                    }
                 }
-            });
-
-            await batch.commit();
-            showToast('Đã xóa!', `Đã xóa thành công ${selectedCheckboxes.length} lớp.`);
-            document.getElementById('selectAll').checked = false;
+                showToast('Đã xóa!', `Đã xóa thành công ${selectedCheckboxes.length} lớp và dữ liệu học sinh liên quan.`);
+                document.getElementById('selectAll').checked = false;
+            } catch (error) {
+                console.error(error);
+                alert('Không thể xóa lớp: ' + (error && error.message ? error.message : 'Không xác định.'));
+            } finally {
+                btnDeleteSelected.disabled = false;
+                btnDeleteSelected.innerHTML = originalLabel;
+            }
         });
 
         document.getElementById('btnLogout').addEventListener('click', () => {

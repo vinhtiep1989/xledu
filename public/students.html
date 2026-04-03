@@ -1382,7 +1382,30 @@
             }
         }
 
-    </style>
+    
+/* ===== FINAL UX TUNE-UP 2026-04 ===== */
+:root { --ux-btn-h: 36px; --ux-btn-px: 11px; --ux-btn-fs: 0.76rem; --ux-table-fs: 0.71rem; }
+.header-actions { gap: 8px !important; align-items: stretch !important; }
+.header-actions .search-box { flex: 1 1 240px; }
+.header-actions .search-box input { height: var(--ux-btn-h); padding-top: 0; padding-bottom: 0; font-size: 0.8rem; }
+.btn-add-new, .btn-edit-top, .btn-delete-top { min-height: var(--ux-btn-h); padding: 0 var(--ux-btn-px) !important; border-radius: 9px !important; font-size: var(--ux-btn-fs) !important; gap: 6px !important; white-space: nowrap; }
+.table-wrapper { overflow: auto; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; overscroll-behavior: contain; }
+.excel-table { font-size: var(--ux-table-fs) !important; }
+.excel-table th, .excel-table td { padding: 5px 6px !important; }
+.compact-pill, .table-stat-badge, .page-permission-chip, .student-table-permission-note { font-size: 0.75rem !important; }
+@media (max-width: 1024px) {
+  .header-actions { display: grid !important; grid-template-columns: minmax(0, 1fr) repeat(3, auto); gap: 7px; }
+  .header-actions .search-box { grid-column: 1 / -1; order: -1; }
+  .header-actions .search-box input { width: 100% !important; }
+}
+@media (max-width: 640px) {
+  .btn-add-new span, .btn-edit-top span, .btn-delete-top span { display: none; }
+  .btn-add-new, .btn-edit-top, .btn-delete-top { padding: 0 10px !important; min-width: 36px; }
+  .excel-table { min-width: 1180px !important; font-size: 0.68rem !important; }
+  .excel-table th, .excel-table td { padding: 4px 5px !important; }
+}
+
+</style>
 </head>
 <body>
     <div id="page-loader"><i class="fa-solid fa-spinner fa-spin"></i><p>Đang đồng bộ dữ liệu học sinh...</p></div>
@@ -1580,7 +1603,7 @@
             messagingSenderId: "56988683349",
             appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
@@ -2016,11 +2039,14 @@ function getUserDisplayName(userDocData, user) {
                 classEntry.students.forEach(student => {
                     const key = getStudentSyncKey(student);
                     if (!key) return;
-                    if (!map[key]) map[key] = { classCodes: new Set(), profile: null, docs: [] };
-                    if (classEntry.classCode) map[key].classCodes.add(classEntry.classCode);
-                    (student.linkedClassCodes || []).forEach(code => map[key].classCodes.add(normalizeCode(code)));
+                    if (!map[key]) map[key] = { classCodes: new Set(), profile: null, docs: [], hasExcludedDocs: false };
+                    const linkedCodes = (Array.isArray(student.linkedClassCodes) ? student.linkedClassCodes : []).map(code => normalizeCode(code)).filter(Boolean);
+                    const excludedFromDirectory = !!student.excludeFromStudentDirectory;
+                    if (!excludedFromDirectory && classEntry.classCode) map[key].classCodes.add(classEntry.classCode);
+                    linkedCodes.forEach(code => map[key].classCodes.add(code));
                     map[key].profile = chooseBetterStudent(map[key].profile, student);
-                    map[key].docs.push({ classId: classEntry.classId, classCode: classEntry.classCode, docId: student.id, student });
+                    map[key].hasExcludedDocs = map[key].hasExcludedDocs || excludedFromDirectory;
+                    map[key].docs.push({ classId: classEntry.classId, classCode: classEntry.classCode, docId: student.id, student, excludedFromDirectory });
                 });
             });
             allStudentEnrollmentMap = map;
@@ -2029,8 +2055,9 @@ function getUserDisplayName(userDocData, user) {
             if (!entry || !entry.profile) return null;
             const classCodes = Array.from(entry.classCodes).filter(Boolean).sort();
             const profile = entry.profile;
+            const pendingArchiveRemoval = !classCodes.length && !!(entry.hasExcludedDocs || (profile && profile.excludeFromStudentDirectory));
             return {
-                _syncKey: syncKey, _centerClassCodes: classCodes, _centerClassCount: classCodes.length, _docs: entry.docs || [], _profile: profile,
+                _syncKey: syncKey, _centerClassCodes: classCodes, _centerClassCount: classCodes.length, _docs: entry.docs || [], _profile: profile, _pendingArchiveRemoval: pendingArchiveRemoval,
                 name: profile.name || '', dob: profile.dob || profile.birthDate || '', address: profile.address || '', studentCccd: profile.studentCccd || profile.cccd || '',
                 gradeClass: profile.gradeClass || profile.grade || '', school: profile.school || '', parentName: profile.parentName || '', parentCccd: profile.parentCccd || '',
                 parentPhone: profile.parentPhone || '', mode: profile.mode || 'Trực tiếp', enrollmentDate: profile.enrollmentDate || profile.enrolledAt || '', note: profile.note || '', _searchText: buildStudentRowSearchText(profile, classCodes)
@@ -2209,7 +2236,7 @@ function renderStudentTable() {
                 const displayParentPhone = student.parentPhone || '—';
                 const displayEnrollmentDate = formatDateDisplay(student.enrollmentDate) || '—';
                 const displayNote = student.note || '—';
-                const displayCodes = classCodesText || 'Chưa gắn mã lớp';
+                const displayCodes = classCodesText || (student._pendingArchiveRemoval ? 'Chờ xóa sạch cuối tháng' : 'Chưa gắn mã lớp');
                 const rowNumber = paginationMeta.startIndex + index + 1;
 
                 return `<tr class="${isActive ? 'active' : ''} ${isChecked ? 'checked' : ''}" data-student-sync-key="${escapeHtml(student._syncKey)}">
@@ -2385,7 +2412,7 @@ function renderStudentTable() {
                 let existingDoc = findExistingStudentDocInClass(cls.id, lookupSyncKey);
                 if (!existingDoc && lookupSyncKey !== newSyncKey) existingDoc = findExistingStudentDocInClass(cls.id, newSyncKey);
                 const targetRef = existingDoc ? db.collection('classes').doc(cls.id).collection('students').doc(existingDoc.id) : db.collection('classes').doc(cls.id).collection('students').doc(getStudentManagedDocId(newSyncKey));
-                const payload = { name: formData.name, dob: formData.dob || '', address: formData.address || '', studentCccd: digitsOnly(formData.studentCccd) || '', gradeClass: formData.gradeClass || '', school: formData.school || '', parentName: formData.parentName || '', parentCccd: digitsOnly(formData.parentCccd) || '', parentPhone: formData.parentPhone || '', mode: formData.mode || 'Trực tiếp', enrollmentDate: formData.enrollmentDate || '', note: formData.note || '', linkedClassCodes: linkedCodes, syncStudentKey: newSyncKey, updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: currentUserInfo.email || '', managedByStudentPage: true };
+                const payload = { name: formData.name, fullName: formData.name, displayName: formData.name, studentName: formData.name, dob: formData.dob || '', address: formData.address || '', studentCccd: digitsOnly(formData.studentCccd) || '', gradeClass: formData.gradeClass || '', school: formData.school || '', parentName: formData.parentName || '', parentCccd: digitsOnly(formData.parentCccd) || '', parentPhone: formData.parentPhone || '', mode: formData.mode || 'Trực tiếp', enrollmentDate: formData.enrollmentDate || '', note: formData.note || '', linkedClassCodes: linkedCodes, syncStudentKey: newSyncKey, updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: currentUserInfo.email || '', managedByStudentPage: true };
                 if (!existingDoc) {
                     payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     pushClassStudentDelta(classCountDeltas, cls.id, 1);

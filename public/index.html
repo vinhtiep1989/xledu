@@ -510,7 +510,28 @@
             }
         }
 
-    </style>
+    
+/* ===== FINAL UX TUNE-UP 2026-04 ===== */
+.compact-classes-panel .table-responsive { overflow: auto; -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y; overscroll-behavior: contain; }
+.compact-featured-table { font-size: 0.77rem !important; }
+.compact-featured-table th, .compact-featured-table td { padding-top: 8px !important; padding-bottom: 8px !important; }
+.quick-update-item { padding: 10px 11px !important; }
+.important-alert-pill { padding: 12px !important; }
+.important-alert-pill-value { font-size: 1.24rem !important; }
+.important-alert-card { padding: 12px !important; }
+.important-alert-meta { gap: 8px !important; }
+.important-alert-meta-item { padding: 8px 10px !important; }
+.btn-view-details { min-height: 34px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; }
+@media (max-width: 1024px) {
+  .important-alert-summary { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 640px) {
+  .important-alert-summary, .important-alert-meta { grid-template-columns: 1fr !important; }
+  .compact-featured-table { min-width: 560px !important; }
+  .compact-featured-table th, .compact-featured-table td { padding-top: 7px !important; padding-bottom: 7px !important; }
+}
+
+</style>
 </head>
 <body>
 
@@ -718,7 +739,7 @@
             messagingSenderId: "56988683349",
             appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 

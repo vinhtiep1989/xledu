@@ -1,0 +1,17 @@
+{
+  "name": "xledu-admin-server",
+  "private": true,
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "check:admin": "node test-admin.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.0",
+    "express": "^5.2.1",
+    "firebase-admin": "^13.7.0"
+  }
+}

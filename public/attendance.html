@@ -60,6 +60,8 @@
 
         .btn-add-hs { background: linear-gradient(135deg, var(--accent-gold), #c99327); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(224, 170, 62, 0.2); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;}
         .btn-add-hs:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(224, 170, 62, 0.3); }
+        .btn-edit-hs { background: linear-gradient(135deg, var(--edit-blue), #2874a6); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(52, 152, 219, 0.22); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;}
+        .btn-edit-hs:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(52, 152, 219, 0.32); }
         
         .btn-delete-hs { background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2); font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;}
         .btn-delete-hs:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3); }
@@ -222,6 +224,24 @@
         .toast-text p { font-size: 0.76rem; line-height: 1.35; color: #607080; margin: 3px 0 0; }
         .toast-notification.compact .toast-text p { display: none; }
 
+        .teacher-assign-modal-content { width: min(900px, calc(100vw - 32px)); max-width: 900px; max-height: min(86vh, 760px); border-top-color: var(--primary-green); display: flex; flex-direction: column; }
+        .teacher-assign-intro { font-size: 0.84rem; color: #607080; line-height: 1.6; margin-bottom: 14px; }
+        .teacher-assign-list { display: flex; flex-direction: column; gap: 12px; max-height: calc(min(86vh, 760px) - 210px); overflow-y: auto; padding-right: 4px; }
+        .teacher-assign-card { border: 1px solid var(--border-grey); border-radius: 12px; padding: 12px; background: #f8faf9; }
+        .teacher-assign-day { font-size: 0.9rem; font-weight: 800; color: var(--text-dark); margin-bottom: 4px; }
+        .teacher-assign-hint { font-size: 0.76rem; color: #7f8c8d; margin-bottom: 10px; line-height: 1.45; }
+        .teacher-assign-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 10px; align-items: stretch; }
+        .teacher-assign-option { position: relative; display: block; cursor: pointer; min-width: 0; }
+        .teacher-assign-option input { position: absolute; opacity: 0; pointer-events: none; }
+        .teacher-assign-option-body { width: 100%; min-width: 0; border: 1px solid #d9e7df; border-radius: 10px; padding: 10px 12px; background: #fff; min-height: 74px; transition: all 0.18s ease; display: flex; flex-direction: column; justify-content: center; gap: 4px; overflow: hidden; }
+        .teacher-assign-option input:checked + .teacher-assign-option-body { border-color: rgba(46, 204, 113, 0.55); background: rgba(46, 204, 113, 0.08); box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.10); }
+        .teacher-assign-option-name { display: block; font-size: 0.84rem; font-weight: 800; color: var(--text-dark); line-height: 1.3; white-space: normal; overflow-wrap: anywhere; }
+        .teacher-assign-option-email { display: block; font-size: 0.72rem; color: #7f8c8d; line-height: 1.4; white-space: normal; overflow-wrap: anywhere; }
+        .teacher-assign-option-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+        .teacher-assign-role-chip { display: inline-flex; align-items: center; justify-content: center; min-height: 18px; padding: 0 7px; border-radius: 999px; background: #f3f8f5; border: 1px solid #dfeae3; color: #4c6275; font-size: 0.64rem; font-weight: 800; white-space: nowrap; }
+        .teacher-assign-role-chip.is-teacher { background: rgba(46, 204, 113, 0.12); border-color: rgba(46, 204, 113, 0.18); color: #1f8f55; }
+        .teacher-assign-role-chip.is-manager { background: rgba(52, 152, 219, 0.12); border-color: rgba(52, 152, 219, 0.18); color: #216a94; }
+        .teacher-assign-role-chip.is-history { background: rgba(224, 170, 62, 0.12); border-color: rgba(224, 170, 62, 0.18); color: #9a6c0a; }
 
         @media (max-width: 1024px) {
             .modal-content.modal-content-wide { max-width: calc(100vw - 20px); }
@@ -234,6 +254,10 @@
             .bulk-table th, .bulk-table td { padding: 6px 5px; }
             .bulk-input, .bulk-select { min-height: 34px; padding: 7px 8px; font-size: 0.74rem; }
             .bulk-remove-btn { width: 34px; height: 34px; }
+            .teacher-assign-modal-content { width: min(100vw - 18px, 760px); max-height: calc(100vh - 18px); padding: 18px; }
+            .teacher-assign-list { max-height: calc(100vh - 240px); }
+            .teacher-assign-options { grid-template-columns: 1fr; gap: 8px; }
+            .teacher-assign-option-body { min-height: 68px; padding: 10px; }
         }
         @media (max-width: 390px) {
             .bulk-table { min-width: 1600px; }
@@ -488,7 +512,390 @@
             }
         }
 
-    </style>
+    
+/* ===== FINAL UX TUNE-UP 2026-04 ===== */
+:root { --ux-btn-h: 36px; --ux-btn-fs: 0.76rem; }
+.btn-back, .btn-export-excel, .btn-main-days, .btn-add-hs, .btn-delete-hs, .btn-withdraw-hs, .btn-save-att { min-height: var(--ux-btn-h); padding: 0 10px !important; border-radius: 9px !important; font-size: var(--ux-btn-fs) !important; gap: 6px !important; }
+.header-actions { gap: 7px !important; }
+.attendance-summary-pill { min-width: 122px !important; padding: 7px 8px !important; }
+.attendance-summary-card { padding: 8px 9px !important; }
+.attendance-summary-name { font-size: 0.82rem !important; }
+.admin-teaching-payout-table { font-size: 0.76rem !important; min-width: 660px; }
+.admin-teaching-payout-table th, .admin-teaching-payout-table td { padding: 7px 8px !important; }
+@media (max-width: 640px) {
+  .btn-back, .btn-export-excel, .btn-main-days, .btn-add-hs, .btn-delete-hs, .btn-withdraw-hs, .btn-save-att { min-height: 34px; font-size: 0.72rem !important; }
+  .attendance-summary-pill { min-width: 0 !important; }
+}
+
+/* ===== ATTENDANCE MOBILE COMPACT V4 ===== */
+.att-footer-wrapper { gap: 8px !important; margin-bottom: 10px; }
+.att-legend {
+  padding: 8px 10px !important;
+  gap: 6px !important;
+  border-radius: 10px !important;
+  font-size: 0.74rem !important;
+  box-shadow: none !important;
+}
+.att-legend strong { font-size: 0.73rem; }
+.legend-item { gap: 4px !important; min-height: 24px; }
+.legend-badge { min-width: 20px !important; padding: 1px 5px !important; font-size: 0.67rem !important; }
+.att-info-box {
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  gap: 10px !important;
+  font-size: 0.78rem !important;
+}
+.att-info-box p { line-height: 1.35; }
+.panel-compact-stats {
+  padding: 12px !important;
+  border-radius: 10px !important;
+}
+.panel-compact-stats .attendance-stats-panel-title {
+  font-size: 0.82rem !important;
+  margin-bottom: 8px !important;
+}
+.panel-compact-stats .attendance-summary-strip { gap: 6px !important; }
+.panel-compact-stats .attendance-summary-pill {
+  min-width: 108px !important;
+  padding: 6px 8px !important;
+  border-radius: 7px !important;
+}
+.panel-compact-stats .attendance-summary-value { font-size: 0.92rem !important; }
+.panel-compact-stats .attendance-summary-label {
+  font-size: 0.64rem !important;
+  line-height: 1.2 !important;
+}
+.panel-compact-stats .attendance-summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: 6px !important;
+}
+.panel-compact-stats .attendance-summary-card {
+  padding: 7px 8px !important;
+  border-radius: 7px !important;
+  box-shadow: none !important;
+}
+.panel-compact-stats .attendance-summary-card-top {
+  margin-bottom: 4px !important;
+  gap: 6px !important;
+}
+.panel-compact-stats .attendance-summary-name { font-size: 0.78rem !important; line-height: 1.2 !important; }
+.panel-compact-stats .attendance-summary-email { font-size: 0.63rem !important; margin-top: 1px !important; }
+.panel-compact-stats .attendance-summary-badge {
+  padding: 3px 6px !important;
+  font-size: 0.62rem !important;
+}
+.panel-compact-stats .attendance-summary-days-label { font-size: 0.6rem !important; }
+.panel-compact-stats .attendance-summary-days {
+  gap: 2px !important;
+  font-size: 0.67rem !important;
+}
+.panel-compact-stats .attendance-summary-day-item {
+  padding: 2px 5px !important;
+  border-radius: 5px !important;
+}
+.panel-compact-stats .attendance-summary-updated {
+  font-size: 0.62rem !important;
+  margin-top: 4px !important;
+  padding-top: 4px !important;
+}
+.teacher-assign-modal-content {
+  width: min(760px, calc(100vw - 18px)) !important;
+  max-height: min(88vh, 680px) !important;
+  padding: 18px 16px 14px !important;
+}
+.teacher-assign-modal-content .modal-title {
+  font-size: 0.98rem !important;
+  margin-bottom: 10px !important;
+}
+.teacher-assign-intro {
+  font-size: 0.77rem !important;
+  line-height: 1.45 !important;
+  margin-bottom: 10px !important;
+}
+.teacher-assign-list {
+  gap: 8px !important;
+  max-height: calc(min(88vh, 680px) - 230px) !important;
+}
+.teacher-assign-card {
+  padding: 10px !important;
+  border-radius: 10px !important;
+}
+.teacher-assign-day {
+  font-size: 0.82rem !important;
+  margin-bottom: 3px !important;
+}
+.teacher-assign-hint {
+  font-size: 0.7rem !important;
+  margin-bottom: 8px !important;
+}
+.teacher-assign-options {
+  grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)) !important;
+  gap: 8px !important;
+}
+.teacher-assign-option-body {
+  min-height: 62px !important;
+  padding: 8px 10px !important;
+  border-radius: 9px !important;
+}
+.teacher-assign-option-name { font-size: 0.77rem !important; }
+.teacher-assign-option-email { font-size: 0.64rem !important; line-height: 1.3 !important; }
+.teacher-assign-option-meta { gap: 4px !important; }
+.teacher-assign-role-chip {
+  min-height: 16px !important;
+  padding: 0 6px !important;
+  font-size: 0.58rem !important;
+}
+.teacher-assign-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: #f6faf8;
+  border: 1px solid var(--border-grey);
+  color: #486177;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.teacher-assign-actions {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, #fff 26%);
+  padding-top: 10px;
+  margin-top: 10px !important;
+}
+#btnConfirmTeacherAssignment, #btnCancelTeacherAssignment {
+  min-height: 38px;
+}
+@media (max-width: 768px) {
+  .att-legend {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch !important;
+  }
+  .att-legend strong { grid-column: 1 / -1; }
+  .legend-item { font-size: 0.67rem; }
+  .att-info-box {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    align-items: stretch !important;
+  }
+  .btn-save-att {
+    width: 100%;
+    min-height: 38px !important;
+  }
+  .panel-compact-stats {
+    padding: 10px !important;
+  }
+  .panel-compact-stats .attendance-summary-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .panel-compact-stats .attendance-summary-card-top {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+  }
+  .teacher-assign-modal-content {
+    width: calc(100vw - 14px) !important;
+    max-height: calc(100vh - 14px) !important;
+    padding: 14px 12px 12px !important;
+  }
+  .teacher-assign-list {
+    max-height: calc(100vh - 210px) !important;
+    padding-right: 2px !important;
+  }
+}
+@media (max-width: 420px) {
+  .att-legend { grid-template-columns: 1fr 1fr !important; }
+  .panel-compact-stats .attendance-summary-strip { grid-template-columns: 1fr 1fr !important; display: grid !important; }
+  .teacher-assign-options { grid-template-columns: 1fr !important; }
+}
+
+
+/* ===== MOBILE ATTENDANCE FOCUS MODE 2026-04 ===== */
+.attendance-panel {
+  --attendance-mobile-scale: 1.08;
+}
+.attendance-mobile-toolbar {
+  display: none;
+}
+.attendance-fullscreen-lock {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
+@media (max-width: 1024px) {
+  .attendance-panel {
+    position: relative;
+    overflow: visible;
+  }
+  .attendance-mobile-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .attendance-mobile-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.72rem;
+    color: #607080;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .attendance-mobile-toolbar-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+  .attendance-mobile-tool {
+    min-height: 36px;
+    border: 1px solid #d6e2db;
+    background: #fff;
+    color: var(--text-dark);
+    border-radius: 10px;
+    padding: 0 10px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .attendance-mobile-tool:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .attendance-mobile-tool-label {
+    min-width: 62px;
+  }
+  .attendance-mobile-tool-main {
+    background: linear-gradient(135deg, #0d1b2a, #1a365d);
+    color: #fff;
+    border-color: #0d1b2a;
+  }
+  .attendance-panel .attendance-table-wrapper {
+    min-height: max(340px, 56dvh) !important;
+    max-height: min(70dvh, 620px) !important;
+    border-radius: 12px !important;
+    overscroll-behavior: contain;
+    touch-action: pan-x pan-y;
+  }
+  .attendance-panel .att-table {
+    min-width: calc(1020px * var(--attendance-mobile-scale)) !important;
+    font-size: calc(0.76rem * var(--attendance-mobile-scale)) !important;
+  }
+  .attendance-panel .att-table th,
+  .attendance-panel .att-table td {
+    padding: calc(4px * var(--attendance-mobile-scale)) !important;
+  }
+  .attendance-panel .att-table th.day-column,
+  .attendance-panel .att-table td.day-column,
+  .attendance-panel .att-table .col-sum-day {
+    min-width: calc(48px * var(--attendance-mobile-scale)) !important;
+  }
+  .attendance-panel .att-table th.day-column {
+    font-size: calc(0.74rem * var(--attendance-mobile-scale)) !important;
+  }
+  .attendance-panel .att-select,
+  .attendance-panel .tuition-input {
+    min-height: calc(38px * var(--attendance-mobile-scale)) !important;
+    font-size: calc(0.78rem * var(--attendance-mobile-scale)) !important;
+  }
+  .attendance-panel .sticky-col-left-1,
+  .attendance-panel .sticky-col-right-3,
+  .attendance-panel .sticky-col-right-2,
+  .attendance-panel .sticky-col-right-1 {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: auto !important;
+  }
+  .attendance-panel .sticky-col-left-2 {
+    left: 0 !important;
+    z-index: 13 !important;
+    width: calc(150px * var(--attendance-mobile-scale)) !important;
+    min-width: calc(150px * var(--attendance-mobile-scale)) !important;
+    max-width: calc(150px * var(--attendance-mobile-scale)) !important;
+    box-shadow: 8px 0 14px rgba(13,27,42,0.06);
+  }
+  .attendance-panel .sticky-col-left-1 {
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+  }
+  .attendance-panel .student-withdrawn-badge {
+    margin-top: 4px;
+    margin-left: 0;
+  }
+  .attendance-panel.attendance-fullscreen-active {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1600 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    padding: calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left)) !important;
+    background: var(--bg-body) !important;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+  }
+  .attendance-panel.attendance-fullscreen-active .attendance-mobile-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg-body);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+  .attendance-panel.attendance-fullscreen-active .attendance-table-wrapper {
+    min-height: 0 !important;
+    max-height: none !important;
+    height: calc(100dvh - 88px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    flex: 1 1 auto;
+  }
+  .attendance-panel.attendance-fullscreen-active .attendance-mobile-tool-main {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    border-color: #c0392b;
+  }
+}
+@media (max-width: 640px) {
+  .attendance-mobile-toolbar {
+    align-items: stretch;
+  }
+  .attendance-mobile-hint {
+    width: 100%;
+  }
+  .attendance-mobile-toolbar-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .attendance-mobile-tool {
+    width: 100%;
+    min-width: 0;
+    padding: 0 8px;
+  }
+  .attendance-mobile-tool-main {
+    grid-column: span 2;
+  }
+  .attendance-panel .attendance-table-wrapper {
+    min-height: max(330px, 58dvh) !important;
+  }
+}
+
+</style>
 </head>
 <body>
 
@@ -537,13 +944,23 @@
                     <button class="btn-main-days" id="btnToggleMainDays" type="button"><i class="fa-regular fa-calendar-days"></i> Hiển thị ngày học chính</button>
                     <button class="btn-day-off" id="btnMarkTodayOff" type="button"><i class="fa-solid fa-bed"></i> Báo nghỉ hôm nay</button>
                     <button class="btn-add-hs" id="btnOpenAddStudentModal" type="button"><i class="fa-solid fa-user-plus"></i> Thêm HS</button>
+                    <button class="btn-edit-hs" id="btnOpenEditStudentModal" type="button"><i class="fa-solid fa-user-pen"></i> Sửa HS</button>
                     <button class="btn-withdraw-hs" id="btnWithdrawStudent" onclick="markSelectedStudentsAsWithdrawn()"><i class="fa-solid fa-user-lock"></i> Thôi học</button>
                     <button class="btn-delete-hs" onclick="deleteSelectedStudents()"><i class="fa-solid fa-user-minus"></i> Xóa HS</button>
                 </div>
             </div>
 
-            <div class="panel">
-                <div class="table-wrapper">
+            <div class="panel attendance-panel" id="attendancePanel">
+                <div class="attendance-mobile-toolbar" id="attendanceMobileToolbar" aria-label="Công cụ xem bảng điểm danh trên điện thoại">
+                    <div class="attendance-mobile-hint"><i class="fa-solid fa-mobile-screen-button"></i><span>Xem tối thiểu 5 học sinh, cuộn để xem thêm</span></div>
+                    <div class="attendance-mobile-toolbar-actions">
+                        <button class="attendance-mobile-tool" id="btnAttendanceZoomOut" type="button" aria-label="Thu nhỏ bảng điểm danh"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                        <button class="attendance-mobile-tool attendance-mobile-tool-label" id="btnAttendanceZoomReset" type="button">100%</button>
+                        <button class="attendance-mobile-tool" id="btnAttendanceZoomIn" type="button" aria-label="Phóng to bảng điểm danh"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                        <button class="attendance-mobile-tool attendance-mobile-tool-main" id="btnAttendanceFullscreen" type="button"><i class="fa-solid fa-expand"></i><span>Toàn màn hình</span></button>
+                    </div>
+                </div>
+                <div class="table-wrapper attendance-table-wrapper" id="attendanceTableWrapper">
                     <table class="att-table" id="exportTableTarget">
                         <thead id="attThead"></thead>
                         <tbody id="attTbody">
@@ -551,13 +968,6 @@
                         </tbody>
                         <tfoot id="attTfoot"></tfoot>
                     </table>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="attendance-stats-panel-title"><i class="fa-solid fa-clipboard-user"></i> THỐNG KÊ <span>ĐIỂM DANH & CHỈNH SỬA</span></div>
-                <div id="attendanceTeacherStats" class="attendance-teacher-stats">
-                    <div class="attendance-teacher-empty">Chưa có dữ liệu điểm danh trong tháng này.</div>
                 </div>
             </div>
 
@@ -582,6 +992,13 @@
                         <p style="margin-top: 5px;"><i class="fa-regular fa-clock"></i> Cập nhật lúc: <strong id="attTime">...</strong></p>
                     </div>
                     <button class="btn-save-att" onclick="saveAttendance()"><i class="fa-solid fa-floppy-disk"></i> Chốt & Lưu Điểm Danh</button>
+                </div>
+            </div>
+
+            <div class="panel panel-compact-stats">
+                <div class="attendance-stats-panel-title"><i class="fa-solid fa-clipboard-user"></i> THỐNG KÊ <span>ĐIỂM DANH & CHỈNH SỬA</span></div>
+                <div id="attendanceTeacherStats" class="attendance-teacher-stats">
+                    <div class="attendance-teacher-empty">Chưa có dữ liệu điểm danh trong tháng này.</div>
                 </div>
             </div>
 
@@ -670,8 +1087,8 @@
         <div class="modal-content modal-content-wide">
             <div class="modal-topbar">
                 <div>
-                    <h2 class="modal-title">Thêm Học Sinh Vào Lớp</h2>
-                    <div class="modal-subtitle">Biểu mẫu đầy đủ như trang học sinh. Lớp hiện tại được gắn tự động và có thể bổ sung thêm mã lớp khác để đồng bộ 2 chiều.</div>
+                    <h2 class="modal-title" id="attendanceModalTitle">Thêm Học Sinh Vào Lớp</h2>
+                    <div class="modal-subtitle" id="attendanceModalSubtitle">Biểu mẫu đầy đủ như trang học sinh. Lớp hiện tại được gắn tự động và có thể bổ sung thêm mã lớp khác để đồng bộ 2 chiều.</div>
                 </div>
                 <div class="modal-tools">
                     <button type="button" class="btn-modal-tool btn-fill-codes" id="btnFillAttendanceCodes"><i class="fa-solid fa-code"></i> Gán thêm mã lớp</button>
@@ -715,6 +1132,19 @@
 
     <datalist id="studentCccdSuggestions"></datalist>
 
+    <div class="modal-overlay" id="teacherAssignmentModal">
+        <div class="modal-content teacher-assign-modal-content">
+            <h2 class="modal-title">Chọn giáo viên được tính buổi điểm danh</h2>
+            <div class="teacher-assign-intro" id="teacherAssignmentIntro">Quản lý/Admin đang sửa bảng điểm danh. Hãy chọn giáo viên được tính cho từng ngày đã thay đổi có phát sinh buổi học.</div>
+            <div class="teacher-assign-list" id="teacherAssignmentList"></div>
+            <div class="teacher-assign-status" id="teacherAssignmentStatus"><i class="fa-regular fa-circle-dot"></i><span>Đang chuẩn bị danh sách giáo viên...</span></div>
+            <div class="modal-actions teacher-assign-actions">
+                <button type="button" class="btn-cancel" id="btnCancelTeacherAssignment">Hủy</button>
+                <button type="button" class="btn-save" id="btnConfirmTeacherAssignment">Xác nhận & Lưu</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCp0_8BJeBbXv4yJKFL_R0gexMOPrqVHj4",
@@ -724,7 +1154,7 @@
             messagingSenderId: "56988683349",
             appId: "1:56988683349:web:7502807eebf8862ed0d8dc"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
@@ -756,6 +1186,9 @@
         let currentMonthNumber = 0;
         let currentYearNumber = 0;
         let currentUserInfo = { email: '', displayName: '', role: 'teacher', roles: ['teacher'] };
+        let attendanceBackupState = { running: false, completedKeys: new Set(), failedKeys: new Set() };
+        const ATTENDANCE_BACKUP_ROOT_ID = 'attendance_files_archive';
+        const ATTENDANCE_BACKUP_ROOT_LABEL = 'Lưu file điểm danh';
         let originalAttendanceSnapshot = {};
         let attendanceTeacherLog = {};
         let attendanceManagerEditLog = {};
@@ -778,6 +1211,82 @@
         let withdrawnStudentStats = {};
         let studentProfileCacheByCccd = {};
         let studentCccdSuggestionToken = 0;
+        let attendanceStudentModalState = { mode: 'add', editingStudentId: '', lookupSyncKey: '', originalStudentCccd: '' };
+        let pendingTuitionChanges = {};
+        let teacherAssignmentCandidates = [];
+        let pendingTeacherAssignmentResolver = null;
+        let teacherAssignmentModalBusy = false;
+        let teacherAssignmentCandidatesCacheKey = '';
+        let teacherAssignmentCandidatesPromise = null;
+        let attendanceMobileScale = 1.08;
+        const ATTENDANCE_MOBILE_SCALE_MIN = 1;
+        const ATTENDANCE_MOBILE_SCALE_MAX = 1.5;
+        const ATTENDANCE_MOBILE_SCALE_STEP = 0.08;
+
+
+
+        function getTeacherAssignmentModalElements() {
+            return {
+                modal: document.getElementById('teacherAssignmentModal'),
+                list: document.getElementById('teacherAssignmentList'),
+                intro: document.getElementById('teacherAssignmentIntro'),
+                status: document.getElementById('teacherAssignmentStatus'),
+                confirmBtn: document.getElementById('btnConfirmTeacherAssignment'),
+                cancelBtn: document.getElementById('btnCancelTeacherAssignment')
+            };
+        }
+        function setTeacherAssignmentModalBusyState(isBusy) {
+            teacherAssignmentModalBusy = !!isBusy;
+            const { confirmBtn, cancelBtn } = getTeacherAssignmentModalElements();
+            if (confirmBtn) {
+                confirmBtn.disabled = teacherAssignmentModalBusy;
+                confirmBtn.innerHTML = teacherAssignmentModalBusy
+                    ? '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác nhận...'
+                    : 'Xác nhận & Lưu';
+            }
+            if (cancelBtn) cancelBtn.disabled = teacherAssignmentModalBusy;
+        }
+        function closeTeacherAssignmentModal() {
+            const { modal } = getTeacherAssignmentModalElements();
+            if (modal) modal.classList.remove('show');
+            setTeacherAssignmentModalBusyState(false);
+        }
+        function rejectPendingTeacherAssignment(message = 'Bạn đã hủy lưu điểm danh.') {
+            const pending = pendingTeacherAssignmentResolver;
+            pendingTeacherAssignmentResolver = null;
+            closeTeacherAssignmentModal();
+            if (pending && typeof pending.reject === 'function') {
+                pending.reject(new Error(message));
+            }
+        }
+
+        function waitForNextPaint() {
+            return new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        }
+        function buildTeacherAssignmentCacheKey(data = currentClassInfo) {
+            const teachersKey = getPeopleArray(getTeachersFromClassData(data)).map(item => `${normalizeEmail(item.email)}|${normalizeTextLower(item.name)}`).sort().join('||');
+            const managersKey = getPeopleArray(getManagersFromClassData(data)).map(item => `${normalizeEmail(item.email)}|${normalizeTextLower(item.name)}`).sort().join('||');
+            const historyKey = getPeopleArray(getHistoricalAttendanceTeachers(data)).map(item => `${normalizeEmail(item.email)}|${normalizeTextLower(item.name)}`).sort().join('||');
+            return [classId || '', currentMonthKey || '', teachersKey, managersKey, historyKey].join('###');
+        }
+        function updateTeacherAssignmentStatus(days = []) {
+            const { status, list } = getTeacherAssignmentModalElements();
+            if (!status) return;
+            const total = Array.isArray(days) ? days.length : 0;
+            if (!total) {
+                status.innerHTML = '<i class="fa-regular fa-circle-check"></i><span>Không có ngày nào cần gán giáo viên.</span>';
+                return;
+            }
+            const selectedCount = (list ? list.querySelectorAll('input[type="radio"]:checked').length : 0);
+            if (selectedCount >= total) {
+                status.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>Đã chọn đủ ${selectedCount}/${total} ngày. Có thể bấm lưu ngay.</span>`;
+            } else {
+                status.innerHTML = `<i class="fa-regular fa-circle-dot"></i><span>Đã chọn ${selectedCount}/${total} ngày. Vui lòng chọn đủ giáo viên cho từng ngày.</span>`;
+            }
+        }
+        function preloadTeacherAssignmentCandidates() {
+            loadTeacherAssignmentCandidates().catch(() => {});
+        }
 
         const CLASS_DURATION_MINUTES = 120;
         const OPEN_BEFORE_MINUTES = 60;
@@ -787,6 +1296,16 @@
         function normalizeTextLower(value) { return normalizeText(value).toLowerCase(); }
         function normalizeEmail(email) { return normalizeText(email).toLowerCase(); }
         function normalizeCode(code) { return normalizeText(code).toUpperCase(); }
+        function normalizeLooseText(value) {
+            return normalizeText(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+        }
+        function normalizeStudyMode(value, fallback = 'Trực tiếp') {
+            const normalized = normalizeLooseText(value);
+            if (!normalized) return fallback;
+            if (normalized.includes('online') || normalized.includes('truc tuyen') || normalized.includes('tructuyen')) return 'Online';
+            if (normalized.includes('truc tiep') || normalized.includes('tructiep') || normalized.includes('offline')) return 'Trực tiếp';
+            return value === 'Online' ? 'Online' : fallback;
+        }
         function normalizeRoleToken(value) {
             const raw = normalizeTextLower(value);
             if (!raw) return '';
@@ -859,6 +1378,182 @@
             if (!iso) return '';
             const [year, month, day] = iso.split('-');
             return `${day}/${month}/${year}`;
+        }
+        function getCurrentMonthFirstDateInputValue() {
+            if (!currentYearNumber || !currentMonthNumber) return '';
+            return `${currentYearNumber}-${padNumber(currentMonthNumber)}-01`;
+        }
+        function getCurrentMonthLastDateInputValue() {
+            if (!currentYearNumber || !currentMonthNumber || !currentMonthDays) return '';
+            return `${currentYearNumber}-${padNumber(currentMonthNumber)}-${padNumber(currentMonthDays)}`;
+        }
+        function getDateIsoForCurrentMonthDay(day) {
+            const numericDay = Number(day);
+            if (!numericDay || !currentYearNumber || !currentMonthNumber) return '';
+            return `${currentYearNumber}-${padNumber(currentMonthNumber)}-${padNumber(numericDay)}`;
+        }
+        function clampEffectiveDateToCurrentMonth(value, fallback = '') {
+            const firstDate = getCurrentMonthFirstDateInputValue();
+            const lastDate = getCurrentMonthLastDateInputValue();
+            let iso = formatDateInputValue(value) || '';
+            if (!iso) return fallback || firstDate || '';
+            if (firstDate && iso < firstDate) iso = firstDate;
+            if (lastDate && iso > lastDate) iso = lastDate;
+            return iso;
+        }
+        function normalizeTuitionHistory(rawHistory, options = {}) {
+            const normalized = (Array.isArray(rawHistory) ? rawHistory : [])
+                .map((item) => {
+                    const effectiveDate = formatDateInputValue(item && (item.effectiveDate || item.date || item.fromDate || item.appliedFrom));
+                    const amount = Math.max(0, parseInt(item && (item.amount ?? item.tuition ?? item.value), 10) || 0);
+                    if (!effectiveDate) return null;
+                    return { effectiveDate, amount };
+                })
+                .filter(Boolean)
+                .sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate));
+            const deduped = [];
+            normalized.forEach((item) => {
+                const lastItem = deduped[deduped.length - 1];
+                if (lastItem && lastItem.effectiveDate === item.effectiveDate) {
+                    deduped[deduped.length - 1] = item;
+                } else {
+                    deduped.push(item);
+                }
+            });
+            if (deduped.length) return deduped;
+            const fallbackAmount = Math.max(0, parseInt(options && options.fallbackAmount, 10) || 0);
+            if (!fallbackAmount) return [];
+            const fallbackDate = formatDateInputValue(options && options.fallbackEffectiveDate) || getCurrentMonthFirstDateInputValue() || getTodayDateInputValue();
+            return [{ effectiveDate: fallbackDate, amount: fallbackAmount }];
+        }
+        function mergeTuitionHistoryChange(history, change) {
+            const normalizedHistory = normalizeTuitionHistory(history);
+            if (!change || !change.effectiveDate) return normalizedHistory;
+            const merged = normalizedHistory.filter((item) => item.effectiveDate !== change.effectiveDate);
+            merged.push({
+                effectiveDate: change.effectiveDate,
+                amount: Math.max(0, parseInt(change.amount, 10) || 0)
+            });
+            return merged.sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate));
+        }
+        function getTuitionAmountForDateFromHistory(history, dateIso) {
+            const normalizedHistory = normalizeTuitionHistory(history);
+            if (!dateIso || !normalizedHistory.length) return 0;
+            let matchedAmount = 0;
+            normalizedHistory.forEach((item) => {
+                if (item.effectiveDate <= dateIso) matchedAmount = item.amount;
+            });
+            return Math.max(0, matchedAmount || 0);
+        }
+        function getStudentBaseTuitionHistory(student, options = {}) {
+            const fallbackEffectiveDate = formatDateInputValue(options && options.fallbackEffectiveDate)
+                || formatDateInputValue(getStudentEnrollmentDateForCurrentClass(student))
+                || getCurrentMonthFirstDateInputValue()
+                || getTodayDateInputValue();
+            return normalizeTuitionHistory(student && student.tuitionHistory, {
+                fallbackAmount: Number(student && student.tuition) || 0,
+                fallbackEffectiveDate
+            });
+        }
+        function getEffectiveStudentTuitionHistory(student, options = {}) {
+            const studentId = String(student && student.id || '');
+            const baseHistory = getStudentBaseTuitionHistory(student, options);
+            const pendingChange = pendingTuitionChanges[studentId];
+            return pendingChange ? mergeTuitionHistoryChange(baseHistory, pendingChange) : baseHistory;
+        }
+        function getLatestTuitionFromHistory(history) {
+            const normalizedHistory = normalizeTuitionHistory(history);
+            return normalizedHistory.length ? normalizedHistory[normalizedHistory.length - 1].amount : 0;
+        }
+        function getLatestStudentTuition(student) {
+            return getLatestTuitionFromHistory(getEffectiveStudentTuitionHistory(student));
+        }
+        function getStudentTuitionForDay(student, day) {
+            return getTuitionAmountForDateFromHistory(getEffectiveStudentTuitionHistory(student), getDateIsoForCurrentMonthDay(day));
+        }
+        function formatTuitionHistorySummary(history) {
+            const normalizedHistory = normalizeTuitionHistory(history);
+            if (!normalizedHistory.length) return 'Chưa có lịch sử học phí.';
+            return normalizedHistory.map((item) => `${formatDateDisplayVietnamese(item.effectiveDate)}: ${formatCurrencyVnd(item.amount)}`).join(' · ');
+        }
+        function getStudentTuitionInputTitle(student) {
+            const history = getEffectiveStudentTuitionHistory(student);
+            const pendingChange = pendingTuitionChanges[String(student && student.id || '')];
+            const baseText = `Học phí đang áp dụng: ${formatCurrencyVnd(getLatestTuitionFromHistory(history))}. Lịch sử: ${formatTuitionHistorySummary(history)}`;
+            if (!pendingChange) return baseText;
+            return `${baseText}. Có thay đổi chờ lưu từ ${formatDateDisplayVietnamese(pendingChange.effectiveDate)}.`;
+        }
+        function calculateStudentBillingSnapshot(student) {
+            const attendedDays = [];
+            let totalAmount = 0;
+            document.querySelectorAll(`.day-select-${student.id}`).forEach((sel) => {
+                const day = Number(sel.dataset.day || 0);
+                if (!day || isDayOff(day) || isDayBeforeStudentEnrollment(student, day)) return;
+                if (!isPayableAttendanceStatus(sel.value)) return;
+                attendedDays.push(day);
+                totalAmount += getStudentTuitionForDay(student, day);
+            });
+            return {
+                attendedDays,
+                sessionCount: attendedDays.length,
+                totalAmount
+            };
+        }
+        function refreshTuitionInputMeta(studentId) {
+            const student = studentsData.find((item) => String(item.id) === String(studentId));
+            const input = document.querySelector(`.tuition-${studentId}`);
+            if (!student || !input) return;
+            const latestAmount = getLatestStudentTuition(student);
+            input.dataset.currentAmount = String(latestAmount);
+            input.dataset.pendingEffectiveDate = pendingTuitionChanges[String(studentId)] ? pendingTuitionChanges[String(studentId)].effectiveDate : '';
+            input.title = getStudentTuitionInputTitle(student);
+            input.value = String(latestAmount);
+        }
+        function promptTuitionEffectiveDate(student, previousAmount, nextAmount) {
+            const defaultDate = clampEffectiveDateToCurrentMonth(getTodayDateInputValue(), getCurrentMonthFirstDateInputValue());
+            const studentName = normalizeText(student && student.name) || 'học sinh đã chọn';
+            const answer = window.prompt(
+                `Nhập ngày áp dụng học phí mới cho ${studentName} (YYYY-MM-DD).\n- Các buổi trước ngày này vẫn giữ mức cũ ${formatCurrencyVnd(previousAmount)}.\n- Các buổi từ ngày này trở về sau sẽ tính mức mới ${formatCurrencyVnd(nextAmount)}.`,
+                defaultDate
+            );
+            if (answer === null) return null;
+            const effectiveDate = clampEffectiveDateToCurrentMonth(answer);
+            if (!effectiveDate) throw new Error('Ngày áp dụng học phí không hợp lệ.');
+            return effectiveDate;
+        }
+        async function handleTuitionInputChange(input) {
+            if (!input) return;
+            const studentId = String(input.dataset.studentId || '');
+            const student = studentsData.find((item) => String(item.id) === studentId);
+            if (!student) return;
+            const access = currentClassInfo ? ensureAttendancePageAccess(currentClassInfo, { silentRedirect: false }) : currentAttendanceAccess;
+            const currentAmount = Math.max(0, parseInt(input.dataset.currentAmount || input.defaultValue || '0', 10) || 0);
+            const nextAmount = Math.max(0, parseInt(input.value || '0', 10) || 0);
+            if (!access || !access.canEditTuition) {
+                input.value = String(currentAmount);
+                return;
+            }
+            if (nextAmount === currentAmount) {
+                input.value = String(currentAmount);
+                return;
+            }
+            try {
+                const effectiveDate = promptTuitionEffectiveDate(student, currentAmount, nextAmount);
+                if (!effectiveDate) {
+                    input.value = String(currentAmount);
+                    return;
+                }
+                pendingTuitionChanges[studentId] = {
+                    effectiveDate,
+                    amount: nextAmount
+                };
+                refreshTuitionInputMeta(studentId);
+                calculateTotals();
+                showToast('Đã ghi nhận thay đổi học phí', `Mức ${formatCurrencyVnd(nextAmount)} sẽ áp dụng từ ngày ${formatDateDisplayVietnamese(effectiveDate)} sau khi bấm lưu điểm danh.`);
+            } catch (error) {
+                input.value = String(currentAmount);
+                showToast('Không thể cập nhật học phí', error && error.message ? error.message : 'Đã xảy ra lỗi khi ghi nhận học phí mới.');
+            }
         }
         function escapeHtml(value) {
             return String(value || '')
@@ -1037,6 +1732,47 @@
             if (data && data.teacherName && !Array.isArray(data.teachers)) teachers.push({ name: data.teacherName, email: data.teacherEmail || '' });
             return getPeopleArray(teachers);
         }
+        function getHistoricalAttendanceTeachers(data = currentClassInfo) {
+            const teachers = [];
+            const teacherLog = getMonthlyLogEntries(data, 'attendanceTeacherLog', currentMonthKey);
+            Object.values(teacherLog || {}).forEach((record) => {
+                teachers.push({
+                    name: record && (record.teacherName || record.reportedByName) || '',
+                    email: record && (record.teacherEmail || record.reportedByEmail) || ''
+                });
+            });
+            const managerEditLog = getMonthlyLogEntries(data, 'attendanceManagerEditLog', currentMonthKey);
+            Object.values(managerEditLog || {}).forEach((record) => {
+                teachers.push({
+                    name: record && record.teacherName || '',
+                    email: record && record.teacherEmail || ''
+                });
+            });
+            return getPeopleArray(teachers);
+        }
+        function upsertTeacherAssignmentCandidate(candidateMap, person, options = {}) {
+            const email = normalizeEmail(person && person.email);
+            const fallbackName = normalizeText(person && person.name);
+            const key = email || normalizeTextLower(fallbackName);
+            if (!key) return;
+            const existing = candidateMap.get(key) || { key, email: '', name: '', roleLabels: [] };
+            if (email) existing.email = email;
+            const resolvedName = normalizeText(options.resolvedName || (email ? teacherDirectoryByEmail[email] : '') || fallbackName || existing.name || email || 'Chưa rõ');
+            if (resolvedName) existing.name = resolvedName;
+            const roleSet = new Set(Array.isArray(existing.roleLabels) ? existing.roleLabels : []);
+            (Array.isArray(options.roleLabels) ? options.roleLabels : []).forEach((label) => { if (label) roleSet.add(label); });
+            existing.roleLabels = Array.from(roleSet);
+            candidateMap.set(key, existing);
+            if (email && existing.name) teacherDirectoryByEmail[email] = existing.name;
+        }
+        function buildTeacherAssignmentRoleChips(candidate) {
+            const labels = Array.isArray(candidate && candidate.roleLabels) ? candidate.roleLabels : [];
+            const chips = [];
+            if (labels.includes('class_teacher')) chips.push('<span class="teacher-assign-role-chip is-teacher">Giáo viên lớp</span>');
+            if (labels.includes('class_manager')) chips.push('<span class="teacher-assign-role-chip is-manager">Quản lý lớp</span>');
+            if (labels.includes('historical_teacher')) chips.push('<span class="teacher-assign-role-chip is-history">Đã chốt trước đó</span>');
+            return chips.join('');
+        }
         function formatCurrencyVnd(value) {
             const safeValue = Number(value) || 0;
             return `${Math.round(safeValue).toLocaleString('vi-VN')} ₫`;
@@ -1104,6 +1840,152 @@
             teachingPayoutSettings = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo) };
             toggleAdminTeachingPayoutPanel();
         }
+        async function loadTeacherAssignmentCandidates(options = {}) {
+            const force = !!(options && options.force);
+            const cacheKey = buildTeacherAssignmentCacheKey(currentClassInfo);
+            if (!force && teacherAssignmentCandidatesPromise && teacherAssignmentCandidatesCacheKey === cacheKey) {
+                return teacherAssignmentCandidatesPromise;
+            }
+            if (!force && teacherAssignmentCandidates.length && teacherAssignmentCandidatesCacheKey === cacheKey) {
+                return teacherAssignmentCandidates;
+            }
+            teacherAssignmentCandidatesCacheKey = cacheKey;
+            teacherAssignmentCandidatesPromise = (async () => {
+                const candidateMap = new Map();
+                const classTeachers = getTeachersFromClassData(currentClassInfo);
+                const managerList = getManagersFromClassData(currentClassInfo);
+                const historicalTeachers = getHistoricalAttendanceTeachers(currentClassInfo);
+                const emailsToLoad = [...classTeachers, ...managerList, ...historicalTeachers].map((person) => person && person.email);
+                await ensureUserProfilesLoaded(emailsToLoad);
+
+                classTeachers.forEach((teacher, index) => {
+                    const email = normalizeEmail(teacher && teacher.email);
+                    const resolvedName = normalizeText((email ? teacherDirectoryByEmail[email] : '') || teacher && teacher.name || email || `Giáo viên ${index + 1}`);
+                    upsertTeacherAssignmentCandidate(candidateMap, { name: resolvedName, email }, { roleLabels: ['class_teacher'] });
+                });
+
+                historicalTeachers.forEach((teacher) => {
+                    const email = normalizeEmail(teacher && teacher.email);
+                    const resolvedName = normalizeText((email ? teacherDirectoryByEmail[email] : '') || teacher && teacher.name || email || 'Giáo viên đã chốt');
+                    upsertTeacherAssignmentCandidate(candidateMap, { name: resolvedName, email }, { roleLabels: ['historical_teacher'] });
+                });
+
+                managerList.forEach((manager, index) => {
+                    const managerKey = normalizePersonKey(manager);
+                    if (!managerKey) return;
+                    const email = normalizeEmail(manager && manager.email);
+                    const resolvedName = normalizeText((email ? teacherDirectoryByEmail[email] : '') || manager && manager.name || email || `Quản lý ${index + 1}`);
+                    if (!candidateMap.has(managerKey)) return;
+                    upsertTeacherAssignmentCandidate(candidateMap, { name: resolvedName, email }, { roleLabels: ['class_manager'] });
+                });
+
+                teacherAssignmentCandidates = Array.from(candidateMap.values())
+                    .filter((item) => Array.isArray(item.roleLabels) && item.roleLabels.length)
+                    .sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+                return teacherAssignmentCandidates;
+            })();
+            try {
+                return await teacherAssignmentCandidatesPromise;
+            } finally {
+                teacherAssignmentCandidatesPromise = null;
+            }
+        }
+        function getTeacherAssignmentDefaultCandidate(day, candidates = teacherAssignmentCandidates) {
+            const existingRecord = getAttendanceLockRecord(day);
+            const existingEmail = normalizeEmail(existingRecord && existingRecord.teacherEmail);
+            const existingName = normalizeTextLower(existingRecord && existingRecord.teacherName);
+            let matched = candidates.find((item) => existingEmail && item.email === existingEmail);
+            if (!matched && existingName) matched = candidates.find((item) => normalizeTextLower(item.name) === existingName);
+            if (!matched && hasRole(currentUserInfo, 'teacher')) {
+                const myEmail = normalizeEmail(currentUserInfo.email);
+                matched = candidates.find((item) => item.email === myEmail) || null;
+            }
+            return matched || candidates[0] || null;
+        }
+        async function promptTeacherAssignmentForManagerDays(changedDays) {
+            const daysNeedingAssignment = (changedDays || []).filter((day) => !isDayOff(day) && dayHasAnyAttendance(day));
+            if (!daysNeedingAssignment.length) return {};
+            if (pendingTeacherAssignmentResolver) rejectPendingTeacherAssignment('Đã đóng cửa sổ gán giáo viên trước đó để mở phiên mới.');
+            const { modal, list, intro, status } = getTeacherAssignmentModalElements();
+            if (!modal || !list || !intro) throw new Error('Không tìm thấy cửa sổ gán giáo viên điểm danh.');
+            intro.innerText = 'Bạn đang lưu/chỉnh sửa điểm danh với quyền quản lý hoặc Admin. Hãy chọn đúng giáo viên được tính buổi cho từng ngày. Danh sách bên dưới lấy theo giáo viên đã được phân cho lớp và cả giáo viên đã từng được ghi nhận chốt buổi trong lớp này để tránh thiếu người.';
+            if (status) status.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Đang tải danh sách giáo viên của lớp...</span>';
+            list.innerHTML = '<div class="attendance-teacher-empty">Đang tải danh sách giáo viên phù hợp...</div>';
+            setTeacherAssignmentModalBusyState(true);
+            modal.classList.add('show');
+            await waitForNextPaint();
+
+            const candidates = await loadTeacherAssignmentCandidates();
+            if (!candidates.length) {
+                closeTeacherAssignmentModal();
+                throw new Error('Lớp này chưa được phân giáo viên nên chưa thể gán người được tính buổi cho ngày điểm danh.');
+            }
+
+            list.innerHTML = daysNeedingAssignment.map((day) => {
+                const defaultCandidate = getTeacherAssignmentDefaultCandidate(day, candidates);
+                return `
+                    <div class="teacher-assign-card">
+                        <div class="teacher-assign-day">Ngày ${escapeHtml(formatAttendanceDay(day))}</div>
+                        <div class="teacher-assign-hint">Ngày này sẽ được tính buổi và ghi nhận ở thống kê giáo viên theo lựa chọn bên dưới.</div>
+                        <div class="teacher-assign-options">
+                            ${candidates.map((candidate) => {
+                                const checked = defaultCandidate && candidate.key === defaultCandidate.key ? 'checked' : '';
+                                return `
+                                    <label class="teacher-assign-option">
+                                        <input type="radio" name="teacher-assignment-${day}" value="${escapeHtml(candidate.key)}" ${checked}>
+                                        <span class="teacher-assign-option-body">
+                                            <span class="teacher-assign-option-name">${escapeHtml(candidate.name)}</span>
+                                            <span class="teacher-assign-option-email">${escapeHtml(candidate.email || 'Không có email đăng nhập')}</span>
+                                            <span class="teacher-assign-option-meta">${buildTeacherAssignmentRoleChips(candidate)}</span>
+                                        </span>
+                                    </label>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            updateTeacherAssignmentStatus(daysNeedingAssignment);
+            setTeacherAssignmentModalBusyState(false);
+
+            return await new Promise((resolve, reject) => {
+                pendingTeacherAssignmentResolver = {
+                    resolve: async () => {
+                        if (teacherAssignmentModalBusy) return;
+                        setTeacherAssignmentModalBusyState(true);
+                        updateTeacherAssignmentStatus(daysNeedingAssignment);
+                        await waitForNextPaint();
+                        const selected = {};
+                        for (const day of daysNeedingAssignment) {
+                            const picked = list.querySelector(`input[name="teacher-assignment-${day}"]:checked`);
+                            const candidate = candidates.find((item) => item.key === (picked ? picked.value : ''));
+                            if (!candidate) {
+                                setTeacherAssignmentModalBusyState(false);
+                                updateTeacherAssignmentStatus(daysNeedingAssignment);
+                                reject(new Error(`Vui lòng chọn giáo viên cho ngày ${formatAttendanceDay(day)}.`));
+                                return;
+                            }
+                            selected[String(day)] = candidate;
+                        }
+                        pendingTeacherAssignmentResolver = null;
+                        closeTeacherAssignmentModal();
+                        resolve(selected);
+                    },
+                    reject: (error) => {
+                        pendingTeacherAssignmentResolver = null;
+                        closeTeacherAssignmentModal();
+                        reject(error instanceof Error ? error : new Error('Bạn đã hủy lưu điểm danh.'));
+                    }
+                };
+            });
+        }
+        function isPayableAttendanceStatus(status) {
+            const normalized = normalizeText(status || '').toUpperCase();
+            return ['V', 'K', 'M'].includes(normalized);
+        }
+        function getPayableAttendanceStatuses() {
+            return ['V', 'K', 'M'];
+        }
         function getAttendanceFinancialMetrics(options = {}) {
             const includeWithdrawn = !!(options && options.includeWithdrawn);
             const metrics = {
@@ -1116,21 +1998,17 @@
             };
             studentsData.forEach((st) => {
                 const selects = document.querySelectorAll(`.day-select-${st.id}`);
-                let countForTuition = 0;
                 selects.forEach((sel) => {
                     const day = Number(sel.dataset.day || 0);
                     const val = sel.value;
                     if (!day || isDayOff(day) || isDayBeforeStudentEnrollment(st, day)) return;
-                    if (['V', 'P', 'M', 'ĐB'].includes(val)) {
-                        countForTuition++;
+                    if (isPayableAttendanceStatus(val)) {
                         metrics.daySums[day - 1] += 1;
                         metrics.globalSessions += 1;
                         metrics.dayActivityMap[day] = true;
+                        metrics.grandTotal += getStudentTuitionForDay(st, day);
                     }
                 });
-                const tuitionInput = document.querySelector(`.tuition-${st.id}`);
-                const tuitionVal = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
-                metrics.grandTotal += countForTuition * tuitionVal;
             });
             if (includeWithdrawn) {
                 Object.values(getEffectiveWithdrawnStudentStats()).forEach((entry) => {
@@ -1402,9 +2280,20 @@ function parseTimeToMinutes(value) {
             const isAssignedManager = !!currentKey && managerKeys.includes(currentKey);
             const isAssignedTeacher = !!currentKey && teacherKeys.includes(currentKey);
             const realtimeState = getClassRealtimeState(classData, now);
-            const isManagerEditor = isAdmin || isRoleManager || isAssignedManager;
+            const isManagerEditor = isAdmin || isAssignedManager;
             const canManageAnytime = isManagerEditor;
             const canManageAttendance = canManageAnytime || (isAssignedTeacher && realtimeState.canAttend);
+            const canWithdrawStudents = isManagerEditor;
+            const canManageStudentRoster = isAdmin;
+            const canEditStudentProfile = isManagerEditor;
+            const canEditTuition = isManagerEditor;
+            const canMarkDayOff = isAdmin;
+            let denyMessage = 'Bạn không có quyền truy cập trang điểm danh của lớp này. Chỉ Admin, quản lý được gán cho lớp hoặc giáo viên được gán trong ca học mới được phép vào.';
+            if (isAssignedTeacher && !realtimeState.canAttend) {
+                denyMessage = 'Bạn là giáo viên của lớp này nhưng chỉ được vào trang điểm danh khi lớp đang trong ca học. Quản lý đã được gán cho lớp hoặc Admin mới được truy cập khi lớp offline.';
+            } else if (isRoleManager && !isAssignedManager) {
+                denyMessage = 'Tài khoản có quyền Quản lý trong hệ thống nhưng chưa được gán quản lý cho lớp này, nên không thể chỉnh sửa điểm danh của lớp.';
+            }
             return {
                 role,
                 roles,
@@ -1417,13 +2306,13 @@ function parseTimeToMinutes(value) {
                 canManageAnytime,
                 canManageAttendance,
                 canSaveAttendance: canManageAttendance,
-                canManageStudents: canManageAnytime,
-                canEditTuition: canManageAnytime,
-                canMarkDayOff: canManageAnytime,
+                canWithdrawStudents,
+                canManageStudentRoster,
+                canEditStudentProfile,
+                canEditTuition,
+                canMarkDayOff,
                 canAccessPage: canManageAttendance,
-                denyMessage: isAssignedTeacher
-                    ? 'Bạn là giáo viên của lớp này nhưng chỉ được vào trang điểm danh khi lớp đang trong ca học. Quản lý hoặc Admin mới được truy cập khi lớp offline.'
-                    : 'Bạn không có quyền truy cập trang điểm danh của lớp này. Chỉ Admin, tài khoản quản lý hoặc giáo viên được gán trong ca học mới được phép vào.'
+                denyMessage
             };
         }
         function setControlPermission(control, canUse, deniedTitle) {
@@ -1435,25 +2324,28 @@ function parseTimeToMinutes(value) {
         function applyAttendancePermissionUi(access) {
             const canAttend = !!(access && access.canManageAttendance);
             const canSave = !!(access && access.canSaveAttendance);
-            const canManageStudents = !!(access && access.canManageStudents);
+            const canWithdrawStudents = !!(access && access.canWithdrawStudents);
+            const canManageStudentRoster = !!(access && access.canManageStudentRoster);
+            const canEditStudentProfile = !!(access && access.canEditStudentProfile);
             const canEditTuition = !!(access && access.canEditTuition);
             const canMarkDayOff = !!(access && access.canMarkDayOff);
 
             setControlPermission(document.querySelector('.btn-save-att'), canSave, 'Bạn không có quyền lưu điểm danh của lớp này.');
-            setControlPermission(document.getElementById('btnMarkTodayOff'), canMarkDayOff, 'Chỉ quản lý hoặc Admin mới được báo nghỉ toàn buổi.');
-            setControlPermission(document.getElementById('btnOpenAddStudentModal'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được thêm học sinh tại trang điểm danh.');
-            setControlPermission(document.getElementById('btnWithdrawStudent'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được chuyển học sinh sang trạng thái thôi học.');
-            setControlPermission(document.querySelector('.btn-delete-hs'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được xóa học sinh tại trang điểm danh.');
-            setControlPermission(document.getElementById('btnAddAttendanceStudentRow'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được thêm dòng học sinh.');
-            setControlPermission(document.getElementById('btnFillAttendanceCodes'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được gán mã lớp.');
-            setControlPermission(document.getElementById('btnSaveStudent'), canManageStudents, 'Chỉ quản lý hoặc Admin mới được lưu học sinh.');
+            setControlPermission(document.getElementById('btnMarkTodayOff'), canMarkDayOff, 'Chỉ Admin mới được báo nghỉ toàn buổi.');
+            setControlPermission(document.getElementById('btnOpenAddStudentModal'), canManageStudentRoster, 'Chỉ Admin mới được thêm học sinh tại trang điểm danh.');
+            setControlPermission(document.getElementById('btnOpenEditStudentModal'), canEditStudentProfile, 'Chỉ quản lý được gán cho lớp hoặc Admin mới được sửa thông tin học sinh của lớp này.');
+            setControlPermission(document.getElementById('btnWithdrawStudent'), canWithdrawStudents, 'Chỉ quản lý được gán cho lớp hoặc Admin mới được chuyển học sinh sang trạng thái thôi học.');
+            setControlPermission(document.querySelector('.btn-delete-hs'), canManageStudentRoster, 'Chỉ Admin mới được xóa học sinh tại trang điểm danh.');
+            setControlPermission(document.getElementById('btnAddAttendanceStudentRow'), canManageStudentRoster, 'Chỉ Admin mới được thêm dòng học sinh.');
+            setControlPermission(document.getElementById('btnFillAttendanceCodes'), canManageStudentRoster, 'Chỉ Admin mới được gán mã lớp.');
+            setControlPermission(document.getElementById('btnSaveStudent'), canManageStudentRoster || canEditStudentProfile, 'Chỉ quản lý được gán cho lớp hoặc Admin mới được lưu chỉnh sửa học sinh.');
 
             document.querySelectorAll('.tuition-input').forEach((input) => {
                 const withdrawnLocked = input.dataset.withdrawn === '1';
                 input.disabled = withdrawnLocked || !canEditTuition;
                 input.title = withdrawnLocked
                     ? 'Học phí của học sinh thôi học được giữ nguyên trong tháng hiện tại.'
-                    : (canEditTuition ? '' : 'Giáo viên không được chỉnh sửa học phí tại trang điểm danh.');
+                    : (canEditTuition ? 'Khi đổi học phí, hệ thống sẽ hỏi ngày hiệu lực. Các buổi trước ngày đó vẫn giữ mức cũ.' : 'Chỉ quản lý được gán cho lớp hoặc Admin mới được chỉnh sửa học phí tại trang điểm danh.');
             });
 
             document.querySelectorAll('.att-select').forEach((select) => {
@@ -1494,8 +2386,15 @@ function parseTimeToMinutes(value) {
         }
         function enforceManagerPermission(actionLabel) {
             const access = currentClassInfo ? ensureAttendancePageAccess(currentClassInfo) : currentAttendanceAccess;
-            if (!access || !access.canManageAnytime) {
+            if (!access || !access.canWithdrawStudents) {
                 throw new Error(`Chỉ quản lý hoặc Admin mới có quyền ${actionLabel} cho lớp này.`);
+            }
+            return access;
+        }
+        function enforceAdminPermission(actionLabel) {
+            const access = currentClassInfo ? ensureAttendancePageAccess(currentClassInfo) : currentAttendanceAccess;
+            if (!access || !access.isAdmin) {
+                throw new Error(`Chỉ Admin mới có quyền ${actionLabel} cho lớp này.`);
             }
             return access;
         }
@@ -1510,6 +2409,321 @@ function parseTimeToMinutes(value) {
             if (userDocData) return userDocData.fullName || userDocData.displayName || userDocData.name || user.email;
             const fallbackEmail = normalizeEmail((user && user.email) || '');
             return fallbackEmail ? (fallbackEmail.split('@')[0] || fallbackEmail) : '';
+        }
+
+        function padNumber(value) {
+            return String(value).padStart(2, '0');
+        }
+        function getMonthInfoFromDate(date = new Date()) {
+            const safeDate = date instanceof Date ? date : new Date(date);
+            const year = safeDate.getFullYear();
+            const month = safeDate.getMonth() + 1;
+            return {
+                year,
+                month,
+                key: `${year}_${padNumber(month)}`,
+                label: `${padNumber(month)}/${year}`,
+                folderLabel: `Tháng ${padNumber(month)}-${year}`,
+                monthFileToken: `${year}-${padNumber(month)}`,
+                daysInMonth: new Date(year, month, 0).getDate()
+            };
+        }
+        function getMonthInfoByOffset(offset = 0, baseDate = new Date()) {
+            const safeDate = baseDate instanceof Date ? new Date(baseDate) : new Date(baseDate);
+            safeDate.setDate(1);
+            safeDate.setMonth(safeDate.getMonth() + Number(offset || 0));
+            return getMonthInfoFromDate(safeDate);
+        }
+        function getMonthInfoFromKey(monthKey) {
+            const parsed = parseMonthKeyParts(monthKey);
+            if (!parsed) return null;
+            return getMonthInfoFromDate(new Date(parsed.year, parsed.month - 1, 1));
+        }
+        function getAttendanceBackupRootRef() {
+            return db.collection('internal_management').doc(ATTENDANCE_BACKUP_ROOT_ID);
+        }
+        function getAttendanceBackupMonthRef(monthInfo) {
+            return getAttendanceBackupRootRef().collection('folders').doc(monthInfo.key);
+        }
+        function getAttendanceBackupClassRef(monthInfo, classDocId) {
+            return getAttendanceBackupMonthRef(monthInfo).collection('files').doc(classDocId);
+        }
+        function buildAttendanceBackupFolderPath(monthInfo) {
+            return `Quản lý nội bộ / ${ATTENDANCE_BACKUP_ROOT_LABEL} / ${monthInfo.folderLabel}`;
+        }
+        function buildAttendanceBackupFileName(classData, monthInfo) {
+            const classCode = normalizeCode(classData && classData.classCode) || 'LOP';
+            const className = normalizeText(classData && classData.className) || 'Chua_dat_ten';
+            const normalizedName = className.replace(/[^\p{L}\p{N}]+/gu, '_').replace(/^_+|_+$/g, '') || 'Chua_dat_ten';
+            return `Bang_Diem_Danh_${classCode}_${normalizedName}_${monthInfo.monthFileToken}.json`;
+        }
+        function getMonthlyAttendanceLogsFromClassData(classData, monthKey) {
+            return {
+                teacherLog: getMonthlyLogEntries(classData || {}, 'attendanceTeacherLog', monthKey),
+                managerEditLog: getMonthlyLogEntries(classData || {}, 'attendanceManagerEditLog', monthKey),
+                dayOffLog: getMonthlyLogEntries(classData || {}, 'attendanceDayOffLog', monthKey)
+            };
+        }
+        function getStudentEnrollmentDateForMonth(student, classIdValue, classCodeValue) {
+            const byClass = student && student.enrollmentDateByClass && typeof student.enrollmentDateByClass === 'object' ? student.enrollmentDateByClass : {};
+            return formatDateInputValue(
+                byClass[classIdValue]
+                || (classCodeValue ? byClass[classCodeValue] : '')
+                || (student && student.enrollmentDate)
+                || (student && student.enrolledAt)
+                || ''
+            );
+        }
+        function isDayBeforeEnrollmentForSnapshot(student, day, monthInfo, classIdValue, classCodeValue) {
+            const enrollmentRaw = getStudentEnrollmentDateForMonth(student, classIdValue, classCodeValue);
+            const enrollmentDate = parseDateOnly(enrollmentRaw);
+            if (!enrollmentDate) return false;
+            const dayDate = new Date(monthInfo.year, monthInfo.month - 1, Number(day));
+            dayDate.setHours(0, 0, 0, 0);
+            return dayDate < enrollmentDate;
+        }
+        function buildStudentAttendanceBackupRecord(studentDoc, monthInfo, classIdValue, classCodeValue, dayOffMap = {}) {
+            const student = studentDoc && typeof studentDoc.data === 'function' ? (studentDoc.data() || {}) : (studentDoc || {});
+            const studentId = studentDoc && studentDoc.id ? studentDoc.id : (student.id || getStudentManagedDocId(getStudentSyncKey(student)));
+            const attendanceRecord = student && student.attendance && typeof student.attendance === 'object' ? student.attendance : {};
+            const sanitizedAttendance = {};
+            let countedSessions = 0;
+            const payableCodes = getPayableAttendanceStatuses();
+            for (let day = 1; day <= monthInfo.daysInMonth; day++) {
+                const dayKey = String(day);
+                if (dayOffMap[dayKey]) continue;
+                if (isDayBeforeEnrollmentForSnapshot(student, day, monthInfo, classIdValue, classCodeValue)) continue;
+                const value = normalizeText(attendanceRecord[dayKey] || attendanceRecord[day]);
+                if (!value) continue;
+                sanitizedAttendance[dayKey] = value;
+                if (payableCodes.includes(value)) countedSessions += 1;
+            }
+            const tuition = Number(student && student.tuition) || 0;
+            return {
+                id: studentId,
+                syncStudentKey: getStudentSyncKey(student),
+                name: normalizeText(student && student.name),
+                school: normalizeText(student && student.school),
+                mode: normalizeStudyMode(student && student.mode),
+                tuition,
+                sessionCount: countedSessions,
+                totalAmount: countedSessions * tuition,
+                attendance: sanitizedAttendance,
+                enrollmentDate: getStudentEnrollmentDateForMonth(student, classIdValue, classCodeValue),
+                withdrawnStatus: getStudentWithdrawStatus(student),
+                linkedClassCodes: Array.isArray(student && student.linkedClassCodes) ? student.linkedClassCodes : [],
+                note: normalizeText(student && student.note),
+                backedUpAtClient: new Date().toISOString()
+            };
+        }
+        function summarizeAttendanceBackupRecords(studentRecords = [], dayOffMap = {}, withdrawnStatsMap = {}) {
+            const daySums = {};
+            let totalSessions = 0;
+            let totalRevenue = 0;
+            (studentRecords || []).forEach((student) => {
+                totalSessions += Number(student && student.sessionCount) || 0;
+                totalRevenue += Number(student && student.totalAmount) || 0;
+                const attendance = student && student.attendance && typeof student.attendance === 'object' ? student.attendance : {};
+                Object.entries(attendance).forEach(([dayKey, value]) => {
+                    if (dayOffMap[dayKey]) return;
+                    if (!isPayableAttendanceStatus(value)) return;
+                    daySums[dayKey] = (daySums[dayKey] || 0) + 1;
+                });
+            });
+            Object.values(withdrawnStatsMap || {}).forEach((item) => {
+                totalSessions += Number(item && item.sessionCount) || 0;
+                totalRevenue += Number(item && item.totalAmount) || 0;
+            });
+            const activeStudyDays = Object.keys(daySums).length;
+            return {
+                totalStudents: (studentRecords || []).length,
+                totalSessions,
+                totalRevenue,
+                activeStudyDays,
+                revenuePerStudyDay: activeStudyDays ? Math.round(totalRevenue / activeStudyDays) : 0,
+                daySums,
+                dayOffDays: Object.keys(dayOffMap || {}).sort((a, b) => Number(a) - Number(b))
+            };
+        }
+        async function commitAttendanceBackupOperations(operations = []) {
+            let batch = db.batch();
+            let opCount = 0;
+            for (const operation of operations) {
+                if (!operation || !operation.type || !operation.ref) continue;
+                if (operation.type === 'set') batch.set(operation.ref, operation.data || {}, operation.options || {});
+                else if (operation.type === 'update') batch.update(operation.ref, operation.data || {});
+                else if (operation.type === 'delete') batch.delete(operation.ref);
+                opCount += 1;
+                if (opCount >= 400) {
+                    await batch.commit();
+                    batch = db.batch();
+                    opCount = 0;
+                }
+            }
+            if (opCount > 0) await batch.commit();
+        }
+        async function backupSingleClassAttendanceSnapshot(classDoc, monthInfo, operatorInfo = {}, options = {}) {
+            const classData = { id: classDoc.id, ...(typeof classDoc.data === 'function' ? (classDoc.data() || {}) : (classDoc || {})) };
+            const classBackupRef = getAttendanceBackupClassRef(monthInfo, classData.id || classDoc.id);
+            const existingBackup = await classBackupRef.get();
+            if (existingBackup.exists && !options.force) return { skipped: true, classId: classData.id || classDoc.id };
+            const studentsSnapshot = await db.collection('classes').doc(classData.id || classDoc.id).collection('students').get();
+            const logs = getMonthlyAttendanceLogsFromClassData(classData, monthInfo.key);
+            const dayOffMap = {};
+            Object.keys(logs.dayOffLog || {}).forEach((dayKey) => {
+                if (logs.dayOffLog[dayKey]) dayOffMap[String(dayKey)] = true;
+            });
+            const studentRecords = studentsSnapshot.docs
+                .map((studentDoc) => buildStudentAttendanceBackupRecord(studentDoc, monthInfo, classData.id || classDoc.id, normalizeCode(classData.classCode), dayOffMap))
+                .filter((item) => !!item);
+            const monthlyWithdrawnStats = classData && classData.withdrawnStudentStats && classData.withdrawnStudentStats[monthInfo.key] && typeof classData.withdrawnStudentStats[monthInfo.key] === 'object'
+                ? classData.withdrawnStudentStats[monthInfo.key]
+                : {};
+            const summary = summarizeAttendanceBackupRecords(studentRecords, dayOffMap, monthlyWithdrawnStats);
+            const operations = [];
+            const rootRef = getAttendanceBackupRootRef();
+            const monthRef = getAttendanceBackupMonthRef(monthInfo);
+            operations.push({
+                type: 'set',
+                ref: rootRef,
+                data: {
+                    name: ATTENDANCE_BACKUP_ROOT_LABEL,
+                    module: 'internal-management',
+                    folderType: 'attendance-monthly-archive',
+                    siblingOf: 'luu-tru',
+                    displayAfter: 'Lưu trữ',
+                    parentPage: 'internal.html',
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: operatorInfo.email || '',
+                    createdBySystem: 'attendance.html'
+                },
+                options: { merge: true }
+            });
+            operations.push({
+                type: 'set',
+                ref: monthRef,
+                data: {
+                    name: monthInfo.folderLabel,
+                    monthKey: monthInfo.key,
+                    monthLabel: monthInfo.label,
+                    path: buildAttendanceBackupFolderPath(monthInfo),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: operatorInfo.email || '',
+                    autoCreated: true
+                },
+                options: { merge: true }
+            });
+            operations.push({
+                type: 'set',
+                ref: classBackupRef,
+                data: {
+                    classId: classData.id || classDoc.id,
+                    classCode: normalizeCode(classData.classCode),
+                    className: normalizeText(classData.className),
+                    teacherNamesDisplay: normalizeText(classData.teacherNamesDisplay || classData.teacherName),
+                    managerNameDisplay: normalizeText(classData.managerNameDisplay),
+                    fileName: buildAttendanceBackupFileName(classData, monthInfo),
+                    folderPath: buildAttendanceBackupFolderPath(monthInfo),
+                    backupMonthKey: monthInfo.key,
+                    backupMonthLabel: monthInfo.label,
+                    summary,
+                    logs,
+                    withdrawnStudentStats: monthlyWithdrawnStats,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: operatorInfo.email || '',
+                    sourcePage: 'attendance.html',
+                    exportType: 'attendance-monthly-snapshot',
+                    autoCreated: true
+                },
+                options: { merge: true }
+            });
+            studentRecords.forEach((studentRecord) => {
+                operations.push({
+                    type: 'set',
+                    ref: classBackupRef.collection('students').doc(studentRecord.id),
+                    data: studentRecord,
+                    options: { merge: true }
+                });
+            });
+            await commitAttendanceBackupOperations(operations);
+            return { skipped: false, classId: classData.id || classDoc.id, className: classData.className || '', fileName: buildAttendanceBackupFileName(classData, monthInfo) };
+        }
+        async function runAttendanceBackupForMonth(monthInfo, options = {}) {
+            if (!monthInfo || !monthInfo.key) return { skipped: true, reason: 'missing-month' };
+            if (attendanceBackupState.running) return { skipped: true, reason: 'running' };
+            if (attendanceBackupState.completedKeys.has(monthInfo.key) && !options.force) return { skipped: true, reason: 'already-completed' };
+            const isAdminUser = hasRole(currentUserInfo, 'admin');
+            if (!isAdminUser && !options.allowNonAdmin) return { skipped: true, reason: 'admin-only' };
+            attendanceBackupState.running = true;
+            try {
+                const monthRef = getAttendanceBackupMonthRef(monthInfo);
+                const monthSnap = await monthRef.get();
+                if (monthSnap.exists && monthSnap.data() && monthSnap.data().completedAt && !options.force) {
+                    attendanceBackupState.completedKeys.add(monthInfo.key);
+                    return { skipped: true, reason: 'month-already-complete' };
+                }
+                const classesSnapshot = await db.collection('classes').get();
+                const results = [];
+                for (const classDoc of classesSnapshot.docs) {
+                    const result = await backupSingleClassAttendanceSnapshot(classDoc, monthInfo, currentUserInfo, options);
+                    results.push(result);
+                }
+                await monthRef.set({
+                    name: monthInfo.folderLabel,
+                    monthKey: monthInfo.key,
+                    monthLabel: monthInfo.label,
+                    path: buildAttendanceBackupFolderPath(monthInfo),
+                    classCount: results.filter((item) => !item.skipped).length,
+                    totalClassesScanned: results.length,
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    completedBy: currentUserInfo.email || '',
+                    autoCreated: true
+                }, { merge: true });
+                attendanceBackupState.completedKeys.add(monthInfo.key);
+                attendanceBackupState.failedKeys.delete(monthInfo.key);
+                return {
+                    skipped: false,
+                    monthKey: monthInfo.key,
+                    monthLabel: monthInfo.label,
+                    createdCount: results.filter((item) => !item.skipped).length,
+                    scannedCount: results.length,
+                    folderPath: buildAttendanceBackupFolderPath(monthInfo)
+                };
+            } catch (error) {
+                attendanceBackupState.failedKeys.add(monthInfo.key);
+                throw error;
+            } finally {
+                attendanceBackupState.running = false;
+            }
+        }
+        async function maybeRunAutomaticAttendanceBackups(trigger = 'page-load', options = {}) {
+            const now = new Date();
+            const targets = [];
+            const previousMonth = getMonthInfoByOffset(-1, now);
+            if (previousMonth && previousMonth.key) targets.push(previousMonth);
+            const currentMonth = getMonthInfoFromDate(now);
+            if (options.includeCurrentMonthWhenLastDay && now.getDate() === currentMonth.daysInMonth) targets.push(currentMonth);
+            const uniqueTargets = [];
+            const seenKeys = new Set();
+            targets.forEach((item) => {
+                if (!item || !item.key || seenKeys.has(item.key)) return;
+                seenKeys.add(item.key);
+                uniqueTargets.push(item);
+            });
+            for (const monthInfo of uniqueTargets) {
+                try {
+                    const result = await runAttendanceBackupForMonth(monthInfo, options);
+                    if (!result || result.skipped) continue;
+                    if (!options.silent) {
+                        showToast('Đã sao lưu điểm danh', `${result.createdCount}/${result.scannedCount} lớp đã được đưa vào ${result.folderPath}.`, 5000);
+                    }
+                } catch (error) {
+                    console.error(`Attendance backup failed for ${monthInfo.key} (${trigger})`, error);
+                    if (!options.silent) {
+                        showToast('Sao lưu chưa xong', error && error.message ? error.message : `Không thể sao lưu tháng ${monthInfo.label}.`, 4500);
+                    }
+                }
+            }
         }
         function formatFirestoreDateTime(value) {
             if (!value) return 'Chưa rõ thời gian';
@@ -1729,6 +2943,7 @@ function parseTimeToMinutes(value) {
         }
         function captureCurrentDomSnapshot() {
             originalAttendanceSnapshot = {};
+            pendingTuitionChanges = {};
             studentsData.forEach((st) => {
                 originalAttendanceSnapshot[st.id] = { attendance: {}, tuition: 0 };
                 for (let i = 1; i <= currentMonthDays; i++) {
@@ -1743,7 +2958,8 @@ function parseTimeToMinutes(value) {
         function buildPendingStudentPayloads() {
             return studentsData.map((st) => {
                 const ref = db.collection('classes').doc(classId).collection('students').doc(st.id);
-                const updateData = { attendance: {}, tuition: 0 };
+                const nextTuitionHistory = getEffectiveStudentTuitionHistory(st);
+                const updateData = { attendance: {}, tuition: getLatestTuitionFromHistory(nextTuitionHistory) };
                 document.querySelectorAll(`.day-select-${st.id}`).forEach((sel) => {
                     const day = Number(sel.dataset.day || 0);
                     if (!day) return;
@@ -1753,8 +2969,7 @@ function parseTimeToMinutes(value) {
                     }
                     updateData.attendance[sel.dataset.day] = sel.value;
                 });
-                const tuitionInput = document.querySelector(`.tuition-${st.id}`);
-                updateData.tuition = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
+                updateData.tuitionHistory = nextTuitionHistory.length ? nextTuitionHistory : firebase.firestore.FieldValue.delete();
                 return { ref, updateData };
             });
         }
@@ -1942,6 +3157,8 @@ function parseTimeToMinutes(value) {
                 attendanceDayOffLog = getMonthlyLogEntries(data, 'attendanceDayOffLog', currentMonthKey);
                 currentClassInfo = { ...(currentClassInfo || {}), ...data };
                 teachingPayoutSettings = { ...getCurrentMonthTeachingPayoutSettings(currentClassInfo) };
+                teacherAssignmentCandidatesCacheKey = '';
+                preloadTeacherAssignmentCandidates();
                 withdrawnStudentStats = { ...getCurrentMonthWithdrawnStudentStats(currentClassInfo) };
                 ensureAttendancePageAccess(currentClassInfo);
                 await ensureTeacherDirectoryLoaded();
@@ -2100,7 +3317,7 @@ function parseTimeToMinutes(value) {
                         <td class="col-center sticky-col-left-1"><input type="checkbox" class="student-checkbox" value="${doc.id}" ${withdrawnLocked ? 'disabled title="Học sinh này đã thôi học trong tháng, không chọn lại được."' : ''}></td>
                         <td class="col-bold sticky-col-left-2">${escapeHtml(st.name || '')}${withdrawnBadge}</td>
                         <td class="col-center">${escapeHtml(st.school || '')}</td>
-                        <td class="col-center">${escapeHtml(st.mode || 'Trực tiếp')}</td>`;
+                        <td class="col-center">${escapeHtml(normalizeStudyMode(st.mode))}</td>`;
                     const attendanceRecord = st.attendance || {};
                     for (let i = 1; i <= currentMonthDays; i++) {
                         const val = attendanceRecord[i] || '';
@@ -2118,9 +3335,9 @@ function parseTimeToMinutes(value) {
                             </select>
                         </td>`;
                     }
-                    const tuition = st.tuition || 0;
+                    const tuition = getLatestStudentTuition(st);
                     rowHtml += `
-                        <td class="col-center sticky-col-right-3"><input type="number" class="tuition-input tuition-${doc.id}" data-withdrawn="${withdrawnLocked ? '1' : '0'}" value="${tuition}" step="1000" oninput="calculateTotals()" ${withdrawnLocked ? 'disabled title="Học phí của học sinh thôi học được giữ nguyên trong tháng hiện tại."' : ''}></td>
+                        <td class="col-center sticky-col-right-3"><input type="number" class="tuition-input tuition-${doc.id}" data-student-id="${doc.id}" data-current-amount="${tuition}" data-withdrawn="${withdrawnLocked ? '1' : '0'}" value="${tuition}" step="1000" onchange="handleTuitionInputChange(this)" title="${escapeHtml(withdrawnLocked ? 'Học phí của học sinh thôi học được giữ nguyên trong tháng hiện tại.' : getStudentTuitionInputTitle(st))}" ${withdrawnLocked ? 'disabled title="Học phí của học sinh thôi học được giữ nguyên trong tháng hiện tại."' : ''}></td>
                         <td class="col-center col-bold sticky-col-right-2 session-count-${doc.id}">0</td>
                         <td class="col-right money-text row-total-${doc.id} sticky-col-right-1">0 ₫</td>
                     </tr>`;
@@ -2173,21 +3390,13 @@ function parseTimeToMinutes(value) {
                 return;
             }
             studentsData.forEach(st => {
-                const selects = document.querySelectorAll(`.day-select-${st.id}`);
-                let countForTuition = 0;
-                selects.forEach(sel => {
-                    const day = Number(sel.dataset.day || 0);
-                    const val = sel.value;
-                    if (!day || isDayOff(day) || isDayBeforeStudentEnrollment(st, day)) return;
-                    if (['V', 'P', 'M', 'ĐB'].includes(val)) countForTuition++;
-                });
-                const tuitionInput = document.querySelector(`.tuition-${st.id}`);
-                const tuitionVal = parseInt(tuitionInput ? tuitionInput.value : 0, 10) || 0;
-                const rowTotal = countForTuition * tuitionVal;
+                const billingSnapshot = calculateStudentBillingSnapshot(st);
                 const sessionCountCell = document.querySelector(`.session-count-${st.id}`);
-                if (sessionCountCell) sessionCountCell.innerText = countForTuition;
+                if (sessionCountCell) sessionCountCell.innerText = billingSnapshot.sessionCount;
                 const rowTotalCell = document.querySelector(`.row-total-${st.id}`);
-                if (rowTotalCell) rowTotalCell.innerText = `${rowTotal.toLocaleString('vi-VN')} ₫`;
+                if (rowTotalCell) rowTotalCell.innerText = `${billingSnapshot.totalAmount.toLocaleString('vi-VN')} ₫`;
+                const tuitionInput = document.querySelector(`.tuition-${st.id}`);
+                if (tuitionInput) tuitionInput.title = getStudentTuitionInputTitle(st);
             });
             const footerSumCells = document.querySelectorAll('.col-sum-day');
             footerSumCells.forEach((cell, index) => {
@@ -2301,7 +3510,11 @@ function parseTimeToMinutes(value) {
             const currentClassCode = getCurrentClassCode();
             const extraCodes = (student.extraLinkedClassCodes || []).join(', ');
             const defaultEnrollmentDate = formatDateInputValue(student.enrollmentDate || student.enrolledAt || getTodayDateInputValue());
+            const normalizedMode = normalizeStudyMode(student.mode);
             const row = document.createElement('tr');
+            row.dataset.lookupSyncKey = normalizeText(student.syncStudentKey || student.lookupSyncKey || '');
+            row.dataset.originalStudentCccd = digitsOnly(student.studentCccd || student.cccd || '');
+            row.dataset.currentStudentId = String(student.id || '');
             row.innerHTML = `
                 <td class="col-center row-index">1</td>
                 <td><input type="text" class="bulk-input" data-field="name" value="${escapeHtml(student.name || '')}" placeholder="Họ và tên"></td>
@@ -2315,7 +3528,7 @@ function parseTimeToMinutes(value) {
                 <td><input type="text" class="bulk-input" data-field="parentPhone" value="${escapeHtml(student.parentPhone || '')}" placeholder="SĐT PH"></td>
                 <td><input type="text" class="bulk-input bulk-readonly" data-field="currentClassCode" value="${escapeHtml(currentClassCode)}" readonly></td>
                 <td><input type="text" class="bulk-input" data-field="linkedCodes" list="classCodeSuggestions" autocomplete="off" value="${escapeHtml(extraCodes)}" placeholder="VD: VAN-8B, TOAN-6A"></td>
-                <td><select class="bulk-select" data-field="mode"><option value="Trực tiếp" ${(student.mode || 'Trực tiếp') === 'Trực tiếp' ? 'selected' : ''}>Trực tiếp</option><option value="Trực tuyến" ${(student.mode || '') === 'Trực tuyến' ? 'selected' : ''}>Trực tuyến</option></select></td>
+                <td><select class="bulk-select" data-field="mode"><option value="Trực tiếp" ${normalizedMode === 'Trực tiếp' ? 'selected' : ''}>Trực tiếp</option><option value="Online" ${normalizedMode === 'Online' ? 'selected' : ''}>Online</option></select></td>
                 <td><input type="date" class="bulk-input" data-field="enrollmentDate" value="${escapeHtml(defaultEnrollmentDate)}"></td>
                 <td><input type="text" class="bulk-input" data-field="note" value="${escapeHtml(student.note || '')}" placeholder="Ghi chú"></td>
                 <td class="col-center"><button type="button" class="bulk-remove-btn" title="Xóa dòng"><i class="fa-solid fa-trash"></i></button></td>
@@ -2343,16 +3556,84 @@ function parseTimeToMinutes(value) {
             const tbody = document.getElementById('attendanceBulkStudentRows');
             if (tbody) tbody.innerHTML = '';
         }
+        function getAttendanceStudentModalElements() {
+            return {
+                modal: document.getElementById('addStudentModal'),
+                title: document.getElementById('attendanceModalTitle'),
+                subtitle: document.getElementById('attendanceModalSubtitle'),
+                addRowBtn: document.getElementById('btnAddAttendanceStudentRow'),
+                fillCodesBtn: document.getElementById('btnFillAttendanceCodes'),
+                saveBtn: document.getElementById('btnSaveStudent')
+            };
+        }
+        function setAttendanceStudentModalMode(mode, student = null) {
+            const safeMode = mode === 'edit' ? 'edit' : 'add';
+            const { title, subtitle, addRowBtn, saveBtn } = getAttendanceStudentModalElements();
+            attendanceStudentModalState = safeMode === 'edit'
+                ? {
+                    mode: 'edit',
+                    editingStudentId: String(student && student.id || ''),
+                    lookupSyncKey: normalizeText(student && (student.syncStudentKey || getStudentSyncKey(student)) || ''),
+                    originalStudentCccd: digitsOnly(student && (student.studentCccd || student.cccd) || '')
+                }
+                : { mode: 'add', editingStudentId: '', lookupSyncKey: '', originalStudentCccd: '' };
+            if (title) title.innerText = safeMode === 'edit' ? 'Sửa Thông Tin Học Sinh' : 'Thêm Học Sinh Vào Lớp';
+            if (subtitle) subtitle.innerHTML = safeMode === 'edit'
+                ? 'Chỉnh sửa hồ sơ ngay tại bảng điểm danh. Quản lý/Admin của lớp đều có thể cập nhật; sau khi lưu, hệ thống sẽ <strong>đồng bộ lại với nguồn danh sách học sinh</strong> và các lớp đang liên kết của học sinh này.'
+                : 'Biểu mẫu đầy đủ như trang học sinh. Lớp hiện tại được gắn tự động và có thể bổ sung thêm mã lớp khác để đồng bộ 2 chiều.';
+            if (addRowBtn) addRowBtn.style.display = safeMode === 'edit' ? 'none' : 'inline-flex';
+            if (saveBtn) saveBtn.innerText = safeMode === 'edit' ? 'Lưu chỉnh sửa' : 'Lưu học sinh';
+        }
+        function buildAttendanceEditStudentSeed(student) {
+            const currentClassCode = getCurrentClassCode();
+            const linkedCodes = Array.isArray(student && student.linkedClassCodes) ? student.linkedClassCodes : [];
+            return {
+                ...(student || {}),
+                mode: normalizeStudyMode(student && student.mode),
+                extraLinkedClassCodes: linkedCodes
+                    .map(code => normalizeCode(code))
+                    .filter(code => code && code !== currentClassCode)
+            };
+        }
         function openAttendanceStudentModal() {
-            enforceManagerPermission('thêm học sinh');
+            enforceAdminPermission('thêm học sinh');
+            setAttendanceStudentModalMode('add');
             clearAttendanceBulkRows();
             createAttendanceBulkRow();
             document.getElementById('addStudentModal').classList.add('show');
             renderClassCodeSuggestions();
             renderStudentCccdSuggestionsFromProfiles(Object.values(studentProfileCacheByCccd).length ? Object.values(studentProfileCacheByCccd) : studentsData);
         }
+        function openAttendanceStudentEditModal() {
+            enforceManagerPermission('sửa thông tin học sinh');
+            const selectedIds = [...document.querySelectorAll('.student-checkbox:checked')].filter((cb) => !cb.disabled).map((cb) => String(cb.value));
+            if (selectedIds.length !== 1) {
+                alert('Vui lòng chọn đúng 1 học sinh trong danh sách để sửa thông tin.');
+                return;
+            }
+            const student = studentsData.find((item) => String(item.id) === selectedIds[0]);
+            if (!student) {
+                alert('Không tìm thấy học sinh đã chọn để chỉnh sửa.');
+                return;
+            }
+            setAttendanceStudentModalMode('edit', student);
+            clearAttendanceBulkRows();
+            const createdRow = createAttendanceBulkRow(buildAttendanceEditStudentSeed(student));
+            if (createdRow && !hasRole(currentUserInfo, 'admin')) {
+                const linkedCodesInput = createdRow.querySelector('[data-field="linkedCodes"]');
+                if (linkedCodesInput) {
+                    linkedCodesInput.readOnly = true;
+                    linkedCodesInput.classList.add('bulk-readonly');
+                    linkedCodesInput.title = 'Quản lý chỉ được sửa thông tin học sinh của lớp hiện tại, không đổi liên kết sang lớp khác.';
+                }
+            }
+            document.getElementById('addStudentModal').classList.add('show');
+            renderClassCodeSuggestions();
+            renderStudentCccdSuggestionsFromProfiles(Object.values(studentProfileCacheByCccd).length ? Object.values(studentProfileCacheByCccd) : studentsData);
+        }
         function closeAttendanceStudentModal() {
             document.getElementById('addStudentModal').classList.remove('show');
+            setAttendanceStudentModalMode('add');
         }
         function fillAttendanceBulkRowFromProfile(row, profile = {}) {
             if (!row || !profile) return;
@@ -2366,14 +3647,14 @@ function parseTimeToMinutes(value) {
                 parentName: profile.parentName || '',
                 parentCccd: digitsOnly(profile.parentCccd || ''),
                 parentPhone: profile.parentPhone || '',
-                mode: profile.mode || 'Trực tiếp',
+                mode: normalizeStudyMode(profile.mode),
                 enrollmentDate: getStudentEnrollmentDateForCurrentClass(profile) || formatDateInputValue(profile.enrollmentDate || profile.enrolledAt || '') || getTodayDateInputValue(),
                 note: profile.note || ''
             };
             Object.entries(fieldMap).forEach(([field, value]) => {
                 const input = row.querySelector(`[data-field="${field}"]`);
                 if (!input) return;
-                if (input.tagName === 'SELECT') input.value = value || input.value || 'Trực tiếp';
+                if (input.tagName === 'SELECT') input.value = normalizeStudyMode(value || input.value || 'Trực tiếp');
                 else input.value = value || '';
             });
         }
@@ -2507,7 +3788,7 @@ function parseTimeToMinutes(value) {
                     parentName: item.parentName || '',
                     parentCccd: digitsOnly(item.parentCccd),
                     parentPhone: item.parentPhone || '',
-                    mode: item.mode || 'Trực tiếp',
+                    mode: normalizeStudyMode(item.mode),
                     enrollmentDate: item.enrollmentDate || '',
                     note: item.note || '',
                     linkedCodesRaw: item.linkedCodes || ''
@@ -2578,6 +3859,9 @@ function parseTimeToMinutes(value) {
             }
             return {
                 name: formData.name || (baseProfile && baseProfile.name) || '',
+                fullName: formData.name || (baseProfile && (baseProfile.fullName || baseProfile.name)) || '',
+                displayName: formData.name || (baseProfile && (baseProfile.displayName || baseProfile.name)) || '',
+                studentName: formData.name || (baseProfile && (baseProfile.studentName || baseProfile.name)) || '',
                 dob: formData.dob || (baseProfile && (baseProfile.dob || baseProfile.birthDate)) || '',
                 address: formData.address || (baseProfile && baseProfile.address) || '',
                 studentCccd: formData.studentCccd || (baseProfile && (baseProfile.studentCccd || baseProfile.cccd)) || '',
@@ -2586,7 +3870,7 @@ function parseTimeToMinutes(value) {
                 parentName: formData.parentName || (baseProfile && baseProfile.parentName) || '',
                 parentCccd: formData.parentCccd || (baseProfile && baseProfile.parentCccd) || '',
                 parentPhone: formData.parentPhone || (baseProfile && baseProfile.parentPhone) || '',
-                mode: formData.mode || (baseProfile && baseProfile.mode) || 'Trực tiếp',
+                mode: normalizeStudyMode(formData.mode || (baseProfile && baseProfile.mode) || 'Trực tiếp'),
                 enrollmentDate: normalizedEnrollmentDate || formData.enrollmentDate || (baseProfile && (baseProfile.enrollmentDate || baseProfile.enrolledAt)) || '',
                 enrollmentDateByClass: mergedEnrollmentByClass,
                 note: formData.note || (baseProfile && baseProfile.note) || '',
@@ -2597,8 +3881,10 @@ function parseTimeToMinutes(value) {
                 managedByAttendancePage: true
             };
         }
-        async function saveStudentAcrossClassesFromAttendance(formData) {
-            enforceManagerPermission('thêm học sinh');
+        async function saveStudentAcrossClassesFromAttendance(formData, options = {}) {
+            const isEditMode = options && options.mode === 'edit';
+            if (isEditMode) enforceManagerPermission('sửa thông tin học sinh');
+            else enforceAdminPermission('thêm học sinh');
             const currentClassCode = getCurrentClassCode();
             if (!currentClassCode) throw new Error('Không tìm thấy mã lớp hiện tại để đồng bộ học sinh.');
             const normalizedFormData = {
@@ -2608,11 +3894,10 @@ function parseTimeToMinutes(value) {
                 enrollmentDate: formatDateInputValue(formData.enrollmentDate)
             };
             if (!normalizedFormData.studentCccd) throw new Error('Vui lòng nhập CCCD học sinh.');
-            const linkedCodes = parseLinkedClassCodes(normalizedFormData.linkedCodesRaw || '', currentClassCode);
-            const missingCodes = linkedCodes.filter(code => !classesByCode[code]);
-            if (missingCodes.length) throw new Error(`Không tìm thấy mã lớp: ${missingCodes.join(', ')}`);
+            const requestedLinkedCodes = parseLinkedClassCodes(normalizedFormData.linkedCodesRaw || '', currentClassCode);
             const syncKey = getStudentSyncKey(normalizedFormData);
-            const globalMatches = await findGlobalStudentMatches(normalizedFormData, syncKey);
+            const lookupSyncKey = normalizeText(formData.lookupSyncKey || formData.originalSyncKey || '');
+            const globalMatches = await findGlobalStudentMatches(normalizedFormData, lookupSyncKey || syncKey);
             const existingCodes = new Set();
             Object.values(globalMatches.byClass).forEach(item => {
                 const data = item.data || {};
@@ -2620,7 +3905,12 @@ function parseTimeToMinutes(value) {
                 const matchedClass = classesCache.find(cls => cls.id === item.classId);
                 if (matchedClass && matchedClass.classCode) existingCodes.add(normalizeCode(matchedClass.classCode));
             });
-            linkedCodes.forEach(code => existingCodes.add(code));
+            const finalRequestedCodes = isEditMode && !hasRole(currentUserInfo, 'admin')
+                ? [currentClassCode, ...Array.from(existingCodes)]
+                : [...requestedLinkedCodes, ...Array.from(existingCodes)];
+            const missingCodes = finalRequestedCodes.filter(code => code && !classesByCode[code]);
+            if (missingCodes.length) throw new Error(`Không tìm thấy mã lớp: ${missingCodes.join(', ')}`);
+            finalRequestedCodes.forEach(code => existingCodes.add(code));
             const finalLinkedCodes = Array.from(existingCodes).filter(Boolean).sort();
             const mergedProfile = buildMergedStudentProfile(normalizedFormData, globalMatches.bestProfile, syncKey, finalLinkedCodes);
             if (!normalizeText(mergedProfile.name)) throw new Error('Vui lòng nhập họ và tên học sinh hoặc dùng CCCD đã tồn tại để hệ thống tự điền thông tin.');
@@ -2638,6 +3928,7 @@ function parseTimeToMinutes(value) {
                     payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     payload.attendance = {};
                     payload.tuition = 0;
+                    payload.tuitionHistory = [];
                 }
                 batch.set(targetRef, payload, { merge: true });
                 touchedClassIds.add(cls.id);
@@ -2648,23 +3939,14 @@ function parseTimeToMinutes(value) {
         }
         function buildWithdrawalBillingSnapshot(student) {
             const safeStudent = student || {};
-            const attendedDays = [];
-            const countedStatuses = ['V', 'P', 'M', 'ĐB'];
-            document.querySelectorAll(`.day-select-${safeStudent.id}`).forEach((sel) => {
-                const day = Number(sel.dataset.day || 0);
-                if (!day || isDayOff(day) || isDayBeforeStudentEnrollment(safeStudent, day)) return;
-                if (countedStatuses.includes(sel.value)) attendedDays.push(day);
-            });
-            const tuitionInput = document.querySelector(`.tuition-${safeStudent.id}`);
-            const tuition = parseInt(tuitionInput ? tuitionInput.value : safeStudent.tuition, 10) || 0;
-            const sessionCount = attendedDays.length;
+            const billingSnapshot = calculateStudentBillingSnapshot(safeStudent);
             return {
                 name: normalizeText(safeStudent.name) || 'Chưa rõ',
                 studentCccd: digitsOnly(safeStudent.studentCccd || safeStudent.cccd),
-                tuition,
-                sessionCount,
-                attendedDays,
-                totalAmount: sessionCount * tuition
+                tuition: getLatestStudentTuition(safeStudent),
+                sessionCount: billingSnapshot.sessionCount,
+                attendedDays: billingSnapshot.attendedDays,
+                totalAmount: billingSnapshot.totalAmount
             };
         }
         function buildDerivedWithdrawnStudentStats() {
@@ -2734,7 +4016,7 @@ function parseTimeToMinutes(value) {
                 alert('Vui lòng chọn học sinh cần chuyển sang trạng thái thôi học.');
                 return;
             }
-            const confirmed = confirm(`Xác nhận chuyển ${selected.length} học sinh sang trạng thái thôi học? Dữ liệu điểm danh và học phí của tháng này vẫn được giữ nguyên, nhưng từ ngày 01 tháng sau các học sinh này sẽ không còn xuất hiện trên bảng điểm danh lớp.`);
+            const confirmed = confirm(`Xác nhận chuyển ${selected.length} học sinh sang trạng thái thôi học? Hệ thống chỉ gỡ mã lớp hiện tại khỏi hồ sơ trung tâm. Nếu học sinh vẫn còn mã lớp khác thì hồ sơ toàn cục vẫn được giữ nguyên; chỉ khi không còn mã lớp nào thì hồ sơ mới về trạng thái chờ xóa sạch sau khi kết thúc tháng học.`);
             if (!confirmed) return;
             try {
                 const touchedClassIds = new Set([classId]);
@@ -2827,13 +4109,13 @@ function parseTimeToMinutes(value) {
                     };
                 }
                 for (const touchedClassId of touchedClassIds) await syncClassStudentCount(touchedClassId);
-                showToast('Đã chuyển sang thôi học', 'Dòng học sinh được khóa cứng trong tháng hiện tại; từ ngày 01 tháng sau sẽ tự ẩn khỏi bảng điểm danh lớp.');
+                showToast('Đã chuyển sang thôi học', 'Đã gỡ lớp hiện tại khỏi hồ sơ liên kết của học sinh. Nếu học sinh còn mã lớp khác thì danh sách trung tâm vẫn giữ nguyên; nếu không còn mã lớp nào thì hồ sơ sẽ ở trạng thái chờ xóa sạch sau khi kết thúc tháng học.');
             } catch (error) {
                 alert(error.message || 'Không thể chuyển học sinh sang trạng thái thôi học.');
             }
         };
         window.deleteSelectedStudents = async function() {
-            enforceManagerPermission('xóa học sinh');
+            enforceAdminPermission('xóa học sinh');
             const selected = [...document.querySelectorAll('.student-checkbox:checked')];
             if (selected.length === 0) return alert('Vui lòng chọn ít nhất 1 học sinh để xóa khỏi lớp này.');
             const deletableItems = [];
@@ -2856,7 +4138,7 @@ function parseTimeToMinutes(value) {
 
 Danh sách bị chặn: ${blockedNames}`);
             }
-            let confirmMessage = `Chắc chắn xóa ${deletableItems.length} học sinh khỏi lớp hiện tại? Chức năng này chỉ dùng khi nhập nhầm lớp và chưa có ngày điểm danh nào được chốt.`;
+            let confirmMessage = `Chắc chắn xóa ${deletableItems.length} học sinh khỏi lớp hiện tại? Chức năng này chỉ dùng khi nhập nhầm lớp và chưa có ngày điểm danh nào được chốt. Nếu học sinh còn liên kết với mã lớp khác thì hệ thống chỉ gỡ lớp hiện tại, không xóa sạch hồ sơ toàn trung tâm.`;
             if (blockedItems.length) confirmMessage += `
 
 ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa và cần xử lý bằng nút "Thôi học".`;
@@ -2913,7 +4195,7 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
                 for (const touchedClassId of touchedClassIds) await syncClassStudentCount(touchedClassId);
                 const successMessage = blockedItems.length
                     ? `Đã xóa ${deletableItems.length} học sinh chưa có điểm danh. ${blockedItems.length} học sinh đã có điểm danh nên giữ nguyên và cần dùng nút Thôi học.`
-                    : `Đã xóa ${deletableItems.length} học sinh khỏi lớp hiện tại.`;
+                    : `Đã gỡ ${deletableItems.length} học sinh khỏi lớp hiện tại và giữ nguyên các mã lớp còn lại (nếu có).`;
                 showToast('Thành công!', successMessage);
                 if (blockedItems.length) {
                     const blockedPreview = blockedItems
@@ -2928,7 +4210,7 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
             }
         };
         function toggleTodayOff() {
-            enforceManagerPermission('báo nghỉ');
+            enforceAdminPermission('báo nghỉ');
             const today = getTodayDay();
             if (!today) {
                 showToast('Không khả dụng', 'Chỉ có thể báo nghỉ trong tháng hiện tại.');
@@ -2956,6 +4238,8 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
                 const classRef = db.collection('classes').doc(classId);
                 const myEmail = normalizeEmail(currentUserInfo.email);
                 const isManagerEditor = isManagerAttendanceEditor(access);
+                const managerTeacherAssignments = isManagerEditor ? await promptTeacherAssignmentForManagerDays(changedDays) : {};
+                if (isManagerEditor) await waitForNextPaint();
                 await db.runTransaction(async (transaction) => {
                     const classSnapshot = await transaction.get(classRef);
                     if (!classSnapshot.exists) throw new Error('Lớp học không còn tồn tại.');
@@ -2979,6 +4263,9 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
                         if (!isManagerEditor && dayOffRecord && dayOffOwner && dayOffOwner !== myEmail && Object.prototype.hasOwnProperty.call(localDayOffState, String(day))) {
                             throw new Error(buildDayOffReason(day, dayOffRecord));
                         }
+                        if (isManagerEditor && !isDayOff(day) && dayHasAnyAttendance(day) && !managerTeacherAssignments[String(day)]) {
+                            throw new Error(`Vui lòng chọn giáo viên được tính cho ngày ${formatAttendanceDay(day)}.`);
+                        }
                     });
                     studentPayloads.forEach((item) => {
                         transaction.set(item.ref, item.updateData, { merge: true });
@@ -2991,6 +4278,7 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
                         const existingRecord = liveMonthLog[String(day)] || null;
                         const existingManagerEditRecord = liveManagerEditLog[String(day)] || null;
                         const existingDayOffRecord = liveDayOffLog[String(day)] || null;
+                        const assignedTeacher = managerTeacherAssignments[String(day)] || null;
                         if (isDayOff(day)) {
                             classUpdateData[attendanceFieldPath] = firebase.firestore.FieldValue.delete();
                             classUpdateData[dayOffFieldPath] = {
@@ -3003,6 +4291,8 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
                                     editorName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
                                     editorEmail: currentUserInfo.email || '',
                                     editorRole: access.isAdmin ? 'admin' : 'manager',
+                                    teacherName: assignedTeacher ? assignedTeacher.name : ((existingRecord && existingRecord.teacherName) || ''),
+                                    teacherEmail: assignedTeacher ? assignedTeacher.email : ((existingRecord && existingRecord.teacherEmail) || ''),
                                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                                 };
                             } else if (existingManagerEditRecord) {
@@ -3016,15 +4306,15 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
                                         editorName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
                                         editorEmail: currentUserInfo.email || '',
                                         editorRole: access.isAdmin ? 'admin' : 'manager',
+                                        teacherName: assignedTeacher ? assignedTeacher.name : ((existingRecord && existingRecord.teacherName) || ''),
+                                        teacherEmail: assignedTeacher ? assignedTeacher.email : ((existingRecord && existingRecord.teacherEmail) || ''),
                                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                                     };
-                                    if (existingRecord) {
-                                        classUpdateData[attendanceFieldPath] = {
-                                            teacherName: (existingRecord && existingRecord.teacherName) || 'Chưa rõ',
-                                            teacherEmail: (existingRecord && existingRecord.teacherEmail) || '',
-                                            updatedAt: (existingRecord && existingRecord.updatedAt) || firebase.firestore.FieldValue.serverTimestamp()
-                                        };
-                                    }
+                                    classUpdateData[attendanceFieldPath] = {
+                                        teacherName: (assignedTeacher && assignedTeacher.name) || (existingRecord && existingRecord.teacherName) || 'Chưa rõ',
+                                        teacherEmail: (assignedTeacher && assignedTeacher.email) || (existingRecord && existingRecord.teacherEmail) || '',
+                                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                                    };
                                 } else {
                                     classUpdateData[managerEditFieldPath] = existingManagerEditRecord ? existingManagerEditRecord : firebase.firestore.FieldValue.delete();
                                     classUpdateData[attendanceFieldPath] = {
@@ -3040,6 +4330,8 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
                                         editorName: currentUserInfo.displayName || currentUserInfo.email || 'Chưa rõ',
                                         editorEmail: currentUserInfo.email || '',
                                         editorRole: access.isAdmin ? 'admin' : 'manager',
+                                        teacherName: assignedTeacher ? assignedTeacher.name : ((existingRecord && existingRecord.teacherName) || ''),
+                                        teacherEmail: assignedTeacher ? assignedTeacher.email : ((existingRecord && existingRecord.teacherEmail) || ''),
                                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                                     };
                                 } else if (existingManagerEditRecord) {
@@ -3053,6 +4345,10 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
                 captureCurrentDomSnapshot();
                 document.getElementById('attTime').innerText = new Date().toLocaleString('vi-VN');
                 showToast('Đã lưu');
+                await maybeRunAutomaticAttendanceBackups('save-attendance', {
+                    includeCurrentMonthWhenLastDay: true,
+                    silent: false
+                });
             } catch (err) {
                 showToast('Không thể lưu', err && err.message ? err.message : 'Đã xảy ra lỗi khi lưu điểm danh.');
             } finally {
@@ -3074,6 +4370,7 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
             ensureAttendancePageAccess(currentClassInfo);
             currentScheduleDays = getMainStudyDaysForCurrentClass();
             await refreshAssignedTeachingRoster();
+            preloadTeacherAssignmentCandidates();
             document.getElementById('displayClassName').innerText = data.className || 'Chưa đặt tên';
             document.getElementById('displayClassTeacher').innerText = data.teacherNamesDisplay || data.teacherName || 'Chưa có';
             generateTableHeader();
@@ -3086,26 +4383,94 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
         const addStudentForm = document.getElementById('addStudentForm');
         addStudentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            enforceManagerPermission('thêm học sinh');
+            const isEditMode = attendanceStudentModalState.mode === 'edit';
+            if (isEditMode) enforceManagerPermission('sửa thông tin học sinh');
+            else enforceAdminPermission('thêm học sinh');
             const btn = document.getElementById('btnSaveStudent');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...';
             btn.disabled = true;
             try {
                 const rows = collectStudentsFromAttendanceModal();
-                for (const row of rows) await saveStudentAcrossClassesFromAttendance(row);
+                if (isEditMode && rows.length !== 1) throw new Error('Chế độ sửa chỉ cho phép lưu đúng 1 học sinh mỗi lần.');
+                for (const row of rows) await saveStudentAcrossClassesFromAttendance(row, { mode: isEditMode ? 'edit' : 'add' });
                 closeAttendanceStudentModal();
                 clearAttendanceBulkRows();
                 addStudentForm.reset();
-                showToast('Thành công!', rows.length === 1 ? 'Đã thêm học sinh và đồng bộ sang danh sách học sinh.' : `Đã thêm ${rows.length} học sinh và đồng bộ 2 chiều.`);
+                showToast('Thành công!', isEditMode
+                    ? 'Đã cập nhật thông tin học sinh và đồng bộ với nguồn danh sách học sinh.'
+                    : (rows.length === 1 ? 'Đã thêm học sinh và đồng bộ sang danh sách học sinh.' : `Đã thêm ${rows.length} học sinh và đồng bộ 2 chiều.`));
             } catch (error) {
-                alert(error.message || 'Không thể thêm học sinh.');
+                alert(error.message || (isEditMode ? 'Không thể cập nhật thông tin học sinh.' : 'Không thể thêm học sinh.'));
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 ensureAttendanceBulkRow();
             }
         });
+        function isMobileAttendanceViewport() {
+            return window.innerWidth <= 1024;
+        }
+        function getAttendancePanelElements() {
+            return {
+                panel: document.getElementById('attendancePanel'),
+                wrapper: document.getElementById('attendanceTableWrapper'),
+                fullscreenBtn: document.getElementById('btnAttendanceFullscreen'),
+                zoomLabelBtn: document.getElementById('btnAttendanceZoomReset'),
+                zoomInBtn: document.getElementById('btnAttendanceZoomIn'),
+                zoomOutBtn: document.getElementById('btnAttendanceZoomOut')
+            };
+        }
+        function updateAttendanceZoomControls() {
+            const { panel, fullscreenBtn, zoomLabelBtn, zoomInBtn, zoomOutBtn } = getAttendancePanelElements();
+            if (!panel || !fullscreenBtn || !zoomLabelBtn || !zoomInBtn || !zoomOutBtn) return;
+            const isMobile = isMobileAttendanceViewport();
+            const isFullscreen = panel.classList.contains('attendance-fullscreen-active');
+            panel.style.setProperty('--attendance-mobile-scale', String(attendanceMobileScale));
+            zoomLabelBtn.textContent = `${Math.round(attendanceMobileScale * 100)}%`;
+            zoomInBtn.disabled = !isMobile || attendanceMobileScale >= ATTENDANCE_MOBILE_SCALE_MAX - 0.001;
+            zoomOutBtn.disabled = !isMobile || attendanceMobileScale <= ATTENDANCE_MOBILE_SCALE_MIN + 0.001;
+            fullscreenBtn.innerHTML = isFullscreen
+                ? '<i class="fa-solid fa-compress"></i><span>Thu gọn</span>'
+                : '<i class="fa-solid fa-expand"></i><span>Toàn màn hình</span>';
+        }
+        function setAttendanceMobileScale(nextScale) {
+            attendanceMobileScale = Math.min(ATTENDANCE_MOBILE_SCALE_MAX, Math.max(ATTENDANCE_MOBILE_SCALE_MIN, Number(nextScale) || 1));
+            updateAttendanceZoomControls();
+        }
+        function closeAttendanceFullscreen() {
+            const { panel } = getAttendancePanelElements();
+            if (!panel) return;
+            panel.classList.remove('attendance-fullscreen-active');
+            document.body.classList.remove('attendance-fullscreen-lock');
+            updateAttendanceZoomControls();
+        }
+        function toggleAttendanceFullscreen() {
+            const { panel } = getAttendancePanelElements();
+            if (!panel || !isMobileAttendanceViewport()) return;
+            const nextState = !panel.classList.contains('attendance-fullscreen-active');
+            panel.classList.toggle('attendance-fullscreen-active', nextState);
+            document.body.classList.toggle('attendance-fullscreen-lock', nextState);
+            if (nextState) {
+                closeSidebar();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            updateAttendanceZoomControls();
+        }
+        function initializeAttendanceMobileTools() {
+            const { fullscreenBtn, zoomLabelBtn, zoomInBtn, zoomOutBtn } = getAttendancePanelElements();
+            if (!fullscreenBtn || fullscreenBtn.dataset.bound === '1') {
+                updateAttendanceZoomControls();
+                return;
+            }
+            fullscreenBtn.dataset.bound = '1';
+            fullscreenBtn.addEventListener('click', toggleAttendanceFullscreen);
+            zoomInBtn.addEventListener('click', () => setAttendanceMobileScale(attendanceMobileScale + ATTENDANCE_MOBILE_SCALE_STEP));
+            zoomOutBtn.addEventListener('click', () => setAttendanceMobileScale(attendanceMobileScale - ATTENDANCE_MOBILE_SCALE_STEP));
+            zoomLabelBtn.addEventListener('click', () => setAttendanceMobileScale(1));
+            updateAttendanceZoomControls();
+        }
+
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
@@ -3145,6 +4510,10 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
             try {
                 await loadClassesDirectory();
                 await loadClassInfo();
+                await maybeRunAutomaticAttendanceBackups('page-load', {
+                    includeCurrentMonthWhenLastDay: false,
+                    silent: true
+                });
                 if (attendanceAccessTimer) clearInterval(attendanceAccessTimer);
                 attendanceAccessTimer = setInterval(() => {
                     if (currentClassInfo) ensureAttendancePageAccess(currentClassInfo);
@@ -3166,8 +4535,28 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
             });
         });
         document.getElementById('btnOpenAddStudentModal').addEventListener('click', openAttendanceStudentModal);
+        document.getElementById('btnOpenEditStudentModal').addEventListener('click', openAttendanceStudentEditModal);
         document.getElementById('btnCancelAttendanceStudent').addEventListener('click', closeAttendanceStudentModal);
         document.getElementById('addStudentModal').addEventListener('click', (e) => { if (e.target.id === 'addStudentModal') closeAttendanceStudentModal(); });
+        document.getElementById('btnConfirmTeacherAssignment').addEventListener('click', () => {
+            if (pendingTeacherAssignmentResolver && typeof pendingTeacherAssignmentResolver.resolve === 'function') {
+                pendingTeacherAssignmentResolver.resolve();
+            }
+        });
+        document.getElementById('btnCancelTeacherAssignment').addEventListener('click', () => {
+            rejectPendingTeacherAssignment('Bạn đã hủy lưu điểm danh.');
+        });
+        document.getElementById('teacherAssignmentList').addEventListener('change', () => {
+            if (pendingTeacherAssignmentResolver) updateTeacherAssignmentStatus(getChangedAttendanceDays().filter((day) => !isDayOff(day) && dayHasAnyAttendance(day)));
+        });
+        document.getElementById('teacherAssignmentModal').addEventListener('click', (e) => {
+            if (e.target.id === 'teacherAssignmentModal') rejectPendingTeacherAssignment('Bạn đã đóng cửa sổ chọn giáo viên.');
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && pendingTeacherAssignmentResolver) {
+                rejectPendingTeacherAssignment('Bạn đã đóng cửa sổ chọn giáo viên.');
+            }
+        });
 
         document.addEventListener('input', async (event) => {
             if (event.target.matches('#attendanceBulkStudentRows [data-field="studentCccd"]')) {
@@ -3238,13 +4627,21 @@ ${blockedItems.length} học sinh đã có điểm danh sẽ không bị xóa v�
             });
         });
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024) closeSidebar();
+            if (window.innerWidth > 1024) {
+                closeSidebar();
+                closeAttendanceFullscreen();
+            }
             updateMainDaysButtonState();
             updateDayOffButtonState();
+            updateAttendanceZoomControls();
         });
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') closeSidebar();
+            if (event.key === 'Escape') {
+                closeSidebar();
+                closeAttendanceFullscreen();
+            }
         });
+        initializeAttendanceMobileTools();
         document.getElementById('btnLogout').addEventListener('click', () => { if (confirm('Đăng xuất?')) auth.signOut(); });
     </script>
 </body>
